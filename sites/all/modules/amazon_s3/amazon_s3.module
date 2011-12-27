@@ -1,6 +1,5 @@
 <?php
- 
- //
+
 /*Hooks*/
 
 /**
@@ -12,11 +11,6 @@ function amazon_s3_init() {
   drupal_add_js(drupal_get_path("module","runmemo")."/runmemo.js");
 
 }
-
-
-
-
-
 
 /**
  * Implementation of hook_menu()
@@ -69,11 +63,39 @@ function amazon_s3_menu() {
 
   //by resource 2 for photographer uploading image
   $items['admin/structure/amazon-s3/bucket/photographer'] = array(
-    'title' => 'Bucket Contents',
+    'title' => 'Upload Your Photos By Selecting Event Name',
     'description' => t('View the objects in a bucket on your Amazon S3 account.'),
     'page callback' => 'amazon_s3_view_objects_photographer',
     'page arguments' => array(4),
-    'access arguments' => array('administer amazon s3'),
+    'access arguments' => array('access_photographer'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/structure/amazon-s3/bucket/%'] = array(
+    'title' => 'Upload Your Photos By Selecting Event Name',
+    'description' => t('View the objects in a bucket on your Amazon S3 account.'),
+    'page callback' => 'amazon_s3_view_objects',
+    'page arguments' => array(4),
+    'access arguments' => array('access_photographer'),
+    'type' => MENU_CALLBACK,
+  );
+
+  $items['admin/structure/amazon-s3/bucket/%/%/delete'] = array(
+    'title' => 'Delete Object in Bucket',
+    'description' => t('Delete an object in a bucket.'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('amazon_s3_object_delete_confirm_form', 4, 5),
+    'access arguments' => array('access_photographer'),
+    'type' => MENU_CALLBACK,
+  );
+
+  //by resource 2 for runner
+  $items['runner'] = array(
+    'title' => 'Photo Gallery',
+    'description' => t('View the objects in a event on your Amazon S3 account.'),
+    'page callback' => 'amozon_s3_show_images',
+    'page arguments' => array(1),
+    'access arguments' => array('access_runner'),
     'type' => MENU_CALLBACK,
   );
   
@@ -105,7 +127,7 @@ function amazon_s3_permission() {
       'restrict access' => TRUE,
     ),
 
-
+   
 
 
   );
@@ -165,6 +187,7 @@ function amazon_s3_object_delete($bucket, $object) {
   return $s3->deleteObject($bucket, $object);
 }
 
+/* by resource 2
 function amazon_s3_acl_options() {
   return array(
     'private' => 'Private',
@@ -173,6 +196,7 @@ function amazon_s3_acl_options() {
     'authenticated-read' => 'Authenticated Read'
   );
 }
+*/
 
 /**
  * Forms
@@ -185,11 +209,13 @@ function amazon_s3_bucket_create_form() {
     '#required' => TRUE,
     '#size' => 30,
   );
+/*
   $form['access_control'] = array(
     '#type' => 'select',
     '#title' => t('Access Control'),
     '#options' => amazon_s3_acl_options(),
   );
+*/
   $form['create'] = array('#type' => 'submit', '#value' => 'Create Bucket');
   return $form;
 }
@@ -200,7 +226,7 @@ function amazon_s3_bucket_create_form_submit($form, &$form_state) {
 
   $bucket_name = $form_state['values']['bucket'];
 
-  $access_control = $form_state['values']['access_control'];
+  $access_control = 'public-read';//$form_state['values']['access_control'];
 
   $bucket_creation_response=amazon_s3_bucket_create($bucket_name, $access_control);
 
@@ -208,25 +234,6 @@ function amazon_s3_bucket_create_form_submit($form, &$form_state) {
   if($bucket_creation_response=='false')
   {
 	drupal_set_message('Bucket already exists','error');//added by resource 2
-  }
-  else
-  {
-
-
-	$event_name=db_query("SELECT event_name FROM events");
-	foreach($event_name as $event_name_value)
-	{
-		$event_name_array[]=$event_name_value->event_name;
-	}
-
-
-	if(!(in_array("$bucket_name",$event_name_array)))
-	{
-		db_insert('events')
-			      	->fields(array(
-				'event_name' => $bucket_name,
-				))->execute();
-	}
   }
 
   return $bucket_creation_response;
@@ -292,36 +299,38 @@ function amazon_s3_file_upload_form($form, &$form_state, $bucket) {
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
 
-		$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#attributes'=>array('onchange'=>'return select_event();'),'#id'=>'event');
+	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#attributes'=>array('onchange'=>'return select_event();'),'#id'=>'event');
 
-		$form['events_select']['#options']=array('photographer'=>"Select Event");
-		$event_name=db_query("SELECT event_name FROM events");
-		foreach($event_name as $event_name_value)
-		{
-			$event_title=$event_name_value->event_name;
-			$form['events_select']['#options'][$event_title]=$event_title;
-		}
+	$form['events_select']['#options']=array('photographer'=>"Select Event");
+	$event_name=amazon_s3_get_buckets();
+	foreach($event_name as $event_name_value)
+	{
+		$event_title=$event_name_value;
+		$form['events_select']['#options'][$event_title]=$event_title;
+	}
 
-		$form['events_select']['#default_value']=$form['events_select']['#options'][$bucket];
+	$form['events_select']['#default_value']=$form['events_select']['#options'][$bucket];
 
 
   $form['box'] = array(
     '#type' => 'fieldset',
     '#title' => t('Upload File'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
   );
   $form['box']['file'] = array(
     '#type' => 'file',
     '#title' => t('File to upload'),
-    '#description' => t('Pick a file to upload to the bucket %bucket.', array('%bucket' => $bucket)),
+    '#description' => t('Pick a file to upload to the event %bucket.', array('%bucket' => $bucket)),
     '#size' => 40,
   );
+/*
   $form['box']['acl'] = array(
     '#type' => 'select',
     '#title' => t('Access Control'),
     '#options' => amazon_s3_acl_options(),
   );
+*/
   $form['box']['bucket'] = array('#type' => 'value', '#value' => $bucket);
   $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload');
   return $form;
@@ -339,7 +348,7 @@ function amazon_s3_file_upload_form_submit($form, &$form_state) {
 	  $bucket = $form_state['values']['bucket'];
 	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];//$upload_temp_filepath = $_FILES['files']['tmp_name']['file'];
 	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
-	  $acl = $form_state['values']['acl'];
+	  $acl = 'public-read';//$form_state['values']['acl'];
 	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
 	  
 	  if ($success) {
@@ -362,24 +371,28 @@ function amazon_s3_file_upload_form1($form, &$form_state, $bucket) {
   $form['box1'] = array(
     '#type' => 'fieldset',
     '#title' => t('Upload Zip File'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
+    '#collapsible' => FALSE,
+    '#collapsed' => FALSE,
+    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
   );
   $form['box1']['file1'] = array(
     '#type' => 'file',
     '#title' => t('File to upload'),
-    '#description' => t('Pick a zip file to upload to the bucket %bucket.', array('%bucket' => $bucket)),
+    '#description' => t('Pick a zip file to upload to the event %bucket.', array('%bucket' => $bucket)),
     '#size' => 40,
   );
+/*
   $form['box1']['acl1'] = array(
     '#type' => 'select',
     '#title' => t('Access Control'),
     '#options' => amazon_s3_acl_options(),
   ); 
+*/
   $form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
   $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload');
   return $form;
 }
+//submit function for zip file upload and extraction by resource 2
 //submit function for zip file upload and extraction by resource 2
 function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 
@@ -391,7 +404,7 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 
 	$type = $_FILES["files"]["type"]["file1"];
  	
-	$acl=$form['box1']['acl1']['#value'];
+	$acl='public-read';//$form['box1']['acl1']['#value'];
 	$bucket=$form_state['build_info']['args']['0'];
 
 	$name = explode(".", $filename);
@@ -402,7 +415,8 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 			break;
 		} 
 	}
- 
+ 	
+	
 	
 	$continue = strtolower($name[1]) == 'zip' ? true : false;
 	if(!$continue) {
@@ -410,7 +424,8 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 		drupal_set_message($message,'error');
 	}
  
-	if($continue){
+	if($continue)
+	{
 
 		$base_path=$_SERVER['DOCUMENT_ROOT'].base_path()."sites/default/files";
 
@@ -422,46 +437,113 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 			$x = $zip->open($target_path);
 			if ($x === true)
 			{
-				$zip->extractTo("$base_path"); 
+				$folder=$base_path.'/'.$name[0];
+				$zip->extractTo("$folder"); 
 			
 			
-				chmod("$base_path/$name[0]",0777);
+				chmod("$base_path/".$name[0],0777);
 			
-				if ($handle = opendir("$base_path/$name[0]")) 
+				$file_exist= "$base_path/".$name[0].'/'.$name[0];
+				
+				
+				if (file_exists($file_exist)) 
 				{
-				 	
-				    	//This is the correct way to loop over the directory. 
-					while (false !== ($file = readdir($handle)))
+
+					if ($handle = opendir("$base_path/".$name[0].'/'.$name[0])) 
 					{
-						$name_path=explode('.',$file);
-
-						if($name_path[0]!='')
+					 	//This is the correct way to loop over the directory. 
+						while (false !== ($file = readdir($handle)))
 						{
-							rename("$base_path/$name[0]/$file", "$base_path/$name[0]/$name_path[0].jpeg");
-						}
-						$file_path1="$base_path/$name[0]/$name_path[0].jpeg";
+							$name_path=explode('.',$file);
 
-						if($file_path1!="$base_path/$name[0]/..jpeg" && $file_path1!="$base_path/$name[0]/.jpeg" && $file_path1!='')
-                                                {
-							$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
+							
+							if(($name_path[1]=='jpg') || ($name_path[1]=='jpeg') )
+							{
+								if($name_path[0]!='')
+								{
+									rename("$base_path/$name[0]/$name[0]/$file", "$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
+								}
+								$file_path1="$base_path/$name[0]/$name[0]/$name_path[0].jpeg";
 
-							unlink("$base_path/$name[0]/$name_path[0].jpeg");
-                                                }
+								if(($file_path1!="$base_path/$name[0]/$name[0]/..jpeg") && ($file_path1!="$base_path/$name[0]/$name[0]/.jpeg") && ($file_path1!=''))
+				                                {
+									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
 
-					  }
+									unlink("$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
+				                                }
+							}
+							else
+							{
+								if(($file!='.') && ($file!='..'))
+								{
+									unlink("$base_path/$name[0]/$name[0]/$file");
+									drupal_set_message($file.' image was not uploaded because of invalid image extension','error');
+								}
+					
+							}
+
+						  }
+
+						rmdir("$base_path/".$name[0].'/'.$name[0]);
+						rmdir("$base_path/".$name[0]);
+						closedir($handle);
+					}
+					
+					$message = "Your .zip file was uploaded and unpacked.";
+					drupal_set_message($message);
 				}
 			
-				rmdir("$base_path/$name[0]");
+				else
+				{
 
-				closedir($handle);
+					if ($handle = opendir("$base_path/".$name[0])) 
+					{
+					    	//This is the correct way to loop over the directory. 
+						while (false !== ($file = readdir($handle)))
+						{
+							$name_path=explode('.',$file);
+
+							if(($name_path[1]=='jpg') || ($name_path[1]=='jpeg') )
+							{
+								if($name_path[0]!='')
+								{
+									rename("$base_path/$name[0]/$file", "$base_path/$name[0]/$name_path[0].jpeg");
+								}
+								$file_path1="$base_path/$name[0]/$name_path[0].jpeg";
+
+								if($file_path1!="$base_path/$name[0]/..jpeg" && $file_path1!="$base_path/$name[0]/.jpeg" && $file_path1!='')
+				                                {
+									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
+
+									unlink("$base_path/$name[0]/$name_path[0].jpeg");
+				                                }
+							}
+							else
+							{
+								if(($file!='.') && ($file!='..'))
+								{
+									unlink("$base_path/$name[0]/$file");
+									drupal_set_message($file.' image was not uploaded because of invalid image extension','error');
+								}
+					
+							}
+
+						  }
+						rmdir("$base_path/".$name[0]);
+
+						closedir($handle);
+					}
+					$message = "Your .zip file was uploaded and unpacked.";
+					drupal_set_message($message);
+				}
+				
+				
 			}
 
 			$zip->close();
  
 			unlink($target_path);
 			
-			$message = "Your .zip file was uploaded and unpacked.";
-			drupal_set_message($message);
 		} 
 		else 
 		{	
@@ -472,42 +554,49 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 
 }
 
-
 ////////////////////////////////////////////////// photographer page
 
 function amazon_s3_file_upload_form_photographer($form, &$form_state, $bucket) {
+
+
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
 		$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#attributes'=>array('onchange'=>'return select_event();'),'#id'=>'event');
 
 		$form['events_select']['#options']=array('select_event'=>"Select Event");
-		$event_name=db_query("SELECT event_name FROM events");
+		$event_name=amazon_s3_get_buckets();
 		foreach($event_name as $event_name_value)
 		{
-			$event_title=$event_name_value->event_name;
+			$event_title=$event_name_value;
 			$form['events_select']['#options'][$event_title]=$event_title;
 		}
 
-  $form['box'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Upload File'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['box']['file'] = array(
-    '#type' => 'plupload',
-    '#title' => t('File to upload'),
-    '#description' => t('Pick a file to upload to the bucket %bucket.', array('%bucket' => $bucket)),
-    '#size' => 40,
-  );
-  $form['box']['acl'] = array(
-    '#type' => 'select',
-    '#title' => t('Access Control'),
-    '#options' => amazon_s3_acl_options(),
-  );
-  $form['box']['bucket'] = array('#type' => 'value', '#value' => $bucket);
-  $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload');
+  
+  if($bucket!='photographer')//for hide the drag and drop upload field when without select the event
+  {
+	  $form['box'] = array(
+	    '#type' => 'fieldset',
+	    '#title' => t('Upload File'),
+	    '#collapsible' => FALSE,
+	    '#collapsed' => FALSE,
+	  );
+	  $form['box']['file'] = array(
+	    '#type' => 'plupload',
+	    '#title' => t('File to upload'),
+	    '#description' => t('Pick a file to upload to the event %bucket.', array('%bucket' => $bucket)),
+	    '#size' => 40,
+	  );
+	/*
+	  $form['box']['acl'] = array(
+	    '#type' => 'select',
+	    '#title' => t('Access Control'),
+	    '#options' => amazon_s3_acl_options(),
+	  );
+	*/
+	  $form['box']['bucket'] = array('#type' => 'value', '#value' => $bucket);
+	  $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload');
+  }
   return $form;
 }
 
@@ -525,7 +614,7 @@ function amazon_s3_file_upload_form_photographer_submit($form, &$form_state) {
 		  $bucket = $form_state['values']['bucket'];
 		  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];//$upload_temp_filepath = $_FILES['files']['tmp_name']['file'];
 		  $object_filename = $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
-		  $acl = $form_state['values']['acl'];
+		  $acl = 'public-read';//$form_state['values']['acl'];
 		  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
 		  
 		  if ($success) {
@@ -550,27 +639,34 @@ function amazon_s3_file_upload_form_photographer_submit($form, &$form_state) {
 
 //for upload the extract the zip file by reource 2
 function amazon_s3_file_upload_form1_photographer($form, &$form_state, $bucket) {
+
+
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
-  $form['box1'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Upload Zip File'),
-    '#collapsible' => TRUE,
-    '#collapsed' => TRUE,
-  );
-  $form['box1']['file1'] = array(
-    '#type' => 'file',
-    '#title' => t('File to upload'),
-    '#description' => t('Pick a zip file to upload to the bucket %bucket.', array('%bucket' => $bucket)),
-    '#size' => 40,
-  );
-  $form['box1']['acl1'] = array(
-    '#type' => 'select',
-    '#title' => t('Access Control'),
-    '#options' => amazon_s3_acl_options(),
-  ); 
-  $form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
-  $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload');
+   if($bucket!='photographer')//for hide the zip file upload field when without select the event
+  {
+	  $form['box1'] = array(
+	    '#type' => 'fieldset',
+	    '#title' => t('Upload Zip File'),
+	    '#collapsible' => FALSE,
+	    '#collapsed' => FALSE,
+	  );
+	  $form['box1']['file1'] = array(
+	    '#type' => 'file',
+	    '#title' => t('File to upload'),
+	    '#description' => t('Pick a zip file to upload to the event %bucket.', array('%bucket' => $bucket)),
+	    '#size' => 40,
+	  );
+	/*
+	  $form['box1']['acl1'] = array(
+	    '#type' => 'select',
+	    '#title' => t('Access Control'),
+	    '#options' => amazon_s3_acl_options(),
+	  ); 
+	*/
+	  $form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
+	  $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload');
+  }
   return $form;
 }
 //submit function for zip file upload and extraction by resource 2
@@ -584,7 +680,7 @@ function amazon_s3_file_upload_form1_photographer_submit($form, &$form_state) {
 
 	$type = $_FILES["files"]["type"]["file1"];
  	
-	$acl=$form['box1']['acl1']['#value'];
+	$acl='public-read';//$form['box1']['acl1']['#value'];
 	$bucket=$form_state['build_info']['args']['0'];
 
 	$name = explode(".", $filename);
@@ -711,17 +807,18 @@ function amazon_s3_config_form_submit($form, &$form_state) {
 
 function amazon_s3_view_buckets() {
   $bucket_names = amazon_s3_get_buckets();
+
   $buckets = array();
   foreach ($bucket_names as $bucket_name) {
     $buckets[] = array(
       'name' => $bucket_name,
       'view_objects' => l('View Objects', "admin/structure/amazon-s3/bucket/$bucket_name"),
-      'delete' => l('Delete', "admin/structure/amazon-s3/bucket/$bucket_name/delete"),
+     // 'delete' => l('Delete', "admin/structure/amazon-s3/bucket/$bucket_name/delete"), //hided by resource 2 for hide option delete the bucket
     );
   }
 
 
-  $table = theme('table', array('header' => array('Name', 'View Objects', 'Delete'), 'rows' => $buckets));
+  $table = theme('table', array('header' => array('Name', 'View Objects'), 'rows' => $buckets));//resource 2 array('Name', 'View Objects', 'Delete')
   $bucket_create_form = drupal_render(drupal_get_form('amazon_s3_bucket_create_form'));
   return $bucket_create_form . $table;
 }
@@ -736,16 +833,25 @@ function amazon_s3_view_objects($bucket) {
     $object['time'] = format_date($object['time'], 'custom', "F j, Y, g:i a");
     $object['size'] = format_size($object['size']);
     $object['download'] = l('Download', amazon_s3_get_object_url($bucket, $object['name']));
-    $object['delete'] = l('Delete', "admin/structure/amazon-s3/bucket/$bucket/{$object['name']}/delete");
+   // $object['delete'] = l('Delete', "admin/structure/amazon-s3/bucket/$bucket/{$object['name']}/delete"); //by resource 2
   }
-  $header = array('Name', 'Time', 'Size', 'Hash', 'Download', 'Delete');
-  $table = theme('table', array('header' => $header, 'rows' => $objects));
+  $header = array('Name', 'Time', 'Size', 'Hash', 'Download');//remove delete header by resource 2
+
+  if(count($objects)!='0')
+  {
+  	$table = theme('table', array('header' => $header, 'rows' => $objects));
+  }
   $file_upload_form = drupal_render(drupal_get_form('amazon_s3_file_upload_form', $bucket));
   
   $file_upload_form1 = drupal_render(drupal_get_form('amazon_s3_file_upload_form1', $bucket));//by resource 2 for zip file upload function
 
 
-  return $file_upload_form .$file_upload_form1. $table;
+$style="<table border='0'><tr><td>$file_upload_form</td><td>$file_upload_form1</td></tr></table>";
+
+  if(count($objects)!='0')
+ 	 return $style;//hide the table by resource 2in the file uploading page return $file_upload_form .$file_upload_form1.$table;
+  else
+	return $style;
 }
 
 
@@ -756,7 +862,6 @@ function amazon_s3_view_objects_photographer($bucket) {
   $s3 = amazon_s3_get_instance();
   $objects = $s3->getBucket($bucket, NULL, NULL, 100);
 
-
   foreach ($objects as &$object) {
     $object['time'] = format_date($object['time'], 'custom', "F j, Y, g:i a");
     $object['size'] = format_size($object['size']);
@@ -764,15 +869,164 @@ function amazon_s3_view_objects_photographer($bucket) {
     $object['delete'] = l('Delete', "admin/structure/amazon-s3/bucket/$bucket/{$object['name']}/delete");
   }
   $header = array('Name', 'Time', 'Size', 'Hash', 'Download', 'Delete');
-  $table = theme('table', array('header' => $header, 'rows' => $objects));
+  if(count($objects)!='0')
+  {
+  	$table = theme('table', array('header' => $header, 'rows' => $objects));
+  }
   $file_upload_form = drupal_render(drupal_get_form('amazon_s3_file_upload_form_photographer', $bucket));
   
   $file_upload_form1 = drupal_render(drupal_get_form('amazon_s3_file_upload_form1_photographer', $bucket));//by resource 2 for zip file upload function
 
 
-  return $file_upload_form .$file_upload_form1. $table;
+  if(count($objects)!='0')
+ 	 return $file_upload_form .$file_upload_form1;//hide the object image name table by resource 2  return $file_upload_form .$file_upload_form1. $table
+  else
+	return $file_upload_form .$file_upload_form1;
 }
 
+
+
+
+
+
+
+
+function select_event_runner($form, &$form_state, $bucket)
+{
+
+
+	$form['setfield']=array(
+	    '#type' => 'fieldset',
+	    '#title' => t(''),
+	    '#collapsible' => FALSE,
+	    '#collapsed' => FALSE,
+	    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
+	    
+	  );
+
+	//select event in the runner side
+	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>'Get My Photos','#attributes'=>array('onchange'=>'return select_event_runner();'),'#id'=>'event_runner');
+
+	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
+	$event_name=amazon_s3_get_buckets();
+	foreach($event_name as $event_name_value)
+	{
+		$event_title=$event_name_value;
+		$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
+	}
+	if(isset($bucket) && ($bucket!=''))
+	{
+		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
+	}
+	
+	//text field for get the runner number
+	$form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#value'=>'My Number','#attributes'=>array('onclick'=>'return my_number_hide();','onblur'=>'my_number_show();'),'#prefix'=>"<div style='float:left'></div>");
+
+  	//submit get my photo in the runner side
+	$form['setfield']['search']=array('#type'=>'submit','#value'=>'search','#prefix'=>"<div style='float:right;margin-left:15px;'></div>");
+
+
+
+	//for sell the photos in the runner side
+	$form['sellfield']=array(
+	    '#type' => 'fieldset',
+	    '#title' => t(''),
+	    '#collapsible' => FALSE,
+	    '#collapsed' => FALSE,
+	    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
+	    
+	  );
+
+	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'Sell My Photos','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
+
+	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
+	$event_name_sell=amazon_s3_get_buckets();
+	foreach($event_name_sell as $event_name_value_sell)
+	{
+		$event_title_sell=$event_name_value_sell;
+		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
+	}
+/*
+	if(isset($bucket) && ($bucket!=''))
+	{
+		$form['sellfield']['events_select_runner']['#default_value']=$form['sellfield']['events_select_runner']['#options'][$bucket];
+	}
+*/
+	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'Get Started');
+	
+
+	
+
+	return $form;
+
+}
+
+
+
+
+function amozon_s3_show_images($bucket)
+{
+
+	
+	
+	$s3 = amazon_s3_get_instance();
+	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
+
+	
+	foreach ($objects as &$object) {
+	$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
+	}
+
+	$table='<table>';
+	for($i=0;$i<count($objects);$i+=5)
+	{
+
+		$table.='<tr>';
+		if(isset($temp_link[$i]) && ($temp_link[$i]!=''))
+	 		$table.="<td><img src='$temp_link[$i]' alt='image' width=100px height=100px  />	</td>";
+
+		if(isset($temp_link[$i+1]) && ($temp_link[$i+1]!=''))
+		{
+			$j=$i+1;
+			$table.="<td><img src='$temp_link[$j]' alt='image' width=100px height=100px  />	</td>";
+
+		}
+
+		if(isset($temp_link[$i+2]) && ($temp_link[$i+2]!=''))
+		{
+			$k=$i+2;
+			$table.="<td><img src='$temp_link[$k]' alt='image' width=100px height=100px  />	</td>";
+		}
+	
+		if(isset($temp_link[$i+3]) && ($temp_link[$i+3]!=''))
+		{
+			$m=$i+3;
+			$table.="<td><img src='$temp_link[$m]' alt='image' width=100px height=100px  onmouseover='showimg(this.src,this.id,this.name);'  id='imageshow$m' name='original$m' /><img src='' width=200px height=200px id='original$m' onmouseout='hideimg(this.src,this.id,this.name)' name='imageshow$m' style='display:none'/>
+	</td>";
+		}
+	
+	
+		if(isset($temp_link[$i+4]) && ($temp_link[$i+4]!=''))
+		{
+			$n=$i+4;
+			$table.="<td><img src='$temp_link[$n]' alt='image' width=100px height=100px  onmouseover='showimg(this.src,this.id,this.name);'  id='imageshow$n' name='original$n' /><img src='' width=200px height=200px id='original$n' onmouseout='hideimg(this.src,this.id,this.name)' name='imageshow$n' style='display:none'/>
+	</td>";
+		}
+			
+
+		$table.="</tr>";
+	
+	}
+$table.='</table>';
+
+$select_event_runner = drupal_render(drupal_get_form('select_event_runner', $bucket));
+
+$style="<span style='float:left'>$select_event_runner</span><span style='float:left'>$table</span>";
+
+
+return $style;
+
+}
 
 
 
