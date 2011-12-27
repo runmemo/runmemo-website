@@ -14,6 +14,8 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 {
 
 
+
+
 	if($form['#form_id']=='amazon_s3_file_upload_form')
 	{
 
@@ -23,7 +25,7 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 		$form['box']['file']['#type']='plupload';
 		
 		//change the already existing button value upload->start upload
-		$form['box']['upload']['#value']='Start upload';
+		$form['box']['upload']['#value']='Upload';
 
 
 		
@@ -31,7 +33,7 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 
 	}
 
-
+	//registration page
 	if($form['#form_id']=='user_register_form')
 	{
 	
@@ -40,24 +42,48 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 		$base_path=base_path().'sites/default/help_icon.gif';
 
 		//create the select role radio buttons in the create account page
+		/*
 		$form['field_select_user']=array('#type' => 'radios','#title'=> 'Select Role','#id'=> 'role','#attributes'=>array('onclick'=>'user_photographer()'),'#options'=>array('runner'=>'Runner','photographer'=>'Photographer'),'#weight'=>'4','#required'=>'1');
+		*/		
+	
+		//$form['field_select_user2']=array('#markup'=>"<div id='paypal_title' style='color:black'>Paypal Account Id</div>",'#weight'=>'5');
 
-		$form['field_select_user2']=array('#markup'=>"<div id='paypal_title' style='color:black'>Paypal Account Id</div>",'#weight'=>'5');
+                $form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
 
-                $form['field_select_user1']=array('#type'=>'textfield','#title'=> '','#id'=> 'paypal_account_id','#weight'=>'6');
-
-		$form['field_select_user3']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
-
-
-		/*echo "<pre>";
-		print_r($form);
-		exit;*/
+		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
 
 
 		//add the form submit function for insert the user role in the user table
                 $form['#submit']['1']= 'user_role_insertion'; 
 		//$form['#validate']['4'] = 'my_mod_my_form_id_validate';
 
+
+	}
+
+	//profile edit page
+	
+	if($form['#form_id']=='user_profile_form')
+	{
+
+		global $user;
+		$uid=$user->uid;
+		
+
+		$base_path=base_path().'sites/default/help_icon.gif';
+
+		$form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
+
+		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
+
+		$paypal_id=db_query("SELECT paypal_account_id FROM photographer_account WHERE uid=$uid");
+		foreach($paypal_id as $paypal_id_value)
+		{
+			$paypal_ac_id=$paypal_id_value->paypal_account_id;
+			$form['photo_paypal_id']['#value']=$paypal_ac_id;
+		}
+
+		
+		$form['#submit'][1]='edit_user_profile_submit';
 
 	}
 }
@@ -67,63 +93,66 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 function user_role_insertion($form,&$from_state)
 {
 
-	if(isset($form['#user']->field_select_user) && ($form['#user']->field_select_user=='runner'))
+	$user_role=db_query("SELECT rid FROM role WHERE name='Photographer'");
+	foreach($user_role as $user_role_value)
 	{
-		$user_role=db_query("SELECT rid FROM role WHERE name='Runner'");
-		foreach($user_role as $user_role_value)
-		{
-			$role_id=$user_role_value->rid;
-		}
-		$uid=$form['#user']->uid;
-		db_query("Update users SET role=$role_id WHERE uid=$uid");
+		$role_id=$user_role_value->rid;
+	}
+	$uid=$form['#user']->uid;
+	db_query("Update users SET role=$role_id WHERE uid=$uid");
+	
+	//insert the paypal account id in the photographer account table
+	if(isset($form['#user']->photo_paypal_id) && ($form['#user']->photo_paypal_id != ''))
+	{
+		$photographer_account_id=$form['#user']->photo_paypal_id;
+		
+		db_insert('photographer_account')
+				      	->fields(array(
+					'paypal_account_id' => $photographer_account_id,
+					'uid' => $uid,
+					))->execute();
 
 		db_insert('users_roles')
-					      	->fields(array(
-						'uid' => $uid,
-						'rid' => $role_id,
-						))->execute();
-		drupal_goto('user');
+				      	->fields(array(
+					'uid' => $uid,
+					'rid' => $role_id,
+					))->execute();
+		//drupal_goto('<front>');
 	}
+}
 
-	if(isset($form['#user']->field_select_user) && ($form['#user']->field_select_user=='photographer'))
+//submit function edit user profile page
+function edit_user_profile_submit($form,&$from_state)
+{
+	
+	
+	$uid=$form['#user']->uid;
+	$paypal_id=$_POST['photo_paypal_id'];
+
+	$paypal_uid=db_query("SELECT uid FROM photographer_account ");
+	foreach($paypal_uid as $paypal_uid_value)
 	{
-		$user_role=db_query("SELECT rid FROM role WHERE name='Photographer'");
-		foreach($user_role as $user_role_value)
-		{
-			$role_id=$user_role_value->rid;
-		}
-		$uid=$form['#user']->uid;
-		db_query("Update users SET role=$role_id WHERE uid=$uid");
+		$paypal_uid_id[]=$paypal_uid_value->uid;
 		
-		//insert the paypal account id in the photographer account table
-		if(isset($form['#user']->field_select_user1) && ($form['#user']->field_select_user1 != ''))
-		{
-			$photographer_account_id=$form['#user']->field_select_user1;
-			
-			db_insert('photographer_account')
-					      	->fields(array(
-						'paypal_account_id' => $photographer_account_id,
-						'uid' => $uid,
-						))->execute();
-
-			db_insert('users_roles')
-					      	->fields(array(
-						'uid' => $uid,
-						'rid' => $role_id,
-						))->execute();
-			drupal_goto('<front>');
-		}
 	}
 
-}
+	if(in_array($uid,$paypal_uid_id))
+	{
+		db_query("UPDATE photographer_account SET paypal_account_id=$paypal_id WHERE uid=$uid");
 
-/*
-function my_mod_my_form_id_validate($form, &$form_state) {
-
-
-	if ($form['field_select_user'] == '') {
-	form_set_error($form['field_select_user'], t('Custom error message'));
 	}
+
+	if(!in_array($uid,$paypal_uid_id))
+	{
+
+		db_insert('photographer_account')
+				      	->fields(array(
+					'paypal_account_id' => $paypal_id,
+					'uid' => $uid,
+					))->execute();
+
+	}
+	
 }
-*/
+
 
