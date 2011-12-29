@@ -10,6 +10,8 @@ function amazon_s3_init() {
 
   drupal_add_js(drupal_get_path("module","runmemo")."/runmemo.js");
 
+  drupal_add_js(drupal_get_path("module","amazon_s3")."/progress_bar.js");
+
 }
 
 /**
@@ -61,6 +63,9 @@ function amazon_s3_menu() {
     'type' => MENU_CALLBACK,
   );
 
+
+/*
+
   //by resource 2 for photographer uploading image
   $items['admin/structure/amazon-s3/bucket/photographer'] = array(
     'title' => 'Upload Your Photos By Selecting Event Name',
@@ -89,6 +94,8 @@ function amazon_s3_menu() {
     'type' => MENU_CALLBACK,
   );
 
+
+
   //by resource 2 for runner
   $items['runner'] = array(
     'title' => 'Photo Gallery',
@@ -98,6 +105,8 @@ function amazon_s3_menu() {
     'access arguments' => array('access_runner'),
     'type' => MENU_CALLBACK,
   );
+
+*/
   
   return $items;
 }
@@ -115,18 +124,20 @@ function amazon_s3_permission() {
       'restrict access' => TRUE,
     ),
 
+/*
     'access_photographer' => array(
       'title' => t('Access photographer'),
       'description' => t('Access photographer'),
       'restrict access' => TRUE,
     ),
 
+
     'access_runner' => array(
       'title' => t('Access runner'),
       'description' => t('Access runner'),
       'restrict access' => TRUE,
     ),
-
+*/
    
 
 
@@ -338,7 +349,9 @@ function amazon_s3_file_upload_form($form, &$form_state, $bucket) {
 
 function amazon_s3_file_upload_form_submit($form, &$form_state) {
 //resource 2
+  global $user;
 
+  $uid=$user->uid;
 
   $s3 = amazon_s3_get_instance();
 
@@ -348,10 +361,80 @@ function amazon_s3_file_upload_form_submit($form, &$form_state) {
 	  $bucket = $form_state['values']['bucket'];
 	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];//$upload_temp_filepath = $_FILES['files']['tmp_name']['file'];
 	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
+
+	 // $object_filename = $uid.'::'.$object_filename_original;
+
 	  $acl = 'public-read';//$form_state['values']['acl'];
+
+
 	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
 	  
 	  if ($success) {
+
+/*
+		////////////////////////////////////////////////////////////////////////////
+	
+		//explode the temprory file with
+		$temp_file_path=explode('//',$upload_temp_filepath);
+		$temp_file_extension=$temp_file_path['1'];	
+
+
+		//explode the temprory file name
+		$temp_file_name=explode('.',$temp_file_extension);
+
+		//expload the original file name
+		$original_file_name=explode('.',$object_filename);
+
+
+		//saved file name in the files folder
+		
+		$saved_file_name=$temp_file_name[0].'.'.$original_file_name[1];
+
+		$old = '/tmp/'.$temp_file_extension;
+
+		
+		$new = '/var/www/runmemo_test/sites/default/files/styles/thumbnail/public/'.$saved_file_name;
+		copy($old, $new);
+
+		
+	
+	//node 
+
+		$node = new stdClass(); // We create a new node object
+		$node->type = "product"; // Or any other content type you want
+		$node->title = $object_filename;
+		$node->language = LANGUAGE_NONE; // Or any language code if Locale module is enabled. More on this below *
+		$node->uid = $uid; // Or any id you wish
+		node_object_prepare($node); // Set some default values.
+
+		$node->body[$node->language][0]['value'] = 'This is a body text';
+		$node->body[$node->language][0]['summary'] = 'Here goes a summary';
+		$node->body[$node->language][0]['format'] = 'filtered_html'; 
+
+
+		$node->sell_price ='75.0000';
+
+		
+
+		$filepath = drupal_realpath($new);
+		  $file = (object) array(
+		    'uid' => 1,
+		    'uri' => $filepath,
+		    'filemime' => file_get_mimetype($filepath),
+		    'status' => 1,
+		  );
+		  $file = file_copy($file, 'public://');
+		  $node->field_product_image[$node->language][0] = (array)$file;
+
+		$node = node_submit($node); // Prepare node for a submit
+		node_save($node);
+
+
+*/
+		/////////////////////////////////////////////////////////////////////////////
+
+
+
 	    $message = t('Succesfully uploaded the file %filename to the bucket %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
 	    drupal_set_message($message);
 	  } else {
@@ -389,14 +472,15 @@ function amazon_s3_file_upload_form1($form, &$form_state, $bucket) {
   ); 
 */
   $form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
-  $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload');
+  $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>"return CallJS('Demo()')"));
+  $form['box1']['progress']=array('#markup'=>"<div id='progress' style='display:none;'></div>");
   return $form;
 }
-//submit function for zip file upload and extraction by resource 2
 //submit function for zip file upload and extraction by resource 2
 function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 
 
+	
 	$s3 = amazon_s3_get_instance();
 	$filename = $_FILES["files"]["name"]["file1"];
 	$source = $_FILES["files"]["tmp_name"]["file1"];
@@ -406,6 +490,7 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
  	
 	$acl='public-read';//$form['box1']['acl1']['#value'];
 	$bucket=$form_state['build_info']['args']['0'];
+
 
 	$name = explode(".", $filename);
 	$accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
@@ -456,7 +541,6 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 						{
 							$name_path=explode('.',$file);
 
-							
 							if(($name_path[1]=='jpg') || ($name_path[1]=='jpeg') )
 							{
 								if($name_path[0]!='')
@@ -468,6 +552,8 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 								if(($file_path1!="$base_path/$name[0]/$name[0]/..jpeg") && ($file_path1!="$base_path/$name[0]/$name[0]/.jpeg") && ($file_path1!=''))
 				                                {
 									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
+								
+									
 
 									unlink("$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
 				                                }
@@ -483,7 +569,6 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 							}
 
 						  }
-
 						rmdir("$base_path/".$name[0].'/'.$name[0]);
 						rmdir("$base_path/".$name[0]);
 						closedir($handle);
@@ -553,6 +638,7 @@ function amazon_s3_file_upload_form1_submit($form, &$form_state) {
 	}
 
 }
+
 
 ////////////////////////////////////////////////// photographer page
 
@@ -812,13 +898,13 @@ function amazon_s3_view_buckets() {
   foreach ($bucket_names as $bucket_name) {
     $buckets[] = array(
       'name' => $bucket_name,
-      'view_objects' => l('View Objects', "admin/structure/amazon-s3/bucket/$bucket_name"),
+      //'view_objects' => l('View Objects', "admin/structure/amazon-s3/bucket/$bucket_name"),
      // 'delete' => l('Delete', "admin/structure/amazon-s3/bucket/$bucket_name/delete"), //hided by resource 2 for hide option delete the bucket
     );
   }
 
 
-  $table = theme('table', array('header' => array('Name', 'View Objects'), 'rows' => $buckets));//resource 2 array('Name', 'View Objects', 'Delete')
+  $table = theme('table', array('header' => array('Name'), 'rows' => $buckets));//resource 2 array('Name', 'View Objects', 'Delete')
   $bucket_create_form = drupal_render(drupal_get_form('amazon_s3_bucket_create_form'));
   return $bucket_create_form . $table;
 }
@@ -888,7 +974,7 @@ function amazon_s3_view_objects_photographer($bucket) {
 
 
 
-
+/*
 
 
 function select_event_runner($form, &$form_state, $bucket)
@@ -946,12 +1032,7 @@ function select_event_runner($form, &$form_state, $bucket)
 		$event_title_sell=$event_name_value_sell;
 		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
 	}
-/*
-	if(isset($bucket) && ($bucket!=''))
-	{
-		$form['sellfield']['events_select_runner']['#default_value']=$form['sellfield']['events_select_runner']['#options'][$bucket];
-	}
-*/
+
 	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'Get Started');
 	
 
@@ -1028,7 +1109,7 @@ return $style;
 
 }
 
-
+*/
 
 
 
