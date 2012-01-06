@@ -33,6 +33,35 @@ function runmemo_menu()
 			    'type' => MENU_CALLBACK,
 			  );
 
+	//for confirmation code page when user registration finished
+	$items['confirm/user/%']=array(
+			    'title' => 'Confirmation Code',
+			    'description' => t('Verify the user confirmation code'),
+			    'page callback' => 'confirmation_code_page',
+			    'page arguments' => array(2),
+			    'access arguments' => array('confirmation_code'),
+			    'type' => MENU_CALLBACK,
+			  );
+
+
+	$items['confirm/user/%/%/%']=array(
+			    'title' => '',
+			    'description' => t('Verify the user confirmation link'),
+			    'page callback' => 'confirmation_link',
+			    'page arguments' => array(2),
+			    'access arguments' => array('confirmation_link'),
+			    'type' => MENU_CALLBACK,
+			  );
+
+
+	$items['create_event']=array(
+			    'title' => 'Create Event',
+			    'description' => t('Create event link'),
+			    'page callback' => 'create_event',
+			    'page arguments' => array(0),
+			    'access arguments' => array('create_event_access'),
+			    'type' => MENU_CALLBACK,
+			  );
 
 
 	return $items;
@@ -53,6 +82,26 @@ function runmemo_permission()
 			    'access_photographer' => array(
 			      'title' => t('Access photographer'),
 			      'description' => t('Access photographer'),
+			      'restrict access' => TRUE,
+			    ),
+
+			   'confirmation_code' => array(
+			      'title' => t('Confirmation to Login'),
+			      'description' => t('Login using the confirmation code sent to your mail id'),
+			      'restrict access' => TRUE,
+			    ),
+
+
+			    'confirmation_link' => array(
+			      'title' => t('Confirmation to activate account'),
+			      'description' => t('Activte account using the confirmation link sent to your mail id'),
+			      'restrict access' => TRUE,
+			    ),
+
+
+			   'create_event_access' => array(
+			      'title' => t('Create event'),
+			      'description' => t('set permission for create the event'),
 			      'restrict access' => TRUE,
 			    ),
 
@@ -85,13 +134,34 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>'Get My Photos','#id'=>'event_runner');
 
 	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name=amazon_s3_get_buckets();
-	foreach($event_name as $event_name_value)
+
+	//for check the whether events table empty or not
+	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
+
+	foreach($no_of_row as $no_of_row_value)
 	{
-		$event_title=$event_name_value;
-		if($event_title!='home_page')
-			$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
+
+		$no_of_row_present=$no_of_row_value->row;
+
 	}
+
+	if($no_of_row_present!='0')
+	{
+
+		$event_name=db_query("SELECT eid,event_name FROM events");
+		foreach($event_name as $event_name_value)
+		{
+			$event_title_eid=$event_name_value->eid;
+
+			$event_title=$event_name_value->event_name;
+			if($event_title!='home_page')
+				$form['setfield']['events_select_runner']['#options'][$event_title_eid]=$event_title;
+		}
+
+	}
+
+
+	
 	if(isset($bucket) && ($bucket!='') && ($bucket=='home_page'))
 	{
 		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options']['select_event'];
@@ -99,7 +169,9 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 	
 	else
 	{
-		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
+		$default=arg(2);
+
+		$form['setfield']['events_select_runner']['#default_value']=$default;
 	}
 
 
@@ -118,12 +190,11 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 function select_event_runner_get_photos_submit($form,&$form_state)
 {
 
-	$bucket=$form['setfield']['events_select_runner']['#value'];
+	$bucket='runmemo';
 	
-	
+	$event_id=$form['setfield']['events_select_runner']['#value'];
 
-
-	 $form_state['redirect'] = "runner/".$bucket;
+	 $form_state['redirect'] = "runner/".$bucket.'/'.$event_id;
 
 }
 
@@ -150,12 +221,37 @@ function select_event_runner_sell_photos($form, &$form_state, $bucket)
 	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'Sell My Photos','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
 
 	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name_sell=amazon_s3_get_buckets();
-	foreach($event_name_sell as $event_name_value_sell)
+
+
+	//for check whether events table empty or not and select box option from db
+	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
+
+	foreach($no_of_row as $no_of_row_value)
 	{
-		$event_title_sell=$event_name_value_sell;
-		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
+
+		$no_of_row_present=$no_of_row_value->row;
+
 	}
+
+	if($no_of_row_present!='0')
+	{
+
+		$event_name=db_query("SELECT eid,event_name FROM events");
+		foreach($event_name as $event_name_value)
+		{
+			$event_title_eid=$event_name_value->eid;
+
+			$event_title=$event_name_value->event_name;
+			if($event_title!='home_page')
+				$form['sellfield']['events_select_runner']['#options'][$event_title_eid]=$event_title;
+		}
+
+	}
+
+
+
+
+
 /*
 	if(isset($bucket) && ($bucket!=''))
 	{
@@ -188,14 +284,30 @@ function amozon_s3_show_images($bucket)
 
 	}
 
+	$event_id=arg(2);
 
-	$s3 = amazon_s3_get_instance();
-	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
+	if($event_id!='')
+	{
+
+		$s3 = amazon_s3_get_instance();
+		$objects = $s3->getBucket($bucket, $event_id, NULL, 100);
+
+	}
+
+	else
+	{
+		$s3 = amazon_s3_get_instance();
+		$objects = $s3->getBucket($bucket, NULL, NULL, 100);
+	}
 
 	
 	foreach ($objects as &$object) {
-	$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
+	
+	//for check the folder with empty file name in the amazon bucket
+	if($object['name']!=$event_id.'/')
+		$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
 	}
+
 
 	$table='<table>';
 	for($i=0;$i<count($objects);$i+=5)
@@ -268,14 +380,31 @@ function select_event_function($form, &$form_state)
 	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'));
 
 	$form['events_select']['#options']=array('select_event'=>"Select Event");
-	$event_name=amazon_s3_get_buckets();
-	foreach($event_name as $event_name_value)
+
+	//for check the whether events table empty or not
+	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
+
+	foreach($no_of_row as $no_of_row_value)
 	{
-		$event_title=$event_name_value;
-		if($event_title!='home_page')
-			$form['events_select']['#options'][$event_title]=$event_title;
+
+		$no_of_row_present=$no_of_row_value->row;
+
 	}
 
+	if($no_of_row_present!='0')
+	{
+
+		$event_name=db_query("SELECT eid,event_name FROM events");
+		foreach($event_name as $event_name_value)
+		{
+			$event_title_eid=$event_name_value->eid;
+
+			$event_title=$event_name_value->event_name;
+			if($event_title!='home_page')
+				$form['events_select']['#options'][$event_title_eid]=$event_title;
+		}
+
+	}
 
 	return $form;
 
@@ -338,7 +467,6 @@ function photographer_drag_and_drop_form($form, &$form_state) {
 function photographer_drag_and_drop_form_submit($form, &$form_state) {
 
 
-
 //resource 2
   global $user;
 
@@ -349,9 +477,14 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //for loop for count the uploaded files resource 2
   for($i=0;$i<count($form['box']['file']['#value']);$i++)
   {
-	  $bucket = $form['box']['selected_event']['#value'];
+	  $bucket = 'runmemo';
+
+
+	  $event_id=$form['box']['selected_event']['#value'];
+
+
 	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];//$upload_temp_filepath = $_FILES['files']['tmp_name']['file'];
-	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
+	  $object_filename =$event_id.'/'.$uid.'-'. $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
 
 	  //$object_filename = $uid.'::'.$object_filename_original;
 
@@ -360,6 +493,8 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 
 	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
 	  
+
+
 	  if ($success) {
 
 /*
@@ -387,7 +522,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 		$new = '/var/www/runmemo_test/sites/default/files/styles/thumbnail/public/'.$saved_file_name;
 		copy($old, $new);
 
-		
+*/	
 	
 	//node 
 
@@ -406,7 +541,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 		$node->sell_price ='75.0000';
 
 		
-
+/*
 		$filepath = drupal_realpath($new);
 		  $file = (object) array(
 		    'uid' => 1,
@@ -417,14 +552,35 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 		  $file = file_copy($file, 'public://');
 		  $node->field_product_image[$node->language][0] = (array)$file;
 
+*/
+
 		$node = node_submit($node); // Prepare node for a submit
 		node_save($node);
 
 
+		//for store the detail of the image url in the events with node table
+		$max_nid=db_query("SELECT MAX(nid) as nid FROM node");
 
+		foreach($max_nid as $max_nid_value)
+		{
+
+			$nid=$max_nid_value->nid;
+
+		}
+
+		$img_url= amazon_s3_get_object_url($bucket, $object_filename);
+
+
+		db_insert('events_with_nid')
+				      	->fields(array(
+					'eid' => $event_id,
+					'nid' => $nid,
+					'img_url'=> $img_url,
+					))->execute();
+
+		
 		/////////////////////////////////////////////////////////////////////////////
 
-*/
 
 	    $message = t('Succesfully uploaded the file %filename to the bucket %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
 	    drupal_set_message($message);
@@ -462,6 +618,8 @@ function photographer_zip_file_form($form, &$form_state) {
     '#options' => amazon_s3_acl_options(),
   ); 
 */
+
+
   //$form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
   $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>"return CallJS('Demo()')"));
   $form['box1']['progress']=array('#markup'=>"<div id='progress' style='display:none;'></div>");//for progress bar
@@ -472,6 +630,10 @@ function photographer_zip_file_form($form, &$form_state) {
 function photographer_zip_file_form_submit($form, &$form_state) {
 
 
+	global $user;
+
+	$uid=$user->uid;
+
 	$s3 = amazon_s3_get_instance();
 	$filename = $_FILES["files"]["name"]["file1"];
 	$source = $_FILES["files"]["tmp_name"]["file1"];
@@ -480,8 +642,9 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 	$type = $_FILES["files"]["type"]["file1"];
  	
 	$acl='public-read';//$form['box1']['acl1']['#value'];
-	$bucket=$form['box1']['selected_event']['#value'];
+	$bucket='runmemo';
 
+	$event_id=$form['box1']['selected_event']['#value'];
 
 	$name = explode(".", $filename);
 	$accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
@@ -546,10 +709,7 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 
 								if(($file_path1!="$base_path/$name[0]/$name[0]/..jpeg") && ($file_path1!="$base_path/$name[0]/$name[0]/.jpeg") && ($file_path1!=''))
 				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
-								
-									
-
+									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $event_id.'/'.$uid.'-'.$file, $acl);
 									unlink("$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
 				                                }
 							}
@@ -595,7 +755,7 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 
 								if($file_path1!="$base_path/$name[0]/..jpeg" && $file_path1!="$base_path/$name[0]/.jpeg" && $file_path1!='')
 				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
+									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $event_id.'/'.$uid.'-'.$file, $acl);
 
 									unlink("$base_path/$name[0]/$name_path[0].jpeg");
 				                                }
@@ -652,13 +812,235 @@ function photographer_upload_photos() {
   $file_upload_form1 = drupal_render(drupal_get_form('photographer_zip_file_form'));//by resource 2 for zip file upload function
 
 
-  $style="<table style='display:none' id='upload_section' border='0'><tr><td>$file_upload_form</td><td>$file_upload_form1</td></tr></table>";
+  $style="<table style='display:none' id='upload_section' border='0'><tr><td width='450px'>$file_upload_form</td><td>$file_upload_form1</td></tr></table>";
 
 	return $select_event.$style;
 }
 
 
 ////////////////// * PHOTOGREPHER SECTION CLOSE * ///////////////////////////////////////
+
+
+
+
+/////////////////  * CONFIRMATION CODE SECTION OPEN * ////////////////////////////////////////
+
+
+function confirmation_code($form,&$form_state,$uid)
+{
+
+
+	$form=array();
+	$form['confirm_code']=array('#type'=>'textfield','#title'=>'Enter Your Confirmation Code','#size'=>'20','#required'=>'1','#description'=>'To activate your account please enter your confirmation code sent to your mail id');
+
+	$form['submit']=array('#type'=>'submit','#value'=>'submit');
+	return $form;
+
+}
+
+function confirmation_code_submit($form,&$form_state)
+{
+
+	
+	$uid = arg(2);
+
+	$confirm_code=$form['confirm_code']['#value'];
+
+	$get_confirmation_code=db_query("SELECT confirmation_code FROM users WHERE uid=$uid");
+
+	foreach($get_confirmation_code as $get_confirmation_code_value)
+	{
+
+		$confirm_code_from_db= $get_confirmation_code_value->confirmation_code;
+
+	}
+
+	if($confirm_code==$confirm_code_from_db)
+	{
+
+		db_query("UPDATE users SET status='1',confirmation_code='NULL' WHERE uid=$uid");
+	
+		drupal_set_message('Your account has been activated.You can login using your username and password');
+
+	}
+
+	else
+	{
+
+		drupal_set_message('Invalid confirmation code ','error');
+
+	}
+
+}
+
+
+
+
+
+function confirmation_code_page($uid)
+{
+
+	$confirmation_page=drupal_render(drupal_get_form('confirmation_code',$uid));
+
+	return $confirmation_page;
+}
+
+
+
+
+/////////////////  * CONFIRMATION CODE SECTION CLOSE * ////////////////////////////////////////
+
+
+//////////////// * CONFIRMATION LINK SECTION OPEN * /////////////////////////////////////////
+
+function confirmation_link($uid)
+{
+	
+	$confirmation_code=arg(3);
+
+
+	$get_confirmation_code=db_query("SELECT confirmation_code FROM users WHERE uid=$uid");
+
+	foreach($get_confirmation_code as $get_confirmation_code_value)
+	{
+
+		$confirm_code_from_db= $get_confirmation_code_value->confirmation_code;
+
+	}
+
+	if($confirmation_code==$confirm_code_from_db)
+	{
+
+		db_query("UPDATE users SET status='1',confirmation_code='NULL' WHERE uid=$uid");
+	
+		return drupal_set_message('Your account has been activated.You can login using your username and password');
+	}
+	
+	else
+	{
+
+		return drupal_set_message('Invalid confirmation link','error');
+	}
+
+}
+
+//////////////// * CONFIRMATION LINK SECTION CLOSED * /////////////////////////////////////////
+
+
+
+
+/////////////// * CREATE EVENT PAGE OPEN * ////////////////////////////////////////////////////
+
+
+//function for create the form for event creation page
+function create_event_form($form,&$form_state)
+{
+
+	$form=array();
+	
+	$form['event_name_text']=array('#type'=>'textfield','#title'=>'Create Event Name','#required'=>'1','#description'=>'Enter the event name');
+
+	$form['event_name_submit']= array('#type'=>'submit','#value'=>'Create');
+
+	return $form;
+}
+
+
+//submit function for the create event
+
+function create_event_form_submit($form,&$form_state)
+{
+
+
+	$event_name=$form['event_name_text']['#value'];
+
+
+	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
+
+	foreach($no_of_row as $no_of_row_value)
+	{
+
+		$no_of_row_present=$no_of_row_value->row;
+
+	}
+
+	if($no_of_row_present=='0')
+	{
+
+		db_insert('events')
+			      	->fields(array(
+				'event_name' => $event_name,
+				))->execute();
+
+		drupal_set_message('Event name was successfully created');
+	}
+
+	else
+	{
+
+		//for check the event name already created or not
+		$check_row_exist=db_query("SELECT COUNT(*) as row FROM events WHERE event_name='$event_name'");
+
+		foreach($check_row_exist as $check_row_exist_value)
+		{
+
+			$row_exist=$check_row_exist_value->row;
+
+		}
+
+		if($row_exist=='0')
+		{
+			db_insert('events')
+			      	->fields(array(
+				'event_name' => $event_name,
+				))->execute();
+
+			drupal_set_message('Event name was successfully created');
+		}
+
+		else
+		{
+
+			drupal_set_message('Your creating Event name is already exist.Please try again with other event name','error');
+
+		}
+
+	}
+	
+
+
+
+}
+
+//page load callback function
+function create_event()
+{
+
+
+	$create_event_page=drupal_render(drupal_get_form('create_event_form'));
+
+	return $create_event_page;
+}
+
+
+
+
+
+/////////////// * CREATE EVENT PAGE CLOSE * ////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -803,6 +1185,10 @@ function user_role_insertion($form,&$from_state)
 					))->execute();
 		//drupal_goto('<front>');
 	}
+
+	db_query("UPDATE users SET status='0' WHERE uid=$uid");
+	drupal_goto('confirm/user/'.$uid);
+
 }
 
 //submit function edit user profile page
@@ -837,6 +1223,11 @@ function edit_user_profile_submit($form,&$from_state)
 
 	}
 	
+
+	
+
+
+
 }
 
 
