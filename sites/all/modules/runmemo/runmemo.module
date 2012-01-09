@@ -1,4 +1,7 @@
 <?php
+/**
+ * Init function for adding the external file
+ */
 
 function runmemo_init()
 {
@@ -8,9 +11,11 @@ function runmemo_init()
 	drupal_add_css(drupal_get_path('module', 'runmemo') . '/runmemo.css');
 }
 
-
 ///////////////////////////////////////////////////////////
-
+/** 
+ * Create the hook menu for each page 
+ * by using this we can map to the related page
+ */
 function runmemo_menu()
 {
 	//url for runner
@@ -32,43 +37,14 @@ function runmemo_menu()
 			    'access arguments' => array('access_photographer'),
 			    'type' => MENU_CALLBACK,
 			  );
-
-	//for confirmation code page when user registration finished
-	$items['confirm/user/%']=array(
-			    'title' => 'Confirmation Code',
-			    'description' => t('Verify the user confirmation code'),
-			    'page callback' => 'confirmation_code_page',
-			    'page arguments' => array(2),
-			    'access arguments' => array('confirmation_code'),
-			    'type' => MENU_CALLBACK,
-			  );
-
-
-	$items['confirm/user/%/%/%']=array(
-			    'title' => '',
-			    'description' => t('Verify the user confirmation link'),
-			    'page callback' => 'confirmation_link',
-			    'page arguments' => array(2),
-			    'access arguments' => array('confirmation_link'),
-			    'type' => MENU_CALLBACK,
-			  );
-
-
-	$items['create_event']=array(
-			    'title' => 'Create Event',
-			    'description' => t('Create event link'),
-			    'page callback' => 'create_event',
-			    'page arguments' => array(0),
-			    'access arguments' => array('create_event_access'),
-			    'type' => MENU_CALLBACK,
-			  );
-
-
 	return $items;
 
 }
 
-
+/**
+ * Set the pemission for each url in the admin side
+ * so we can the restrict the particular page to accessed by the anonymouse user
+*/
 function runmemo_permission()
 {
 
@@ -84,39 +60,18 @@ function runmemo_permission()
 			      'description' => t('Access photographer'),
 			      'restrict access' => TRUE,
 			    ),
-
-			   'confirmation_code' => array(
-			      'title' => t('Confirmation to Login'),
-			      'description' => t('Login using the confirmation code sent to your mail id'),
-			      'restrict access' => TRUE,
-			    ),
-
-
-			    'confirmation_link' => array(
-			      'title' => t('Confirmation to activate account'),
-			      'description' => t('Activte account using the confirmation link sent to your mail id'),
-			      'restrict access' => TRUE,
-			    ),
-
-
-			   'create_event_access' => array(
-			      'title' => t('Create event'),
-			      'description' => t('set permission for create the event'),
-			      'restrict access' => TRUE,
-			    ),
-
-
 		     );
-
-
-
 }
 
 
 
 ////////////////// * RUNNER SECTION OPEN * ///////////////////////////////////////
 
-//created the form for runner page
+/**
+ * Created the form for runner page
+ * runner can search the photos by selecting the event name
+*/
+
 function select_event_runner_get_photos($form, &$form_state, $bucket)
 {
 
@@ -134,34 +89,13 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>'Get My Photos','#id'=>'event_runner');
 
 	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-
-	//for check the whether events table empty or not
-	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
-
-	foreach($no_of_row as $no_of_row_value)
+	$event_name=amazon_s3_get_buckets();
+	foreach($event_name as $event_name_value)
 	{
-
-		$no_of_row_present=$no_of_row_value->row;
-
+		$event_title=$event_name_value;
+		if($event_title!='home_page')
+			$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
 	}
-
-	if($no_of_row_present!='0')
-	{
-
-		$event_name=db_query("SELECT eid,event_name FROM events");
-		foreach($event_name as $event_name_value)
-		{
-			$event_title_eid=$event_name_value->eid;
-
-			$event_title=$event_name_value->event_name;
-			if($event_title!='home_page')
-				$form['setfield']['events_select_runner']['#options'][$event_title_eid]=$event_title;
-		}
-
-	}
-
-
-	
 	if(isset($bucket) && ($bucket!='') && ($bucket=='home_page'))
 	{
 		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options']['select_event'];
@@ -169,9 +103,7 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 	
 	else
 	{
-		$default=arg(2);
-
-		$form['setfield']['events_select_runner']['#default_value']=$default;
+		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
 	}
 
 
@@ -186,28 +118,22 @@ function select_event_runner_get_photos($form, &$form_state, $bucket)
 
 }
 
-
+/** 
+ * Function for runner photo search submit.
+ */
 function select_event_runner_get_photos_submit($form,&$form_state)
 {
 
-	$bucket='runmemo';
-	
-	$event_id=$form['setfield']['events_select_runner']['#value'];
-
-	 $form_state['redirect'] = "runner/".$bucket.'/'.$event_id;
+	$bucket=$form['setfield']['events_select_runner']['#value'];
+	$form_state['redirect'] = "runner/".$bucket;
 
 }
 
-
-
-
-
-
+/** 
+ * Function for buy the images
+ */
 function select_event_runner_sell_photos($form, &$form_state, $bucket)
 {
-
-
-
 	//for sell the photos in the runner side
 	$form['sellfield']=array(
 	    '#type' => 'fieldset',
@@ -221,94 +147,33 @@ function select_event_runner_sell_photos($form, &$form_state, $bucket)
 	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'Sell My Photos','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
 
 	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-
-
-	//for check whether events table empty or not and select box option from db
-	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
-
-	foreach($no_of_row as $no_of_row_value)
+	$event_name_sell=amazon_s3_get_buckets();
+	foreach($event_name_sell as $event_name_value_sell)
 	{
-
-		$no_of_row_present=$no_of_row_value->row;
-
+		$event_title_sell=$event_name_value_sell;
+		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
 	}
 
-	if($no_of_row_present!='0')
-	{
-
-		$event_name=db_query("SELECT eid,event_name FROM events");
-		foreach($event_name as $event_name_value)
-		{
-			$event_title_eid=$event_name_value->eid;
-
-			$event_title=$event_name_value->event_name;
-			if($event_title!='home_page')
-				$form['sellfield']['events_select_runner']['#options'][$event_title_eid]=$event_title;
-		}
-
-	}
-
-
-
-
-
-/*
-	if(isset($bucket) && ($bucket!=''))
-	{
-		$form['sellfield']['events_select_runner']['#default_value']=$form['sellfield']['events_select_runner']['#options'][$bucket];
-	}
-*/
 	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'Get Started');
 	
 	return $form;
-
-
-
 }
 
 
-
-
-
-
-
-//call back function for runner page
+/**
+ * Function for search the images by runner
+ */
 function amozon_s3_show_images($bucket)
 {
-
-	
 	if($bucket=='')
 	{
-
 		$bucket='home_page';
-
 	}
-
-	$event_id=arg(2);
-
-	if($event_id!='')
-	{
-
-		$s3 = amazon_s3_get_instance();
-		$objects = $s3->getBucket($bucket, $event_id, NULL, 100);
-
-	}
-
-	else
-	{
-		$s3 = amazon_s3_get_instance();
-		$objects = $s3->getBucket($bucket, NULL, NULL, 100);
-	}
-
-	
+	$s3 = amazon_s3_get_instance();
+	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
 	foreach ($objects as &$object) {
-	
-	//for check the folder with empty file name in the amazon bucket
-	if($object['name']!=$event_id.'/')
-		$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
+	$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
 	}
-
-
 	$table='<table>';
 	for($i=0;$i<count($objects);$i+=5)
 	{
@@ -358,9 +223,7 @@ function amozon_s3_show_images($bucket)
 
 	$style="<span style='float:left'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span><span style='float:left'>$table</span>";
 
-
 	return $style;
-
 }
 
 
@@ -369,64 +232,15 @@ function amozon_s3_show_images($bucket)
 
 
 ////////////////// * PHOTOGREPHER SECTION OPEN * ///////////////////////////////////////
-
+/** 
+ * Photographer page
+ * where the photographer can upload the photos by selecting the event
+ * uploaded photos are stored in the amazon_s3
+*/
 function select_event_function($form, &$form_state)
 {
-
-
-	
 	$form = array();
-
 	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'));
-
-	$form['events_select']['#options']=array('select_event'=>"Select Event");
-
-	//for check the whether events table empty or not
-	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
-
-	foreach($no_of_row as $no_of_row_value)
-	{
-
-		$no_of_row_present=$no_of_row_value->row;
-
-	}
-
-	if($no_of_row_present!='0')
-	{
-
-		$event_name=db_query("SELECT eid,event_name FROM events");
-		foreach($event_name as $event_name_value)
-		{
-			$event_title_eid=$event_name_value->eid;
-
-			$event_title=$event_name_value->event_name;
-			if($event_title!='home_page')
-				$form['events_select']['#options'][$event_title_eid]=$event_title;
-		}
-
-	}
-
-	return $form;
-
-}
-
-
-
-
-
-
-
-
-function photographer_drag_and_drop_form($form, &$form_state) {
-
-
-
-  $form = array();
-  $form['#attributes'] = array('enctype' => 'multipart/form-data');
-
-/*
-	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'));
-
 	$form['events_select']['#options']=array('select_event'=>"Select Event");
 	$event_name=amazon_s3_get_buckets();
 	foreach($event_name as $event_name_value)
@@ -435,9 +249,16 @@ function photographer_drag_and_drop_form($form, &$form_state) {
 		if($event_title!='home_page')
 			$form['events_select']['#options'][$event_title]=$event_title;
 	}
+	return $form;
 
-	//$form['events_select']['#default_value']=$form['events_select']['#options']['select_event'];
-*/
+}
+/**
+ * Drag and drop upload form creation
+ */
+function photographer_drag_and_drop_form($form, &$form_state) {
+
+  $form = array();
+  $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
   $form['box'] = array(
     '#type' => 'fieldset',
@@ -451,22 +272,17 @@ function photographer_drag_and_drop_form($form, &$form_state) {
     '#description' => t('Pick a file to upload'),
     '#size' => 40,
   );
-/*
-  $form['box']['acl'] = array(
-    '#type' => 'select',
-    '#title' => t('Access Control'),
-    '#options' => amazon_s3_acl_options(),
-  );
-*/
- // $form['box']['bucket'] = array('#type' => 'value', '#value' => $bucket);
+
   $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>'return drag_drop_upload_validation();'));
   $form['box']['selected_event']=array('#type'=>'textfield','#title'=>'','#id'=>'selected_event_drag');
   return $form;
 }
 
+/** 
+ * Drag and drop submit function
+ */
+
 function photographer_drag_and_drop_form_submit($form, &$form_state) {
-
-
 //resource 2
   global $user;
 
@@ -477,110 +293,14 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //for loop for count the uploaded files resource 2
   for($i=0;$i<count($form['box']['file']['#value']);$i++)
   {
-	  $bucket = 'runmemo';
+	  $bucket = $form['box']['selected_event']['#value'];
+	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];
+	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	
 
-
-	  $event_id=$form['box']['selected_event']['#value'];
-
-
-	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];//$upload_temp_filepath = $_FILES['files']['tmp_name']['file'];
-	  $object_filename =$event_id.'/'.$uid.'-'. $form['box']['file']['#value'][$i]['name']; 	//$object_filename = $_FILES['files']['name']['file'];
-
-	  //$object_filename = $uid.'::'.$object_filename_original;
-
-	  $acl = 'public-read';//$form_state['values']['acl'];
-
-
+	  $acl = 'public-read';
 	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
 	  
-
-
 	  if ($success) {
-
-/*
-		////////////////////////////////////////////////////////////////////////////
-	
-		//explode the temprory file with
-		$temp_file_path=explode('//',$upload_temp_filepath);
-		$temp_file_extension=$temp_file_path['1'];	
-
-
-		//explode the temprory file name
-		$temp_file_name=explode('.',$temp_file_extension);
-
-		//expload the original file name
-		$original_file_name=explode('.',$object_filename);
-
-
-		//saved file name in the files folder
-		
-		$saved_file_name=$object_filename;
-
-		$old = '/tmp/'.$temp_file_extension;
-
-		
-		$new = '/var/www/runmemo_test/sites/default/files/styles/thumbnail/public/'.$saved_file_name;
-		copy($old, $new);
-
-*/	
-	
-	//node 
-
-		$node = new stdClass(); // We create a new node object
-		$node->type = "product"; // Or any other content type you want
-		$node->title = $object_filename;
-		$node->language = LANGUAGE_NONE; // Or any language code if Locale module is enabled. More on this below *
-		$node->uid = $uid; // Or any id you wish
-		node_object_prepare($node); // Set some default values.
-
-		$node->body[$node->language][0]['value'] = 'This is a body text';
-		$node->body[$node->language][0]['summary'] = 'Here goes a summary';
-		$node->body[$node->language][0]['format'] = 'filtered_html'; 
-
-
-		$node->sell_price ='75.0000';
-
-		
-/*
-		$filepath = drupal_realpath($new);
-		  $file = (object) array(
-		    'uid' => 1,
-		    'uri' => $filepath,
-		    'filemime' => file_get_mimetype($filepath),
-		    'status' => 1,
-		  );
-		  $file = file_copy($file, 'public://');
-		  $node->field_product_image[$node->language][0] = (array)$file;
-
-*/
-
-		$node = node_submit($node); // Prepare node for a submit
-		node_save($node);
-
-
-		//for store the detail of the image url in the events with node table
-		$max_nid=db_query("SELECT MAX(nid) as nid FROM node");
-
-		foreach($max_nid as $max_nid_value)
-		{
-
-			$nid=$max_nid_value->nid;
-
-		}
-
-		$img_url= amazon_s3_get_object_url($bucket, $object_filename);
-
-
-		db_insert('events_with_nid')
-				      	->fields(array(
-					'eid' => $event_id,
-					'nid' => $nid,
-					'img_url'=> $img_url,
-					))->execute();
-
-		
-		/////////////////////////////////////////////////////////////////////////////
-
 
 	    $message = t('Succesfully uploaded the file %filename to the bucket %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
 	    drupal_set_message($message);
@@ -593,8 +313,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   $form_state['redirect'] = "photographer";
 }
 
-
-//for upload the extract the zip file by reource 2
+/** 
+ * Zip file upload form
+ */
 function photographer_zip_file_form($form, &$form_state) {
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
@@ -611,41 +332,21 @@ function photographer_zip_file_form($form, &$form_state) {
     '#description' => t('Pick a zip file to upload to the event.'),
     '#size' => 40,
   );
-/*
-  $form['box1']['acl1'] = array(
-    '#type' => 'select',
-    '#title' => t('Access Control'),
-    '#options' => amazon_s3_acl_options(),
-  ); 
-*/
-
-
-  //$form['box1']['bucket1'] = array('#type' => 'value', '#value' => $bucket);
   $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>"return CallJS('Demo()')"));
   $form['box1']['progress']=array('#markup'=>"<div id='progress' style='display:none;'></div>");//for progress bar
   $form['box1']['selected_event']=array('#type'=>'textfield','#title'=>'','#id'=>'selected_event_zip');
   return $form;
 }
-//submit function for zip file upload and extraction by resource 2
+/**
+ * Submit function for zip file upload and extraction 
+ */
 function photographer_zip_file_form_submit($form, &$form_state) {
-
-
-	global $user;
-
-	$uid=$user->uid;
-
 	$s3 = amazon_s3_get_instance();
 	$filename = $_FILES["files"]["name"]["file1"];
 	$source = $_FILES["files"]["tmp_name"]["file1"];
-
-
 	$type = $_FILES["files"]["type"]["file1"];
- 	
 	$acl='public-read';//$form['box1']['acl1']['#value'];
-	$bucket='runmemo';
-
-	$event_id=$form['box1']['selected_event']['#value'];
-
+	$bucket=$form['box1']['selected_event']['#value'];
 	$name = explode(".", $filename);
 	$accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
 	foreach($accepted_types as $mime_type) {
@@ -654,8 +355,6 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 			break;
 		} 
 	}
- 	
-	
 	
 	$continue = strtolower($name[1]) == 'zip' ? true : false;
 	if(!$continue) {
@@ -709,7 +408,7 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 
 								if(($file_path1!="$base_path/$name[0]/$name[0]/..jpeg") && ($file_path1!="$base_path/$name[0]/$name[0]/.jpeg") && ($file_path1!=''))
 				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $event_id.'/'.$uid.'-'.$file, $acl);
+									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
 									unlink("$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
 				                                }
 							}
@@ -755,7 +454,7 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 
 								if($file_path1!="$base_path/$name[0]/..jpeg" && $file_path1!="$base_path/$name[0]/.jpeg" && $file_path1!='')
 				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $event_id.'/'.$uid.'-'.$file, $acl);
+									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
 
 									unlink("$base_path/$name[0]/$name_path[0].jpeg");
 				                                }
@@ -778,14 +477,11 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 					$message = "Your .zip file was uploaded and unpacked.";
 					drupal_set_message($message);
 				}
-				
-				
 			}
 
 			$zip->close();
  
 			unlink($target_path);
-			
 		} 
 		else 
 		{	
@@ -796,334 +492,41 @@ function photographer_zip_file_form_submit($form, &$form_state) {
 
 }
 
-
-
-
-
-
-//call back function for photogrepher
+/**
+ * Call back function for photogrepher
+ */
 function photographer_upload_photos() {
-
-
   $select_event=drupal_render(drupal_get_form('select_event_function'));
-
   $file_upload_form = drupal_render(drupal_get_form('photographer_drag_and_drop_form'));
-  
-  $file_upload_form1 = drupal_render(drupal_get_form('photographer_zip_file_form'));//by resource 2 for zip file upload function
-
-
+  $file_upload_form1 = drupal_render(drupal_get_form('photographer_zip_file_form'));
   $style="<table style='display:none' id='upload_section' border='0'><tr><td width='450px'>$file_upload_form</td><td>$file_upload_form1</td></tr></table>";
-
-	return $select_event.$style;
+  return $select_event.$style;
 }
-
-
 ////////////////// * PHOTOGREPHER SECTION CLOSE * ///////////////////////////////////////
-
-
-
-
-/////////////////  * CONFIRMATION CODE SECTION OPEN * ////////////////////////////////////////
-
-
-function confirmation_code($form,&$form_state,$uid)
-{
-
-
-	$form=array();
-	$form['confirm_code']=array('#type'=>'textfield','#title'=>'Enter Your Confirmation Code','#size'=>'20','#required'=>'1','#description'=>'To activate your account please enter your confirmation code sent to your mail id');
-
-	$form['submit']=array('#type'=>'submit','#value'=>'submit');
-	return $form;
-
-}
-
-function confirmation_code_submit($form,&$form_state)
-{
-
-	
-	$uid = arg(2);
-
-	$confirm_code=$form['confirm_code']['#value'];
-
-	$get_confirmation_code=db_query("SELECT confirmation_code FROM users WHERE uid=$uid");
-
-	foreach($get_confirmation_code as $get_confirmation_code_value)
-	{
-
-		$confirm_code_from_db= $get_confirmation_code_value->confirmation_code;
-
-	}
-
-	if($confirm_code==$confirm_code_from_db)
-	{
-
-		db_query("UPDATE users SET status='1',confirmation_code='NULL' WHERE uid=$uid");
-	
-		drupal_set_message('Your account has been activated.You can login using your username and password');
-
-	}
-
-	else
-	{
-
-		drupal_set_message('Invalid confirmation code ','error');
-
-	}
-
-}
-
-
-
-
-
-function confirmation_code_page($uid)
-{
-
-	$confirmation_page=drupal_render(drupal_get_form('confirmation_code',$uid));
-
-	return $confirmation_page;
-}
-
-
-
-
-/////////////////  * CONFIRMATION CODE SECTION CLOSE * ////////////////////////////////////////
-
-
-//////////////// * CONFIRMATION LINK SECTION OPEN * /////////////////////////////////////////
-
-function confirmation_link($uid)
-{
-	
-	$confirmation_code=arg(3);
-
-
-	$get_confirmation_code=db_query("SELECT confirmation_code FROM users WHERE uid=$uid");
-
-	foreach($get_confirmation_code as $get_confirmation_code_value)
-	{
-
-		$confirm_code_from_db= $get_confirmation_code_value->confirmation_code;
-
-	}
-
-	if($confirmation_code==$confirm_code_from_db)
-	{
-
-		db_query("UPDATE users SET status='1',confirmation_code='NULL' WHERE uid=$uid");
-	
-		return drupal_set_message('Your account has been activated.You can login using your username and password');
-	}
-	
-	else
-	{
-
-		return drupal_set_message('Invalid confirmation link','error');
-	}
-
-}
-
-//////////////// * CONFIRMATION LINK SECTION CLOSED * /////////////////////////////////////////
-
-
-
-
-/////////////// * CREATE EVENT PAGE OPEN * ////////////////////////////////////////////////////
-
-
-//function for create the form for event creation page
-function create_event_form($form,&$form_state)
-{
-
-	$form=array();
-	
-	$form['event_name_text']=array('#type'=>'textfield','#title'=>'Create Event Name','#required'=>'1','#description'=>'Enter the event name');
-
-	$form['event_name_submit']= array('#type'=>'submit','#value'=>'Create');
-
-	return $form;
-}
-
-
-//submit function for the create event
-
-function create_event_form_submit($form,&$form_state)
-{
-
-
-	$event_name=$form['event_name_text']['#value'];
-
-
-	$no_of_row=db_query("SELECT COUNT(*) as row FROM events");
-
-	foreach($no_of_row as $no_of_row_value)
-	{
-
-		$no_of_row_present=$no_of_row_value->row;
-
-	}
-
-	if($no_of_row_present=='0')
-	{
-
-		db_insert('events')
-			      	->fields(array(
-				'event_name' => $event_name,
-				))->execute();
-
-		drupal_set_message('Event name was successfully created');
-	}
-
-	else
-	{
-
-		//for check the event name already created or not
-		$check_row_exist=db_query("SELECT COUNT(*) as row FROM events WHERE event_name='$event_name'");
-
-		foreach($check_row_exist as $check_row_exist_value)
-		{
-
-			$row_exist=$check_row_exist_value->row;
-
-		}
-
-		if($row_exist=='0')
-		{
-			db_insert('events')
-			      	->fields(array(
-				'event_name' => $event_name,
-				))->execute();
-
-			drupal_set_message('Event name was successfully created');
-		}
-
-		else
-		{
-
-			drupal_set_message('Your creating Event name is already exist.Please try again with other event name','error');
-
-		}
-
-	}
-	
-
-
-
-}
-
-//page load callback function
-function create_event()
-{
-
-
-	$create_event_page=drupal_render(drupal_get_form('create_event_form'));
-
-	return $create_event_page;
-}
-
-
-
-
-
-/////////////// * CREATE EVENT PAGE CLOSE * ////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////
-
-//form alter function
+/**
+ * Form alter function
+ * by using this form_alter function we can alter the form without editing core module
+ */
 function runmemo_form_alter(&$form, $form_state, $form_id)
 {
 	
-	/*
-        $nid=arg(1);
-
-        if($form['#form_id']=='uc_product_add_to_cart_form_'.$nid)
-	{
-
-             
-
-
-
-               $img_url=amazon_s3_get_object_url('halfrace','8.jpeg');
-             
-          
-		$form['a']=array('#markup'=>"<div id='test'><img src=$img_url alt='image'   />	</div>");
-         
-
-        }
-	*/
-
-/*
-	if($form['#form_id']=='amazon_s3_bucket_create_form')
-	{
-
-		echo '<pre>';
-		print_r($form['#submit']);
-		exit;
-	}
-*/
-
-
-
 	if($form['#form_id']=='amazon_s3_file_upload_form')
 	{
-
-		
-
 		//for changing the single file upload to drag and drop file upload change #type=>plupload
 		$form['box']['file']['#type']='plupload';
 		
 		//change the already existing button value upload->start upload
 		$form['box']['upload']['#value']='Upload';
-
-
-		
-
-
 	}
 
 	//registration page
 	if($form['#form_id']=='user_register_form')
 	{
-	
-	
-
 		$base_path=base_path().'sites/default/help_icon.gif';
-
-		//create the select role radio buttons in the create account page
-		/*
-		$form['field_select_user']=array('#type' => 'radios','#title'=> 'Select Role','#id'=> 'role','#attributes'=>array('onclick'=>'user_photographer()'),'#options'=>array('runner'=>'Runner','photographer'=>'Photographer'),'#weight'=>'4','#required'=>'1');
-		*/		
-	
-		//$form['field_select_user2']=array('#markup'=>"<div id='paypal_title' style='color:black'>Paypal Account Id</div>",'#weight'=>'5');
-
                 $form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
-
 		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
-
-
 		//add the form submit function for insert the user role in the user table
                 $form['#submit']['1']= 'user_role_insertion'; 
-		//$form['#validate']['4'] = 'my_mod_my_form_id_validate';
-
-
 	}
 
 	//profile edit page
@@ -1133,39 +536,35 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 
 		global $user;
 		$uid=$user->uid;
-		
-
 		$base_path=base_path().'sites/default/help_icon.gif';
-
 		$form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
-
 		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
 
-		$paypal_id=db_query("SELECT paypal_account_id FROM photographer_account WHERE uid=$uid");
-		foreach($paypal_id as $paypal_id_value)
+		$paypal_id=db_query("SELECT paypal_account_id FROM {photographer_account} WHERE uid=:uid",array(':uid'=>$uid))->fetchObject();
+		if(($paypal_id->paypal_account_id)!='')
 		{
+		
 			$paypal_ac_id=$paypal_id_value->paypal_account_id;
 			$form['photo_paypal_id']['#value']=$paypal_ac_id;
 		}
-
-		
 		$form['#submit'][1]='edit_user_profile_submit';
-
 	}
 }
 
-
-//function for insert the user role in the user table when submit the create account submit button
+/**
+ *Function for insert the user role in the users table when submit the create account submit button
+ */
 function user_role_insertion($form,&$from_state)
 {
-
-	$user_role=db_query("SELECT rid FROM role WHERE name='Photographer'");
-	foreach($user_role as $user_role_value)
-	{
-		$role_id=$user_role_value->rid;
-	}
+	$user_role=db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
+	$role_id=$user_role->rid;
 	$uid=$form['#user']->uid;
-	db_query("Update users SET role=$role_id WHERE uid=$uid");
+	db_update('users')
+		      ->fields(array(
+			'role' => $role_id,
+		      ))
+		      ->condition('uid', $uid)
+		      ->execute();
 	
 	//insert the paypal account id in the photographer account table
 	if(isset($form['#user']->photo_paypal_id) && ($form['#user']->photo_paypal_id != ''))
@@ -1183,15 +582,13 @@ function user_role_insertion($form,&$from_state)
 					'uid' => $uid,
 					'rid' => $role_id,
 					))->execute();
-		//drupal_goto('<front>');
+		
 	}
-
-	db_query("UPDATE users SET status='0' WHERE uid=$uid");
-	drupal_goto('confirm/user/'.$uid);
-
 }
 
-//submit function edit user profile page
+/*
+ * Submit function edit user profile page
+ */
 function edit_user_profile_submit($form,&$from_state)
 {
 	
@@ -1208,7 +605,12 @@ function edit_user_profile_submit($form,&$from_state)
 
 	if(in_array($uid,$paypal_uid_id))
 	{
-		db_query("UPDATE photographer_account SET paypal_account_id=$paypal_id WHERE uid=$uid");
+		db_update('photographer_account')
+		      ->fields(array(
+			'paypal_account_id' => $paypal_id,
+		      ))
+		      ->condition('uid', $uid)
+		      ->execute();
 
 	}
 
@@ -1223,61 +625,5 @@ function edit_user_profile_submit($form,&$from_state)
 
 	}
 	
-
-	
-
-
-
 }
-
-
-
-/*
-
-///////////////////// node alter /////////////////////////////
-
-function runmemo_node_load($node)
-{
-        $nid=arg(1);
-	
-	$node[$nid]->field_product_image['und'][0]['uri']='';
-        $node[$nid]->field_product_image['und'][0]['filename']='';	
-
-       
-
-
-}
-
-function runmemo_node_view($node)
-{
-        $nid=$node->nid;
-
-       if($node->type=='product')
-       {
-        
-	$image=$node->field_product_image['und'][0]['uri'];
-        $node->field_product_image['und'][0]['uri']='';
-        $node->field_product_image['und'][0]['filename']='';
-
-
-	$node->content['body']['#object']->content['field_product_image']['#items']['0']['uri']='';
-	$node->content['body']['#object']->content['field_product_image']['#items']['0']['filename']='';
-
-	$node->content['body']['#object']->content['field_product_image']['0']['#item']['uri']='';
-	$node->content['body']['#object']->content['field_product_image']['0']['#item']['filename']='';
-
-
-       //print_r($form_state);exit;
-
-       }
-
-
-//echo '<pre>';
-//print_r($node);
-//exit;
- 
-}
-
-
-*/
 
