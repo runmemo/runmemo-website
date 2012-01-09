@@ -221,12 +221,11 @@ class S3 {
     if ($rest->error === false && $rest->code !== 200)
       $rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
     if ($rest->error !== false) {
-     // trigger_error(sprintf("S3::putBucket({$bucket}, {$acl}, {$location}): [%s] %s",
-     // $rest->error['code'], $rest->error['message']), E_USER_WARNING);//commented by resource 2 
-
-      return "false";
+      trigger_error(sprintf("S3::putBucket({$bucket}, {$acl}, {$location}): [%s] %s",
+      $rest->error['code'], $rest->error['message']), E_USER_WARNING);
+      return false;
     }
-    return "true";
+    return true;
   }
 
 
@@ -1010,7 +1009,7 @@ class S3 {
 
     // If anyone is still using mime_content_type()
     } elseif (function_exists('mime_content_type'))
-     //$type = trim(mime_content_type($file)); //hided by resource 2
+      $type = trim(mime_content_type($file));
 
     if ($type !== false && strlen($type) > 0) return $type;
 
