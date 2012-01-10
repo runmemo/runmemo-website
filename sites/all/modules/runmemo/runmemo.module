@@ -7,502 +7,11 @@ function runmemo_init()
 {
 	//to add the js file
 	drupal_add_js(drupal_get_path("module","runmemo")."/js/runmemo.js");
-	drupal_add_js(drupal_get_path("module","runmemo")."/js/progress_bar.js");
 	drupal_add_css(drupal_get_path('module', 'runmemo') . '/runmemo.css');
-}
-
-///////////////////////////////////////////////////////////
-/** 
- * Create the hook menu for each page 
- * by using this we can map to the related page
- */
-function runmemo_menu()
-{
-	//url for runner
-	$items['runner'] = array(
-			    'title' => 'Photo Gallery',
-			    'description' => t('View the objects in a event on your Amazon S3 account.'),
-			    'page callback' => 'amozon_s3_show_images',
-			    'page arguments' => array(1),
-			    'access arguments' => array('access_runner'),
-			    'type' => MENU_CALLBACK,
-			  );
-
-	//url for photographer
-	$items['photographer'] = array(
-			    'title' => 'Upload Photos',
-			    'description' => t('View the objects in a bucket on your Amazon S3 account.'),
-			    'page callback' => 'photographer_upload_photos',
-			    'page arguments' => array(1),
-			    'access arguments' => array('access_photographer'),
-			    'type' => MENU_CALLBACK,
-			  );
-	return $items;
-
-}
-
-/**
- * Set the pemission for each url in the admin side
- * so we can the restrict the particular page to accessed by the anonymouse user
-*/
-function runmemo_permission()
-{
-
-	return array(
-			    'access_runner' => array(
-			      'title' => t('Access runner'),
-			      'description' => t('Access runner'),
-			      'restrict access' => TRUE,
-			    ),
-
-			    'access_photographer' => array(
-			      'title' => t('Access photographer'),
-			      'description' => t('Access photographer'),
-			      'restrict access' => TRUE,
-			    ),
-		     );
-}
-
-
-
-////////////////// * RUNNER SECTION OPEN * ///////////////////////////////////////
-
-/**
- * Created the form for runner page
- * runner can search the photos by selecting the event name
-*/
-
-function select_event_runner_get_photos($form, &$form_state, $bucket)
-{
-
-
-	$form['setfield']=array(
-	    '#type' => 'fieldset',
-	    '#title' => t(''),
-	    '#collapsible' => FALSE,
-	    '#collapsed' => FALSE,
-	    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
-	    
-	  );
-
-	//select event in the runner side
-	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>'Get My Photos','#id'=>'event_runner');
-
-	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name=amazon_s3_get_buckets();
-	foreach($event_name as $event_name_value)
-	{
-		$event_title=$event_name_value;
-		if($event_title!='home_page')
-			$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
-	}
-	if(isset($bucket) && ($bucket!='') && ($bucket=='home_page'))
-	{
-		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options']['select_event'];
-	}
 	
-	else
-	{
-		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
-	}
-
-
-
-	//text field for get the runner number
-	$form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#value'=>'My Number','#attributes'=>array('onclick'=>'return my_number_hide();','onblur'=>'my_number_show();'),'#prefix'=>"<div style='float:left'></div>");
-
-  	//submit get my photo in the runner side
-	$form['setfield']['search']=array('#type'=>'submit','#value'=>'search','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#attributes'=>array('onclick'=>'return search_validation();'));
-
-	return $form;
-
-}
-
-/** 
- * Function for runner photo search submit.
- */
-function select_event_runner_get_photos_submit($form,&$form_state)
-{
-
-	$bucket=$form['setfield']['events_select_runner']['#value'];
-	$form_state['redirect'] = "runner/".$bucket;
-
-}
-
-/** 
- * Function for buy the images
- */
-function select_event_runner_sell_photos($form, &$form_state, $bucket)
-{
-	//for sell the photos in the runner side
-	$form['sellfield']=array(
-	    '#type' => 'fieldset',
-	    '#title' => t(''),
-	    '#collapsible' => FALSE,
-	    '#collapsed' => FALSE,
-	    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
-	    
-	  );
-
-	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'Sell My Photos','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
-
-	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name_sell=amazon_s3_get_buckets();
-	foreach($event_name_sell as $event_name_value_sell)
-	{
-		$event_title_sell=$event_name_value_sell;
-		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
-	}
-
-	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'Get Started');
-	
-	return $form;
 }
 
 
-/**
- * Function for search the images by runner
- */
-function amozon_s3_show_images($bucket)
-{
-	if($bucket=='')
-	{
-		$bucket='home_page';
-	}
-	$s3 = amazon_s3_get_instance();
-	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
-	foreach ($objects as &$object) {
-	$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
-	}
-	$table='<table>';
-	for($i=0;$i<count($objects);$i+=5)
-	{
-
-		$table.='<tr>';
-		if(isset($temp_link[$i]) && ($temp_link[$i]!=''))
-	 		$table.="<td><img src='$temp_link[$i]' alt='image' width=100px height=100px  />	</td>";
-
-		if(isset($temp_link[$i+1]) && ($temp_link[$i+1]!=''))
-		{
-			$j=$i+1;
-			$table.="<td><img src='$temp_link[$j]' alt='image' width=100px height=100px  />	</td>";
-
-		}
-
-		if(isset($temp_link[$i+2]) && ($temp_link[$i+2]!=''))
-		{
-			$k=$i+2;
-			$table.="<td><img src='$temp_link[$k]' alt='image' width=100px height=100px  />	</td>";
-		}
-	
-		if(isset($temp_link[$i+3]) && ($temp_link[$i+3]!=''))
-		{
-			$m=$i+3;
-			$table.="<td><img src='$temp_link[$m]' alt='image' width=100px height=100px  onmouseover='showimg(this.src,this.id,this.name);'  id='imageshow$m' name='original$m' /><img src='' width=200px height=200px id='original$m' onmouseout='hideimg(this.src,this.id,this.name)' name='imageshow$m' style='display:none'/>
-	</td>";
-		}
-	
-	
-		if(isset($temp_link[$i+4]) && ($temp_link[$i+4]!=''))
-		{
-			$n=$i+4;
-			$table.="<td><img src='$temp_link[$n]' alt='image' width=100px height=100px  onmouseover='showimg(this.src,this.id,this.name);'  id='imageshow$n' name='original$n' /><img src='' width=200px height=200px id='original$n' onmouseout='hideimg(this.src,this.id,this.name)' name='imageshow$n' style='display:none'/>
-	</td>";
-		}
-			
-
-		$table.="</tr>";
-	
-	}
-	$table.='</table>';
-
-	$select_event_runner_get_photos = drupal_render(drupal_get_form('select_event_runner_get_photos', $bucket));
-
-	$select_event_runner_sell_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos', $bucket));
-
-
-	$style="<span style='float:left'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span><span style='float:left'>$table</span>";
-
-	return $style;
-}
-
-
-////////////////// * RUNNER SECTION CLOSE * ///////////////////////////////////////
-
-
-
-////////////////// * PHOTOGREPHER SECTION OPEN * ///////////////////////////////////////
-/** 
- * Photographer page
- * where the photographer can upload the photos by selecting the event
- * uploaded photos are stored in the amazon_s3
-*/
-function select_event_function($form, &$form_state)
-{
-	$form = array();
-	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'));
-	$form['events_select']['#options']=array('select_event'=>"Select Event");
-	$event_name=amazon_s3_get_buckets();
-	foreach($event_name as $event_name_value)
-	{
-		$event_title=$event_name_value;
-		if($event_title!='home_page')
-			$form['events_select']['#options'][$event_title]=$event_title;
-	}
-	return $form;
-
-}
-/**
- * Drag and drop upload form creation
- */
-function photographer_drag_and_drop_form($form, &$form_state) {
-
-  $form = array();
-  $form['#attributes'] = array('enctype' => 'multipart/form-data');
-
-  $form['box'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Upload File'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-  );
-  $form['box']['file'] = array(
-    '#type' => 'plupload',
-    '#title' => t('File to upload'),
-    '#description' => t('Pick a file to upload'),
-    '#size' => 40,
-  );
-
-  $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>'return drag_drop_upload_validation();'));
-  $form['box']['selected_event']=array('#type'=>'textfield','#title'=>'','#id'=>'selected_event_drag');
-  return $form;
-}
-
-/** 
- * Drag and drop submit function
- */
-
-function photographer_drag_and_drop_form_submit($form, &$form_state) {
-//resource 2
-  global $user;
-
-  $uid=$user->uid;
-
-  $s3 = amazon_s3_get_instance();
-
-  //for loop for count the uploaded files resource 2
-  for($i=0;$i<count($form['box']['file']['#value']);$i++)
-  {
-	  $bucket = $form['box']['selected_event']['#value'];
-	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];
-	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	
-
-	  $acl = 'public-read';
-	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
-	  
-	  if ($success) {
-
-	    $message = t('Succesfully uploaded the file %filename to the bucket %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
-	    drupal_set_message($message);
-	  } else {
-	    $message = t('Failed to upload the file %filename to the bucket %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
-	    drupal_set_message($message, 'error');
-	  }
-	  
-  }
-  $form_state['redirect'] = "photographer";
-}
-
-/** 
- * Zip file upload form
- */
-function photographer_zip_file_form($form, &$form_state) {
-  $form = array();
-  $form['#attributes'] = array('enctype' => 'multipart/form-data');
-  $form['box1'] = array(
-    '#type' => 'fieldset',
-    '#title' => t('Upload Zip File'),
-    '#collapsible' => FALSE,
-    '#collapsed' => FALSE,
-    '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
-  );
-  $form['box1']['file1'] = array(
-    '#type' => 'file',
-    '#title' => t('File to upload'),
-    '#description' => t('Pick a zip file to upload to the event.'),
-    '#size' => 40,
-  );
-  $form['box1']['upload1'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>"return CallJS('Demo()')"));
-  $form['box1']['progress']=array('#markup'=>"<div id='progress' style='display:none;'></div>");//for progress bar
-  $form['box1']['selected_event']=array('#type'=>'textfield','#title'=>'','#id'=>'selected_event_zip');
-  return $form;
-}
-/**
- * Submit function for zip file upload and extraction 
- */
-function photographer_zip_file_form_submit($form, &$form_state) {
-	$s3 = amazon_s3_get_instance();
-	$filename = $_FILES["files"]["name"]["file1"];
-	$source = $_FILES["files"]["tmp_name"]["file1"];
-	$type = $_FILES["files"]["type"]["file1"];
-	$acl='public-read';//$form['box1']['acl1']['#value'];
-	$bucket=$form['box1']['selected_event']['#value'];
-	$name = explode(".", $filename);
-	$accepted_types = array('application/zip', 'application/x-zip-compressed', 'multipart/x-zip', 'application/x-compressed');
-	foreach($accepted_types as $mime_type) {
-		if($mime_type == $type) {
-			$okay = true;
-			break;
-		} 
-	}
-	
-	$continue = strtolower($name[1]) == 'zip' ? true : false;
-	if(!$continue) {
-		$message = "The file you are trying to upload is not a .zip file. Please try again.";
-		drupal_set_message($message,'error');
-	}
- 
-	if($continue)
-	{
-
-		$base_path=$_SERVER['DOCUMENT_ROOT'].base_path()."sites/default/files";
-
-		$target_path = "$base_path/".$filename;  
-		if(move_uploaded_file($source, $target_path)) 
-		{
-
-			$zip = new ZipArchive();
-			$x = $zip->open($target_path);
-			if ($x === true)
-			{
-				$folder=$base_path.'/'.$name[0];
-				$zip->extractTo("$folder"); 
-			
-			
-				chmod("$base_path/".$name[0],0777);
-			
-				$file_exist= "$base_path/".$name[0].'/'.$name[0];
-				
-				
-				if (file_exists($file_exist)) 
-				{
-
-					if ($handle = opendir("$base_path/".$name[0].'/'.$name[0])) 
-					{
-					 	//This is the correct way to loop over the directory. 
-						while (false !== ($file = readdir($handle)))
-						{
-							$name_path=explode('.',$file);
-
-
-							$lower_extension=strtolower($name_path[1]);
-
-
-							if(($lower_extension=='jpg') || ($lower_extension=='jpeg') )
-							{
-								if($name_path[0]!='')
-								{
-									rename("$base_path/$name[0]/$name[0]/$file", "$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
-								}
-								$file_path1="$base_path/$name[0]/$name[0]/$name_path[0].jpeg";
-
-								if(($file_path1!="$base_path/$name[0]/$name[0]/..jpeg") && ($file_path1!="$base_path/$name[0]/$name[0]/.jpeg") && ($file_path1!=''))
-				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
-									unlink("$base_path/$name[0]/$name[0]/$name_path[0].jpeg");
-				                                }
-							}
-							else
-							{
-								if(($file!='.') && ($file!='..'))
-								{
-									unlink("$base_path/$name[0]/$name[0]/$file");
-									drupal_set_message($file.' image was not uploaded because of invalid image extension','error');
-								}
-					
-							}
-
-						  }
-						rmdir("$base_path/".$name[0].'/'.$name[0]);
-						rmdir("$base_path/".$name[0]);
-						closedir($handle);
-					}
-					
-					$message = "Your .zip file was uploaded and unpacked.";
-					drupal_set_message($message);
-				}
-			
-				else
-				{
-
-					if ($handle = opendir("$base_path/".$name[0])) 
-					{
-					    	//This is the correct way to loop over the directory. 
-						while (false !== ($file = readdir($handle)))
-						{
-							$name_path=explode('.',$file);
-
-							$lower_extension=strtolower($name_path[1]);
-
-							if(($lower_extension=='jpg') || ($lower_extension=='jpeg') )
-							{
-								if($name_path[0]!='')
-								{
-									rename("$base_path/$name[0]/$file", "$base_path/$name[0]/$name_path[0].jpeg");
-								}
-								$file_path1="$base_path/$name[0]/$name_path[0].jpeg";
-
-								if($file_path1!="$base_path/$name[0]/..jpeg" && $file_path1!="$base_path/$name[0]/.jpeg" && $file_path1!='')
-				                                {
-									$s3->putObjectFile("$base_path/$name[0]/$name_path[0].jpeg", $bucket, $file, $acl);
-
-									unlink("$base_path/$name[0]/$name_path[0].jpeg");
-				                                }
-							}
-							else
-							{
-								if(($file!='.') && ($file!='..'))
-								{
-									unlink("$base_path/$name[0]/$file");
-									drupal_set_message($file.' image was not uploaded because of invalid image extension','error');
-								}
-					
-							}
-
-						  }
-						rmdir("$base_path/".$name[0]);
-
-						closedir($handle);
-					}
-					$message = "Your .zip file was uploaded and unpacked.";
-					drupal_set_message($message);
-				}
-			}
-
-			$zip->close();
- 
-			unlink($target_path);
-		} 
-		else 
-		{	
-			$message = "There was a problem with the upload. Please try again.";
-			drupal_set_message($message);
-		}
-	}
-
-}
-
-/**
- * Call back function for photogrepher
- */
-function photographer_upload_photos() {
-  $select_event=drupal_render(drupal_get_form('select_event_function'));
-  $file_upload_form = drupal_render(drupal_get_form('photographer_drag_and_drop_form'));
-  $file_upload_form1 = drupal_render(drupal_get_form('photographer_zip_file_form'));
-  $style="<table style='display:none' id='upload_section' border='0'><tr><td width='450px'>$file_upload_form</td><td>$file_upload_form1</td></tr></table>";
-  return $select_event.$style;
-}
-////////////////// * PHOTOGREPHER SECTION CLOSE * ///////////////////////////////////////
 /**
  * Form alter function
  * by using this form_alter function we can alter the form without editing core module
@@ -540,11 +49,15 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
 		$form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
 		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
 
-		$paypal_id=db_query("SELECT paypal_account_id FROM {photographer_account} WHERE uid=:uid",array(':uid'=>$uid))->fetchObject();
+		//introduce class function
+		$photographer=new photographer_model();
+		$paypal_id=$photographer->get_paypal_id($uid);
+
+
 		if(($paypal_id->paypal_account_id)!='')
 		{
 		
-			$paypal_ac_id=$paypal_id_value->paypal_account_id;
+			$paypal_ac_id=$paypal_id->paypal_account_id;
 			$form['photo_paypal_id']['#value']=$paypal_ac_id;
 		}
 		$form['#submit'][1]='edit_user_profile_submit';
@@ -556,32 +69,33 @@ function runmemo_form_alter(&$form, $form_state, $form_id)
  */
 function user_role_insertion($form,&$from_state)
 {
-	$user_role=db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
+	
+	//call class function
+	$photographer=new photographer_model();
+	$user_role=$photographer->get_role_id();
 	$role_id=$user_role->rid;
+
 	$uid=$form['#user']->uid;
-	db_update('users')
-		      ->fields(array(
-			'role' => $role_id,
-		      ))
-		      ->condition('uid', $uid)
-		      ->execute();
+
+	//call the class function for update the query
+	$photographer->user_role_update($role_id,$uid);
+	
+
 	
 	//insert the paypal account id in the photographer account table
 	if(isset($form['#user']->photo_paypal_id) && ($form['#user']->photo_paypal_id != ''))
 	{
 		$photographer_account_id=$form['#user']->photo_paypal_id;
 		
-		db_insert('photographer_account')
-				      	->fields(array(
-					'paypal_account_id' => $photographer_account_id,
-					'uid' => $uid,
-					))->execute();
 
-		db_insert('users_roles')
-				      	->fields(array(
-					'uid' => $uid,
-					'rid' => $role_id,
-					))->execute();
+		//call the photographer model call function for insert the photographer account id
+
+		$photographer->photographer_account_id_insert($photographer_account_id,$uid);
+
+		
+		//call the photographer model call function for insert the user role id
+		$photographer->user_role_id_insert($role_id,$uid);
+		
 		
 	}
 }
@@ -596,33 +110,28 @@ function edit_user_profile_submit($form,&$from_state)
 	$uid=$form['#user']->uid;
 	$paypal_id=$_POST['photo_paypal_id'];
 
-	$paypal_uid=db_query("SELECT uid FROM photographer_account ");
+
+	//call the class function for get the uid
+	$photographer=new photographer_model();
+	$paypal_uid=$photographer->get_uid();
 	foreach($paypal_uid as $paypal_uid_value)
 	{
 		$paypal_uid_id[]=$paypal_uid_value->uid;
 		
 	}
 
+	
 	if(in_array($uid,$paypal_uid_id))
 	{
-		db_update('photographer_account')
-		      ->fields(array(
-			'paypal_account_id' => $paypal_id,
-		      ))
-		      ->condition('uid', $uid)
-		      ->execute();
+		//call the class function update the paypal id
+		$photographer->paypal_id_update($paypal_id,$uid);
 
 	}
 
 	if(!in_array($uid,$paypal_uid_id))
 	{
-
-		db_insert('photographer_account')
-				      	->fields(array(
-					'paypal_account_id' => $paypal_id,
-					'uid' => $uid,
-					))->execute();
-
+		//call the class function for insert the paypal id
+		$photographer->photographer_account_id_insert($paypal_id,$uid);
 	}
 	
 }
