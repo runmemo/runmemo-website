@@ -1,0 +1,123 @@
+<?php
+/**
+ * Init function for adding the external file
+ */
+
+function general_init()
+{
+	//to add the js file
+	drupal_add_js(drupal_get_path("module","general")."/js/general.js");
+	drupal_add_css(drupal_get_path('module', 'general') . '/general.css');
+	
+}
+
+
+/**
+ * Form alter function
+ * by using this form_alter function we can alter the form without editing core module
+ */
+function general_form_alter(&$form, $form_state, $form_id)
+{
+	
+	if($form['#form_id']=='amazon_s3_file_upload_form')
+	{
+		//for changing the single file upload to drag and drop file upload change #type=>plupload
+		$form['box']['file']['#type']='plupload';
+		
+		//change the already existing button value upload->start upload
+		$form['box']['upload']['#value']='Upload';
+	}
+
+	//registration page
+	if($form['#form_id']=='user_register_form')
+	{
+		$base_path=base_path().'sites/default/help_icon.gif';
+      $form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
+		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
+		//add the form submit function for insert the user role in the user table
+        $form['#submit']['1']= 'user_role_insertion'; 
+	}
+
+	//profile edit page
+	
+	if($form['#form_id']=='user_profile_form')
+	{
+
+		global $user;
+		$uid=$user->uid;
+		$base_path=base_path().'sites/default/help_icon.gif';
+		$form['photo_paypal_id']=array('#type'=>'textfield','#title'=> 'Paypal Account Id','#id'=> 'paypal_account_id','#weight'=>'6','#required'=>'1');
+		$form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
+
+		//introduce class function
+		$photographer=new photographer_model();
+		$paypal_id=$photographer->get_paypal_id($uid);
+
+
+		if(($paypal_id->paypal_account_id)!='')
+		{
+		
+			$paypal_ac_id=$paypal_id->paypal_account_id;
+			$form['photo_paypal_id']['#value']=$paypal_ac_id;
+		}
+		$form['#submit'][1]='edit_user_profile_submit';
+	}
+}
+
+/**
+ *Function for insert the user role in the users table when submit the create account submit button
+ */
+function user_role_insertion($form,&$from_state)
+{
+	
+
+	//call class function
+	$photographer=new photographer_model();
+	$user_role=$photographer->get_role_id();
+	$role_id=$user_role->rid;
+
+	$uid=$form['#user']->uid;
+
+	//call the class function for update the query
+	$photographer->user_role_update($role_id,$uid);
+	
+
+	
+	//insert the paypal account id in the photographer account table
+	if(isset($form['#user']->photo_paypal_id) && ($form['#user']->photo_paypal_id != ''))
+	{
+		$photographer_account_id=$form['#user']->photo_paypal_id;
+		
+
+		//call the photographer model call function for insert the photographer account id
+
+		$photographer->photographer_account_id_insert($photographer_account_id,$uid);
+
+		
+		//call the photographer model call function for insert the user role id
+		$photographer->user_role_id_insert($role_id,$uid);
+		
+		
+	}
+}
+
+/*
+ * Submit function edit user profile page
+ */
+function edit_user_profile_submit($form,&$from_state)
+{
+	
+	
+	$uid=$form['#user']->uid;
+	$paypal_id=$_POST['photo_paypal_id'];
+
+
+	//call the class function for get the uid
+	$photographer=new photographer_model();
+
+	//call the class function update the paypal id
+	$photographer->paypal_id_update($paypal_id,$uid);
+
+	
+}
+

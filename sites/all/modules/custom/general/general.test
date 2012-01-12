@@ -1,0 +1,68 @@
+<?php
+
+/**
+ * @file
+ * Tests for runmemo.module.
+ */
+
+class GeneralTestCase extends DrupalWebTestCase {
+
+  protected $output;
+
+  // $photographer is a user with permission to upload photos.
+  protected $photographer;
+
+  // $web_user is a user with permission to view a photos
+  protected $runner;
+
+  //$admin_user is a user with permission to admin activities.
+  //protected $admin_user;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'General functionality',
+      'description' => 'Create a test.',
+      'group' => 'Runmemo',
+    );
+  }
+  
+  /**
+   * Enabling the modules.
+   */
+
+  function setUp() {
+
+    parent::setUp(array('general','amazon_s3', 'plupload','photographer','runner'));
+
+    // Create users.
+    $this->photographer = $this->drupalCreateUser(array('access_photographer'));
+    $this->runner = $this->drupalCreateUser(array('access_runner'));
+  
+  }
+  
+
+  /**
+   * Testing  the search page.
+   */
+
+    function testselect_event_runner_get_photos()
+    {
+      
+      $this->drupalLogin($this->runner);
+	  //Intial test with static value
+      $search='runmemo';
+      $form_values=array('event_runner'=>$search);
+      $this->drupalPost('runner',$form_values,t('search'));
+      $expectation=t('Return photos');
+      $this->assertText($expectation,t('checking if photos are returned'));
+      $this->drupalLogout();
+
+
+
+    }
+
+    
+
+     
+  
+}
