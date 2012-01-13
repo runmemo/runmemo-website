@@ -7,13 +7,15 @@ function runner_init()
 {
 	//to add the js file
 	drupal_add_js(drupal_get_path("module","runner")."/runner.js");
-	drupal_add_css(drupal_get_path('module', 'runner').'/runner.css');
+	drupal_add_css(drupal_get_path('module', 'runner') . '/runner.css');
 }
 
 ///////////////////////////////////////////////////////////
 /** 
  * Create the hook menu for each page 
  * by using this we can map to the related page
+ * @return
+ * return menu items
  */
 function runner_menu()
 {
@@ -53,6 +55,8 @@ function runner_permission()
 /**
  * Created the form for runner page
  * runner can search the photos by selecting the event name
+ * @param $bucket
+ * $bucket give the selected event name
 */
 
 function select_event_runner_get_photos($bucket)
@@ -64,7 +68,7 @@ function select_event_runner_get_photos($bucket)
 	    '#title' => t(''),
 	    '#collapsible' => FALSE,
 	    '#collapsed' => FALSE,
-	    '#attached'=>array('css' => array(drupal_get_path('module', 'runner').'/runner.css')),
+	    '#attached'=>array('css' => array(drupal_get_path('module', 'runner') . '/runner.css')),
 	    
 	  );
 
@@ -114,6 +118,10 @@ function select_event_runner_get_photos_submit($form,&$form_state)
 
 /** 
  * Function for buy the images
+ * @param $bucket
+ *   $bucket is the event name 
+ * @return 
+ *   return form values
  */
 function select_event_runner_sell_photos($bucket)
 {
@@ -145,6 +153,10 @@ function select_event_runner_sell_photos($bucket)
 
 /**
  * Function for search the images by runner
+ * @param $bucket
+ *   $bucket is event name
+ * @return 
+ *   return rendered drupal form
  */
 function amozon_s3_show_images($bucket)
 {
