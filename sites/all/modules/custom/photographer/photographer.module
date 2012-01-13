@@ -7,12 +7,14 @@ function photographer_init()
 {
 	//to add the js file
 	drupal_add_js(drupal_get_path("module","photographer")."/js/photographer.js");
-	drupal_add_css(drupal_get_path('module', 'photographer').'/photographer.css');
+	drupal_add_css(drupal_get_path('module', 'photographer') . '/photographer.css');
 }
 
 /** 
  * Create the hook menu for each page 
  * by using this we can map to the related page
+ * @return 
+ * return the custom created menus
  */
 function photographer_menu()
 {
@@ -33,6 +35,8 @@ function photographer_menu()
 /**
  * Set the pemission for each url in the admin side
  * so we can the restrict the particular page to accessed by the anonymouse user
+ * @return 
+ * Return the access permission
 */
 function photographer_permission()
 {
@@ -96,6 +100,8 @@ function photographer_drag_and_drop_form() {
 
 /** 
  * Drag and drop submit function
+ * @param $form
+ * $form gives the form values from the photographer upload values
  */
 
 function photographer_drag_and_drop_form_submit($form, &$form_state) {
