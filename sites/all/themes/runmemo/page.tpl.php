@@ -97,11 +97,13 @@
 	
       <?php endif; ?>
 
-	
+	<?php $path=explode('/',request_uri()); //print_r($parts);print_r($_REQUEST);?>
 	<div class="title" style="width:100%;">
-          <?php if (arg(0) == 'user' && arg(1) == 'register') : ?>
+          <?php if (in_array('register',$path)) : ?>
           <h1 class="new_account_heading">  New Photograper Registration </h1> <h1 class="login_heading">I already have a Photographer account </h1>
-          <?php elseif (arg(0) == 'user' && empty($messages)&& arg(1) == null) : ?>
+          
+
+          <?php elseif (arg(0) == 'user' && arg(1)==null) : ?>
            <h1 class="log_in">  User Login</h1>
           <?php endif ; ?>
 	</div>
@@ -120,7 +122,7 @@
 <!--</div>-->
 
 	<div class="clr"></div>
-    <div class="gray-bdr"></div>
+    
 	
     <div class="clr"></div>
 	

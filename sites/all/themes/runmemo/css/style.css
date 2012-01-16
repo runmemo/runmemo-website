@@ -277,7 +277,7 @@ float:left;
 	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	padding-bottom:1px;
 	margin-bottom:20px;
-min-height:500px;
+min-height:333px;
 }
 .cont-header-bg {
 	background:url(../images/cont-header-bg.png) repeat-x;
@@ -571,6 +571,7 @@ width:490px;
     text-align: right;
     width: 136px;
 }
+
 #user-register-form input,#user-login input{
 	border: 1px solid #DEE4E7;
     border-radius: 5px 5px 5px 5px;
@@ -686,7 +687,7 @@ margin:60px 0 auto;
 display:none;
 }
 .page-user .content{
-
+min-height:590px;
 -webkit-box-shadow: none !important; 
 	-moz-box-shadow: none !important; 
 	box-shadow: none !important;
