@@ -59,10 +59,10 @@ function runner_permission()
  * $bucket give the selected event name
 */
 
-function select_event_runner_get_photos($bucket)
+function select_event_runner_get_photos($form,&$form_state,$bucket)
 {
 
-
+	$form=array();
 	$form['setfield']=array(
 	    '#type' => 'fieldset',
 	    '#title' => t(''),
@@ -73,8 +73,7 @@ function select_event_runner_get_photos($bucket)
 	  );
 
 	//select event in the runner side
-	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>'Get My Photos','#id'=>'event_runner');
-
+	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>",'#id'=>'event_runner');
 	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
 	$event_name=amazon_s3_get_buckets();
 	foreach($event_name as $event_name_value)
@@ -83,13 +82,17 @@ function select_event_runner_get_photos($bucket)
 		if($event_title!='home_page')
 			$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
 	}
+
+
 	if(isset($bucket) && ($bucket!='') && ($bucket=='home_page'))
 	{
+		
 		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options']['select_event'];
 	}
 	
 	else
 	{
+		
 		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
 	}
 
@@ -112,6 +115,7 @@ function select_event_runner_get_photos_submit($form,&$form_state)
 {
 
 	$bucket=$form['setfield']['events_select_runner']['#value'];
+	
 	$form_state['redirect'] = "runner/".$bucket;
 
 }
@@ -123,7 +127,7 @@ function select_event_runner_get_photos_submit($form,&$form_state)
  * @return 
  *   return form values
  */
-function select_event_runner_sell_photos($bucket)
+function select_event_runner_sell_photos($form,&$form_state,$bucket)
 {
 	//for sell the photos in the runner side
 	$form['sellfield']=array(
@@ -135,7 +139,7 @@ function select_event_runner_sell_photos($bucket)
 	    
 	  );
 
-	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'Sell My Photos','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
+	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'<div id="trade">Trade</div>  <div id="taken_picture">pictures you have taken...</div>','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
 
 	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
 	$event_name_sell=amazon_s3_get_buckets();
@@ -160,10 +164,14 @@ function select_event_runner_sell_photos($bucket)
  */
 function amozon_s3_show_images($bucket)
 {
+
+
 	if($bucket=='')
 	{
 		$bucket='home_page';
 	}
+
+
 	$s3 = amazon_s3_get_instance();
 	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
 	foreach ($objects as &$object) {
@@ -209,12 +217,13 @@ function amozon_s3_show_images($bucket)
 	}
 	$table.='</table>';
 
+
 	$select_event_runner_get_photos = drupal_render(drupal_get_form('select_event_runner_get_photos', $bucket));
 
 	$select_event_runner_sell_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos', $bucket));
 
 
-	$style="<span style='float:left'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span><span style='float:left'>$table</span>";
+	$style="<span style='float:right'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span><span style='float:left'>$table</span>";
 
 	return $style;
 }
