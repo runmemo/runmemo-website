@@ -1,9 +1,9 @@
 <link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
 <style type="text/css">
 @font-face {
-	font-family:'Futura-LT-Light';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura-LT-Light.ttf');
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura-LT-Light.otf');
+	font-family:'Futura LT Light';
+	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.ttf');
+	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.otf');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -18,19 +18,38 @@
 <div id="wrapper">
   <div id="inner-wrapper">
 
-    <div class="header"> <a href="<?php echo base_path();?>">
-      <div class="logo float-L"></div>
-      </a>
-      <div class="nav float-L">
-        <ul>
-           <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>" class="active">RUNNERS</a></li>
-          <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>">PHOTOGRAPHERS</a></li>
-          <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>">GALLERY</a></li>
-        </ul>
-      </div>
+    <div class="header">
+
+<div id="logo-floater">
+        <?php if ($logo || $site_title): ?>
+          <?php if ($title): ?>
+            <div id="branding"><strong><a href="<?php print $front_page ?>">
+            <?php if ($logo): ?>
+              <img src="<?php print $logo ?>"  id="logo" />
+            <?php endif; ?>
+            </a></strong></div>
+          <?php else: /* Use h1 when the content title is empty */ ?>
+            <h1 id="branding"><a href="<?php print $front_page ?>">
+            <?php if ($logo): ?>
+              <img src="<?php print $logo ?>"  id="logo" />
+            <?php endif; ?>
+            </a></h1>
+        <?php endif; ?>
+        <?php endif; ?>
+        </div>
+
+        <?php if ($primary_nav): print $primary_nav; endif; ?>
+        <?php if ($secondary_nav): print $secondary_nav; endif; ?>
+
+
+<?php print render($page['header']); ?>
+
+
+
+
+
+
+
       <div class="login-btn float-R">
         <div class="login-btn-lft float-L"></div>
      
@@ -50,7 +69,7 @@
 	<a href="<?php echo base_path();?>user/register"><span class="float-R underline">Register</span></a>
 	</div>
 	<?php }else{?>
-	<div class="login-btn-mid float-L" style="width: 193px;">
+	<div class="login-btn-mid float-L" style="width: 240px;">
 	<a href="<?php echo base_path();?>user"><span class="float-L">Welcome <?php print $user->name;?></span></a>
  	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
 	<a href="<?php echo base_path();?>user/logout"><span class="float-R underline">Logout</span></a>
@@ -73,7 +92,7 @@
    <!-- <div id="container" class="clearfix">-->
 
     <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-         <!--  <?php print $breadcrumb; ?>
+   <?php print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
           <?php if ($tabs): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
@@ -86,8 +105,8 @@
           <?php print render($tabs2); ?>
           <?php print $messages; ?>
           <?php print render($page['help']); ?>
-          <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>-->
-	<?php print $messages; ?>
+          <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
+	
           <div class="clearfix"> 
 		<div class="gray-bdr" style="margin-top:30px;"></div>
 		 <?php if ($page['sidebar_first']): ?>

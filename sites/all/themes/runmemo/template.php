@@ -7,7 +7,7 @@
  *   An array containing the breadcrumb links.
  * @return a string containing the breadcrumb output.
  */
-function garland_breadcrumb($variables) {
+function runmemo_breadcrumb($variables) {
   $breadcrumb = $variables['breadcrumb'];
 
   if (!empty($breadcrumb)) {
@@ -23,21 +23,21 @@ function garland_breadcrumb($variables) {
 /**
  * Override or insert variables into the maintenance page template.
  */
-function garland_preprocess_maintenance_page(&$vars) {
+function runmemo_preprocess_maintenance_page(&$vars) {
   // While markup for normal pages is split into page.tpl.php and html.tpl.php,
   // the markup for the maintenance page is all in the single
   // maintenance-page.tpl.php template. So, to have what's done in
-  // garland_preprocess_html() also happen on the maintenance page, it has to be
+  // runmemo_preprocess_html() also happen on the maintenance page, it has to be
   // called here.
-  garland_preprocess_html($vars);
+  runmemo_preprocess_html($vars);
 }
 
 /**
  * Override or insert variables into the html template.
  */
-function garland_preprocess_html(&$vars) {
+function runmemo_preprocess_html(&$vars) {
   // Toggle fixed or fluid width.
-  if (theme_get_setting('garland_width') == 'fluid') {
+  if (theme_get_setting('runmemo_width') == 'fluid') {
     $vars['classes_array'][] = 'fluid-width';
   }
   // Add conditional CSS for IE6.
@@ -47,7 +47,7 @@ function garland_preprocess_html(&$vars) {
 /**
  * Override or insert variables into the html template.
  */
-function garland_process_html(&$vars) {
+function runmemo_process_html(&$vars) {
   // Hook into color.module
   if (module_exists('color')) {
     _color_html_alter($vars);
@@ -57,7 +57,7 @@ function garland_process_html(&$vars) {
 /**
  * Override or insert variables into the page template.
  */
-function garland_preprocess_page(&$vars) {
+function runmemo_preprocess_page(&$vars) {
   // Move secondary tabs into a separate variable.
   $vars['tabs2'] = array(
     '#theme' => 'menu_local_tasks',
@@ -121,21 +121,21 @@ function garland_preprocess_page(&$vars) {
 /**
  * Override or insert variables into the node template.
  */
-function garland_preprocess_node(&$vars) {
+function runmemo_preprocess_node(&$vars) {
   $vars['submitted'] = $vars['date'] . ' — ' . $vars['name'];
 }
 
 /**
  * Override or insert variables into the comment template.
  */
-function garland_preprocess_comment(&$vars) {
+function runmemo_preprocess_comment(&$vars) {
   $vars['submitted'] = $vars['created'] . ' — ' . $vars['author'];
 }
 
 /**
  * Override or insert variables into the block template.
  */
-function garland_preprocess_block(&$vars) {
+function runmemo_preprocess_block(&$vars) {
   $vars['title_attributes_array']['class'][] = 'title';
   $vars['classes_array'][] = 'clearfix';
 }
@@ -143,7 +143,7 @@ function garland_preprocess_block(&$vars) {
 /**
  * Override or insert variables into the page template.
  */
-function garland_process_page(&$vars) {
+function runmemo_process_page(&$vars) {
   // Hook into color.module
   if (module_exists('color')) {
     _color_page_alter($vars);
@@ -153,7 +153,7 @@ function garland_process_page(&$vars) {
 /**
  * Override or insert variables into the region template.
  */
-function garland_preprocess_region(&$vars) {
+function runmemo_preprocess_region(&$vars) {
   if ($vars['region'] == 'header') {
     $vars['classes_array'][] = 'clearfix';
   }

@@ -1,9 +1,9 @@
 <link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
 <style type="text/css">
 @font-face {
-	font-family:'Futura-LT-Light';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura-LT-Light.ttf');
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura-LT-Light.otf');
+	font-family:'Futura LT Light';
+	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.ttf');
+	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.otf');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -18,19 +18,43 @@
 <div id="wrapper">
   <div id="inner-wrapper">
 
-    <div class="header"> <a href="<?php echo base_path();?>">
-      <div class="logo float-L"></div>
-      </a>
-      <div class="nav float-L">
-        <ul>
-           <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>" class="active">RUNNERS</a></li>
-          <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>">PHOTOGRAPHERS</a></li>
-          <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/nav-separator.png" /></span>
-          <li><a href="<?php echo base_path();?>">GALLERY</a></li>
-        </ul>
-      </div>
+    <div class="header">
+
+
+<div id="logo-floater">
+        <?php if ($logo || $site_title): ?>
+          <?php if ($title): ?>
+            <div id="branding"><strong><a href="<?php print $front_page ?>">
+            <?php if ($logo): ?>
+              <img src="<?php print $logo ?>"  id="logo" />
+            <?php endif; ?>
+            </a></strong></div>
+          <?php else: /* Use h1 when the content title is empty */ ?>
+            <h1 id="branding"><a href="<?php print $front_page ?>">
+            <?php if ($logo): ?>
+              <img src="<?php print $logo ?>"  id="logo" />
+            <?php endif; ?>
+            </a></h1>
+        <?php endif; ?>
+        <?php endif; ?>
+        </div>
+
+
+
+   
+ <?php if ($primary_nav): print $primary_nav; endif; ?>
+        <?php if ($secondary_nav): print $secondary_nav; endif; ?>
+
+
+
+
+
+
+<?php print render($page['header']); ?>
+      
+
+
+
       <div class="login-btn float-R">
         <div class="login-btn-lft float-L"></div>
      
@@ -50,7 +74,7 @@
 	<a href="<?php echo base_path();?>user/register"><span class="float-R underline">Register</span></a>
 	</div>
 	<?php }else{?>
-	<div class="login-btn-mid float-L" style="width: 193px;">
+	<div class="login-btn-mid float-L" style="width: 240px;">
 	<a href="<?php echo base_path();?>user"><span class="float-L">Welcome <?php print $user->name;?></span></a>
  	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
 	<a href="<?php echo base_path();?>user/logout"><span class="float-R underline">Logout</span></a>
@@ -61,10 +85,7 @@
         <div class="login-btn-rig float-L"></div>
       </div>
       <div class="clr"></div>
-      <div class="cart float-R">
-        <div class="cart-img float-L"></div>
-        <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
-      </div>
+      
     </div>
 
     <div class="clr"></div>
@@ -136,11 +157,14 @@
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" /></li>
           </ul>
         </div>
-        <!--<div class="find-btn float-R"></div>-->
+	
+        <div class="float-R w-275">
+	<input type="text" class="border-radius float-L find-txt" placeholder="My Number"/>
         <input type="button" class="find-btn float-R" /> 
+	</div>
       </div>
       <div class="cont-rig float-L">
-        <div class="cont-lft-header">Royal Parks Half Maraphone 2011</div>
+        <div class="cont-lft-header">Man Of Isles Half Marathon 2011</div>
          <div class="find-palyers float-L">
           <ul>
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" /></li>
@@ -149,8 +173,10 @@
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" /></li>
           </ul>
         </div>
-        <!--<div class="find-btn float-R"></div>-->
+	<div class="float-R w-275">
+	<input type="text" class="border-radius float-L find-txt" placeholder="My Number"/>
         <input type="button" class="find-btn float-R" />
+	</div>
       </div>
     </div>
     <div class="clr"></div>
