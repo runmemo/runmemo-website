@@ -1,5 +1,0 @@
-name = runmemo
-description = A block module that is used to alter form in the core module
-core = 7.x
-
-files[] = runmemo.inc
