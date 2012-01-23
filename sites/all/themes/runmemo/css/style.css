@@ -64,7 +64,7 @@ background:none !important;
 	color:#ff6600;
 }
 .login-btn {
-	width:270px;
+	
 	height:28px;
 	padding-top:30px;
         margin-top:10px;
@@ -76,7 +76,6 @@ background:none !important;
 }
 .login-btn-mid {
 	background:url(../images/login-btn-mid.png) repeat-x;
-	width:243px;
 	height:29px;
 }
 
@@ -654,7 +653,7 @@ width:149px;
 #user-register-form .field-widget-options-onoff input{
  left: 15px;
     position: relative;
-    top: 15px;
+    top: 4px;
 width:10px;
 }
 #user-register-form .field-widget-options-onoff .description{
@@ -745,6 +744,7 @@ height:auto !important;
 float:none !important;
 }
 #edit-actions--2 #edit-submit--2{
+-moz-border-radius: 5px 5px 5px 5px;
 width:170px;
 background:#f5f5f5;
 border:1px solid #bfbfbf;
@@ -791,7 +791,7 @@ width:338px !important;
 float:right;
 }
 .log_in{
- left: 437px;
+ left: 396px;
     position: relative;
     top: 59px;
 width:200px;
@@ -911,7 +911,7 @@ ul.main-menu {
   top:30px;
   left:5px;
   color:#90B5D1!important;
-z-index:5;
+z-index:10;
 }
 ul.links li, ul.inline li {
   border-left:1px solid #ccc!important;
@@ -1040,3 +1040,162 @@ ul.main-menu li
 {
     z-index:-1;
 }
+/***********************************/
+
+
+
+.breadcrumb{
+padding-top:5px;
+padding-bottom:30px;
+}
+
+.breadcrumb a,.arrow{
+float:left;
+}
+
+.breadcrumb .start{
+width:10px;
+height:26px;
+background: url("../images/bread-back.png") no-repeat scroll 0 0 !important;
+float:left;
+}
+
+
+.breadcrumb .end{
+float:left;
+width:10px;
+height:26px;
+background: url("../images/bread-front.png") no-repeat scroll 0 0 !important;
+}
+
+.breadcrumb a{
+height:26px;
+background: url("../images/bread-mid.png") repeat-x!important;
+}
+
+.breadcrumb .arrow{
+width:10px;
+height:26px;
+background: url("../images/bread-center.png")repeat-x !important;
+}
+.page-login .description {
+ display:none;
+}
+.page-login .content #sign-in-fieldset {
+  float:right;
+  /*border:1px solid #ccc!important;*/
+  padding:10px 0 0 0;
+  margin:0 0 0 0;
+}
+.page-login .content #register-fieldset {
+  float:left;
+   background:none!important;
+  border:1px solid #ccc!important;
+  margin:0 0 0 0!important;
+  padding:0;
+}
+.page-login .login-forgot {
+   text-align:left;
+   position:relative;
+   left:142px;
+   float:left;
+   width:100%;
+}
+.page-login .fieldset-legend {
+   display:none;
+}
+.page-login .new_account_heading {
+  position:relative;
+  z-index:1;
+  top:48px;
+  font-family:'Walkway Bold',sans-serif;
+  color:#94BB17;
+}
+.page-login .login_heading {
+  position:relative;
+  z-index:1;
+  top:47px;
+  font-family:'Walkway Bold',sans-serif;
+  color:#4AB0F8 !important;
+}
+.page-login #user-login label {
+  position:relative;
+  z-index:1;
+}
+.page-login #tabs-wrapper {
+  display:none;
+}
+.page-login .content {
+  border:none!important;
+  -moz-box-shadow:none!important;
+  -webkit-box-shadow:none!important;
+  -o-box-shadow:none!important;
+   box-shadow:none!important;
+}
+.page-login #user-register-form {
+  margin:15px 0 0 0;
+}
+.page-login #register-fieldset .fieldset-wrapper {
+  border:none!important;
+}
+.page-login .fieldset-wrapper {
+  padding-top:30px;
+  border:1px solid #ccc;
+}
+.page-login #sign-in-fieldset .fieldset-wrapper {
+  width:464px;
+  position:relative;
+  top:-11px;
+}
+.page-login .content .form-wrapper{
+  width:475px !important;
+}
+.page-login #user-register-form #paypal_icon {
+  position:relative;
+  right:23px;
+}
+.page-login .option .description {
+  display:block!important;
+}
+.page-login #edit-field-term .description {
+  display:block!important;
+}
+.page-login #register-fieldset #edit-actions #edit-submit {
+    background: none repeat scroll 0 0 #F5F5F5;
+    border: 1px solid #BFBFBF;
+    color: #34373A;
+    cursor: pointer;
+    font-family: helvetica,san-serif;
+    font-size: 14px;
+    font-weight: bold;
+    left: 150px;
+    position: relative;
+    width: 170px;
+}
+
+.page-user .profile h3{
+font-weight: bold;
+font-size: 100%;
+margin-bottom:0 !important;
+}
+.page-user .profile dt{
+margin-top:0 !important;
+}
+
+.page-user #block-system-main{
+margin-left:200px;
+}
+
+.page-user #user-login{
+    border: 1px solid #BFBFBF;
+    height: 235px !important;
+    margin: 0 !important;
+    padding-top: 35px;
+    width: 500px !important;
+}
+.page-user .form{
+margin-top:50px!important;
+}
+
+
+
