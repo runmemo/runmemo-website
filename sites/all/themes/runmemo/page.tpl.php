@@ -15,6 +15,8 @@
 }
 </style>
 
+
+
 <div id="wrapper">
   <div id="inner-wrapper">
 
@@ -50,42 +52,18 @@
 
 
 
-      <div class="login-btn float-R">
-        <div class="login-btn-lft float-L"></div>
-     
- 	<?php global $user;
-	 if (empty($user->name)) 
-	{?>
-	<div class="login-btn-mid float-L">
-	<a href="<?php echo base_path();?>user"><span class="float-L">Login</span></a>
-	<a href="#">
-          <div class="login-logo float-L mt3"></div>
-          </a> <a href="#">
-          <div class="facebook-logo float-L mt3"></div>
-          </a> <a href="#">
-          <div class="twitter-logo float-L mt3"></div>
-          </a> 
-	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
-	<a href="<?php echo base_path();?>user/register"><span class="float-R underline">Register</span></a>
-	</div>
-	<?php }else{?>
-	<div class="login-btn-mid float-L" style="width: 240px;">
-	<a href="<?php echo base_path();?>user"><span class="float-L">Welcome <?php print $user->name;?></span></a>
- 	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
-	<a href="<?php echo base_path();?>user/logout"><span class="float-R underline">Logout</span></a>
-	</div>
-	<?php }?>
-	 
-
-        <div class="login-btn-rig float-L"></div>
-      </div>
+ 
       <div class="clr"></div>
+<?php
+if(!in_array('Photographer',$user->roles))
+{
+?>
       <div class="cart float-R">
         <div class="cart-img float-L"></div>
         <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
       </div>
     </div>
-
+<?php }?>
     <div class="clr"></div>
 
 
@@ -95,6 +73,10 @@
    <?php print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
+<?php 
+if(!in_array('anonymous user',$user->roles))
+{
+?>
           <?php if ($tabs): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
           <?php print render($title_prefix); ?>
           <?php if ($title): ?>
@@ -103,22 +85,26 @@
           <?php print render($title_suffix); ?>
           <?php if ($tabs): ?><?php print render($tabs); ?></div><?php endif; ?>
           <?php print render($tabs2); ?>
+<?php 
+}
+?>
           <?php print $messages; ?>
           <?php print render($page['help']); ?>
           <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
 	
+
+
           <div class="clearfix"> 
 		<div class="gray-bdr" style="margin-top:30px;"></div>
 		 <?php if ($page['sidebar_first']): ?>
         <div id="sidebar-first" class="sidebar">
           <?php print render($page['sidebar_first']); ?>
         </div>
-	
       <?php endif; ?>
 
 	<?php $path=explode('/',request_uri()); //print_r($parts);print_r($_REQUEST);?>
 	<div class="title" style="width:100%;">
-          <?php if (in_array('register',$path)) : ?>
+          <?php if ((in_array('login',$path))&&(in_array('anonymous user',$user->roles))) : ?>
           <h1 class="new_account_heading">  New Photograper Registration </h1> <h1 class="login_heading">I already have a Photographer account </h1>
           
 
