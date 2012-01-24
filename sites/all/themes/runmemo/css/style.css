@@ -33,7 +33,24 @@ background:none !important;
 	margin:0 auto;
 }
 .header {
-	width:100%;
+	width:980px;
+}
+#logo-floater{
+width:260px;
+float:left;
+}
+.region-header{
+float:left;
+margin-left:20px;
+width:700px;
+}
+#block-superfish-1{
+float:left;
+margin-left:10px;
+}
+#block-block-2{
+float:right;
+margin:0;
 }
 .logo {
 	background:url(../images/logo.png) no-repeat;
@@ -464,8 +481,13 @@ margin-left:10px;
 #tabs-wrapper{
 border:none !important;
 }
+.page-login #user-register-form .form-item-field-phone-number-und-0-value{
+margin-bottom:0;
+}
 .captcha{
 background:none !important;
+padding:0 !important;
+margin:0 !important;
 }
 #find,#trade{
  color: #94BB1F;
@@ -697,6 +719,9 @@ width:980px;
 .page-runner #block-system-main .content{
 float:right;
 }
+.page-user- #block-system-main{
+margin:0 !important;
+}
 /********************login Page**********************************************************/
 .page-user #user-login{
 margin:60px 0 auto;
@@ -743,7 +768,7 @@ margin:0 auto !important;
 height:auto !important;
 float:none !important;
 }
-#edit-actions--2 #edit-submit--2{
+.page-login #edit-actions--2 #edit-submit--2{
 -moz-border-radius: 5px 5px 5px 5px;
 width:170px;
 background:#f5f5f5;
@@ -758,7 +783,7 @@ font-size:14px;
 font-weight:bold;
 }
 
-#edit-actions #edit-submit{
+.page-login #edit-actions #edit-submit,.page-user #edit-actions #edit-submit{
 width:100px;
 background:#f5f5f5;
 color: #34373A;
@@ -781,6 +806,8 @@ position: relative;
 }
 .captcha .fieldset-wrapper{
 float:left;
+border:none !important;
+height: auto !important;
 }
 .captcha .description{
 display:none;
@@ -853,7 +880,7 @@ width:299px!important;
 height:39px!important; 
 }
 .chzn-drop {
-width:299px!important; 
+width:307px!important; 
 }
 .chzn-search input{
 width:250px!important; 
@@ -1016,7 +1043,7 @@ padding:2px;
 	margin-top:-6px;
 padding-left:10px;
 }
-/*.content ul.sf-menu li ul li:hover
+/*.content ul.sf-menu li ul li.content ul.sf-menu li ul li:hover
 {
 	 background:#bdbdbd;
          border-bottom:1px dotted #000;
@@ -1056,7 +1083,7 @@ float:left;
 .breadcrumb .start{
 width:10px;
 height:26px;
-background: url("../images/bread-back.png") no-repeat scroll 0 0 !important;
+background: url("../images/bread.png") no-repeat scroll 0 0 !important;
 float:left;
 }
 
@@ -1065,32 +1092,35 @@ float:left;
 float:left;
 width:10px;
 height:26px;
-background: url("../images/bread-front.png") no-repeat scroll 0 0 !important;
+background: url("../images/bread.png") no-repeat scroll 0 0 !important;
+background-position:-28px 0!important;
 }
 
 .breadcrumb a{
 height:26px;
 background: url("../images/bread-mid.png") repeat-x!important;
+padding:2px;
 }
 
 .breadcrumb .arrow{
 width:10px;
 height:26px;
-background: url("../images/bread-center.png")repeat-x !important;
+background: url("../images/bread.png")repeat-x !important;
+background-position:24px 0!important;
 }
 .page-login .description {
  display:none;
 }
 .page-login .content #sign-in-fieldset {
   float:right;
-  /*border:1px solid #ccc!important;*/
-  padding:10px 0 0 0;
+  
+  padding:0;
   margin:0 0 0 0;
 }
 .page-login .content #register-fieldset {
   float:left;
    background:none!important;
-  border:1px solid #ccc!important;
+border:none !important;
   margin:0 0 0 0!important;
   padding:0;
 }
@@ -1132,27 +1162,43 @@ background: url("../images/bread-center.png")repeat-x !important;
   -o-box-shadow:none!important;
    box-shadow:none!important;
 }
-.page-login #user-register-form {
-  margin:15px 0 0 0;
+.page-login #user-register-form{
+   border: 1px solid #D2D2D2;
+      width: 490px;
+margin-right:20px;
+margin-top:0;
+}
+.page-login #user-register-form > div,.page-login #user-login > div{
+margin-top:60px;
+}
+.page-login #user-register-form #edit-actions--2{
+float:left;.captcha
+}
+.page-login #user-login{
+border:1px solid #D2D2D2;
+    width: 470px;
 }
 .page-login #register-fieldset .fieldset-wrapper {
-  border:none!important;
+  margin-right: 10px;
+    padding: 0;
+    width: 490px;
+
 }
-.page-login .fieldset-wrapper {
-  padding-top:30px;
-  border:1px solid #ccc;
-}
+
 .page-login #sign-in-fieldset .fieldset-wrapper {
-  width:464px;
-  position:relative;
-  top:-11px;
+  width:470px;
+margin:0;
+float:right;
+padding:0;
+
 }
-.page-login .content .form-wrapper{
-  width:475px !important;
-}
+
 .page-login #user-register-form #paypal_icon {
   position:relative;
-  right:23px;
+  right:9px;
+top:54px;
+
+float:right;
 }
 .page-login .option .description {
   display:block!important;
@@ -1197,5 +1243,35 @@ margin-left:200px;
 margin-top:50px!important;
 }
 
+.page-user-password #edit-actions #edit-submit{
+width:auto;
+padding:7px;
+}
+.toolbar-drawer #edit-actions{
+float:left;
 
+padding:0;
+margin-left:25px;
+} 
+.toolbar-drawer #edit-actions #edit-submit{
+float:left;
+}
+.toolbar-drawer #edit-actions #edit-preview{
+float:right;
+}
+.page-user-password #user-pass {
+width:545px;
+border:1px solid #D2D2D2;
+margin-top:20px;
+}
+.page-user-password #user-pass > div{
+
+margin-left:20px;
+margin-top:20px;
+}
+
+.sf-shadow ul {
+    -moz-border-radius-bottomleft: 0px;
+    -moz-border-radius-topright: 0px;
+    }
 
