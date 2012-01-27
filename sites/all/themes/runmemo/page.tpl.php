@@ -1,21 +1,4 @@
 <link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
-<style type="text/css">
-@font-face {
-	font-family:'Futura LT Light';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.ttf');
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.otf');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'Walkway Bold';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Walkway Bold.ttf');
-	font-weight: normal;
-	font-style: normal;
-}
-</style>
-
-
 
 <div id="wrapper">
   <div id="inner-wrapper">
@@ -27,13 +10,13 @@
           <?php if ($title): ?>
             <div id="branding"><strong><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" />
+              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
             <?php endif; ?>
             </a></strong></div>
           <?php else: /* Use h1 when the content title is empty */ ?>
             <h1 id="branding"><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" />
+              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
             <?php endif; ?>
             </a></h1>
         <?php endif; ?>
@@ -60,7 +43,7 @@ if(!in_array('Photographer',$user->roles))
 ?>
       <div class="cart float-R">
         <div class="cart-img float-L"></div>
-        <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
+        <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" alt="shopping_logo"/></span> </div>
       </div>
     </div>
 <?php }?>
@@ -70,7 +53,7 @@ if(!in_array('Photographer',$user->roles))
    <!-- <div id="container" class="clearfix">-->
 
     <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-   <?php print $breadcrumb; ?>
+   <?php //print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
 <?php 
@@ -86,6 +69,24 @@ if(!in_array('anonymous user',$user->roles))
           <?php if ($tabs): ?><?php print render($tabs); ?></div><?php endif; ?>
           <?php print render($tabs2); ?>
 <?php 
+}
+else
+{
+if((arg(0)!= 'login') && (arg(0) != 'user'))
+{?>
+
+		  <?php if ($tabs): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
+          <?php print render($title_prefix); ?>
+          <?php if ($title): ?>
+            <h1<?php print $tabs ? ' class="with-tabs"' : '' ?>><?php print $title ?></h1>
+          <?php endif; ?>
+          <?php print render($title_suffix); ?>
+          <?php if ($tabs): ?><?php print render($tabs); ?></div><?php endif; ?>
+          <?php print render($tabs2); ?>
+
+<?php }
+
+
 }
 ?>
           <?php print $messages; ?>
@@ -139,9 +140,9 @@ if(!in_array('anonymous user',$user->roles))
   <div class="footer"><!--footer-->
   <div class="footer-inner">
   <div class="social-icon float-L">
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  /></a>
- <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" /></a>
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" /></a>
+  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
+  <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
+  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
   </div>
   <p class="float-R"><small>© 2012</small>  Runmemo</p>
   </div>

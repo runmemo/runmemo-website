@@ -1,19 +1,4 @@
 <link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
-<style type="text/css">
-@font-face {
-	font-family:'Futura LT Light';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.ttf');
-	src: url('<?php echo base_path().path_to_theme(); ?>/Futura LT Light.otf');
-	font-weight: normal;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'Walkway Bold';
-	src: url('<?php echo base_path().path_to_theme(); ?>/Walkway Bold.ttf');
-	font-weight: normal;
-	font-style: normal;
-}
-</style>
 
 <div id="wrapper">
   <div id="inner-wrapper">
@@ -26,13 +11,13 @@
           <?php if ($title): ?>
             <div id="branding"><strong><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" />
+              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
             <?php endif; ?>
             </a></strong></div>
           <?php else: /* Use h1 when the content title is empty */ ?>
             <h1 id="branding"><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" />
+              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
             <?php endif; ?>
             </a></h1>
         <?php endif; ?>
@@ -55,37 +40,6 @@
 
 
 
-      <div class="login-btn float-R">
-        <div class="login-btn-lft float-L"></div>
-     
- 	<?php global $user;
-	 if (empty($user->name)) 
-	{?>
-	<div class="login-btn-mid float-L">
-	<a href="<?php echo base_path();?>user"><span class="float-L">Login</span></a>
-	<a href="#">
-          <div class="login-logo float-L mt3"></div>
-          </a> <a href="#">
-          <div class="facebook-logo float-L mt3"></div>
-          </a> <a href="#">
-          <div class="twitter-logo float-L mt3"></div>
-          </a> 
-	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
-	<a href="<?php echo base_path();?>user/register"><span class="float-R underline">Register</span></a>
-	</div>
-	<?php }else{?>
-	<div class="login-btn-mid float-L" style="width: 240px;">
-	<a href="<?php echo base_path();?>user"><span class="float-L">Welcome <?php print $user->name;?></span></a>
- 	<img src="<?php echo base_path().path_to_theme(); ?>/images/separator.png" width="1" height="23" /> 
-	<a href="<?php echo base_path();?>user/logout"><span class="float-R underline">Logout</span></a>
-	</div>
-	<?php }?>
-	 
-
-        <div class="login-btn-rig float-L"></div>
-      </div>
-      <div class="clr"></div>
-      
     </div>
 
     <div class="clr"></div>
@@ -94,7 +48,7 @@
    <!-- <div id="container" class="clearfix">-->
 
     <div id="center"><div id="squeeze"><div class="right-corner"><div class="left-corner">
-         <!--  <?php print $breadcrumb; ?>
+         <!--  <?php //print $breadcrumb; ?>
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
           <?php if ($tabs): ?><div id="tabs-wrapper" class="clearfix"><?php endif; ?>
@@ -151,12 +105,12 @@
         <div class="cont-lft-header">Royal Parks Half Maraphone 2011</div>
         <div class="find-palyers float-L">
           <ul>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" /></li>
-          </ul>
-        </div>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" alt="runmemo_player"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" alt="runmemo_player1"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" alt="runmemo_player2"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" alt="runmemo_player3"/></li>
+          </ul>        
+         </div>
 	
         <div class="float-R w-275">
 	<input type="text" class="border-radius float-L find-txt" placeholder="My Number"/>
@@ -167,10 +121,10 @@
         <div class="cont-lft-header">Man Of Isles Half Marathon 2011</div>
          <div class="find-palyers float-L">
           <ul>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" /></li>
-            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" /></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" alt="runmemo_player"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" alt="runmemo_player"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" alt="runmemo_player"/></li>
+            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" alt="runmemo_player"/></li>
           </ul>
         </div>
 	<div class="float-R w-275">
@@ -189,9 +143,9 @@
   <div class="footer"><!--footer-->
   <div class="footer-inner">
   <div class="social-icon float-L">
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  /></a>
- <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" /></a>
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" /></a>
+  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
+  <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
+  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
   </div>
   <p class="float-R"><small>© 2012</small>  Runmemo</p>
   </div>
