@@ -1274,4 +1274,38 @@ margin-top:20px;
     -moz-border-radius-bottomleft: 0px;
     -moz-border-radius-topright: 0px;
     }
+	
+	/*************************Events*******************************************/
+.page-node- .region-content{
+float:left;
+width:980px;
+}
+.page-node-  .content{
+float:left;
+-webkit-box-shadow: none !important; 
+	-moz-box-shadow: none !important; 
+	box-shadow: none !important;
+	min-height:0;
+}
+.page-node- .content .node {
+    border: 1px solid #BFBFBF;
+    margin: 10px auto 0;
+    padding: 10px;
+padding:10px;
+}
+
+@font-face {
+	font-family:'Futura LT Light';
+	src: url('../Futura LT Light.ttf');
+	src: url('../Futura LT Light.otf');
+	font-weight: normal;
+	font-style: normal;
+}
+@font-face {
+	font-family: 'Walkway Bold';
+	src: url('../Walkway Bold.ttf');
+	font-weight: normal;
+	font-style: normal;
+}
+
 
