@@ -60,12 +60,22 @@ list-style:none;
   height:135px;
   overflow-y:scroll;
   background:none;
+  border:1px solid #ccc;
+}
+.plupload_filelist1 {
+ height:135px;
+  overflow:hidden;
+  background:none;
+  border:1px dashed #333;
 }
 
 .plupload_filelist li {
-  background:#F5F5F5 url('images/backgrounds.gif') repeat-x 0 -156px;
+  /*background:#F5F5F5 url('images/backgrounds.gif') repeat-x 0 -156px;*/
   border-bottom:1px solid #DDD;
   padding:10px 8px;
+  border:1px solid #d8d8d8; 
+  background:#FFF;
+  width:880px;
 }
 
 .plupload_filelist_header,.plupload_filelist_footer {
@@ -77,13 +87,33 @@ list-style:none;
 .plupload_filelist_header {
   border-top:1px solid #EEE;
   border-bottom:1px solid #CDCDCD;
+  display:none;
 }
 
 .plupload_filelist_footer {
-  border-top:1px solid #FFF;
+ 
   height:22px;
   line-height:20px;
   vertical-align:middle;
+  position:relative; 
+  top:-247px;
+  background:none!important;
+  color:#90B5D1;
+  text-decoration:underline;
+  padding:0!important;
+}
+
+.plupload_filelist_footer a:hover {
+  text-decoration:none;
+}
+.plupload_content {
+   position:relative;
+   top:241px;
+}
+.plupload_content1 {
+   position:relative;
+   top:-183px;
+   
 }
 
 .plupload_file_name {
@@ -100,16 +130,17 @@ list-style:none;
 }
 
 .plupload_file_size,.plupload_file_status,.plupload_progress {
-  float:right;
-  width:80px;
+  float:left;
+  padding:0 10px;
 }
 
 .plupload_file_size,.plupload_file_status,.plupload_file_action {
-  text-align:right;
+  text-align:left;
 }
 
 .plupload_filelist .plupload_file_name {
-  width:205px;
+  width:auto;
+  padding:0 10px;
 }
 
 .plupload_file_action {
@@ -188,7 +219,8 @@ li.plupload_droptext {
 }
 
 .plupload {
-  border:solid 1px #ccc;
+ /* border:solid 1px #ccc;*/
+  width:956px;
 }
 
 .plupload_header {
@@ -204,4 +236,21 @@ li.plupload_droptext {
 .plupload_start,a.plupload_start:hover {
   background:transparent url(images/up_arrow.png) no-repeat 0 center;
   z-index:100000;
+}
+.select_event_title {
+  font-family:'Walkway Bold',sans-serif;
+  font-size:36px;
+  color:#94BB1F;
+  width:300px;
+}
+.upload_title {
+font-family:'Walkway Bold',sans-serif;
+  font-size:36px;
+  color:#94BB1F;
+  width:300px;
+}
+.guide-line {
+  position:relative;
+  top:-18px;
+  left:242px;
 }
