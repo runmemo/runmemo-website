@@ -50,7 +50,6 @@ function runner_permission()
 		     );
 }
 
-////////////////// * RUNNER SECTION OPEN * ///////////////////////////////////////
 
 /**
  * Created the form for runner page
@@ -59,7 +58,7 @@ function runner_permission()
  * $bucket give the selected event name
 */
 
-function select_event_runner_get_photos($form,&$form_state,$bucket)
+function select_event_runner_get_photos($form,&$form_state)
 {
 
 	$form=array();
@@ -75,25 +74,21 @@ function select_event_runner_get_photos($form,&$form_state,$bucket)
 	//select event in the runner side
 	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>",'#id'=>'event_runner');
 	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name=amazon_s3_get_buckets();
+	//select event options from content type 'event'
+	$runner_search = new runner_search();
+	//get the event name from content type 'event'
+	$event_name=$runner_search->get_event_name();
 	foreach($event_name as $event_name_value)
 	{
-		$event_title=$event_name_value;
-		if($event_title!='home_page')
-			$form['setfield']['events_select_runner']['#options'][$event_title]=$event_title;
+		$event_title = $event_name_value->name;
+		$event_title_nid = $event_name_value->tid;
+		$form['setfield']['events_select_runner']['#options'][$event_title_nid]=$event_title;
 	}
 
-
-	if(isset($bucket) && ($bucket!='') && ($bucket=='home_page'))
-	{
-		
-		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options']['select_event'];
-	}
-	
-	else
-	{
-		
-		$form['setfield']['events_select_runner']['#default_value']=$form['setfield']['events_select_runner']['#options'][$bucket];
+        if((arg('0') == 'taxonomy') && (arg(1) == 'term'))
+        {
+		$default=arg(2);
+		$form['setfield']['events_select_runner']['#default_value']=$default;
 	}
 
 
@@ -102,7 +97,7 @@ function select_event_runner_get_photos($form,&$form_state,$bucket)
 	$form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#value'=>'My Number','#attributes'=>array('onclick'=>'return my_number_hide();','onblur'=>'my_number_show();'),'#prefix'=>"<div style='float:left'></div>");
 
   	//submit get my photo in the runner side
-	$form['setfield']['search']=array('#type'=>'submit','#value'=>'search','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#attributes'=>array('onclick'=>'return search_validation();'));
+	$form['setfield']['search']=array('#type'=>'submit','#value'=>'','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#attributes'=>array('onclick'=>'return search_validation();'));
 
 	return $form;
 
@@ -114,9 +109,9 @@ function select_event_runner_get_photos($form,&$form_state,$bucket)
 function select_event_runner_get_photos_submit($form,&$form_state)
 {
 
-	$bucket=$form['setfield']['events_select_runner']['#value'];
+	$taxonomy_term_id = $form['setfield']['events_select_runner']['#value'];
 	
-	$form_state['redirect'] = "runner/".$bucket;
+	$form_state['redirect'] = "taxonomy/term/".$taxonomy_term_id;
 
 }
 
@@ -142,14 +137,18 @@ function select_event_runner_sell_photos($form,&$form_state,$bucket)
 	$form['sellfield']['events_select_runner']=array('#type'=>'select','#title'=>'<div id="trade">Trade</div>  <div id="taken_picture">pictures you have taken...</div>','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
 
 	$form['sellfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	$event_name_sell=amazon_s3_get_buckets();
-	foreach($event_name_sell as $event_name_value_sell)
+	//select event options from content type 'event'
+	$runner_search = new runner_search();
+	//get the event name from content type 'event'
+	$event_name=$runner_search->get_event_name();
+	foreach($event_name as $event_name_value)
 	{
-		$event_title_sell=$event_name_value_sell;
-		$form['sellfield']['events_select_runner']['#options'][$event_title_sell]=$event_title_sell;
+		$event_title = $event_name_value->name;
+		$event_title_nid = $event_name_value->tid;
+		$form['sellfield']['events_select_runner']['#options'][$event_title_nid]=$event_title;
 	}
 
-	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'Get Started');
+	$form['sellfield']['get_started']=array('#type'=>'submit','#value'=>'');
 	
 	return $form;
 }
@@ -166,67 +165,14 @@ function amozon_s3_show_images($bucket)
 {
 
 
-	if($bucket=='')
-	{
-		$bucket='home_page';
-	}
-
-
-	$s3 = amazon_s3_get_instance();
-	$objects = $s3->getBucket($bucket, NULL, NULL, 100);
-	foreach ($objects as &$object) {
-	$temp_link[]=amazon_s3_get_object_url($bucket, $object['name']);
-	}
-	$table='<table>';
-	for($i=0;$i<count($objects);$i+=5)
-	{
-
-		$table.='<tr>';
-		if(isset($temp_link[$i]) && ($temp_link[$i]!=''))
-	 		$table.="<td><img src='$temp_link[$i]' alt='image' width=100px height=100px  />	</td>";
-
-		if(isset($temp_link[$i+1]) && ($temp_link[$i+1]!=''))
-		{
-			$j=$i+1;
-			$table.="<td><img src='$temp_link[$j]' alt='image' width=100px height=100px  />	</td>";
-
-		}
-
-		if(isset($temp_link[$i+2]) && ($temp_link[$i+2]!=''))
-		{
-			$k=$i+2;
-			$table.="<td><img src='$temp_link[$k]' alt='image' width=100px height=100px  />	</td>";
-		}
-	
-		if(isset($temp_link[$i+3]) && ($temp_link[$i+3]!=''))
-		{
-			$m=$i+3;
-			$table.="<td><img src='$temp_link[$m]' alt='image' width=100px height=100px  /></td>";
-		}
-	
-	
-		if(isset($temp_link[$i+4]) && ($temp_link[$i+4]!=''))
-		{
-			$n=$i+4;
-			$table.="<td><img src='$temp_link[$n]' alt='image' width=100px height=100px  />	</td>";
-		}
-			
-
-		$table.="</tr>";
-	
-	}
-	$table.='</table>';
-
-
 	$select_event_runner_get_photos = drupal_render(drupal_get_form('select_event_runner_get_photos', $bucket));
 
 	$select_event_runner_sell_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos', $bucket));
 
 
-	$style="<span style='float:right'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span><span style='float:left'>$table</span>";
+	$style="<span style='float:right'><div>$select_event_runner_get_photos</div><div>$select_event_runner_sell_photos </div></span>";
 
 	return $style;
 }
 
 
-////////////////// * RUNNER SECTION CLOSE * ///////////////////////////////////////
