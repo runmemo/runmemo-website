@@ -60,22 +60,14 @@ function photographer_permission()
 function select_event_function()
 {
 	$form = array();
-
-	$form['event_title']=array('#markup'=>'<div class="select_event_title" >Select Event</div>');
-
-	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'), '#prefix'=>'<div id="event_drop">', '#suffix'=>'</div>');
-
+	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'));
 	$form['events_select']['#options']=array('select_event'=>"Select Event");
-	//select event options from taxonomy term
-	$photographer_upload = new photographer_upload();
-	
-	//get the event name from taxonomy catalog terms
-	$event_name=$photographer_upload->get_event_name();
+	$event_name=amazon_s3_get_buckets();
 	foreach($event_name as $event_name_value)
 	{
-		$event_title = $event_name_value->name;
-		$event_title_nid = $event_name_value->tid;
-		$form['events_select']['#options'][$event_title_nid]=$event_title;
+		$event_title=$event_name_value;
+		if($event_title!='home_page')
+			$form['events_select']['#options'][$event_title]=$event_title;
 	}
 	return $form;
 
@@ -84,22 +76,21 @@ function select_event_function()
  * Drag and drop upload form creation
  */
 function photographer_drag_and_drop_form($form,&$form_state) {
+
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
   $form['box'] = array(
     '#type' => 'fieldset',
-    '#title' => t(''),
+    '#title' => t('Upload File'),
     '#collapsible' => FALSE,
     '#collapsed' => FALSE,
   );
-
   $form['box']['file'] = array(
     '#type' => 'plupload',
     '#title' => t('File to upload'),
-    '#description' => t(''),
+    '#description' => t('Pick a file to upload'),
     '#size' => 40,
-    '#prefix'=>'<div class="upload_title">Upload Photos</div><span class="guide-line">Please read our '.l("style guide","style-guide").' before uploading the photos</span>'
   );
 
   $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>'return drag_drop_upload_validation();'));
@@ -117,8 +108,6 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 
   global $user;
 
-  
-  
   $uid=$user->uid;
 
   $s3 = amazon_s3_get_instance();
@@ -126,53 +115,22 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //for loop for count the uploaded files resource 2
   for($i=0;$i<count($form['box']['file']['#value']);$i++)
   {
-      
-          
-        // We create a new node object  
-        $node = new stdClass(); 
-        // content type
-        $node->type = "product";         
-        //node title
-        $node->title = $form['box']['file']['#value'][$i]['name'];
-        //set language
-        $node->language = 'und'; 
-        //user id
-        $node->uid = $uid; 
-        node_object_prepare($node); 
-        
-        // Let's add standard body field
-        $node->body[$node->language][0]['value'] = 'This is a body text';
-        $node->body[$node->language][0]['summary'] = 'Here goes a summary';
-        $node->body[$node->language][0]['format'] = 'filtered_html'; 
+	  $bucket = $form['box']['selected_event']['#value'];
+	  $upload_temp_filepath = $form['box']['file']['#value'][$i]['tmppath'];
+	  $object_filename = $form['box']['file']['#value'][$i]['name']; 	
 
-        // Create a File object
-       
-       $file_path = $form['box']['file']['#value'][$i]['tmppath']; 
-      
-               
-        $file = (object) array(
-                'uid' => $uid,
-                'uri' => $file_path,
-                'filemime' => file_get_mimetype($file_path),
-                'status' => 1,
-                                
-        ); 
-        
-       
-        // Save the file to the root of the files directory. You can specify a subdirectory, for example, 'public://images'
-        $file = file_copy($file, 's3://');  
-        $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
-   
-        //add taxonamy terms
-        $taxonomy_term_id = $form['box']['selected_event']['#value'];  
-        $node->taxonomy_catalog[$node->language][]['tid'] = $taxonomy_term_id;
-        
-        $node = node_submit($node); // Prepare node for a submit
-        node_save($node); // After this call we'll get a nid 
-  
-         
-          
-  
+	  $acl = 'public-read';
+	  $success = $s3->putObjectFile($upload_temp_filepath, $bucket, $object_filename, $acl);
+	  
+	  if ($success) {
+
+	    $message = t('Succesfully uploaded the file %filename to the event %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
+	    drupal_set_message($message);
+	  } else {
+	    $message = t('Failed to upload the file %filename to the event %bucket.', array('%filename' => $object_filename, '%bucket' => $bucket));
+	    drupal_set_message($message, 'error');
+	  }
+	  
   }
   $form_state['redirect'] = "photographer";
 }
@@ -181,8 +139,6 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 
 /**
  * Call back function for photographer
- * @return 
- * return form in the page
  */
 function photographer_upload_photos() {
   $select_event=drupal_render(drupal_get_form('select_event_function'));

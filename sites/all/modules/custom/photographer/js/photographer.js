@@ -3,7 +3,6 @@ jQuery(document).ready(function()
 	
 	document.getElementById('selected_event_drag').style.display='none';
 
-
 });
 
 /**
@@ -14,7 +13,7 @@ function select_event_upload()
 	var selected_event=document.getElementById('event_select').value;
 
 
-	//For get the selected  value from select box to the other zip file upload form hidded text field.because of two form in the single page.so we want to pass the selected event name from drag and drop upload form to zip file upload form
+	//for get the selected  value from select box to the other zip file upload form hidded text field.because of two form in the single page.so we want to 		pass the selected event name from drag and drop upload form to zip file upload form
 
 	if(selected_event!='select_event')
 	{
@@ -31,7 +30,7 @@ function select_event_upload()
 }
 
 /**
- * Drag and drop upload validation
+ * draog and drop upload validation
  */
 function drag_drop_upload_validation()
 {
