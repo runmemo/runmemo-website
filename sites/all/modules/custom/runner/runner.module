@@ -75,24 +75,16 @@ function select_event_runner_get_photos($form,&$form_state)
 	//select event in the runner side
 	$form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>",'#id'=>'event_runner');
 	$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
-	//select event options from taxonomy terms
+	//select event options from content type 'event'
 	$runner_search = new runner_search();
-	//get the event name from taxonomy terms
+	//get the event name from content type 'event'
 	$event_name=$runner_search->get_event_name();
 	foreach($event_name as $event_name_value)
 	{
-		$event_title = $event_name_value->name;
-		$event_title_nid = $event_name_value->tid;
+		$event_title = $event_name_value->title;
+		$event_title_nid = $event_name_value->nid;
 		$form['setfield']['events_select_runner']['#options'][$event_title_nid]=$event_title;
 	}
-
-        if((arg('0') == 'taxonomy') && (arg(1) == 'term'))
-        {
-		$default=arg(2);
-		$form['setfield']['events_select_runner']['#default_value']=$default;
-	}
-
-
 
 	//text field for get the runner number
 	$form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#value'=>'My Number','#attributes'=>array('onclick'=>'return my_number_hide();','onblur'=>'my_number_show();'),'#prefix'=>"<div style='float:left'></div>");
@@ -144,8 +136,8 @@ function select_event_runner_sell_photos($form,&$form_state,$bucket)
 	$event_name=$runner_search->get_event_name();
 	foreach($event_name as $event_name_value)
 	{
-		$event_title = $event_name_value->name;
-		$event_title_nid = $event_name_value->tid;
+		$event_title = $event_name_value->title;
+		$event_title_nid = $event_name_value->nid;
 		$form['sellfield']['events_select_runner']['#options'][$event_title_nid]=$event_title;
 	}
 
