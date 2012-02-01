@@ -3,16 +3,17 @@
 class photographer_upload
 {
 	/**
-	 * Get the event name from taxonomy terms
+	 * Get the event name from content type 'event'
 	 * @return
-	 * $event_title return event name,tid array  
+	 * $event_title return event title,nid array 
 	 */
 	public function get_event_name()
 	{
 	
-		$event_title=db_query("SELECT name,tid FROM {taxonomy_term_data} WHERE vid='2'");
+		$event_title=db_query("SELECT title,nid FROM {node} WHERE type='event'");
 		return $event_title;
 	}
+
 
 }
 

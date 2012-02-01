@@ -59,26 +59,29 @@ function photographer_permission()
 */
 function select_event_function()
 {
+    
 	$form = array();
 
 	$form['event_title']=array('#markup'=>'<div class="select_event_title" >Select Event</div>');
 
-	$form['events_select']=array('#type'=>'select','#title'=>'Select Event','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'), '#prefix'=>'<div id="event_drop">', '#suffix'=>'</div>');
+	$form['events_select']=array('#type'=>'select','#title'=>'','#id'=>'event_select','#attributes'=>array('onchange'=>'return select_event_upload();'), '#prefix'=>'<div id="event_drop">', '#suffix'=>'</div>');
 
 	$form['events_select']['#options']=array('select_event'=>"Select Event");
-	//select event options from taxonomy term
+        
+ 
+	//select event options from content type 'event'
 	$photographer_upload = new photographer_upload();
 	
-	//get the event name from taxonomy catalog terms
+	//get the event name from content type 'event'
 	$event_name=$photographer_upload->get_event_name();
 	foreach($event_name as $event_name_value)
 	{
-		$event_title = $event_name_value->name;
-		$event_title_nid = $event_name_value->tid;
+		$event_title = $event_name_value->title;
+		$event_title_nid = $event_name_value->nid;
 		$form['events_select']['#options'][$event_title_nid]=$event_title;
 	}
-	return $form;
 
+        return $form;
 }
 /**
  * Drag and drop upload form creation
@@ -96,13 +99,13 @@ function photographer_drag_and_drop_form($form,&$form_state) {
 
   $form['box']['file'] = array(
     '#type' => 'plupload',
-    '#title' => t('File to upload'),
+    '#title' => t(''),
     '#description' => t(''),
     '#size' => 40,
     '#prefix'=>'<div class="upload_title">Upload Photos</div><span class="guide-line">Please read our '.l("style guide","style-guide").' before uploading the photos</span>'
   );
 
-  $form['box']['upload'] = array('#type' => 'submit', '#value' => 'Upload','#attributes'=>array('onclick'=>'return drag_drop_upload_validation();'));
+  $form['box']['upload'] = array('#type' => 'submit', '#value' => '','#attributes'=>array('onclick'=>'return drag_drop_upload_validation();'));
   $form['box']['selected_event']=array('#type'=>'textfield','#title'=>'','#id'=>'selected_event_drag');
   return $form;
 }
@@ -121,13 +124,13 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   
   $uid=$user->uid;
 
-  $s3 = amazon_s3_get_instance();
+  
 
   //for loop for count the uploaded files resource 2
   for($i=0;$i<count($form['box']['file']['#value']);$i++)
   {
       
-          
+         
         // We create a new node object  
         $node = new stdClass(); 
         // content type
@@ -163,10 +166,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
         $file = file_copy($file, 's3://');  
         $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
    
-        //add taxonamy terms
-        $taxonomy_term_id = $form['box']['selected_event']['#value'];  
-        $node->taxonomy_catalog[$node->language][]['tid'] = $taxonomy_term_id;
+        $node->field_event_reference['und']['0']['nid'] = $form['box']['selected_event']['#value'];
         
+             
         $node = node_submit($node); // Prepare node for a submit
         node_save($node); // After this call we'll get a nid 
   
@@ -174,6 +176,8 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
           
   
   }
+
+  drupal_set_message("Files uploaded succesfully");
   $form_state['redirect'] = "photographer";
 }
 
@@ -185,6 +189,8 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
  * return form in the page
  */
 function photographer_upload_photos() {
+
+    
   $select_event=drupal_render(drupal_get_form('select_event_function'));
   $file_upload_form = drupal_render(drupal_get_form('photographer_drag_and_drop_form'));
   $style="<div style='display:none' id='upload_section' >$file_upload_form</div>";
