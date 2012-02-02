@@ -932,13 +932,14 @@ padding:8px!important;
 width:259px!important; 
 height:48px!important; 
 padding-top:25px!important; 
+margin-left:-8px;
 }
 ul.main-menu {
   float:left!important;
   top:30px;
   left:5px;
   color:#90B5D1!important;
-z-index:10;
+  z-index:10;
 }
 ul.links li, ul.inline li {
   border-left:1px solid #ccc!important;
@@ -1036,17 +1037,15 @@ ul.nice-menu, ul.nice-menu ul
     top: -53px;
     width: 445px;
 }
-.content ul.sf-menu li ul
-{
-    background:#ccc url(../images/menu-arrow.png) no-repeat center -5px;
+.content ul.sf-menu li ul {
+    background:#fbfbfb;/*url(../images/menu-arrow.png) no-repeat 20px -5px*/
 	border-radius:6px;
 	-moz-border-radius:6px;
     -webkit-border-radius:6px;
-	width:170px!important;
-   margin:0px!important;
+	width:162px!important;
+   margin:15px 0 0 0!important;
    padding:0px!important;
-   position:absolute;
-   top:50px;
+   border:1px solid #c4c4c4;
 }
 .content ul.sf-menu li ul li 
 {
@@ -1056,16 +1055,35 @@ ul.nice-menu, ul.nice-menu ul
   border-bottom:1px solid #e0e0e0;
   background-color:none!important;
 }
-
 .content ul.sf-menu li ul li a:hover{
 border-radius:0px;
    	-moz-border-radius:0px;
     -webkit-border-radius:0px;
 	background:none!important;
 }
+.content ul.sf-menu li:hover div#main-arrow {
+   background: url(../images/menu-arrow.png) no-repeat;
+   width:14px;
+   height:8px;
+   position:relative;
+   /*newly edited*/
+   top:-5px;
+   left:6px;
+   display: block;
+  
+}
+.content ul.sf-menu li:hover li#menu-450-1 div#main-arrow {
+	display: none;
+}
+.sf-item-3 {
+   position:relative;
+}
+/*.content ul.sf-menu li ul li ul {
+   margin-top:-15px;
+}*/
 .content ul.sf-menu li ul li ul li
 {
-	margin-top:-6px;
+	margin-top:-8px;
 }
 /*.content ul.sf-menu li ul li.content ul.sf-menu li ul li:hover
 {
@@ -1434,4 +1452,21 @@ div.error, table tr.error {
  background-color:#fce39c!important;
  
  
+}
+
+div.messages {
+   
+    position: relative;
+    top: 28px;
+}
+/*newly added*/
+.content ul.sf-menu li.sf-item-3 {
+	position: relative;
+}
+.content ul.sf-menu li ul li ul {
+	margin: -1px 0 0 10px!important;
+	border-left:none;
+	border-radius:0 6px 6px 0;
+	-moz-border-radius:0 6px 6px 0;
+	-webkit-border-radius:0 6px 6px 0;
 }
