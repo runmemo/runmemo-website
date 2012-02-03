@@ -1,4 +1,3 @@
-
 .plupload_button {
   display:inline-block;
   font:normal 12px sans-serif;
@@ -57,7 +56,7 @@
 }
 
 .plupload_scroll .plupload_filelist {
-  height:135px;
+  height:270px;
   overflow-y:scroll;
   background:none;
   border:1px solid #ccc;
@@ -94,6 +93,7 @@
   vertical-align:middle;
   position:relative; 
   top:-43px;
+  left:5px;
   background:none!important;
   color:#90B5D1;
   text-decoration:underline;
@@ -116,9 +116,14 @@
 
 .plupload_file_name {
   float:left;
-  overflow:hidden;
+/*  overflow:hidden;*/
 }
-
+.plupload_upload_status {
+   left: 340px;
+    position: relative;
+    top: -20px;
+	display:block;
+}
 .plupload_file_status {
   color:#777;
 }
@@ -256,6 +261,7 @@ font-family:'Walkway Bold',sans-serif;
   height:30px;
   position:relative;
   top:18px;
+  z-index:1;
 }
 .page-photographer .plupload_filelist1 {
   height:135px;
@@ -265,5 +271,5 @@ font-family:'Walkway Bold',sans-serif;
   float:left;
   width:937px;
   position:relative;
-  top:31px;
+  top:-100px;
 }
