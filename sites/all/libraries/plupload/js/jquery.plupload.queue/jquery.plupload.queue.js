@@ -104,7 +104,7 @@
 					
 					//Commented to show it always
                     //if (!j.files.length && j.features.dragdrop && j.settings.dragdrop) {
-                        c("#" + k + "_filelist").append('<li class="plupload_droptext">' + a("Drag files here.") + "</li>")
+                        c("#" + k + "_filelist").append('<li class="plupload_droptext">' + a("Drag and Drop your photos here.") + "</li>")
                     //}
 					
 					
@@ -151,7 +151,7 @@
                     l.settings.browse_button = k + "_browse";
                     if (l.features.dragdrop && l.settings.dragdrop) {
                         l.settings.drop_element = k + "_filelist";
-                        c("#" + k + "_filelist").append('<li class="plupload_droptext">' + a("Drag files here.") + "</li>")
+                        c("#" + k + "_filelist").append('<li class="plupload_droptext">' + a("Drag and Drop your photos here.") + "</li>")
                     }
                     c("#" + k + "_container").attr("title", "Using runtime: " + m.runtime);
                     c("a.plupload_start", i).click(function (n) {
@@ -187,7 +187,8 @@
                 });
                 j.bind("StateChanged", function () {
                     if (j.state === plupload.STARTED) {
-                        c("li.plupload_delete a,div.plupload_buttons", i).hide();
+                        c("li.plupload_delete a", i).hide();
+                        c("div.plupload_buttons", i).show();
                         c("span.plupload_upload_status,div.plupload_progress,a.plupload_stop", i).css("display", "block");
                         c("span.plupload_upload_status", i).text("Uploaded " + j.total.uploaded + "/" + j.files.length + " files");
                         if (e.multiple_queues) {
