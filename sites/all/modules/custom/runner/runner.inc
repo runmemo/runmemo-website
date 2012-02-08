@@ -1,18 +1,15 @@
 <?php
 
-class runner_search
-{
-	
-	/**
-	 * Get the event name from taxonomy terms
-	 * @return
-	 * $event_title return event name,tid array 
-	 */
-	public function get_event_name()
-	{
-	
-		$event_title=db_query("SELECT name,tid FROM {taxonomy_term_data} WHERE vid='2'");
-		return $event_title;
-	}
+class runner_search{
+    /**
+        * Get the event name from content type 'event'
+        * @return
+        * $event_title return event title,nid array 
+        */
+    public function get_event_name(){
+
+        $event_title=db_query("SELECT title,nid FROM {node} WHERE type='event'");
+        return $event_title;
+    }
 
 }
