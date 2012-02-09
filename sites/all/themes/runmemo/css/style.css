@@ -1405,8 +1405,8 @@ padding:10px;
 	color: #898989;
     float: right;
     position: absolute;
-    top: 542px;
-	right:38px;
+    top: 594px;
+	right:16px;
 }
 .page-photographer .file_list {
    padding:8px 0 8px 7px;
@@ -1485,4 +1485,12 @@ a#guide:hover{
 }
 .page-photographer .with-tabs {
    display:none;
+}
+
+#block-views-event-node-refrence-block table tr td{
+
+border:1px solid #CCCCCC;
+text-align:center;
+
+ 
 }
