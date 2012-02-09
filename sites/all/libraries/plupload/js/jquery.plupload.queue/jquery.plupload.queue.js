@@ -11,7 +11,7 @@
                 h.remove()
             }
         });
-        e.prepend('<div class="plupload_wrapper plupload_scroll"><div id="' + f + '_container" class="plupload_container"><div class="plupload"><div class="plupload_header"><div class="plupload_header_content"><div class="plupload_header_title">' + a("Select files") + '</div><div class="plupload_header_text">' + a("Add files to the upload queue and click the start button.") + '</div></div></div><div class="upload-progress">Upload Progress</div><div class="plupload_content"><div class="plupload_filelist_header"><div class="plupload_file_name">' + a("Filename") + '</div><div class="plupload_file_action">&nbsp;</div><div class="plupload_file_status"><span>' + a("Status") + '</span></div><div class="plupload_file_size">' + a("Size") + '</div><div class="plupload_clearer">&nbsp;</div></div><ul id="' + f + '_filelist1" class="plupload_filelist"></ul><div class="plupload_filelist_footer"><div class="plupload_file_name"><div class="plupload_buttons"><a href="#" class="plupload_button plupload_add">' + a("Add files") + '</a></div><span class="plupload_upload_status"></span></div><div class="plupload_file_action"></div><div class="plupload_file_status"><span class="plupload_total_status">0%</span></div><div class="plupload_file_size"><span class="plupload_total_file_size">0 b</span></div><div class="plupload_progress"><div class="plupload_progress_container"><div class="plupload_progress_bar"></div></div></div><div class="plupload_clearer">&nbsp;</div></div></div><div class="plupload_content1" "><ul id="' + f + '_filelist" class="plupload_filelist1" ></ul></div></div></div><input type="hidden" id="' + f + '_count" name="' + f + '_count" value="0" /></div>')
+        e.prepend('<div class="plupload_wrapper plupload_scroll"><div id="' + f + '_container" class="plupload_container"><div class="plupload"><div class="plupload_header"><div class="plupload_header_content"><div class="plupload_header_title">' + a("Select files") + '</div><div class="plupload_header_text">' + a("Add files to the upload queue and click the start button.") + '</div></div></div><div class="upload-progress">Upload Progress</div><div class="plupload_content"><div class="plupload_filelist_header"><div class="plupload_file_name">' + a("Filename") + '</div><div class="plupload_file_action">&nbsp;</div><div class="plupload_file_status"><span>' + a("Status") + '</span></div><div class="plupload_file_size">' + a("Size") + '</div><div class="plupload_clearer">&nbsp;</div></div><ul id="' + f + '_filelist1" class="plupload_filelist"></ul><div class="plupload_filelist_footer"><div class="plupload_file_name"><div class="plupload_buttons"><a href="#" id="add_files" class="plupload_button plupload_add">' + a("Add files") + '</a></div><span class="plupload_upload_status"></span></div><div class="plupload_file_action"></div><div class="plupload_file_status"><span class="plupload_total_status">0%</span></div><div class="plupload_file_size"><span class="plupload_total_file_size">0 b</span></div><div class="plupload_progress"><div class="plupload_progress_container"><div class="plupload_progress_bar"></div></div></div><div class="plupload_clearer">&nbsp;</div></div></div><div class="plupload_content1" "><ul id="' + f + '_filelist" class="plupload_filelist1" ></ul></div></div></div><input type="hidden" id="' + f + '_count" name="' + f + '_count" value="0" /></div>')
     }
     c.fn.pluploadQueue = function (e) {
         if (e) {
@@ -32,16 +32,22 @@
                 function h(l) {
                     var n;
                     if (l.status == plupload.DONE) {
-                        n = "plupload_done"
+                        n = "plupload_done";
+						
+						
+						c("#" + l.id+"_upstatus").html("Done");
+						c("#" + l.id).css("background-color","#cef8b9");
+						
+						c("#" + l.id).css("border-color","#50b54f");
                     }
                     if (l.status == plupload.FAILED) {
-                        n = "plupload_failed"
+                        n = "plupload_failed";
                     }
                     if (l.status == plupload.QUEUED) {
-                        n = "plupload_delete"
+                        n = "plupload_delete";
                     }
                     if (l.status == plupload.UPLOADING) {
-                        n = "plupload_uploading"
+                        n = "plupload_uploading";
                     }
                     var m = c("#" + l.id).attr("class", n).find("a").css("display", "block");
                     if (l.hint) {
@@ -73,10 +79,12 @@
                             l += '<input type="hidden" name="' + k + "_" + n + '_status" value="' + (o.status == plupload.DONE ? "done" : "failed") + '" />';
                             n++;
                             c("#" + k + "_count").val(n)
+							
+							
                         }
 						
 						//Added o.id_progress to show for individual progress
-                        m.append('<li id="' + o.id + '"><div class="plupload_file_name"><span>' + o.name + '</span></div><div class="plupload_file_action"><a href="#"></a></div><div class="plupload_file_status">' + o.percent + '%</div><div class="plupload_file_size">' + plupload.formatSize(o.size) + '</div><br/>																																																													<div id="'+o.id+'_progress" class="ind_prog"><div id="'+o.id+'_progbar" style="height:10px;"  ></div></div>																																																																					<div class="plupload_clearer">&nbsp;</div>' + l + "</li>");
+                        m.append('<li id="' + o.id + '"><div class="plupload_file_name"><span>' + o.name + '</span></div><div class="plupload_file_action"><a href="#"></a></div><div class="plupload_file_status">' + o.percent + '%</div><div class="plupload_file_size">' + plupload.formatSize(o.size) + '</div><br/>																																																													<div id="'+o.id+'_progress" class="ind_prog"><div id="'+o.id+'_progbar" style="height:10px;"  ></div></div><br/><div id="'+o.id+'_upstatus" style="margin-left:11px;">Pending</div>																																																																					<div class="plupload_clearer">&nbsp;</div>' + l + "</li>");
                         h(o);
                         c("#" + o.id + ".plupload_delete a").click(function (q) {
                             c("#" + o.id).remove();
@@ -90,7 +98,7 @@
                     });
                     c("span.plupload_total_file_size", i).html(plupload.formatSize(j.total.size));
                     if (j.total.queued === 0) {
-                        c("span.plupload_add_text", i).text(a("Add files."))
+                        c("span.plupload_add_text", i).text(a("Add more files."))
                     } else {
                         c("span.plupload_add_text", i).text(j.total.queued + " files queued.")
                     }
@@ -100,6 +108,9 @@
 					
 					//Added to empty drag and drop box
 					c("#edit-file_filelist").html("");
+					
+					
+					
 					
 					
 					//Commented to show it always
@@ -113,8 +124,15 @@
                 j.bind("UploadFile", function (l, m) {
                     c("#" + m.id).addClass("plupload_current_file")
 					
+					
+					 
 					//Display the progress bar div
 					 c("#" + m.id+"_progress").css("display", "block");
+					 
+					 c("#" + m.id+"_upstatus").html("Uploading...");
+					 
+					 //c("#" + m.id+"_upstatus").html("Done");
+					 
 					 
 					 
 					 
@@ -212,7 +230,8 @@
 					c("#" + m.id+"_progbar").css("width", +m.percent+"%");
         			c("#" + m.id+"_progbar").css("border-radius","6px");
         			c("#" + m.id+"_progbar").css("-moz-border-radius","6px");					
-        			c("#" + m.id+"_progbar").css("-webkit-border-radius","6px");										
+        			c("#" + m.id+"_progbar").css("-webkit-border-radius","6px");
+					
 					
                     h(m);
                     f();
