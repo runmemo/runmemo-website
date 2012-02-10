@@ -1,0 +1,23 @@
+name = Runmemo
+description = A multi-column theme which can be configured to modify colors and switch between fixed and fluid width layouts.
+package = Core
+version = VERSION
+core = 7.x
+stylesheets[all][] = styles.css
+stylesheets[print][] = print.css
+settings[garland_width] = fluid
+
+regions[sidebar_first] = Left sidebar
+regions[sidebar_second] = Right sidebar
+regions[content] = Content
+regions[header] = Header
+regions[footer] = Footer
+regions[highlighted] = Highlighted
+
+regions[recent_event1] = Recent Event First
+
+; Information added by drupal.org packaging script on 2011-10-26
+version = "7.9"
+project = "drupal"
+datestamp = "1319660730"
+

@@ -4,13 +4,13 @@
  */
 
 function runner_init(){
-    //to add the js file
-    drupal_add_js(drupal_get_path("module","runner")."/runner.js");
-    drupal_add_css(drupal_get_path('module', 'runner') . '/runner.css');
+  //to add the js file
+  drupal_add_js(drupal_get_path("module","runner")."/runner.js");
+  drupal_add_css(drupal_get_path('module', 'runner') . '/runner.css');
 }
 
 ///////////////////////////////////////////////////////////
-/** 
+/**  
  * Create the hook menu for each page 
  * by using this we can map to the related page
  * @return
@@ -18,13 +18,13 @@ function runner_init(){
  */
 function runner_menu(){
     //url for runner
-    $items['runner'] = array(
-                        'title' => 'Photo Gallery',
-                        'description' => t('View the objects in a event on your Amazon S3 account.'),
-                        'page callback' => 'amozon_s3_show_images',
-                        'access arguments' => array('access_runner'),
-                        'type' => MENU_CALLBACK,
-                        );
+  $items['runner'] = array(
+    'title' => 'Photo Gallery',
+    'description' => t('View the objects in a event on your Amazon S3 account.'),
+    'page callback' => 'amozon_s3_show_images',
+    'access arguments' => array('access_runner'),
+    'type' => MENU_CALLBACK
+  );
 
 
     return $items;
@@ -37,14 +37,14 @@ function runner_menu(){
 */
 function runner_permission(){
 
-    return array(
-                        'access_runner' => array(
-                            'title' => t('Access runner'),
-                            'description' => t('Access runner'),
-                            'restrict access' => TRUE,
-                        ),
+  return array(
+      'access_runner' => array(
+      'title' => t('Access runner'),
+      'description' => t('Access runner'),
+      'restrict access' => TRUE
+    ),
 
-                    );
+  );
 }
 
 
@@ -59,7 +59,7 @@ function select_event_runner_get_photos($form,&$form_state){
     $form=array();
     $form['setfield']=array(
         '#type' => 'fieldset',
-        '#title' => t(''),
+        '#title' => '',
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
         '#attached'=>array('css' => array(drupal_get_path('module', 'runner') . '/runner.css')),
@@ -91,24 +91,7 @@ function select_event_runner_get_photos($form,&$form_state){
 
     //submit get my photo in the runner side
     $form['setfield']['search']=array('#type'=>'submit','#value'=>'','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#attributes'=>array('onclick'=>'return search_validation();'));
-
-    
-    //disabled selectbox for anonymous user
-    if($user->roles['1']!=null){
-       $form['setfield']['events_select_runner']['#disabled'] = true;
-       $form['setfield']['runner_number']['#disabled'] = true;
-       //submit get my photo in the runner side
-       $form['setfield']['search']['#disabled'] = true;
-
-    }
-    else{
-       $form['setfield']['events_select_runner']['#disabled'] = false;
-       $form['setfield']['runner_number']['#disabled'] = false;
-       //submit get my photo in the runner side
-       $form['setfield']['search']['#disabled'] = false;
-    }
-    
-    
+   
     return $form;
 
 }
@@ -120,7 +103,7 @@ function select_event_runner_get_photos_submit($form,&$form_state){
 
     $event_id = $form['setfield']['events_select_runner']['#value'];
 
-    $form_state['redirect'] = "runner/".$event_id;
+    $form_state['redirect'] = "search-result/".$event_id;
 
 }
 
@@ -135,7 +118,7 @@ function select_event_runner_sell_photos($form,&$form_state){
     //for sell the photos in the runner side
     $form['sellfield']=array(
         '#type' => 'fieldset',
-        '#title' => t(''),
+        '#title' => '',
         '#collapsible' => FALSE,
         '#collapsed' => FALSE,
         '#attached'=>array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
@@ -176,7 +159,7 @@ function select_event_runner_sell_photos_submit($form,&$form_state){
     
     global $user;
     $uid = $user->uid;
-        
+    $selected_event_id = $form['sellfield']['events_select_runner']['#value'];    
     if($user->roles['1']!=null){
        $form_state['redirect'] = "login";
     }
@@ -190,9 +173,9 @@ function select_event_runner_sell_photos_submit($form,&$form_state){
  * @return 
  *   return rendered drupal form
  */
-function amozon_s3_show_images()
-{
-    
+function amozon_s3_show_images(){
+   
+   
     $select_event_runner_get_photos = drupal_render(drupal_get_form('select_event_runner_get_photos'));
 
     $select_event_runner_sell_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
@@ -201,4 +184,31 @@ function amozon_s3_show_images()
 
     return $style;
 }
+/**
+ * For search the photo using runner number in the recent event section
+ * @return string 
+ */
+function recent_event_image(){
+  
+  $form = array();
+  
+  $form['runner_number'] = array('#type' => 'textfield','#title' => '','#size' => '20','#id' => 'number_recent_event1');
+  
+  $form['submit'] = array('#type' => 'submit','#value' => 'Find','#attributes'=>array('onclick'=>'return find_recent_event1();'));
+     
+  return  $form;
+  
+}
 
+/**
+ * For testing purpose
+ * @param type $form
+ * @param type $form_state 
+ */
+function recent_event_image_submit($form,&$form_state){
+  $runner_number_search = new runner_number_search();
+  $recent_event1 = $runner_number_search->get_recent_event_id();
+  $runner_number = $form['runner_number']['#value'];
+  $path = 'search-number/' . $recent_event1 . '/' . $runner_number;
+  drupal_goto($path);
+}
