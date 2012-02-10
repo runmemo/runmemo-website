@@ -1,5 +1,3 @@
-<link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
-
 <div id="wrapper">
   <div id="inner-wrapper">
 
@@ -11,7 +9,7 @@
           <?php if ($title): ?>
             <div id="branding"><strong><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
+              <img src="<?php print $logo ?>"  id="logo" />
             <?php endif; ?>
             </a></strong></div>
           <?php else: /* Use h1 when the content title is empty */ ?>
@@ -109,12 +107,11 @@
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" alt="runmemo_player1"/></li>
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" alt="runmemo_player2"/></li>
             <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" alt="runmemo_player3"/></li>
-          </ul>        
-         </div>
+          </ul>
+        </div>
 	
         <div class="float-R w-275">
-	<input type="text" class="border-radius float-L find-txt" placeholder="My Number"/>
-        <input type="button" class="find-btn float-R" /> 
+	<?php print render($page['recent_event1']); ?>
 	</div>
       </div>
       <div class="cont-rig float-L">
@@ -143,9 +140,9 @@
   <div class="footer"><!--footer-->
   <div class="footer-inner">
   <div class="social-icon float-L">
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
-  <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
+  <a href="mailto:info@runmemo.com"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
+ <a href="http://www.facebook.com/pages/Runmemo/228101553914296"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
+  <a href="http://twitter.com/#!/runmemos"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
   </div>
   <p class="float-R"><small>© 2012</small>  Runmemo</p>
   </div>
