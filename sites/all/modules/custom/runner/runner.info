@@ -1,6 +1,0 @@
-name = runner
-description = A block module that is used to runner side
-core = 7.x
-
-files[]=runner.test
-files[]=runner.inc
