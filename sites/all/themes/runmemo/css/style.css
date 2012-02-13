@@ -1487,10 +1487,85 @@ a#guide:hover{
    display:none;
 }
 
-#block-views-event-node-refrence-block table tr td{
+#block-views-event-node-refrence-block-1 table tr td{
 
 border:1px solid #CCCCCC;
 text-align:center;
 
  
 }
+
+/* Profile page */
+#user-profile-form label {
+    color: #1A253C;
+    float: left;
+    font-family: arial;
+    font-size: 13px;
+    font-weight: 300;
+    margin-top: 14px;
+    text-align: right;
+    width: 136px;
+}
+#user-profile-form input {
+    -moz-box-shadow: none !important;
+    border: 1px solid #DEE4E7;
+    color: #1A253C;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    height: 40px;
+    margin-left: 8px;
+    padding: 2px;
+    text-indent: 7px;
+    width: 300px;
+}
+#user-profile-form fieldset.collapsible
+{
+   display:none;
+}
+#user-profile-form .confirm-parent, #user-profile-form .password-parent
+{
+    clear: left;
+    margin: 0;
+    width: 670px;
+}
+#user-profile-form .description  {
+    color: #898989;
+    left: 145px;
+    line-height: 150%;
+    margin-bottom: 0.75em;
+    margin-top: 5px;
+    position: relative;
+    width: 300px;
+}
+#user-profile-form .form-type-checkbox 
+{
+   width:600px;
+}
+#user-profile-form .form-type-checkbox input
+{
+   margin-top:3px;
+   margin-left:-132px;
+}
+#user-profile-form .form-type-checkbox .description
+{
+   left: 120px;
+    position: relative;
+    width: 328px;
+}
+#user-profile-form #paypal_icon
+{
+    color: red;
+    float: right;
+    position: relative;
+    right: 500px;
+    top: 12px;
+    padding-top:0px!important;
+    padding-right:0px!important;
+}
+#user-profile-form .password-suggestions
+{ 
+    left: -168px;
+    position: relative;
+    top: -53px;
+}
+
