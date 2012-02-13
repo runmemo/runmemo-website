@@ -27,7 +27,7 @@ function search_validation(){
 
 /**
  * Get started button validation in the home page
- */
+ 
 function get_started_validation(){
     var event_name_search_id = document.getElementById('event_runner_sell').value;
     if(event_name_search_id == 'select_event'){
@@ -36,6 +36,7 @@ function get_started_validation(){
     }
            
 }
+*/
 
 /**
  * Search using runner number in the recent event section
@@ -43,6 +44,18 @@ function get_started_validation(){
 function find_recent_event1(){
   var recent_event1_number = document.getElementById('number_recent_event1').value;
   if(recent_event1_number == ''){
+      alert("Please enter your number");
+      return false;
+    }
+}
+
+
+/**
+ * Search using runner number in the recent event2 section
+ */
+function find_recent_event2(){
+  var recent_event2_number = document.getElementById('number_recent_event2').value;
+  if(recent_event2_number == ''){
       alert("Please enter your number");
       return false;
     }
