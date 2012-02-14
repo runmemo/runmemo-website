@@ -111,7 +111,7 @@
         </div>
 	
         <div class="float-R w-275">
-	<?php print render($page['recent_event1']); ?>
+	<?php print render($page['recent_event1_submit']); ?>
 	</div>
       </div>
       <div class="cont-rig float-L">
@@ -125,8 +125,7 @@
           </ul>
         </div>
 	<div class="float-R w-275">
-	<input type="text" class="border-radius float-L find-txt" placeholder="My Number"/>
-        <input type="button" class="find-btn float-R" />
+	<?php print render($page['recent_event2_submit']); ?>
 	</div>
       </div>
     </div>
