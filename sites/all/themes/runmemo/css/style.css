@@ -443,6 +443,9 @@ image 	image 	image 	.cart image 	image
 image 	image 	image 	image 	imageSelect Event
 
     * Select Event
+
+
+
     * halfmarathon2011
     * halfrace
     * multirace
@@ -1543,8 +1546,7 @@ text-align:center;
 }
 #user-profile-form .form-type-checkbox input
 {
-   margin-top:3px;
-   margin-left:-132px;
+   margin-top:17px;
 }
 #user-profile-form .form-type-checkbox .description
 {
@@ -1569,3 +1571,60 @@ text-align:center;
     top: -53px;
 }
 
+/* For Recent event home page */
+.page-runner .content 
+{
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding-bottom: 1px;
+    width: 100%;
+    min-height:0px!important;
+    border-radius: 0!important;
+    -moz-border-radius: 0!important;
+    -webkit-border-radius: 0!important;
+    box-shadow:none!important;
+    -moz-box-shadow:none!important;
+    -webkit-box-shadow:none!important;
+}
+.page-runner .content #recent-event1-image div
+{
+  margin-top: 0px;
+  margin-right:10px;
+}
+.page-runner .content #recent-event1-image .form-submit
+{
+  	margin-top:-11px;
+	cursor:pointer;
+    background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
+    border: 0 none;
+    cursor: pointer;
+    height: 24px;
+    width: 68px;
+}
+.page-runner .content #recent-event1-image .form-submit:hover, .page-runner .content #recent-event2-image .form-submit:hover {
+    background: url("../images/find-btn-hover.png") no-repeat scroll 0 0 transparent;
+}
+
+.form-item-runner-number-event2
+{
+  float:left;
+  margin-right:10px;
+}
+.page-runner .content #recent-event2-image
+{
+  margin-top:-11px;
+}
+.page-runner .content #recent-event2-image .form-submit
+{
+ 	 margin-top:11px;
+	cursor:pointer;
+    background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
+    border: 0 none;
+    cursor: pointer;
+    height: 24px;
+    width: 68px;
+}
+
+#block-views-event-node-refrence-block-1 div.field-content img {
+	cursor: pointer;
+}
