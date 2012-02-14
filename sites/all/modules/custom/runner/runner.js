@@ -17,10 +17,10 @@ function my_number_show(){
  * validation for search button field in the home 
  */
 function search_validation(){
-    var event_name_search = document.getElementById('event_runner').value;
-    if(event_name_search == 'select_event'){
-      alert("Please select Event");
-      return false;
+    var event_name_search=document.getElementById('event_runner').value;
+    if(event_name_search=='select_event'){
+	alert("Please select Event");
+        return false;
     }
 
 }
@@ -29,10 +29,10 @@ function search_validation(){
  * Get started button validation in the home page
  
 function get_started_validation(){
-    var event_name_search_id = document.getElementById('event_runner_sell').value;
-    if(event_name_search_id == 'select_event'){
-      alert("Please select Event");
-      return false;
+    var event_name_search_id=document.getElementById('event_runner_sell').value;
+    if(event_name_search_id=='select_event'){
+	alert("Please select Event");
+        return false;
     }
            
 }
@@ -60,3 +60,18 @@ function find_recent_event2(){
       return false;
     }
 }
+
+
+(function ($) {
+		   
+		   
+		$(function(){
+				   
+			$('#block-views-event-node-refrence-block-1 div.field-content img').bind('click', function(){
+				var imgsrc = $(this).attr('src');	
+				var replacement = imgsrc.replace('thumbnail', 'large');
+				//alert(replacement);																				 
+			});		   
+		});
+		   
+})(jQuery);
