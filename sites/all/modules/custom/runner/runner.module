@@ -70,9 +70,9 @@ function select_event_runner_get_photos($form,&$form_state){
     $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>",'#id'=>'event_runner');
     $form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
     //select event options from content type 'event'
-    $runner_search = new runner_search();
+    $runner_search = new event_helper();
     //get the event name from content type 'event'
-    $event_name=$runner_search->get_event_name();
+    $event_name=$runner_search->get_events();
     foreach($event_name as $event_name_value)
     {
         $event_title = $event_name_value->title;
@@ -116,7 +116,7 @@ function select_event_runner_sell_photos($form,&$form_state){
     
     global $user;
     //for sell the photos in the runner side
-    $form['sellfield']=array(
+    $form['sellfield'] = array(
         '#type' => 'fieldset',
         '#title' => '',
         '#collapsible' => FALSE,
@@ -135,9 +135,9 @@ function select_event_runner_sell_photos($form,&$form_state){
 
       $form['sellfield']['events_select_runner']['#options'] = array('select_event'=>"Select Event");
       //select event options from content type 'event'
-      $runner_search = new runner_search();
+      $runner_search = new event_helper();
       //get the event name from content type 'event'
-      $event_name=$runner_search->get_event_name();
+      $event_name=$runner_search->get_events();
       foreach($event_name as $event_name_value){
       $event_title = $event_name_value->title;
       $event_title_nid = $event_name_value->nid;
@@ -179,7 +179,7 @@ function select_event_runner_sell_photos_submit($form,&$form_state){
  *   return rendered drupal form
  */
 function amozon_s3_show_images(){
-    
+   
     $select_event_runner_get_photos = drupal_render(drupal_get_form('select_event_runner_get_photos'));
 
     $select_event_runner_sell_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
@@ -188,9 +188,6 @@ function amozon_s3_show_images(){
 
     return $style;
 }
-
-
-
 
 /**
  * For search the photo using runner number in the recent event section
@@ -202,7 +199,7 @@ function recent_event1_image(){
   
   $form['runner_number'] = array('#type' => 'textfield','#title' => '','#size' => '20','#id' => 'number_recent_event1');
   
-  $form['submit'] = array('#type' => 'submit','#value' => '','#attributes'=>array('onclick'=>'return find_recent_event1();'));
+  $form['submit'] = array('#type' => 'submit','#value' => 'Find','#attributes'=>array('onclick'=>'return find_recent_event1();'));
      
   return  $form;
   
@@ -214,7 +211,7 @@ function recent_event1_image(){
  * @param type $form_state 
  */
 function recent_event1_image_submit($form,&$form_state){
-  $runner_number_search = new runner_number_search();
+  $runner_number_search = new event_helper();
   $recent_event1 = $runner_number_search->get_recent_event_id(0,1);
   $runner_number = $form['runner_number']['#value'];
   $path = 'search-number/' . $recent_event1 . '/' . $runner_number;
@@ -231,7 +228,7 @@ function recent_event2_image(){
   
   $form['runner_number_event2'] = array('#type' => 'textfield','#title' => '','#size' => '20','#id' => 'number_recent_event2');
   
-  $form['submit_event2'] = array('#type' => 'submit','#value' => '','#attributes'=>array('onclick'=>'return find_recent_event2();'));
+  $form['submit_event2'] = array('#type' => 'submit','#value' => 'Find','#attributes'=>array('onclick'=>'return find_recent_event2();'));
      
   return  $form;
   
@@ -244,10 +241,9 @@ function recent_event2_image(){
  */
 
 function recent_event2_image_submit($form,&$form_state){
-  $runner_number_search = new runner_number_search();
+  $runner_number_search = new event_helper();
   $recent_event2 = $runner_number_search->get_recent_event_id(1,1);
   $runner_number = $form['runner_number_event2']['#value'];
   $path = 'search-number/' . $recent_event2 . '/' . $runner_number;
   drupal_goto($path);
 }
-
