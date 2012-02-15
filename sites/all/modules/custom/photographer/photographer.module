@@ -65,10 +65,10 @@ function select_event_function(){
 
 
     //select event options from content type 'event'
-    $photographer_upload = new photographer_upload();
+    $photographer_upload = new event_helper();
 
     //get the event name from content type 'event'
-    $event_name=$photographer_upload->get_event_name();
+    $event_name=$photographer_upload->get_events();
     foreach($event_name as $event_name_value)
     {
             $event_title = $event_name_value->title;
