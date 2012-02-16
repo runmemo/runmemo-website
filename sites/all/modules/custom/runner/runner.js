@@ -62,16 +62,51 @@ function find_recent_event2(){
 }
 
 
+/**
+ * Function to generate preview in search results
+ */
+
+
 (function ($) {
 		   
 		   
-		$(function(){
-				   
-			$('#block-views-event-node-refrence-block-1 div.field-content img').bind('click', function(){
+		/*$(function(){
+				  
+			$('#block-system-main div.field-content img').bind('click', function(){ 
 				var imgsrc = $(this).attr('src');	
-				var replacement = imgsrc.replace('thumbnail', 'large');
-				//alert(replacement);																				 
+				var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
+				
+				alert(replacementurl);
+				$("#preview_image").attr("src",replacementurl);
+
+																							 
 			});		   
-		});
+		});*/
+		
+		Drupal.behaviors.runmemo = { 
+       
+	    attach: function (context,settings) {
+			
+				$('#block-system-main div.field-content img').bind('click', function(){ 
+					var imgsrc = $(this).attr('src');	
+					var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
+					
+					//alert(replacementurl);
+					$("#preview_image").attr("src",replacementurl);
+	
+																								 
+				});	
+			
+			
+		}
+
+
+
+		};
+		
 		   
 })(jQuery);
+
+
+
+
