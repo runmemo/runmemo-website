@@ -266,6 +266,20 @@ function feedback_form($form, &$form_state) {
   return $form;
 }
 
+
+function feedback_form_validate($form, &$form_state) {
+  
+  $email = $form['field_email']['und']['0']['value']['#value'];
+
+  if(!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)) && ($email != '')) {
+
+    form_set_error('field_email', t('Invalid Email Address'));
+    
+  }
+      
+}
+
+
 /**
  * Form submission handler for feedback_form().
  */
@@ -288,6 +302,7 @@ function feedback_form_ajax_callback($form, &$form_state) {
     return $form;
   }
 
+  
   // Otherwise, return a fresh copy of the form, so the user may post additional
   // feedback.
   // Reset the static cache of drupal_html_id().
