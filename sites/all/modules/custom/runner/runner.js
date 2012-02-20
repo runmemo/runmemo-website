@@ -4,39 +4,18 @@ jQuery(document).ready(function(){
 });
 
 /**
- * onclick function for in the my number text field to hide the default text
- */
-function my_number_hide(){
-    document.getElementById('runner_number').value='';	
-}
-function my_number_show(){
-    document.getElementById('runner_number').value='My Number';	
-}
-
-/**
  * validation for search button field in the home 
  */
 function search_validation(){
-    var event_name_search=document.getElementById('event_runner').value;
-    if(event_name_search=='select_event'){
-	alert("Please select Event");
-        return false;
+    var event_name_search = document.getElementById('event_runner').value;
+    if(event_name_search == 'select_event'){
+      alert("Please select Event");
+      return false;
     }
+    
 
 }
 
-/**
- * Get started button validation in the home page
- 
-function get_started_validation(){
-    var event_name_search_id=document.getElementById('event_runner_sell').value;
-    if(event_name_search_id=='select_event'){
-	alert("Please select Event");
-        return false;
-    }
-           
-}
-*/
 
 /**
  * Search using runner number in the recent event section
@@ -69,24 +48,24 @@ function find_recent_event2(){
 
 (function ($) {
 		   
-		   
-		/*$(function(){
-				  
-			$('#block-system-main div.field-content img').bind('click', function(){ 
-				var imgsrc = $(this).attr('src');	
-				var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
-				
-				alert(replacementurl);
-				$("#preview_image").attr("src",replacementurl);
-
-																							 
-			});		   
-		});*/
+		
 		
 		Drupal.behaviors.runmemo = { 
        
 	    attach: function (context,settings) {
-			
+		
+			    $('#block-system-main table.views-view-grid td').each(function(){
+					var markup = $(this).html();
+					
+					if ($(this).has("div").length == 0) {
+						$(this).css("border", "none");
+					}
+					
+				});
+				$('div.node_check').each(function(){
+					var name_id = $(this).parent().children('span').text();
+					$(this).html('<input type="checkbox" name="'+name_id+'" value="'+name_id+'" />');
+				});
 				$('#block-system-main div.field-content img').bind('click', function(){ 
 					var imgsrc = $(this).attr('src');	
 					var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
@@ -106,7 +85,3 @@ function find_recent_event2(){
 		
 		   
 })(jQuery);
-
-
-
-

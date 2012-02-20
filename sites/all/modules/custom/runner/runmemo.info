@@ -14,7 +14,16 @@ regions[header] = Header
 regions[footer] = Footer
 regions[highlighted] = Highlighted
 
-regions[recent_event1] = Recent Event First
+regions[recent_event1_title] = Recent Event1 Title
+regions[recent_event1_images] = Recent Event1 Images
+regions[recent_event1_submit] = Recent Event1 Submit
+
+regions[recent_event2_title] = Recent Event2 Title
+regions[recent_event2_images] = Recent Event2 Images
+regions[recent_event2_submit] = Recent Event2 Submit
+
+regions[photo_search] = Photo search
+
 
 ; Information added by drupal.org packaging script on 2011-10-26
 version = "7.9"
