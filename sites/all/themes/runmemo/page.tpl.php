@@ -1,5 +1,3 @@
-<link href="<?php echo base_path().path_to_theme(); ?>/css/style.css" type="text/css" rel="stylesheet" />
-
 <div id="wrapper">
   <div id="inner-wrapper">
 
@@ -16,7 +14,7 @@
           <?php else: /* Use h1 when the content title is empty */ ?>
             <h1 id="branding"><a href="<?php print $front_page ?>">
             <?php if ($logo): ?>
-              <img src="<?php print $logo ?>"  id="logo" alt="runmemo_logo"/>
+              <img src="<?php print $logo ?>"  id="logo" />
             <?php endif; ?>
             </a></h1>
         <?php endif; ?>
@@ -38,15 +36,17 @@
  
       <div class="clr"></div>
 <?php
-if(!in_array('Photographer',$user->roles))
+if(!in_array('Photographer',$user->roles)&& arg(0)!='user' && arg(0)!='login')
 {
 ?>
       <div class="cart float-R">
         <div class="cart-img float-L"></div>
-        <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" alt="shopping_logo"/></span> </div>
+        <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
       </div>
-    </div>
+    
 <?php }?>
+
+    </div><!--header close-->
     <div class="clr"></div>
 
 
@@ -57,6 +57,8 @@ if(!in_array('Photographer',$user->roles))
           <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
           <a id="main-content"></a>
 <?php 
+
+
 if(!in_array('anonymous user',$user->roles))
 {
 ?>
@@ -113,19 +115,23 @@ if((arg(0)!= 'login') && (arg(0) != 'user'))
            <h1 class="log_in">  User Login</h1>
           <?php endif ; ?>
 	</div>
-		
+		<?php print render($page['photo_search']); ?>
             <?php print render($page['content']); ?>
           </div>
                     
       </div>
-	<?php if ($page['sidebar_second']): ?>
+	
+	<!--second side bar moved to down  -->
+	
+</div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
+
+<!--</div>-->
+
+    <?php if ($page['sidebar_second']): ?>
         <div id="sidebar-second" class="sidebar" style="align:right;">
           <?php print render($page['sidebar_second']); ?>
         </div>
       <?php endif; ?>
-</div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
-
-<!--</div>-->
 
 	<div class="clr"></div>
     
@@ -140,9 +146,9 @@ if((arg(0)!= 'login') && (arg(0) != 'user'))
   <div class="footer"><!--footer-->
   <div class="footer-inner">
   <div class="social-icon float-L">
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
-  <a href="#"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
-  <a href="#"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
+  <a href="mailto:info@runmemo.com"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
+ <a href="http://www.facebook.com/pages/Runmemo/228101553914296"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
+  <a href="http://twitter.com/#!/runmemos"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
   </div>
   <p class="float-R"><small>© 2012</small>  Runmemo</p>
   </div>
