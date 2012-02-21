@@ -47,12 +47,7 @@ function search_result_add_to_cart() {
   return false;
 }
 
-/**
- * Add to cart validation in the search result page
- */
-function search_result_cart_summary() {
-  return false;
-}
+
 
 
 
