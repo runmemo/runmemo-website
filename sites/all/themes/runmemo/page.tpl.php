@@ -115,23 +115,23 @@ if((arg(0)!= 'login') && (arg(0) != 'user'))
            <h1 class="log_in">  User Login</h1>
           <?php endif ; ?>
 	</div>
-		<?php print render($page['photo_search']); ?>
+		    <?php print render($page['photo_search']); ?>
             <?php print render($page['content']); ?>
           </div>
                     
       </div>
 	
-	<!--second side bar moved to down  -->
+	<?php if ($page['sidebar_second']): ?>
+        <div id="sidebar-second" class="sidebar" style="align:right;">
+          <?php print render($page['sidebar_second']); ?>
+        </div>
+      <?php endif; ?>
 	
 </div></div></div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 
 <!--</div>-->
 
-    <?php if ($page['sidebar_second']): ?>
-        <div id="sidebar-second" class="sidebar" style="align:right;">
-          <?php print render($page['sidebar_second']); ?>
-        </div>
-      <?php endif; ?>
+    
 
 	<div class="clr"></div>
     

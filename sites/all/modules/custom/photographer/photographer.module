@@ -103,7 +103,7 @@ function photographer_drag_and_drop_form($form,&$form_state) {
     '#title' => t(''),
     '#description' => t(''),
     '#size' => 40,
-     '#prefix'=>'<div class="upload_title">Upload Photos</div><span class="guide-line">Please read our '.l("style guide","node/230",array(
+     '#prefix'=>'<div class="upload_title">Upload Photos</div><span class="guide-line">Please read our '.l("style guide","style-guide",array(
                     'attributes' => array(
                       'id' => 'guide',
                       
@@ -203,7 +203,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
         
   }
 
-  drupal_set_message("Files uploaded succesfully");
+  drupal_set_message("Files uploaded successfully");
   $form_state['redirect'] = "photographer";
 }
 
