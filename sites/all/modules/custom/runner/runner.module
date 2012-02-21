@@ -114,7 +114,6 @@ function select_event_runner_get_photos_submit($form,&$form_state) {
 
   $event_id = $form['setfield']['events_select_runner']['#value'];
   $runner_number = $form['setfield']['runner_number']['#value'];
-
   if(!empty($runner_number)) {
     $form_state['redirect'] = "search-result/" . $event_id . "/" . $runner_number;
   }
@@ -265,3 +264,21 @@ function recent_event2_image_submit($form,&$form_state){
   $path = 'search-result/' . $recent_event2 . '/' . $runner_number;
   drupal_goto($path);
 }
+
+
+/**
+ * Add to cart submit button in the search result page
+ * @param type $form
+ * @param type $form_state
+ * @return string 
+ */
+
+function search_result_cart($form,&$form_state) {
+  $form = array();
+  
+  $form['add_to_cart'] = array('#type' => 'submit', '#value' => 'Add to Cart','#id' => 'add_to_cart','#attributes'=>array('onclick'=>'return search_result_add_to_cart();'),);
+  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#">Proceed to Cart</a></div></div>',);
+
+  return $form;
+}
+
