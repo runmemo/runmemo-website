@@ -95,6 +95,9 @@ function select_event_runner_get_photos($form,&$form_state) {
   //text field for get the runner number
   if(arg('0') == 'search-result') {
     $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'<div id="my_number">My Number</div>','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:right' class= 'number_search'>");
+		 if(arg('2') != '') {
+		  $form['setfield']['runner_number']['#default_value'] = arg('2');
+		}
   }
   else {
     $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:left'>");
