@@ -115,7 +115,7 @@ if((arg(0)!= 'login') && (arg(0) != 'user'))
            <h1 class="log_in">  User Login</h1>
           <?php endif ; ?>
 	</div>
-		    <?php print render($page['photo_search']); ?>
+		<?php print render($page['photo_search']); ?>
             <?php print render($page['content']); ?>
           </div>
                     
@@ -146,9 +146,9 @@ if((arg(0)!= 'login') && (arg(0) != 'user'))
   <div class="footer"><!--footer-->
   <div class="footer-inner">
   <div class="social-icon float-L">
-  <a href="mailto:info@runmemo.com"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
- <a href="http://www.facebook.com/pages/Runmemo/228101553914296"> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
-  <a href="http://twitter.com/#!/runmemos"><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
+  <a href="mailto:info@runmemo.com" target="_blank><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
+ <a href="http://www.facebook.com/pages/Runmemo/228101553914296" target="_blank> <img src="<?php echo base_path().path_to_theme(); ?>/images/facebook-icon.png" width="32" height="32" alt="facebook"/></a>
+  <a href="http://twitter.com/#!/runmemos" target="_blank><img src="<?php echo base_path().path_to_theme(); ?>/images/twitter-icon.png" width="32" height="32" alt="twitter"/></a>
   </div>
   <p class="float-R"><small>© 2012</small>  Runmemo</p>
   </div>
