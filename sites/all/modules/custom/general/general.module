@@ -11,6 +11,7 @@ function general_init(){
 }
 
 
+
 /**
  * Form alter function
  * by using this form_alter function we can alter the form without editing core module
@@ -20,7 +21,7 @@ function general_init(){
  */
 function general_form_alter(&$form, $form_state, $form_id){
     
-   
+    
     if($form['#form_id']=='user_login'){
         $form['actions']['submit']['#value'] = 'Login';
     }
@@ -41,6 +42,7 @@ function general_form_alter(&$form, $form_state, $form_id){
         $base_path=base_path().'sites/default/help_icon.gif';
         $form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
         $form['field_term']['#type'] = 'hidden';
+
     }
 }
 
@@ -65,4 +67,55 @@ function user_role_insertion($form,&$from_state){
     $photographer->user_role_id_insert($role_id,$uid);
 
 }
+
+/**
+ *Function for getting images from local and pushing to s3
+ * 
+ * 
+ */
+function general_cron(){
+
+
+   
+   $photographer = new photographer_model();
+   $photos_url = $photographer->get_local_photos();
+   
+	$i = 0;
+    foreach ($photos_url as $photo_url) {
+		
+		/////////////////////////////Pushing the original files///////////////////////////////////////////
+		
+		
+		if (file_exists($photo_url->uri))
+		{
+		   
+			$orig_file = (object) array(
+					'uid' => $photo_url->uid,
+					'uri' => $photo_url->uri,
+					'filemime' => file_get_mimetype($photo_url->uri),
+					'status' => 1,
+								   
+			);
+			
+			// Save the file to the root of the files directory. 
+			$file1 = file_unmanaged_copy($orig_file, 's3://');
+			
+			
+		
+		$i++;
+		}
+		
+		
+	}
+	print $i;exit;
+    
+   
+
+
+}
+
+
+
+
+
 

@@ -1,59 +1,83 @@
 <?php
 
-class photographer_model
-{
+class photographer_model{
 
+    /**
+     * Get the role id for set the user role as photographer to access the photgrapher page
+     * this function return the role id of the photographer
+     */
+    public function get_role_id(){
+
+        $rid=db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
+
+        return $rid;
+    }
+
+    /**
+     * Update the user role as photographer
+     * @param $role_id,$uid
+     *  $role_id is the id of the photographer role
+     *  $uid is user id of the current user
+     *  By using this function we can set the user role as photographer when user creating the account 
+     */
+
+    public function user_role_update($role_id,$uid){
+        db_update('users')
+                        ->fields(array(
+                        'role' => $role_id,
+                        ))
+                        ->condition('uid', $uid)
+                        ->execute();
+
+    }
+    /**
+     * To manage user role for each user like photographer or runner
+     * @param $role_id
+     * $role_id is user role id.It is used to set the role for user
+     */
+
+    public function user_role_id_insert($role_id,$uid){
+        db_insert('users_roles')
+                        ->fields(array(
+                        'uid' => $uid,
+                        'rid' => $role_id,
+                        ))->execute();
+
+    }
 	
-	/**
-         * Get the role id for set the user role as photographer to access the photgrapher page
-         * this function return the role id of the photographer
-	 */
-	public function get_role_id()
-	{
+	public function get_local_photos(){
+	
+	
+	    
+        //$photos_url=db_query("SELECT fm.filename,fm.uri,fm.uid FROM {file_managed} as fm INNER JOIN {file_usage} as fu INNER JOIN {field_data_field_s3_status} as status ON fm.fid=fu.fid and fu.id=status.entity_id and status.field_s3_status_value=:st",array(':st' => 0));
+		//return $photos_url;
 		
-		$rid=db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
+		 
+		$query = db_select('file_managed', 'fm');
+	    
+		$query->join('file_usage', 'fu', 'fm.fid = fu.fid');
+        $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
+		$query->condition('fs.field_s3_status_value', 0);
+		$query->addField('fm', 'filename');
+		$query->addField('fm', 'uri');
+		$query->addField('fm', 'uid');
+		$results = $query->execute();
+		return $results;
 		
-		return $rid;
+		
+		//print (string)$query;exit;
+		
+		
+		
+		
+		
+		 
+		
+		
+		
+		
+		
 	}
 
-	/**
-	 * 
-	 * Update the user role as photographer
-	 * @param $role_id,$uid
-	 *  $role_id is the id of the photographer role
-	 *  $uid is user id of the current user
-         *  By using this function we can set the user role as photographer when user creating the account 
-	 */
-
-	public function user_role_update($role_id,$uid)
-	{
-		db_update('users')
-			      ->fields(array(
-				'role' => $role_id,
-			      ))
-			      ->condition('uid', $uid)
-			      ->execute();
-		
-	}
-
-	
-
-	/**
-	 * To manage user role for each user like photographer or runner
-	 * @param $role_id
-	 * $role_id is user role id.It is used to set the role for user
-	 */
-
-	public function user_role_id_insert($role_id,$uid)
-	{
-		db_insert('users_roles')
-			      	->fields(array(
-				'uid' => $uid,
-				'rid' => $role_id,
-				))->execute();
-		
-	}
-
-	
 }
 
