@@ -1416,7 +1416,7 @@ padding:10px;
    top:-17px;
    left:791px;
 }
-.page-photographer .description 
+.page-photographer #photographer-drag-and-drop-form .description
 {
 	color: #898989;
     float: right;
@@ -1476,6 +1476,7 @@ div.messages {
     position: relative;
     top: 28px;
 }
+
 /*newly added*/
 .content ul.sf-menu li.sf-item-3 {
 	position: relative;
@@ -1748,7 +1749,6 @@ margin-top: 235px;
    height:469px;
 }
 
-/* ---- UI 20.02.2012 ----*/
  #node_check_id{
 display:none!important;
 }
@@ -1880,7 +1880,6 @@ width: 209px;
 /*--------------------styles feedback form alignment---------------*/
 
 
-
 #block-feedback-form {
   display: none;
  
@@ -1898,11 +1897,12 @@ width: 209px;
   background: url(../images/feedback.png) no-repeat scroll 0px 0px #ccc !important;
   width:35px;
   height:110px;
+  cursor: pointer;
 }
 
 #block-feedback-form .content{
   position: fixed !important;
-  top:30% !important;
+  top:10% !important;
   left:30% !important;
   width:550px; 
  
@@ -1911,21 +1911,32 @@ width: 209px;
  max-width:550px !important; 
 }
 #block-feedback-form form{
- border:2px solid #A3A3A3 !important;  
+ border:2px solid #333 !important;
+ padding: 0px;
  
 } 
-
-/*
-#block-feedback-form .feedback-link{
-  background: url(../images/feedback.png) no-repeat scroll 0px 0px #ccc !important;
-  width:35px;
-  height:110px;
- 
-  border:1px solid #000;
- background-color:#57BED8;
- border:1px solid #ccc !important;  
+#block-feedback-form #fb_close{
+  background: none repeat scroll 0 0 #333333;
+    color: #FFFFFF;
+    padding: 5px 15px 5px 5px;
+    text-align: right;
+    text-decoration: underline;
+    position: relative;
+    }
+#block-feedback-form #fb_close a:hover
+{
+    color:#fff;
 }
-*/
+#block-feedback-form .messages
+{
+  margin: 0px;
+}
+#block-feedback-form .feedback-help, #block-feedback-form .form-item-message, #block-feedback-form .form-wrapper
+{
+  margin-left:5px;
+}
+
+
 
  .page-user #wrapper,.page-search-result #wrapper {
   padding-top: 0.2px !important;
@@ -1933,4 +1944,17 @@ width: 209px;
 
 .page-login #inner-wrapper {
   padding-top: 0.04px !important;
+}
+
+#feedback-form div.messages{
+    top:0px;
+}
+
+#block-feedback-form .feedback-link {
+    float: left;
+    font-size: 0;
+    height: 108px;
+    opacity: 0;
+    text-align: right;
+    width: 36px;
 }
