@@ -202,7 +202,7 @@ function feedback_form($form, &$form_state) {
 
   // Store the path on which this form is displayed.
   $form['location'] = array('#type' => 'value', '#value' => $_GET['q']);
-
+  //$form['close'] = array('#markup' => '<div id="fb_close"><a id="fb_close_link" style="cursor:pointer">Close</a></div>','#weight'=> '-5');
   $form['help'] = array(
     '#prefix' => '<div class="feedback-help">',
     '#markup' => t('If you experience a bug or would like to see an addition on the current page, feel free to leave us a message.'),
@@ -266,20 +266,6 @@ function feedback_form($form, &$form_state) {
   return $form;
 }
 
-
-function feedback_form_validate($form, &$form_state) {
-  
-  $email = $form['field_email']['und']['0']['value']['#value'];
-
-  if(!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)) && ($email != '')) {
-
-    form_set_error('field_email', t('Invalid Email Address'));
-    
-  }
-      
-}
-
-
 /**
  * Form submission handler for feedback_form().
  */
@@ -301,7 +287,6 @@ function feedback_form_ajax_callback($form, &$form_state) {
   if (!$form_state['executed']) {
     return $form;
   }
-
   
   // Otherwise, return a fresh copy of the form, so the user may post additional
   // feedback.
