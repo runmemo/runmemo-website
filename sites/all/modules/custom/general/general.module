@@ -80,34 +80,69 @@ function general_cron(){
    $photographer = new photographer_model();
    $photos_url = $photographer->get_local_photos();
    
-	$i = 0;
+   $s3 = amazon_s3_get_instance();
+   $bucket= variable_get('amazons3_bucket', '');
+   $acl = 'public-read-write';
+   
+   $path=drupal_realpath('public://');
+   
+    
+
     foreach ($photos_url as $photo_url) {
+	
+	    $thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
+		$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
+		$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
 		
-		/////////////////////////////Pushing the original files///////////////////////////////////////////
+		$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
+		$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
+	    $prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
 		
+		/////////////////////////////Pushing the files///////////////////////////////////////////
+		$orig_file_path = $photo_url->uri;
 		
 		if (file_exists($photo_url->uri))
 		{
 		   
-			$orig_file = (object) array(
-					'uid' => $photo_url->uid,
-					'uri' => $photo_url->uri,
-					'filemime' => file_get_mimetype($photo_url->uri),
-					'status' => 1,
-								   
-			);
-			
-			// Save the file to the root of the files directory. 
-			$file1 = file_unmanaged_copy($orig_file, 's3://');
-			
-			
+			  $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+		}
 		
-		$i++;
+		if(file_exists($thumbnail_local_path))
+		{
+		     
+		     $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+		}
+		
+		if(file_exists($preview_local_path))
+		{
+		     
+		     $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
+			 
+		}
+		
+		if($orig_success && $thumb_success && $preview_success)
+		{
+		   
+			
+			$photographer->update_s3_status($photo_url->entity_id);
+			
+			$url="s3://".$photo_url->filename;
+			$photographer->update_url($photo_url->fid,$url);
+			
+			file_unmanaged_delete($orig_file_path);
+			file_unmanaged_delete($thumb_local_path);
+			file_unmanaged_delete($prev_local_path);
+			
+			
 		}
 		
 		
+		
+		
 	}
-	print $i;exit;
+	
+    
+	
     
    
 
