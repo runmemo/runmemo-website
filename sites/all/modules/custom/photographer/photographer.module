@@ -148,19 +148,13 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
         $node->body[$node->language][0]['summary'] = 'Here goes a summary';
         $node->body[$node->language][0]['format'] = 'filtered_html'; 
 
-        // Create a File object
-       /*
-        $file_path = $form['box']['file']['#value'][$i]['tmppath']; 
-                    
-        $file = (object) array(
-                'uid' => $uid,
-                'uri' => $file_path,
-                'filemime' => file_get_mimetype($file_path),
-                'status' => 1,
-                                
-        ); */  
+      
+       
+      
 		
-        $temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
+		//////////Change file extension////////////////////////
+		
+		$temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
        
         $temp_path = '/tmp/'.$temp_name;
        
@@ -177,9 +171,23 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
                 'status' => 1,
                                
         );
-             
+		
+		$file1=array(
+                'uid' => $uid,
+                'uri' => 'public://'.$form['box']['file']['#value'][$i]['name'],
+                'filemime' => file_get_mimetype('public://'.$form['box']['file']['#value'][$i]['name']),
+                'status' => 1,
+                               
+        );
+		/////////////////////////////////////////////////////////
+               
         // Save the file to the root of the files directory. You can specify a subdirectory, for example, 'public://images'
-        $file = file_copy($file, 'public://');  
+        $file = file_copy($file, 'public://'); 
+
+		//theme("image_formatter", array('item' => $file1, 'image_style' => 'thumbnail'));
+		//theme("image_formatter", array('item' => $file1, 'image_style' => 'preview-with-watermark'));
+		
+		
         $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
    
          if(($selected_event == '')){
