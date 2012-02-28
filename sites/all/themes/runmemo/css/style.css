@@ -1413,20 +1413,23 @@ padding:10px;
    cursor:pointer;
    outline:none;
    position:relative;
-   top:-17px;
+   top:0px;
    left:791px;
 }
-.page-photographer #photographer-drag-and-drop-form .description
+
+.page-photographer #photographer-drag-and-drop-form .description 
 {
 	color: #898989;
     float: right;
     position: absolute;
-    top: 540px;
+    top: 630px;
 	right:16px;
 }
 .page-photographer .file_list {
-   padding:8px 0 8px 7px;
+   padding:0px 0 8px 7px;
    font-weight:bold;
+   position: relative;
+   left: -18px;
 }
 .page-photographer .ind_prog {
   display:none;
@@ -1894,7 +1897,7 @@ width: 209px;
     left: 0 !important;
     position: fixed !important;
     top: 25% !important;
-  background: url(../images/feedback.png) no-repeat scroll 0px 0px #ccc !important;
+  background: url(../images/feedback.png) no-repeat scroll 0px 0px !important;
   width:35px;
   height:110px;
   cursor: pointer;
@@ -1907,12 +1910,11 @@ width: 209px;
   width:550px; 
  
 }
-#block-feedback-form form{
- max-width:550px !important; 
-}
+
 #block-feedback-form form{
  border:2px solid #333 !important;
  padding: 0px;
+ max-width:550px !important; 
  
 } 
 #block-feedback-form #fb_close{
@@ -1957,4 +1959,17 @@ width: 209px;
     opacity: 0;
     text-align: right;
     width: 36px;
+}
+
+/* 28:02:12 */
+#feedback-form .form-checkboxes, .form-radios, .form-checkboxes .form-item, .form-radios .form-item {
+   float: left;
+   height:33px;
+}
+#feedback-form .form-checkboxes .form-item, .form-radios .form-item {
+  width: 134px;
+}
+#feedback-form input.form-checkbox, input.form-radio {
+  vertical-align: -3px;
+  
 }
