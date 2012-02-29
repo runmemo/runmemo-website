@@ -528,7 +528,9 @@ background:none !important;
 border:0 none !important;
 }
 #event_runner_chzn{
-width:185px !important;
+ width:185px !important; 
+  
+  /* padding:0 10px 0 0;*/
 }
 
 
@@ -891,11 +893,14 @@ border: 1px solid #BFBFBF;
 	background:url(../images/get-started-hover.png) no-repeat!important;
 }
 .chzn-container-single .chzn-single{
-width:299px!important; 
+width:299px!important;
 height:39px!important; 
+/* padding:0 10px; */
 }
 .chzn-drop {
-width:307px!important; 
+/*width:307px!important; */
+padding:0 10px;
+width:287px!important;
 }
 .chzn-search input{
 width:250px!important; 
@@ -1782,6 +1787,7 @@ text-align:justify;
 .page-search-result #photo_cost
 {
    float:left;
+   padding:0 0 10px 100px;
 }
 .page-search-result #photo_cost .photo_cost
 {
@@ -1794,6 +1800,7 @@ text-align:justify;
 {
    float:right;
    margin-right:30px;
+   padding:0 0 10px 0;
 }
 .page-search-result #photo_author .photo_cost
 {
@@ -1825,24 +1832,32 @@ outline:none;
 {
     clear: both;
     float: left;
-    text-align: center;
+    text-align: right;
     width: 400px;
+	height:330px;
+	vertical-align:middle;
+	padding-top:20px;
 }
 
 
 .page-search-result .content #search-result-cart
 {
-    width:100%;
+    width:93%;
 }
 .page-search-result .content #search-result-cart #add_to_cart
 {
     float:left;
+    margin:20px 0 20px 254px;
 }
 .page-search-result .content #search-result-cart .cart_summary
 {
     float:right;
     margin-right: 10px;
-    line-height:25px;
+    line-height:30px;
+	/*float:right; */
+	float:left;
+	width:398px;
+	border-top:1px solid #000;
 }
 .page-search-result .content #search-result-cart .summary_title
 {
@@ -1861,10 +1876,11 @@ outline:none;
 cursor: pointer;
 font-size: 14px;
 height: 37px;
-padding-left: 17px;
-padding-top: 5px;
 text-align: center;
-width: 209px;
+width: 201px;
+float:right;
+border-bottom:1px solid  #ccc;
+padding:5px 0 25px 17px;
 }
 .proceed_to_cart a
 {
@@ -1935,7 +1951,7 @@ width: 209px;
 }
 #block-feedback-form .feedback-help, #block-feedback-form .form-item-message, #block-feedback-form .form-wrapper
 {
-  margin-left:5px;
+  margin:4px 8px 0 8px;
 }
 
 
@@ -1967,9 +1983,43 @@ width: 209px;
    height:33px;
 }
 #feedback-form .form-checkboxes .form-item, .form-radios .form-item {
-  width: 134px;
+  width: 127px;
 }
 #feedback-form input.form-checkbox, input.form-radio {
   vertical-align: -3px;
   
+}
+/* 29:02:12 */
+
+#block-feedback-form form {
+  opacity:1!important;
+}
+
+#feedback-submit {
+  background: url(../images/send-feed.png) no-repeat scroll left center;
+  width:123px;
+  /* height:35px; */
+  border:none;
+  color:#FFF;
+  float: right;
+  padding:5px 0 6px; 0;
+  font-family: Arial;
+  margin-bottom:5px;
+}
+.summary_selected_photos, .summary_cost {
+  padding-left:10px;
+}
+#block-feedback-form .feedback-help {
+  float:left;
+  padding-bottom:7px;
+}
+.resizable-textarea {
+  padding-top:5px;
+}
+#feedback-form #edit-field-category, 
+#feedback-form div.feedback-help,
+#feedback-form .form-type-textarea,
+#feedback-form #edit-field-email,
+#feedback-form #edit-actions {
+	padding: 0px 7px;
 }
