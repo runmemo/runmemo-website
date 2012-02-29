@@ -184,8 +184,15 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
         // Save the file to the root of the files directory. You can specify a subdirectory, for example, 'public://images'
         $file = file_copy($file, 'public://'); 
 
-		//theme("image_formatter", array('item' => $file1, 'image_style' => 'thumbnail'));
-		//theme("image_formatter", array('item' => $file1, 'image_style' => 'preview-with-watermark'));
+		
+		//Creating thumbnail image
+		$thumb_url=image_style_url('thumbnail', 'public://'.$form['box']['file']['#value'][$i]['name']); 
+		file_get_contents($thumb_url);
+		
+		
+		//Creating preview image
+		$preview_url=image_style_url('preview-with-watermark', 'public://'.$form['box']['file']['#value'][$i]['name']); 
+		file_get_contents($preview_url);
 		
 		
         $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
