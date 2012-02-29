@@ -63,11 +63,11 @@ function search_result_add_to_cart() {
               }
 
       });
-      if ($('#block-system-main table.views-view-grid td.col-first img').length == 1) {
-              var initial_img = $('#block-system-main table.views-view-grid td.col2 img').attr('src');	
-              var initial_preview=initial_img.replace('thumbnail', 'preview-with-watermark');
-              /*alert(replacementurl);*/
-              $("#preview_image").attr("src",initial_preview);
+      if ($('#block-system-main table.views-view-grid').length == 1) {
+              var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');	
+              var initial_preview = initial_img.replace('thumbnail', 'preview-with-watermark');
+              //alert(replacementurl);
+              $("#preview_image").html('<img src="'+initial_preview+'" />');
 
       }
 
@@ -133,6 +133,12 @@ function search_result_add_to_cart() {
      }
      
      });
+	 
+	 $("div.form-item-field-category-und label").each(function(){
+		if ($(this).text() == 'Category *') {
+			$(this).hide();
+		}
+	 });
   }
 
 
