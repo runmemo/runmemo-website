@@ -111,7 +111,7 @@ function search_result_add_to_cart() {
       }
     };
     
-     if($(".error").length > 0 ) {
+     if($("#feedback-form .error").length > 0 ) {
          
          $("#block-feedback-form .content").show();
          $("#feedback-form").attr('style','display:block;');
@@ -124,7 +124,7 @@ function search_result_add_to_cart() {
      
       $("#feedback-form-toggle").trigger('click');
         
-      if($(".error").length > 0 ) {
+      if($("#feedback-form .error").length > 0 ) {
        $("#feedback-form-toggle").trigger('');
        
      }
