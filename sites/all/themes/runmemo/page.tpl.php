@@ -149,15 +149,10 @@
 		    </div>
 		    <div class="cont-lft float-L">
 		        <div class="cont-lft-header">
-		            Royal Parks Half Maraphone 2011
+		            <?php print render($page['recent_event1_title']); ?>
 		        </div>
 		        <div class="find-palyers float-L">
-		            <ul>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" alt="runmemo_player"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" alt="runmemo_player1"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" alt="runmemo_player2"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" alt="runmemo_player3"/></li>
-		            </ul>
+		            <?php print render($page['recent_event1_images']); ?>
 		        </div>
 
 		        <div class="float-R w-275">
@@ -166,15 +161,10 @@
 		    </div>
 		    <div class="cont-rig float-R">
 		        <div class="cont-lft-header">
-		            Man Of Isles Half Marathon 2011
+		            <?php print render($page['recent_event2_title']); ?>
 		        </div>
 		        <div class="find-palyers float-L">
-		            <ul>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player.png" width="96" height="139" alt="runmemo_player"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player1.png" width="96" height="139" alt="runmemo_player"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player2.png" width="96" height="139" alt="runmemo_player"/></li>
-		            <li><img src="<?php echo base_path().path_to_theme(); ?>/images/find-player3.png" width="96" height="139" alt="runmemo_player"/></li>
-		            </ul>
+		            <?php print render($page['recent_event2_images']); ?>
 		        </div>
 		        <div class="float-R w-275">
 		            <?php print render($page['recent_event2_submit']); ?>
