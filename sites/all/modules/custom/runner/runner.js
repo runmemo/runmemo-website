@@ -12,6 +12,11 @@ function search_validation(){
       return false;
     }
    
+    var event_name_search = document.getElementById('runner_number').value;
+    if(event_name_search == ''){
+      alert("Please enter your number");
+      return false;
+    }
 }
 
 
@@ -56,19 +61,26 @@ function search_result_add_to_cart() {
       $('#block-system-main table.views-view-grid td').each(function(){
               var markup = $(this).html();
 
-
-
               if ($(this).has("div").length == 0) {
                       $(this).css("border", "none");
               }
 
       });
-      if ($('#block-system-main table.views-view-grid').length == 1) {
+      if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) { 
               var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');	
               var initial_preview = initial_img.replace('thumbnail', 'preview-with-watermark');
               //alert(replacementurl);
-              $("#preview_image").html('<img src="'+initial_preview+'" />');
+              $("#prev_img").html('<img src="'+initial_preview+'" />');
 
+              var initial_cost = $('#block-system-main table.views-view-grid tr.row-first td.col-first #node_cost').text();
+              $(".page-search-result span#photo_cost label").text(initial_cost);
+              
+              var initial_authour_name = $('#block-system-main table.views-view-grid tr.row-first td.col-first #authour_first_name').text();
+              $(".page-search-result span#photo_author label").text(initial_authour_name);
+      }
+      
+      else {
+        $(".page-search-result #sidebar-second .content").hide();
       }
 
 
@@ -79,10 +91,16 @@ function search_result_add_to_cart() {
       });
       $('#block-system-main div.field-content img').bind('click', function(){ 
               var imgsrc = $(this).attr('src');	
+                var price_txt = $(this).parents("td").find("span#node_cost").text();
+                $(".page-search-result span#photo_cost label").text(price_txt);
+                
+                var node_author_txt = $(this).parents("td").find("span#authour_first_name").text();
+                $(".page-search-result span#photo_author label").text(node_author_txt);
+                
               var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
 
               //alert(replacementurl);
-              $("#preview_image").attr("src",replacementurl);
+              $("#prev_img").html('<img src="'+replacementurl+'" />');
 
 
       });	
