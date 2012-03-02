@@ -2,46 +2,7 @@ jQuery(document).ready(function(){
       
 });
 
-/**
- * validation for search button field in the home 
- */
-function search_validation(){
-    var event_name_search = document.getElementById('event_runner').value;
-    if(event_name_search == 'select_event'){
-      alert("Please select Event");
-      return false;
-    }
-   
-    var event_name_search = document.getElementById('runner_number').value;
-    if(event_name_search == ''){
-      alert("Please enter your number");
-      return false;
-    }
-}
 
-
-/**
- * Search using runner number in the recent event section
- */
-function find_recent_event1(){
-  var recent_event1_number = document.getElementById('number_recent_event1').value;
-  if(recent_event1_number == ''){
-      alert("Please enter your number");
-      return false;
-    }
-}
-
-
-/**
- * Search using runner number in the recent event2 section
- */
-function find_recent_event2(){
-  var recent_event2_number = document.getElementById('number_recent_event2').value;
-  if(recent_event2_number == ''){
-      alert("Please enter your number");
-      return false;
-    }
-}
 /**
  * Add to cart validation in the search result page
  */
@@ -103,8 +64,14 @@ function search_result_add_to_cart() {
               $("#prev_img").html('<img src="'+replacementurl+'" />');
 
 
-      });	
-    
+      });
+      
+      /*
+    if($(".page-search-result .error").length > 0 ) {
+         
+         $(".page-search-result #sidebar-second .block .content").attr('style','top:62px');
+         
+     }*/
     
    
     if (($("#block-feedback-form")).length > 0 ) {
@@ -151,12 +118,7 @@ function search_result_add_to_cart() {
      }
      
      });
-	 
-	 $("div.form-item-field-category-und label").each(function(){
-		if ($(this).text() == 'Category *') {
-			$(this).hide();
-		}
-	 });
+	
   }
 
 

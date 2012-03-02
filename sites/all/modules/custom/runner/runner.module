@@ -69,12 +69,14 @@ function select_event_runner_get_photos($form,&$form_state) {
   //select event in the runner side
   
   if(arg('0') == 'search-result') {
-    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='event-search'>Event</div>",'#id'=>'event_runner');
+    $form['setfield']['event_label'] = array('#markup' => "<div  id='event-search'>Event</div>");
+    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"Event",'#id'=>'event_runner','#required' => 'true');
   }
   else{
-    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>",'#id'=>'event_runner');
+    $form['setfield']['find'] = array('#markup' => "<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>");
+    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"Event",'#id'=>'event_runner','#required' => 'true');
   }
-  $form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
+  //$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
   //select event options from content type 'event'
   $event_helper = new event_helper();
   //get the event name from content type 'event'
@@ -94,17 +96,19 @@ function select_event_runner_get_photos($form,&$form_state) {
 
   //text field for get the runner number
   if(arg('0') == 'search-result') {
-    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'<div id="my_number">My Number</div>','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:right' class= 'number_search'>");
-		 if(arg('2') != '') {
-		  $form['setfield']['runner_number']['#default_value'] = arg('2');
-		}
+    $form['setfield']['my_number'] = array('#markup' => '<div id="my_number">My Number</div>');
+    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'Runner Number','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:right' class= 'number_search'>",'#required' => 'true');
+    if(arg('2') != '') {
+      $form['setfield']['runner_number']['#default_value'] = arg('2');
+    }
+
   }
   else {
-    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:left'>");
+    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'Runner Number','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:left'>",'#required' => 'true');
   }
 
   //submit get my photo in the runner side
-  $form['setfield']['search']=array('#type'=>'submit','#value'=>'','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#attributes'=>array('onclick'=>'return search_validation();'),'#suffix' => '</div>');
+  $form['setfield']['search']=array('#type'=>'submit','#value'=>'','#prefix'=>"<div style='float:right;margin-left:15px;'></div>",'#suffix' => '</div>');
 
   return $form;
 
@@ -117,6 +121,7 @@ function select_event_runner_get_photos_submit($form,&$form_state) {
 
   $event_id = $form['setfield']['events_select_runner']['#value'];
   $runner_number = $form['setfield']['runner_number']['#value'];
+  
   if(!empty($runner_number)) {
     $form_state['redirect'] = "search-result/" . $event_id . "/" . $runner_number;
   }
@@ -150,7 +155,7 @@ function select_event_runner_sell_photos($form,&$form_state) {
     $form['sellfield']['get_started'] = array('#type'=>'submit','#value'=>'');
   }
   else{
-    $form['sellfield']['events_select_runner'] = array('#type'=>'select','#title'=>'','#attributes'=>array('onchange'=>'return select_event_runner_sell();'),'#id'=>'event_runner_sell');
+    $form['sellfield']['events_select_runner'] = array('#type'=>'select','#title'=>'','#id'=>'event_runner_sell');
 
     $form['sellfield']['events_select_runner']['#options'] = array('select_event'=>"Select Event");
     //select event options from content type 'event'
@@ -217,9 +222,9 @@ function recent_event1_image(){
   
   $form = array();
   
-  $form['runner_number'] = array('#type' => 'textfield','#title' => '','#size' => '20','#id' => 'number_recent_event1','#placeholder' => t('My Number'),);
+  $form['runner_number'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event1','#placeholder' => t('My Number'),'#required' => 'true');
   
-  $form['submit'] = array('#type' => 'submit','#value' => '','#attributes'=>array('onclick'=>'return find_recent_event1();'));
+  $form['submit'] = array('#type' => 'submit','#value' => '',);
      
   return  $form;
   
@@ -246,9 +251,9 @@ function recent_event2_image(){
   
   $form = array();
   
-  $form['runner_number_event2'] = array('#type' => 'textfield','#title' => '','#size' => '20','#id' => 'number_recent_event2','#placeholder' => t('My Number'),);
+  $form['runner_number_event2'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event2','#placeholder' => t('My Number'),'#required' => 'true');
   
-  $form['submit_event2'] = array('#type' => 'submit','#value' => '','#attributes'=>array('onclick'=>'return find_recent_event2();'));
+  $form['submit_event2'] = array('#type' => 'submit','#value' => '',);
        
   return  $form;
   
