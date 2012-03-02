@@ -11,7 +11,6 @@ function general_init(){
 }
 
 
-
 /**
  * Form alter function
  * by using this form_alter function we can alter the form without editing core module
@@ -21,9 +20,16 @@ function general_init(){
  */
 function general_form_alter(&$form, $form_state, $form_id){
     
+      
+    if($form['#form_id']=='feedback_form'){
+        $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
+        $form['help']['#weight'] = '-1'; 
+        $form['#validate'][] = 'feedback_form_validate';
+    }
     
-    if($form['#form_id']=='user_login'){
+     if($form['#form_id']=='user_login'){
         $form['actions']['submit']['#value'] = 'Login';
+        $form['#validate'][] = 'cookie_check_validate';
     }
     //registration page
     if($form['#form_id']=='user_register_form'){
@@ -41,7 +47,7 @@ function general_form_alter(&$form, $form_state, $form_id){
         $uid=$user->uid;
         $base_path=base_path().'sites/default/help_icon.gif';
         $form['photo_paypal_icon']=array('#markup'=>"<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>",'#weight'=>'5');
-        $form['field_term']['#type'] = 'hidden';
+        $form['field_term'] = '';
 
     }
 }
@@ -67,6 +73,35 @@ function user_role_insertion($form,&$from_state){
     $photographer->user_role_id_insert($role_id,$uid);
 
 }
+
+/**
+ * Form validation
+ * @param type $form
+ * @param type $form_state 
+ */
+function feedback_form_validate($form, &$form_state) {
+  
+  $email = $form['field_email']['und']['0']['value']['#value'];
+
+  if(!(eregi("^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$", $email)) && ($email != '')) {
+   
+    form_set_error('field_email', t('Invalid Email Address'));
+    
+  }
+      
+}
+ /**
+ * Validate callback for user login form submission.
+ *
+ * If the cookie set previously is not present, redirect.
+ */
+function cookie_check_validate($form, &$form_state) {
+  if (!$_COOKIE) {
+    $domain = ini_get('session.cookie_domain') ? ini_get('session.cookie_domain') : $_SERVER['HTTP_HOST'];
+    form_set_error('', t('It seems your browser does not accept cookies. To log into this site, you need to accept cookies from the domain @domain.', array('@domain' => $domain)));
+  }
+}
+
 
 /**
  *Function for getting images from local and pushing to s3
@@ -135,21 +170,12 @@ function general_cron(){
 			
 			
 		}
-		
-		
-		
+			
 		
 	}
 	
-    
-	
-    
    
-
-
 }
-
-
 
 
 
