@@ -10,6 +10,27 @@ function general_init(){
 	
 }
 
+/**  
+ * Create the hook menu for each page 
+ * by using this we can map to the related page
+ * @return
+ * return menu items
+ */
+function general_menu() {
+    
+  $items['feedback'] = array(
+    'title' => 'Feedback',
+    'description' => t('Feedback form.'),
+    'page callback' => 'custom_feedback_form',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK
+  );
+
+
+    return $items;
+
+}
+
 
 /**
  * Form alter function
@@ -101,6 +122,31 @@ function cookie_check_validate($form, &$form_state) {
     form_set_error('', t('It seems your browser does not accept cookies. To log into this site, you need to accept cookies from the domain @domain.', array('@domain' => $domain)));
   }
 }
+
+
+ /**
+ * Custom feedback form.
+ *
+ * For setting up the overlay.
+ */
+function custom_feedback_form() {
+  
+  
+  return '<div id="block-feedback-form">
+			  <h2><span class="feedback-link">' .$title .'</span></h2>
+			  <div class="content">' . drupal_render(drupal_get_form('feedback_form')) . '</div></div>';
+			
+  
+}
+
+/**
+* Implements hook_admin_paths().
+*/
+function general_admin_paths_alter(&$paths) {
+  $paths['feedback'] = TRUE;
+  $paths['feedback/*'] = TRUE;
+}
+
 
 
 /**
