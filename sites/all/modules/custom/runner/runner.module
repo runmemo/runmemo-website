@@ -74,9 +74,10 @@ function select_event_runner_get_photos($form,&$form_state) {
   }
   else{
     $form['setfield']['find'] = array('#markup' => "<div  id='find'>Find</div> <div id='great_photos'>great photos of you...</div>");
-    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"Event",'#id'=>'event_runner','#required' => 'true');
+    $form['setfield']['events_select_runner']=array('#type'=>'select','#title'=>"Event",'#id'=>'event_runner',);
+    
   }
-  //$form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
+  $form['setfield']['events_select_runner']['#options']=array('select_event'=>"Select Event");
   //select event options from content type 'event'
   $event_helper = new event_helper();
   //get the event name from content type 'event'
@@ -113,6 +114,15 @@ function select_event_runner_get_photos($form,&$form_state) {
   return $form;
 
 }
+
+function select_event_runner_get_photos_validate($form,&$form_state) {
+ $event_selected = $form['setfield']['events_select_runner']['#value'];
+ if($event_selected == 'select_event') {
+   form_set_error('', t('Please select event'));
+ }
+}
+
+
 
 /** 
  * Function for runner photo search submit.
@@ -151,10 +161,10 @@ function select_event_runner_sell_photos($form,&$form_state) {
 
   $form['sellfield']['trade'] = array('#markup' => '<div id="trade">Trade</div>  <div id="taken_picture">pictures you have taken...</div>');
 
-  if($user->roles['1']!=null){
+  if($user->roles['1']!=null) {
     $form['sellfield']['get_started'] = array('#type'=>'submit','#value'=>'');
   }
-  else{
+  else {
     $form['sellfield']['events_select_runner'] = array('#type'=>'select','#title'=>'','#id'=>'event_runner_sell');
 
     $form['sellfield']['events_select_runner']['#options'] = array('select_event'=>"Select Event");
@@ -285,7 +295,7 @@ function search_result_cart($form,&$form_state) {
   $form = array();
   
   $form['add_to_cart'] = array('#type' => 'submit', '#value' => 'Add to Cart','#id' => 'add_to_cart','#attributes'=>array('onclick'=>'return search_result_add_to_cart();'),);
-  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#">Proceed to Cart</a></div></div>',);
+  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#">Proceed to Checkout</a></div></div>',);
 
   return $form;
 }

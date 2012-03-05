@@ -66,20 +66,29 @@ function search_result_add_to_cart() {
 
       });
       
-      /*
-    if($(".page-search-result .error").length > 0 ) {
-         
-         $(".page-search-result #sidebar-second .block .content").attr('style','top:62px');
-         
-     }*/
+      
+    if($(".page-search-result .error ").length > 0 ) {
+        if($(".page-search-result .error ul li").length > 0 ) {
+          $(".page-search-result #sidebar-second .block .content").attr('style','top:92px');
+          $(".page-search-result .footer").attr('style','margin-top:80px');
+        }
+        else {
+          $(".page-search-result #sidebar-second .block .content").attr('style','top:62px');
+           $(".page-search-result .footer").attr('style','margin-top:48px');
+        }
+            
+     }
     
    
     if (($("#block-feedback-form")).length > 0 ) {
         
         $("#block-feedback-form .content").hide();
-        
+        $("body.page-feedback #block-feedback-form .content").show();
+		$("body.page-feedback #block-feedback-form #feedback-form").show();
       }
-    
+	  
+    $("#block-feedback-form h2").html('<a class="feedback-link-new" href="feedback">link</a>');
+	
      Drupal.feedbackFormToggle = function ($block, enable) {
       $block.find('form').slideToggle('medium');
       if (enable) {
@@ -107,7 +116,11 @@ function search_result_add_to_cart() {
    
    $("#fb_close_link").click(function() {
      
-      $("#feedback-form-toggle").trigger('click');
+	 parent.Drupal.overlay.close();
+	
+	
+	 
+      /*$("#feedback-form-toggle").trigger('click');
         
       if($("#feedback-form .error").length > 0 ) {
        $("#feedback-form-toggle").trigger('');
@@ -115,9 +128,14 @@ function search_result_add_to_cart() {
      }
      else {
        $("#feedback-form-toggle").trigger('');
-     }
+     }*/
      
      });
+	
+	Drupal.behaviors.feedbackFormSubmit = function (context) {
+		parent.Drupal.overlay.close();
+	};
+	
 	
   }
 
