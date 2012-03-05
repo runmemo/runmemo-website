@@ -123,6 +123,8 @@ function photographer_drag_and_drop_form($form,&$form_state) {
  */
 
 function photographer_drag_and_drop_form_submit($form, &$form_state) {
+  
+  
   $selected_event = $form['box']['selected_event']['#value'];
   $price = node_load($selected_event)->field_pricing['und']['0']['value'];
   
@@ -153,14 +155,16 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       
 		
 		//////////Change file extension////////////////////////
-		
-		$temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
+        
+        $file_path = drupal_realpath('temporary://');
+  	
+	$temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
        
-        $temp_path = '/tmp/'.$temp_name;
-       
+        $temp_path = $file_path .'/'. $temp_name;
+               
         chmod($temp_path,'777');
        
-        $original_name = '/tmp/'.$form['box']['file']['#value'][$i]['name'];
+        $original_name = $file_path  .'/'.$form['box']['file']['#value'][$i]['name'];
        
         rename($temp_path,$original_name);
        
@@ -171,26 +175,17 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
                 'status' => 1,
                                
         );
-		
-		
-		/////////////////////////////////////////////////////////
-               
-        // Save the file to the root of the files directory. You can specify a subdirectory, for example, 'public://images'
-        $file = file_copy($file, 'public://'); 
+	   
+        //file moves from temp to public folder
+        $file = file_move($file, 'public://'); 
 
-		
-		//Creating thumbnail image
-		 $thumb_url=image_style_url('thumbnail', 'public://'.$form['box']['file']['#value'][$i]['name']); 
-		 @file_get_contents($thumb_url); 
-		
-		
-		//Creating preview image
-		//$preview_url=image_style_url('preview-with-watermark', 'public://'.$form['box']['file']['#value'][$i]['name']); 
-		//file_get_contents($preview_url);
-		
-		
-		
-		
+        //Creating thumbnail image
+        $thumb_url=image_style_url('thumbnail', 'public://'.$form['box']['file']['#value'][$i]['name']); 
+        @file_get_contents($thumb_url);
+
+        //Creating preview image
+        $preview_url=image_style_url('preview-with-watermark', 'public://'.$form['box']['file']['#value'][$i]['name']); 
+        @file_get_contents($preview_url);
 		
 		
         $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
@@ -208,12 +203,12 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
                
         node_save($node); // After this call we'll get a nid       
         
+        //file_unmanaged_delete('temporary://'.$form['box']['file']['#value'][$i]['name']);
   }
 
   drupal_set_message("Files uploaded successfully");
   $form_state['redirect'] = "photographer";
 }
-
 
 
 /**
