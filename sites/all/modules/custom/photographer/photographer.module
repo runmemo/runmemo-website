@@ -158,7 +158,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
         
         $file_path = drupal_realpath('temporary://');
   	
-	$temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
+		$temp_name = basename($form['box']['file']['#value'][$i]['tmppath']);
        
         $temp_path = $file_path .'/'. $temp_name;
                
@@ -173,6 +173,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
                 'uri' => 'temporary://'.$form['box']['file']['#value'][$i]['name'],
                 'filemime' => file_get_mimetype($form['box']['file']['#value'][$i]['tmppath']),
                 'status' => 1,
+				'filename'=>$form['box']['file']['#value'][$i]['name'],
                                
         );
 	   
@@ -203,7 +204,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
                
         node_save($node); // After this call we'll get a nid       
         
-        //file_unmanaged_delete('temporary://'.$form['box']['file']['#value'][$i]['name']);
+        
   }
 
   drupal_set_message("Files uploaded successfully");
