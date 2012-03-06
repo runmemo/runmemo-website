@@ -178,6 +178,7 @@
 
 
     <div class="footer"><!--footer-->
+	<div id="link-display" style="display:none;"><?print url("feedback", array('absolute'=> TRUE));?></div>
         <div class="footer-inner">
             <div class="social-icon float-L">
                 <a href="mailto:info@runmemo.com" target="_blank"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
@@ -189,4 +190,6 @@
     </div><!--footer ends-->
 
 </div>
+
+
 
