@@ -42,10 +42,13 @@ function general_menu() {
 function general_form_alter(&$form, $form_state, $form_id){
     
       
-    if($form['#form_id']=='feedback_form'){
+    if($form['#form_id'] == 'feedback_form'){
         $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
         $form['help']['#weight'] = '-1'; 
+		$form['url_hidden'] = array('#type' => 'textfield', '#default_value' => '');
         $form['#validate'][] = 'feedback_form_validate';
+		$form['#submit'] = array('custom_feedback_submit'); 
+		
     }
     
      if($form['#form_id']=='user_login'){
@@ -145,6 +148,29 @@ function custom_feedback_form() {
 function general_admin_paths_alter(&$paths) {
   $paths['feedback'] = TRUE;
   $paths['feedback/*'] = TRUE;
+}
+
+
+/**
+ * Form validation
+ * @param type $form
+ * @param type $form_state 
+ */
+function custom_feedback_submit($form, &$form_state) {
+  global $user;
+  $values = $form_state['values'];
+  $links = explode("#", $values['url_hidden']);
+  
+  $entry = new stdClass();
+  entity_form_submit_build_entity('feedback', $entry, $form, $form_state);
+  $entry->message = $form_state['values']['message'];
+  $entry->location = $links[0];
+  feedback_save($entry);
+  $entry->location_masked  = $links[0];
+  $entry->url = $links[0];
+  feedback_save($entry);
+  drupal_set_message(t('Thanks for your feedback!'));
+  
 }
 
 
