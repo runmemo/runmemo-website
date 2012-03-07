@@ -58,18 +58,19 @@ class photographer_model{
 		$query->join('file_usage', 'fu', 'fm.fid = fu.fid');
         $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
 		$query->condition('fs.field_s3_status_value', 0);
+		$query->condition('fm.filename', '','<>');
 		$query->addField('fm', 'fid');
 		$query->addField('fm', 'filename');
 		$query->addField('fm', 'uri');
 		$query->addField('fm', 'uid');
 		$query->addField('fs', 'entity_id');
 		$results = $query->execute();
-		return $results;
+		
 		
 		
 		//print (string)$query;exit;
 		
-		
+		return $results;
 		
 		
 		
@@ -112,7 +113,7 @@ class photographer_model{
 
     public function update_url ($fid, $url) {
 	
-	   
+	 
 	
 		db_update('file_managed')
                         ->fields(array(
@@ -121,9 +122,7 @@ class photographer_model{
                         ->condition('fid', $fid)
                         ->execute();
 						
-						
-	  
-						
+			
 				
 
     }
