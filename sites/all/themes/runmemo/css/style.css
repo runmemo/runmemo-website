@@ -1920,7 +1920,7 @@ text-align:justify;
    color: #00a14e;
     font-family: 'Walkway Bold',sans-serif;
     font-size: 28px;
-    font-weight: normal;
+    font-weight: bold;
     letter-spacing: 2px;
     margin-bottom: 0;
     margin-right: 35px;
@@ -2082,10 +2082,11 @@ padding:5px 0 25px 17px;
   border:none;
   color:#000;
   float: right;
-  padding:10px 0 9px; 
+  padding:12px 0 10px; 
   font-family: Arial;
   margin:10px 0 5px 0;
   cursor: pointer;
+  font-weight:bold;
 }
 .page-search-result .summary_selected_photos, .page-search-result .summary_cost {
   padding-left:10px;
@@ -2109,7 +2110,7 @@ padding:5px 0 25px 17px;
 /*-----01-03-12-----*/
 
 .page-search-result .region-content .view-content{
-    height: 317px;
+    height: 532px;
     margin-top: 20px;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -2202,7 +2203,7 @@ div#block-feedback-form a.feedback-link-new{
 	font-style: normal;
 }
 .page-search-result .left-corner {
-   min-height: 896px;
+   min-height: 920px;
    border-bottom: 10px solid #E8E8E8;
 
 }
@@ -2225,3 +2226,15 @@ display:none;
 #overlay-content #block-feedback-form .feedback-message {
 	height: 100%;
 }
+
+#overlay .content {
+
+box-shadow: none;
+}
+
+span#photo_cost,span#photo_author{
+font-weight:bold;
+}
+
+
+
