@@ -48,7 +48,7 @@ function search_result_add_to_cart() {
 
       $('div.node_check').each(function(){
               var name_id = $(this).parent().children('span').text();
-              $(this).html('<label class="label_check" for="'+name_id+'"><input type="checkbox" name="'+name_id+'" value="'+name_id+'" /></label>');
+              $(this).html('<label class="label_check" for="'+name_id+'"><input type="checkbox" name="id_'+name_id+'" id="'+name_id+'" value="'+name_id+'" /></label>');
       });
       $('#block-system-main div.field-content img').bind('click', function(){ 
               var imgsrc = $(this).attr('src');	
@@ -140,6 +140,7 @@ function search_result_add_to_cart() {
 Drupal.behaviors.feedbackFormSubmit = {
   attach: function (context) {
    
+    
     var $context = $(context);
     if (!$context.is('#feedback-status-message')) {
       return;
@@ -156,9 +157,15 @@ Drupal.behaviors.feedbackFormSubmit = {
 	parent.Drupal.overlay.close();
   }
 };
-}
-//onload ends here..
-};
+	
+	
+	
+	
+  }
+
+
+
+  };
   
   
   /*Check box design for search results page*/
