@@ -105,7 +105,7 @@ function select_event_runner_get_photos($form,&$form_state) {
 
   }
   else {
-    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'Runner Number','#size'=>'20','#id'=>'runner_number','#placeholder' => t('My Number'),'#prefix'=>"<div style='float:left'>",'#required' => 'true');
+    $form['setfield']['runner_number']=array('#type'=>'textfield','#title'=>'Runner Number','#size'=>'20','#id'=>'runner_number','#prefix'=>"<div style='float:left'>",'#required' => 'true',);
   }
 
   //submit get my photo in the runner side
@@ -120,6 +120,12 @@ function select_event_runner_get_photos_validate($form,&$form_state) {
  if($event_selected == 'select_event') {
    form_set_error('', t('Please select event'));
  }
+ 
+ $runner_num = $form['setfield']['runner_number']['#value'];
+ if($runner_num == 'My Number') {
+   form_set_error('', t('Please enter your number'));
+ }
+ 
 }
 
 
@@ -232,12 +238,19 @@ function recent_event1_image(){
   
   $form = array();
   
-  $form['runner_number'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event1','#placeholder' => t('My Number'),'#required' => 'true');
+  $form['runner_number'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event1','#required' => 'true');
   
   $form['submit'] = array('#type' => 'submit','#value' => '',);
      
   return  $form;
   
+}
+
+function recent_event1_image_validate($form,&$form_state){
+ $runner_num_event1 = $form['runner_number']['#value'];
+ if($runner_num_event1 == 'My Number' || $runner_num_event1 == '') {
+   form_set_error('', t('Please enter your number'));
+ }
 }
 
 /**
@@ -261,7 +274,7 @@ function recent_event2_image(){
   
   $form = array();
   
-  $form['runner_number_event2'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event2','#placeholder' => t('My Number'),'#required' => 'true');
+  $form['runner_number_event2'] = array('#type' => 'textfield','#title' => 'Runner Number','#size' => '20','#id' => 'number_recent_event2','#required' => 'true');
   
   $form['submit_event2'] = array('#type' => 'submit','#value' => '',);
        
@@ -269,6 +282,16 @@ function recent_event2_image(){
   
 }
 
+/**
+ * Form validation 
+ */
+
+function recent_event2_image_validate($form,&$form_state){
+ $runner_num_event2 = $form['runner_number_event2']['#value'];
+ if($runner_num_event2 == 'My Number' || $runner_num_event2 == '') {
+   form_set_error('', t('Please enter your number'));
+ }
+}
 /**
  * For testing purpose
  * @param type $form
@@ -294,9 +317,89 @@ function recent_event2_image_submit($form,&$form_state){
 function search_result_cart($form,&$form_state) {
   $form = array();
   
-  $form['add_to_cart'] = array('#type' => 'submit', '#value' => 'Add to Cart','#id' => 'add_to_cart','#attributes'=>array('onclick'=>'return search_result_add_to_cart();'),);
-  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#">Proceed to Checkout</a></div></div>',);
+  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '','#id' => 'add_to_cart','#attributes'=>array('onclick'=>'return search_result_add_to_cart();'),);
+  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#"></a></div></div>',);
 
   return $form;
 }
 
+/**
+*	cron form alter.
+**/
+function runner_form_alter(&$form, &$form_state, $form_id){
+	if ($form_id == 'system_cron_settings') {
+		$form['cron']['cron_safe_threshold']['#options'] = array(0 => 'Never', '900' => '15 Mins', '1800' => '30 Mins', '3600' => '1 hour', '10800' => '3 hours', '21600' => '6 hours', '43200' => '12 hours', '86400' => '1 day','604800' => '1 week');
+	}
+}
+
+
+/**
+*	hook_cron().
+**/
+function runner_cron() {
+
+	$filepath_drupal = variable_get('file_public_path') .'/';
+	$dest = $filepath_drupal.'styles/thumbnail/public';
+	$prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
+	
+	$photographer = new photographer_model();
+	foreach ($photographer->get_local_photos() as $row) {
+		$sourceimagename = "";
+		$url = str_replace("public://", $filepath_drupal, $row->uri);
+		
+		if (file_exists($url))
+		{	
+			//create the physical thumbnail image to its destination 
+			// get the file name from the source file 
+			$filearr = explode('/', $url);
+			$sourceimagename = array_pop($filearr);
+			if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
+			{
+				////////////////////////////////////////////////////////////////
+				$ch = curl_init();
+
+				// set URL and other appropriate options
+				curl_setopt($ch, CURLOPT_URL, url($dest.'/'.$sourceimagename, array('absolute' => TRUE)));
+				curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+
+				// grab URL and pass it to the browser
+				curl_exec($ch);
+
+				// close cURL resource, and free up system resources
+				curl_close($ch);
+				////////////////////////////////////////////////////////////////
+				
+			}
+			else
+			{
+				echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
+				break;
+			}
+			if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
+			{
+				////////////////////////////////////////////////////////////////
+				$ch1 = curl_init();
+
+				// set URL and other appropriate options
+				curl_setopt($ch1, CURLOPT_URL, url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE)));
+				curl_setopt($ch1, CURLOPT_TIMEOUT_MS, 10000);
+				curl_setopt($ch1, CURLOPT_HEADER, 0);
+
+				// grab URL and pass it to the browser
+				curl_exec($ch1);
+
+				// close cURL resource, and free up system resources
+				curl_close($ch1);
+				////////////////////////////////////////////////////////////////
+			}
+			
+		}
+		else {
+			echo '<br>Did not find source  file '.$url;
+		}
+	}
+	
+	//echo "<br>Process completed successfully.";
+	//exit;
+}
