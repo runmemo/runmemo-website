@@ -305,6 +305,7 @@ function custom_plupload_handle_uploads() {
   if (strpos($content_type, "multipart") !== false) {
     if (isset($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name'])) {
 	  
+    	
       // Open temp file
       $out = fopen($temp_directory . $file_name, $chunk == 0 ? "wb" : "ab");
       if ($out) {
@@ -324,20 +325,28 @@ function custom_plupload_handle_uploads() {
         unlink($_FILES['file']['tmp_name']);
 
 		// How many Chunks?
-		$total_chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
+			$total_chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : 0;
 		//$chunk is 0 based count
-		if ($chunk == $total_chunks-1)
-		{
-			$event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
-			$file = array();
-			//original name
-			$file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
-			$file['tmpname'] = $file_name;
-			$node = create_photo_node($file, $event);
-			
-			
-		}
-		
+			if ($chunk == $total_chunks-1)
+			{
+				$event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
+				$file = array();
+				//original name
+				$file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+				$file['tmpname'] = $file_name;
+				$node = create_photo_node($file, $event);
+				
+				
+			}
+			elseif(isset($_REQUEST["name"]) && !isset($_REQUEST["chunks"])) {
+					$event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
+					
+					$file = array();
+					//original name
+					$file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+					$file['tmpname'] = $file_name;
+					$node = create_photo_node($file, $event);
+			}
       }
       else {
         die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
