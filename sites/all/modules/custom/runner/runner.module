@@ -337,7 +337,7 @@ function runner_form_alter(&$form, &$form_state, $form_id){
 *	hook_cron().
 **/
 function runner_cron() {
-
+	
 	$filepath_drupal = variable_get('file_public_path') .'/';
 	$dest = $filepath_drupal.'styles/thumbnail/public';
 	$prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
