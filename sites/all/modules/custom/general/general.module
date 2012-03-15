@@ -25,10 +25,25 @@ function general_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
   );
+	$items['custom-node-delete'] = array(
+		'title' => 'node delete',
+		'description' => t('node delete.'),
+		'page callback' => 'custom_node_delete_page',
+		'access arguments' => array('access content'),
+		'type' => MENU_CALLBACK
+	);
+
+	$items['test-cron'] = array(
+		'title' => 'node delete',
+		'description' => t('node delete.'),
+		'page callback' => 'testing',
+		'access arguments' => array('access content'),
+		'type' => MENU_CALLBACK
+	);
+
 
 
     return $items;
-
 }
 
 
@@ -40,7 +55,6 @@ function general_menu() {
  * $form_id is the form id
  */
 function general_form_alter(&$form, $form_state, $form_id){
-    
       
     if($form['#form_id'] == 'feedback_form'){
         $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
@@ -148,6 +162,11 @@ function custom_feedback_form() {
 function general_admin_paths_alter(&$paths) {
   $paths['feedback'] = TRUE;
   $paths['feedback/*'] = TRUE;
+  $paths['node/*'] = FALSE;
+  $paths['node/add'] = FALSE;
+  $paths['node/add/*'] = FALSE;
+  $paths['user'] = FALSE;
+  $paths['user/*/edit'] = FALSE;
 }
 
 
@@ -168,10 +187,29 @@ function custom_feedback_submit($form, &$form_state) {
   feedback_save($entry);
   $entry->location_masked  = $links[0];
   $entry->url = $links[0];
+  
   feedback_save($entry);
   drupal_set_message(t('Thanks for your feedback!'));
   
 }
+
+/**
+* custom delete function for node delete.
+**/
+function custom_node_delete_page() {
+
+	$query = db_select('node', 'n');
+	$query->condition('n.type', 'product');
+	$query->addField('n', 'nid');
+	$results = $query->execute();
+	$i = 0;
+	foreach($results as $result) {
+		node_delete($result->nid);
+		$i++;
+	}
+	return "node deleted sucessfully $i .";
+}
+
 
 
 
@@ -180,72 +218,121 @@ function custom_feedback_submit($form, &$form_state) {
  * 
  * 
  */
-function general_cron(){
+function general_cron() {
 
 
-   
    $photographer = new photographer_model();
    $photos_url = $photographer->get_local_photos();
-   
    $s3 = amazon_s3_get_instance();
    $bucket= variable_get('amazons3_bucket', '');
    $acl = 'public-read-write';
-   
    $path=drupal_realpath('public://');
-   
-    
 
-    foreach ($photos_url as $photo_url) {
-	
-	    $thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
-		$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
-		$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
+    foreach ($photos_url as $photo_url) { 
 		
-		$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
-		$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
+		
+	    $thumb_success = $orig_success = $preview_success = "";
+
+	    $thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
+			$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
+			$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
+		
+			$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
+			$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
 	    $prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
 		
 		/////////////////////////////Pushing the files///////////////////////////////////////////
 		$orig_file_path = $photo_url->uri;
 		
-		if (file_exists($photo_url->uri))
-		{
-		   
-			  $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+		if (file_exists($photo_url->uri)) {
+			$orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
 		}
 		
-		if(file_exists($thumbnail_local_path))
-		{
-		     
-		     $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+		if(file_exists($thumbnail_local_path)) {
+			$thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
 		}
 		
-		if(file_exists($preview_local_path))
-		{
-		     
-		     $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
-			 
+		if(file_exists($preview_local_path)) {
+			$preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
 		}
 		
-		if($orig_success && $thumb_success && $preview_success)
-		{
-		   
-			
+		if($orig_success && $thumb_success && $preview_success) {
 			$photographer->update_s3_status($photo_url->entity_id);
-			
-			$url="s3://".$photo_url->filename;
+			$url = str_replace("public://","s3://",$photo_url->uri);
+
 			$photographer->update_url($photo_url->fid,$url);
 			
 			file_unmanaged_delete($orig_file_path);
 			file_unmanaged_delete($thumb_local_path);
 			file_unmanaged_delete($prev_local_path);
-			
-			
-		}
-			
-		
+		}  
 	}
+  drupal_flush_all_caches();
+}
 	
+function testing() {
+
+
+   $photographer = new photographer_model();
+   $photos_url = $photographer->get_local_photos();
+   $s3 = amazon_s3_get_instance();
+   $bucket= variable_get('amazons3_bucket', '');
+   $acl = 'public-read-write';
+   $path=drupal_realpath('public://');
+	 $st = 0;
+    foreach ($photos_url as $photo_url) { 
+		
+		
+	
+	    	$thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
+				$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
+				$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
+		
+				$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
+				$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
+	    	$prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
+		
+		/////////////////////////////Pushing the files///////////////////////////////////////////
+		$orig_file_path = $photo_url->uri;
+		
+		if (file_exists($photo_url->uri)) {
+			$orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+		}
+		
+		if(file_exists($thumbnail_local_path)) {
+			$thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+		}
+		
+		if(file_exists($preview_local_path)) {
+			$preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
+		}
+		
+		if($orig_success && $thumb_success && $preview_success) {
+
+
+
+
+			$photographer->update_s3_status($photo_url->entity_id);
+			$url = str_replace("public://","s3://",$photo_url->uri);
+
+			
+
+			$photographer->update_url($photo_url->fid,$url);
+			
+			file_unmanaged_delete($orig_file_path);
+			file_unmanaged_delete($thumb_local_path);
+			file_unmanaged_delete($prev_local_path);
+
+                     $st++;
+
+
+		} 
+
+
+	}
+		return $st;
+
+         
    
 }
 
