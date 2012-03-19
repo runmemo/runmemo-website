@@ -56,7 +56,7 @@ class photographer_model{
 		$query = db_select('file_managed', 'fm');
 	    
 		$query->join('file_usage', 'fu', 'fm.fid = fu.fid');
-        $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
+    $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
 		$query->condition('fs.field_s3_status_value', 0);
 		$query->condition('fm.filename', '','<>');
 		$query->addField('fm', 'fid');
@@ -64,6 +64,9 @@ class photographer_model{
 		$query->addField('fm', 'uri');
 		$query->addField('fm', 'uid');
 		$query->addField('fs', 'entity_id');
+		$query->orderBy('fm.timestamp','DESC');
+		$query->range(0, 30);
+              
 		$results = $query->execute();
 		
 		
@@ -99,6 +102,7 @@ class photographer_model{
                         ))
                         ->condition('entity_id', $entity_id)
                         ->execute();
+       
 
     }
 	
@@ -113,19 +117,47 @@ class photographer_model{
 
     public function update_url ($fid, $url) {
 	
-	 
+	   
 	
+
 		db_update('file_managed')
                         ->fields(array(
                         'uri ' =>$url,
                         ))
                         ->condition('fid', $fid)
                         ->execute();
+
+          
 						
-			
+       
+	    
+						
 				
 
     }
+    
+/**
+     * Update the thumbnail status field as 1
+     * @param $fid
+     *  $fid is file id of the photo
+     *  By using this function we can set the status whether thumbnail is created 
+     */
+
+    public function update_thumb_status($fid){
+	
+	   
+	   
+        db_update('file_managed')
+                        ->fields(array(
+                        'thumbnail_status' =>1,
+                        ))
+                        ->condition('fid', $fid)
+                        ->execute();
+       
+
+    }
+    
+		
 
 }
 
