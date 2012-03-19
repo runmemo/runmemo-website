@@ -2,7 +2,7 @@
 /**
  * Init function for adding the external file
  */
- 
+
 function runner_init() {
   //to add the js file
   drupal_add_js(drupal_get_path("module","runner")."/runner.js");
@@ -23,6 +23,14 @@ function runner_menu() {
     'description' => t('View the objects in a event on your Amazon S3 account.'),
     'page callback' => 'amozon_s3_show_images',
     'access arguments' => array('access_runner'),
+    'type' => MENU_CALLBACK
+  );
+  
+  $items['runner-test'] = array(
+    'title' => 'Photo Gallery',
+    'description' => t('View the objects in a event on your Amazon S3 account.'),
+    'page callback' => 'runner_test',
+    'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
   );
 
@@ -342,10 +350,16 @@ function runner_cron() {
 	$dest = $filepath_drupal.'styles/thumbnail/public';
 	$prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
 	
-	$photographer = new photographer_model();
-	foreach ($photographer->get_local_photos() as $row) {
+		$photographer = new photographer_model();
+	//$photos=$photographer->get_local_photos();
+	
+	//print_r($photos);exit;
+	
+	foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
 		$sourceimagename = "";
 		$url = str_replace("public://", $filepath_drupal, $row->uri);
+		
+		//$url=$filepath_drupal.$filename;
 		
 		if (file_exists($url))
 		{	
@@ -355,20 +369,13 @@ function runner_cron() {
 			$sourceimagename = array_pop($filearr);
 			if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
 			{
-				////////////////////////////////////////////////////////////////
-				$ch = curl_init();
-
-				// set URL and other appropriate options
-				curl_setopt($ch, CURLOPT_URL, url($dest.'/'.$sourceimagename, array('absolute' => TRUE)));
-				curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
-				curl_setopt($ch, CURLOPT_HEADER, 0);
-
-				// grab URL and pass it to the browser
-				curl_exec($ch);
-
-				// close cURL resource, and free up system resources
-				curl_close($ch);
-				////////////////////////////////////////////////////////////////
+				$forcedwidth="130";
+				$forcedheight="98";
+				$sourcefile=$url;
+				$destfile=$dest.'/'.$sourceimagename;
+				
+				$mtype=mime_content_type($url);
+				$thumb_status = resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype);
 				
 			}
 			else
@@ -378,28 +385,126 @@ function runner_cron() {
 			}
 			if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
 			{
-				////////////////////////////////////////////////////////////////
-				$ch1 = curl_init();
-
-				// set URL and other appropriate options
-				curl_setopt($ch1, CURLOPT_URL, url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE)));
-				curl_setopt($ch1, CURLOPT_TIMEOUT_MS, 10000);
-				curl_setopt($ch1, CURLOPT_HEADER, 0);
-
-				// grab URL and pass it to the browser
-				curl_exec($ch1);
-
-				// close cURL resource, and free up system resources
-				curl_close($ch1);
-				////////////////////////////////////////////////////////////////
+				$forcedwidth1="500";
+				$forcedheight1="350";
+				$sourcefile1=$url;
+				$destfile1=$prev_dest.'/'.$sourceimagename;
+				$mtype1=mime_content_type($url);
+				$prev_status = resampimage( $forcedwidth1, $forcedheight1, $sourcefile1, $destfile1, $mtype1);
 			}
+			
+			if($thumb_status && $prev_status)
+			{
+				//Update the DB
+				$status = $photographer->update_thumb_status($row->fid);
+			}
+			
+			
+			
 			
 		}
 		else {
 			echo '<br>Did not find source  file '.$url;
 		}
-	}
+	}//for each
 	
 	//echo "<br>Process completed successfully.";
 	//exit;
 }
+
+
+/**
+ * Reshapes a given image
+ */
+function resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype)
+{
+	  set_time_limit(0);
+	
+    $fw = $forcedwidth;
+    $fh = $forcedheight;
+    $is = getimagesize( $sourcefile );
+    
+    
+    
+   /* if( $is[0] >= $is[1] )
+    {
+        $orientation = 0;
+    }
+    else
+    {
+        $orientation = 1;
+        $fw = $forcedheight;
+        $fh = $forcedwidth;
+    }*/
+    if ( $is[0] > $fw || $is[1] > $fh )
+    {
+        if( ( $is[0] - $fw ) >= ( $is[1] - $fh ) )
+        {
+            $iw = $fw;
+            $ih = ( $fw / $is[0] ) * $is[1];
+        }
+        else
+        {
+            $ih = $fh;
+            $iw = ( $ih / $is[1] ) * $is[0];
+        }
+        $t = 1;
+    }
+    else
+    {
+        $iw = $is[0];
+        $ih = $is[1];
+        $t = 2;
+    }
+    if ( $t == 1 )
+    {
+   if ($mtype=='image/gif')
+   {
+				  $img_src = imagecreatefromgif( $sourcefile );
+				  $img_dst = imagecreatetruecolor( $iw, $ih );
+         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+         if( !imagegif( $img_dst, $destfile, 100 ) )
+         {
+             exit( );
+         }
+   }
+   else if ($mtype=='image/jpeg')
+   { 
+         	$img_src = imagecreatefromjpeg( $sourcefile );
+    			$img_dst = imagecreatetruecolor( $iw, $ih );
+           imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+           if( !imagejpeg( $img_dst, $destfile, 100 ) )
+           {
+           	  
+              return FALSE;
+           }
+           return TRUE;
+   }
+
+   else if ($mtype=='image/png')
+   {
+           	$img_src = imagecreatefrompng( $sourcefile );
+  					$img_dst = imagecreatetruecolor( $iw, $ih );
+         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+         if( !imagepng( $img_dst, $destfile, 0, PNG_ALL_FILTERS ) )
+         {
+             exit( );
+         }
+   }
+
+   else if ($mtype=='image/bmp')
+   {
+         $img_src = imagecreatefrombmp( $sourcefile );
+  			 $img_dst = imagecreatetruecolor( $iw, $ih );
+         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+         if( !imagebmp( $img_dst, $destfile ) )
+         {
+             exit( );
+         }
+   }
+    }
+    else if ( $t == 2 )
+    {
+        copy( $sourcefile, $destfile );
+    }
+}// End of resampimage()
