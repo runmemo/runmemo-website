@@ -2247,5 +2247,11 @@ span#photo_cost,span#photo_author{
 font-weight:bold;
 }
 #user-register-form div.form-item-field-paypal-id-und-0-value {margin-top:0;}
+ul#edit-file_filelist{
+	*visibility:hidden!important; /* IE 7 (IE6 also uses this, so put it first) */
+	_visibility:hidden!important; /* IE 6 */
+	visibility:hidden\0/!important; /* IE 8-9 */
+	
+ }
 
 
