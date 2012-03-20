@@ -344,7 +344,7 @@ function runner_form_alter(&$form, &$form_state, $form_id){
 /**
 *	hook_cron().
 **/
-function runner_cron() {
+function runner_cron() { 
 	
 	$filepath_drupal = variable_get('file_public_path') .'/';
 	$dest = $filepath_drupal.'styles/thumbnail/public';
@@ -353,7 +353,12 @@ function runner_cron() {
 		$photographer = new photographer_model();
 	//$photos=$photographer->get_local_photos();
 	
-	//print_r($photos);exit;
+	$thumbsize=$photographer->get_thumbnail_size();
+	$thumb=unserialize($thumbsize->data);
+	
+	$previewsize=$photographer->get_preview_size();
+	$prev_size=unserialize($previewsize->data);
+	//print_r($prev_size);exit;
 	
 	foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
 		$sourceimagename = "";
@@ -369,8 +374,8 @@ function runner_cron() {
 			$sourceimagename = array_pop($filearr);
 			if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
 			{
-				$forcedwidth="130";
-				$forcedheight="98";
+				$forcedwidth=$thumb['width'];
+				$forcedheight=$thumb['height'];
 				$sourcefile=$url;
 				$destfile=$dest.'/'.$sourceimagename;
 				
@@ -385,8 +390,8 @@ function runner_cron() {
 			}
 			if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
 			{
-				$forcedwidth1="500";
-				$forcedheight1="350";
+				$forcedwidth1=$prev_size['width'];
+				$forcedheight1=$prev_size['height'];
 				$sourcefile1=$url;
 				$destfile1=$prev_dest.'/'.$sourceimagename;
 				$mtype1=mime_content_type($url);
@@ -470,15 +475,19 @@ function resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtyp
    }
    else if ($mtype=='image/jpeg')
    { 
-         	$img_src = imagecreatefromjpeg( $sourcefile );
+   				$img_src = imagecreatefromjpeg( $sourcefile );
     			$img_dst = imagecreatetruecolor( $iw, $ih );
            imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
            if( !imagejpeg( $img_dst, $destfile, 100 ) )
            {
-           	  
               return FALSE;
            }
-           return TRUE;
+           
+            return TRUE;
+           
+           
+           
+   
    }
 
    else if ($mtype=='image/png')
