@@ -95,6 +95,7 @@ margin:0;
 .login-btn-mid {
 	background:url(../images/login-btn-mid.png) repeat-x;
 	height:29px;
+	padding-right:6px;
 }
 
 .login-btn-mid img{
@@ -333,7 +334,7 @@ min-height:333px;
 	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	margin-top:10px;
 	margin-bottom:10px;
-        min-height: 295px;
+        min-height: 250px;
         position: relative;
 }
 .cont-rig {
@@ -349,7 +350,7 @@ min-height:333px;
 	margin-top:10px;
 	margin-bottom:10px;
         position: relative;
-        min-height: 295px;
+        min-height: 250px;
 }
 .cont-lft-header {
 	color:#444;
@@ -489,7 +490,7 @@ float:left;.cart
 }
 #edit-search{
 float:left;
-margin-top:13px;
+margin-top:12px;
 margin-left:10px;
 }
 #tabs-wrapper{
@@ -883,12 +884,12 @@ margin-left:8px;
 	box-shadow: none !important;
     padding: 2px;
     text-indent: 7px;
-    width: 167px;
+    width: 184px;
 margin-left:8px;
 }
 #runner_number {
 	  margin-left: 0px!important;
-	  width:176px;
+	  width:184px;
 	}
 #number_recent_event1, #number_recent_event2
 {
@@ -1125,7 +1126,7 @@ border-radius:0px;
    height:8px;
    position:relative;
    /*newly edited*/
-   top:-1px;
+   top:1px;
    left:15px;
    display: block;
    position:relative;
@@ -1159,6 +1160,7 @@ ul.main-menu li
 {
 	padding:5px;
 	border-left:1px solid #ccc;
+	height:29px;
 }
 .sf-menu ul
 {
@@ -1661,13 +1663,15 @@ text-align:center;
 }
 .page-runner .content #recent-event1-image .form-submit
 {
-  	margin-top:3px;
+  	margin-top:0px;
 	cursor:pointer;
     background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
     border: 0 none;
     cursor: pointer;
-    height: 25px;
+    height: 31px;
     width: 88px;
+    position:relative;
+    top:-1px;
 }
 .page-runner .content #recent-event1-image .form-submit:hover, .page-runner .content #recent-event2-image .form-submit:hover {
     background: url("../images/find-btn-hover.png") no-repeat scroll 0 0 transparent;
@@ -1685,12 +1689,12 @@ text-align:center;
 }
 .page-runner .content #recent-event2-image .form-submit
 {
- 	 margin-top:15px;
+ 	 margin-top:12px;
 	cursor:pointer;
     background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
     border: 0 none;
     cursor: pointer;
-    height: 25px;
+    height: 31px;
     width: 88px;
 }
 
@@ -2253,5 +2257,21 @@ ul#edit-file_filelist{
 	visibility:hidden\0/!important; /* IE 8-9 */
 	
  }
+.plupload_content {
+	top:100px\0/!important;
+}
 
+.page-photographer #edit-upload{
+		top:-50px\0/!important;
+}
 
+.page-photographer #photographer-drag-and-drop-form .description{
+		top:460px\0/!important;
+}
+.page-photographer #file_list{
+		height: 20px;
+    left: 565px;
+    position: relative;
+    top: -41px;
+    width: 112px;
+}
