@@ -1,4 +1,4 @@
-<p><?php //print $intro_text; ?></p>
+﻿<p><?php //print $intro_text; ?></p>
 
 <div class="checkoutPane">
 	<div class="paymentPane"><div><span class="checkout_title">Payment Details</span></div>
@@ -31,11 +31,7 @@
 		else
 		$photographer[$value->uid] = 1;
 		   
-		  //$uri = str_replace('public://',base_path().'sites/default/files/styles/thumbnail/public/',$value->uc_product_image['und'][0]['uri']);
-		 
-		  //$cart_content .=  '<td><a href=""><img src = "'.$uri.'"></a></td>';
-                
-                  //file_create_url();
+		  
                 
                   $photo = $value->uc_product_image['und'][0];
                   $cart_content .=  '<td>'.  theme("image_formatter", array('item' => $photo, 'image_style' => 'thumbnail')).'</td>';
