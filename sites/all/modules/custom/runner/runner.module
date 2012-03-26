@@ -34,10 +34,43 @@ function runner_menu() {
     'type' => MENU_CALLBACK
   );
 
+  //AJAX url
+  $items['cart_add_remove'] = array(
+    'title' => '',
+    'description' => t(''),
+    'page callback' => 'cart_add_remove',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK
+  );
 
     return $items;
 
 }
+
+function cart_add_remove(){
+ $nid = $_GET['nid'];
+ foreach (uc_cart_get_contents() as $item) {
+   $cart_ids[]=$item->nid ;
+  }
+  
+  
+ $node = node_load($nid);
+ $price = round($node->price);
+ if(in_array($nid,$cart_ids)) {
+    uc_cart_remove_item($nid, $cid = NULL, $data = array('module' => 'uc_product'));
+    echo 0 . '|'. $price;
+    exit;
+  }
+  else {
+   uc_cart_add_item($nid,1);
+   echo 1 . '|'. $price;
+   exit;
+  }
+  
+}
+
+
+
 
 /**
  * Set the pemission for each url in the admin side
@@ -325,195 +358,166 @@ function recent_event2_image_submit($form,&$form_state){
 function search_result_cart($form,&$form_state) {
   $form = array();
   
-  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '','#id' => 'add_to_cart','#attributes'=>array('onclick'=>'return search_result_add_to_cart();'),);
-  $form['cart_summary'] = array('#markup' => '<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-3 photos</div><div class="summary_cost">Subtotal-17</div><div class="proceed_to_cart"><a href="#"></a></div></div>',);
-
+  $subtotal = 0;
+  foreach (uc_cart_get_contents() as $item) {
+    $subtotal += $item->price * $item->qty;
+  }
+  
+  
+  $items = 0;
+  foreach (uc_cart_get_contents() as $item) {
+    $items += 1;
+  }
+  
+  $form['cart_hidden']   = array('#type' => 'textfield','#value' => '', '#id' => 'cart_hidden','#prefix' => '<div style="display:none;">', '#suffix'=>'</div>');
+  $form['selected_product'] = array('#type' => 'textfield','#title' => '','#id' => 'selected_cart_products','#prefix' => '<div style="display:none;">','#suffix' => '</div>');
+  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '','#id' => 'add_to_cart',);
+  $form['cart_summary'] = array('#markup' => t('<div class="cart_summary"><div class="summary_title">Cart Summary</div><div class="summary_selected_photos">Selected-%items photos</div><div class="summary_cost">Subtotal- £%subtotal</div></div>',array('%items' => $items,'%subtotal' => $subtotal)));
+  $url = url('cart/checkout');
+  $form['checkout'] = array('#markup' => t("<div class='proceed_to_cart'><a href=$url></a></div>"));
+ 
+ 
   return $form;
 }
+
 
 /**
 *	cron form alter.
 **/
 function runner_form_alter(&$form, &$form_state, $form_id){
-	if ($form_id == 'system_cron_settings') {
-		$form['cron']['cron_safe_threshold']['#options'] = array(0 => 'Never', '900' => '15 Mins', '1800' => '30 Mins', '3600' => '1 hour', '10800' => '3 hours', '21600' => '6 hours', '43200' => '12 hours', '86400' => '1 day','604800' => '1 week');
-	}
+  if ($form_id == 'system_cron_settings') {
+    $form['cron']['cron_safe_threshold']['#options'] = array(0 => 'Never', '900' => '15 Mins', '1800' => '30 Mins', '3600' => '1 hour', '10800' => '3 hours', '21600' => '6 hours', '43200' => '12 hours', '86400' => '1 day','604800' => '1 week');
+  }
 }
 
 
 /**
 *	hook_cron().
 **/
-function runner_cron() { 
+function runner_cron() {
 	
-	$filepath_drupal = variable_get('file_public_path') .'/';
-	$dest = $filepath_drupal.'styles/thumbnail/public';
-	$prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
-	
-		$photographer = new photographer_model();
-	//$photos=$photographer->get_local_photos();
-	
-	$thumbsize=$photographer->get_thumbnail_size();
-	$thumb=unserialize($thumbsize->data);
-	
-	$previewsize=$photographer->get_preview_size();
-	$prev_size=unserialize($previewsize->data);
-	//print_r($prev_size);exit;
-	
-	foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
-		$sourceimagename = "";
-		$url = str_replace("public://", $filepath_drupal, $row->uri);
-		
-		//$url=$filepath_drupal.$filename;
-		
-		if (file_exists($url))
-		{	
-			//create the physical thumbnail image to its destination 
-			// get the file name from the source file 
-			$filearr = explode('/', $url);
-			$sourceimagename = array_pop($filearr);
-			if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
-			{
-				$forcedwidth=$thumb['width'];
-				$forcedheight=$thumb['height'];
-				$sourcefile=$url;
-				$destfile=$dest.'/'.$sourceimagename;
-				
-				$mtype=mime_content_type($url);
-				$thumb_status = resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype);
-				
-			}
-			else
-			{
-				echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
-				break;
-			}
-			if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
-			{
-				$forcedwidth1=$prev_size['width'];
-				$forcedheight1=$prev_size['height'];
-				$sourcefile1=$url;
-				$destfile1=$prev_dest.'/'.$sourceimagename;
-				$mtype1=mime_content_type($url);
-				$prev_status = resampimage( $forcedwidth1, $forcedheight1, $sourcefile1, $destfile1, $mtype1);
-			}
-			
-			if($thumb_status && $prev_status)
-			{
-				//Update the DB
-				$status = $photographer->update_thumb_status($row->fid);
-			}
-			
-			
-			
-			
-		}
-		else {
-			echo '<br>Did not find source  file '.$url;
-		}
-	}//for each
-	
-	//echo "<br>Process completed successfully.";
-	//exit;
+  $filepath_drupal = variable_get('file_public_path') .'/';
+  $dest = $filepath_drupal.'styles/thumbnail/public';
+  $prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
+
+  $photographer = new photographer_model();
+  
+  foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
+    $sourceimagename = "";
+    $url = str_replace("public://", $filepath_drupal, $row->uri);
+
+    //$url=$filepath_drupal.$filename;
+
+    if (file_exists($url)) {	
+      //create the physical thumbnail image to its destination 
+      // get the file name from the source file 
+      $filearr = explode('/', $url);
+      $sourceimagename = array_pop($filearr);
+      if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE)))) {
+        $forcedwidth="130";
+        $forcedheight="98";
+        $sourcefile=$url;
+        $destfile=$dest.'/'.$sourceimagename;
+
+        $mtype=mime_content_type($url);
+        $thumb_status = resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype);
+
+      }
+      else {
+        echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
+        break;
+      }
+      if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE)))) {
+        $forcedwidth1="400";
+        $forcedheight1="350";
+        $sourcefile1=$url;
+        $destfile1=$prev_dest.'/'.$sourceimagename;
+        $mtype1=mime_content_type($url);
+        $prev_status = resampimage( $forcedwidth1, $forcedheight1, $sourcefile1, $destfile1, $mtype1);
+      }
+
+      if($thumb_status && $prev_status) {
+        //Update the DB
+        $status = $photographer->update_thumb_status($row->fid);
+      }
+
+    }
+    else {
+      echo '<br>Did not find source  file '.$url;
+    }
+  }
 }
 
 
 /**
  * Reshapes a given image
  */
-function resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype)
-{
-	  set_time_limit(0);
-	
-    $fw = $forcedwidth;
-    $fh = $forcedheight;
-    $is = getimagesize( $sourcefile );
-    
-    
-    
-   /* if( $is[0] >= $is[1] )
+function resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype) {
+  
+  set_time_limit(0);
+
+  $fw = $forcedwidth;
+  $fh = $forcedheight;
+  $is = getimagesize( $sourcefile );
+
+  if ( $is[0] > $fw || $is[1] > $fh ) {
+    if( ( $is[0] - $fw ) >= ( $is[1] - $fh ) )
     {
-        $orientation = 0;
+        $iw = $fw;
+        $ih = ( $fw / $is[0] ) * $is[1];
     }
     else
     {
-        $orientation = 1;
-        $fw = $forcedheight;
-        $fh = $forcedwidth;
-    }*/
-    if ( $is[0] > $fw || $is[1] > $fh )
-    {
-        if( ( $is[0] - $fw ) >= ( $is[1] - $fh ) )
-        {
-            $iw = $fw;
-            $ih = ( $fw / $is[0] ) * $is[1];
-        }
-        else
-        {
-            $ih = $fh;
-            $iw = ( $ih / $is[1] ) * $is[0];
-        }
-        $t = 1;
+        $ih = $fh;
+        $iw = ( $ih / $is[1] ) * $is[0];
     }
-    else
-    {
-        $iw = $is[0];
-        $ih = $is[1];
-        $t = 2;
+    $t = 1;
+  }
+  else {
+    $iw = $is[0];
+    $ih = $is[1];
+    $t = 2;
+  }
+  if ( $t == 1 ) {
+    if ($mtype=='image/gif') {
+      $img_src = imagecreatefromgif( $sourcefile );
+      $img_dst = imagecreatetruecolor( $iw, $ih );
+      imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+      if( !imagegif( $img_dst, $destfile, 100 ) ) {
+        exit( );
+      }
     }
-    if ( $t == 1 )
-    {
-   if ($mtype=='image/gif')
-   {
-				  $img_src = imagecreatefromgif( $sourcefile );
-				  $img_dst = imagecreatetruecolor( $iw, $ih );
-         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
-         if( !imagegif( $img_dst, $destfile, 100 ) )
-         {
-             exit( );
-         }
-   }
-   else if ($mtype=='image/jpeg')
-   { 
-   				$img_src = imagecreatefromjpeg( $sourcefile );
-    			$img_dst = imagecreatetruecolor( $iw, $ih );
-           imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
-           if( !imagejpeg( $img_dst, $destfile, 100 ) )
-           {
-              return FALSE;
-           }
-           
-            return TRUE;
-           
-           
-           
-   
-   }
+    else if ($mtype=='image/jpeg') { 
+      $img_src = imagecreatefromjpeg( $sourcefile );
+      $img_dst = imagecreatetruecolor( $iw, $ih );
+      imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+      if( !imagejpeg( $img_dst, $destfile, 100 ) ) {
 
-   else if ($mtype=='image/png')
-   {
-           	$img_src = imagecreatefrompng( $sourcefile );
-  					$img_dst = imagecreatetruecolor( $iw, $ih );
-         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
-         if( !imagepng( $img_dst, $destfile, 0, PNG_ALL_FILTERS ) )
-         {
-             exit( );
-         }
-   }
+        return FALSE;
+      }
+      return TRUE;
+    }
 
-   else if ($mtype=='image/bmp')
-   {
-         $img_src = imagecreatefrombmp( $sourcefile );
-  			 $img_dst = imagecreatetruecolor( $iw, $ih );
-         imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
-         if( !imagebmp( $img_dst, $destfile ) )
-         {
-             exit( );
-         }
-   }
+    else if ($mtype=='image/png') {
+      $img_src = imagecreatefrompng( $sourcefile );
+      $img_dst = imagecreatetruecolor( $iw, $ih );
+      imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+      if( !imagepng( $img_dst, $destfile, 0, PNG_ALL_FILTERS ) ) {
+          exit( );
+      }
     }
-    else if ( $t == 2 )
-    {
-        copy( $sourcefile, $destfile );
+
+    else if ($mtype=='image/bmp') {
+      $img_src = imagecreatefrombmp( $sourcefile );
+      $img_dst = imagecreatetruecolor( $iw, $ih );
+      imagecopyresampled( $img_dst, $img_src, 0, 0, 0, 0, $iw, $ih, $is[0], $is[1] );
+      if( !imagebmp( $img_dst, $destfile ) )
+      {
+          exit( );
+      }
     }
+  }
+  else if ( $t == 2 ) {
+  copy( $sourcefile, $destfile );
+  }
 }// End of resampimage()
