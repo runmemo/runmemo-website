@@ -44,6 +44,7 @@ function general_menu() {
 
 
     return $items;
+
 }
 
 
@@ -55,7 +56,19 @@ function general_menu() {
  * $form_id is the form id
  */
 function general_form_alter(&$form, $form_state, $form_id){
-      
+   
+    //echo '<pre>';
+    //print_r($form['panes']['payment']['details']['cc_exp_month']['#title']);
+    //exit;
+    
+    if($form['#form_id'] == 'uc_cart_checkout_form') {
+      $form['panes']['payment']['payment_method'] = '';
+      $form['panes']['payment']['details']['cc_policy']['#markup'] = '';
+      $form['panes']['payment']['details']['cc_number']['#size'] = '32';
+      $form['panes']['payment']['details']['cc_exp_month']['#title'] = 'Expiration Month';
+      $form['actions']['continue']['#value'] = '';
+    }
+  
     if($form['#form_id'] == 'feedback_form'){
         $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
         $form['help']['#weight'] = '-1'; 
@@ -221,12 +234,17 @@ function custom_node_delete_page() {
 function general_cron() {
 
 
+   
    $photographer = new photographer_model();
    $photos_url = $photographer->get_local_photos();
+   
    $s3 = amazon_s3_get_instance();
    $bucket= variable_get('amazons3_bucket', '');
    $acl = 'public-read-write';
+   
    $path=drupal_realpath('public://');
+   
+    
 
     foreach ($photos_url as $photo_url) { 
 		
