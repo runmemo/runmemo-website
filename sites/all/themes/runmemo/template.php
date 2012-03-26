@@ -15,7 +15,7 @@ function runmemo_breadcrumb($variables) {
     // screen-reader users. Make the heading invisible with .element-invisible.
     $output = '<h2 class="element-invisible">' . t('You are here') . '</h2>';
 
-    $output .= '<div class="breadcrumb">' . implode(' › ', $breadcrumb) . '</div>';
+      $output .= '<div class="breadcrumb"><div class="start">  </div>' . implode("<div class='arrow'>  </div>", $breadcrumb) . '<div class="end">  </div></div>';
     return $output;
   }
 }
@@ -157,4 +157,43 @@ function runmemo_preprocess_region(&$vars) {
   if ($vars['region'] == 'header') {
     $vars['classes_array'][] = 'clearfix';
   }
+}
+
+
+
+/**
+* Implementation of HOOK_theme().
+*/
+function runmemo_theme($existing, $type, $theme, $path) {
+  return array( 
+	'uc_cart_checkout_form' => array(
+		'render element' => 'form',
+		'template' => 'uc-cart-checkout-form',
+		'path' => drupal_get_path('theme', 'runmemo'),
+		),
+);
+}
+
+
+/**
+ * Override checkout page design.
+ */
+function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
+  //echo '<pre>';
+  //print_r($variables['form']['panes']['billing']);
+  //exit;
+  $billing = $variables['form']['panes']['billing'];
+  $customer = $variables['form']['panes']['customer'];
+  $payment = $variables['form']['panes']['payment'];
+  $cart = $variables['form']['panes']['cart']['cart_review_table']['#items'];
+  $submit = $variables['form']['actions']['continue'];
+  
+  $variables['billing'] = drupal_render($billing);
+  $variables['email'] = $customer['#theme']['primary_email'];
+  $variables['customer'] = drupal_render($customer);
+  $variables['payment']  = drupal_render_children($payment);
+  $variables['cart']     = $cart;
+  $variables['product_image'] = $cart_details;
+  $variables['submit'] = drupal_render($submit);
+ 
 }
