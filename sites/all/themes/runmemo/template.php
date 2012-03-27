@@ -180,20 +180,30 @@ function runmemo_theme($existing, $type, $theme, $path) {
  */
 function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
   //echo '<pre>';
-  //print_r($variables['form']['panes']['billing']);
+  //print_r($variables['form']['actions']);
   //exit;
+  
+  $form_build_id = $variables['form']['form_build_id'];
+  $form_token  =  $variables['form']['form_token'] ;
+  $form_id = $variables['form']['form_id'];
+   $variables['form_build_id'] = drupal_render($form_build_id);
+  $variables['form_token'] = drupal_render($form_token);
+  $variables['form_id'] = drupal_render($form_id);
+  
   $billing = $variables['form']['panes']['billing'];
   $customer = $variables['form']['panes']['customer'];
   $payment = $variables['form']['panes']['payment'];
   $cart = $variables['form']['panes']['cart']['cart_review_table']['#items'];
-  $submit = $variables['form']['actions']['continue'];
+  $submit = $variables['form']['actions'];
+  $form_build_id = $variables['form']['form_build_id'];
   
   $variables['billing'] = drupal_render($billing);
   $variables['email'] = $customer['#theme']['primary_email'];
   $variables['customer'] = drupal_render($customer);
   $variables['payment']  = drupal_render_children($payment);
   $variables['cart']     = $cart;
-  $variables['product_image'] = $cart_details;
+  //$variables['product_image'] = $cart_details;
   $variables['submit'] = drupal_render($submit);
+  $variables['form_build_id'] = drupal_render($form_build_id);
  
 }
