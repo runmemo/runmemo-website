@@ -57,12 +57,8 @@ function general_menu() {
  */
 function general_form_alter(&$form, $form_state, $form_id){
    
-    //echo '<pre>';
-    //print_r($form['panes']['payment']['details']['cc_exp_month']['#title']);
-    //exit;
-    
     if($form['#form_id'] == 'uc_cart_checkout_form') {
-      $form['panes']['payment']['payment_method'] = '';
+      $form['panes']['payment']['payment_method']['#type'] = 'hidden';
       $form['panes']['payment']['details']['cc_policy']['#markup'] = '';
       $form['panes']['payment']['details']['cc_number']['#size'] = '32';
       $form['panes']['payment']['details']['cc_exp_month']['#title'] = 'Expiration Month';
