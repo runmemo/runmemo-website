@@ -169,7 +169,7 @@ jQuery(document).ready(function(){
       });
       
       //message for adding and removing cart
-      $(".page-search-result #center").prepend('<div class="cart_msg" style="display:none"></div>');
+      //$(".page-search-result #center").prepend('<div class="cart_msg" style="display:none"></div>');
 
       //for remove the set message when adding items in the cart 
      if($('.messages a').length>0) {
@@ -211,9 +211,11 @@ jQuery(document).ready(function(){
                 if(op == 1){
                  cart_add(cost);
                  //for display the message when user add the item in to the cart
+                 /*
                  $('.cart_msg').html('Item added to your shopping cart');
                  $('.cart_msg').show();
-                 $('.cart_msg').delay(1000).fadeOut();
+                 $('.cart_msg').delay(10000).fadeOut();
+                  */
                  
 
                  $('#check_'+checked_id).attr('class','label_check c_on');
@@ -223,10 +225,11 @@ jQuery(document).ready(function(){
                 }
                 else {
                  cart_remove(cost);
-                 
+                 /*
                  $('.cart_msg').html('Item removed from your shopping cart');
                  $('.cart_msg').show();
-                 $('.cart_msg').delay(1000).fadeOut();
+                 $('.cart_msg').delay(10000).fadeOut();
+                  */
                  
                  $('#check_'+checked_id).attr('class','label_check');
                  //$('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
@@ -318,9 +321,11 @@ jQuery(document).ready(function(){
                 var cost = msg_arr['1'];
                 if(op == 1){
                   cart_add(cost);
+                  /*
                     $('.cart_msg').html('Item added to your shopping cart');
                     $('.cart_msg').show();
-                    $('.cart_msg').delay(1000).fadeOut();
+                    $('.cart_msg').delay(10000).fadeOut();
+                  */
 		
                     $('#check_'+checked_id).attr('class','label_check c_on');
                      $('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
@@ -328,10 +333,11 @@ jQuery(document).ready(function(){
                 }
                 else {
                   cart_remove(cost);
-                  
+                  /*
                   $('.cart_msg').html('Item removed from your shopping cart');
                   $('.cart_msg').show();
-                  $('.cart_msg').delay(1000).fadeOut();
+                  $('.cart_msg').delay(10000).fadeOut();
+                  */
                   
                   $('#check_'+checked_id).attr('class','label_check');
                   $('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
