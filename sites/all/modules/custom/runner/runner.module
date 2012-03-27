@@ -390,63 +390,82 @@ function runner_form_alter(&$form, &$form_state, $form_id){
   }
 }
 
-
 /**
 *	hook_cron().
 **/
-function runner_cron() {
+function runner_cron() { 
 	
-  $filepath_drupal = variable_get('file_public_path') .'/';
-  $dest = $filepath_drupal.'styles/thumbnail/public';
-  $prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
-
-  $photographer = new photographer_model();
-  
-  foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
-    $sourceimagename = "";
-    $url = str_replace("public://", $filepath_drupal, $row->uri);
-
-    //$url=$filepath_drupal.$filename;
-
-    if (file_exists($url)) {	
-      //create the physical thumbnail image to its destination 
-      // get the file name from the source file 
-      $filearr = explode('/', $url);
-      $sourceimagename = array_pop($filearr);
-      if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE)))) {
-        $forcedwidth="130";
-        $forcedheight="98";
-        $sourcefile=$url;
-        $destfile=$dest.'/'.$sourceimagename;
-
-        $mtype=mime_content_type($url);
-        $thumb_status = resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype);
-
-      }
-      else {
-        echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
-        break;
-      }
-      if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE)))) {
-        $forcedwidth1="400";
-        $forcedheight1="350";
-        $sourcefile1=$url;
-        $destfile1=$prev_dest.'/'.$sourceimagename;
-        $mtype1=mime_content_type($url);
-        $prev_status = resampimage( $forcedwidth1, $forcedheight1, $sourcefile1, $destfile1, $mtype1);
-      }
-
-      if($thumb_status && $prev_status) {
-        //Update the DB
-        $status = $photographer->update_thumb_status($row->fid);
-      }
-
-    }
-    else {
-      echo '<br>Did not find source  file '.$url;
-    }
-  }
+	$filepath_drupal = variable_get('file_public_path') .'/';
+	$dest = $filepath_drupal.'styles/thumbnail/public';
+	$prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
+	
+		$photographer = new photographer_model();
+	//$photos=$photographer->get_local_photos();
+	
+	$thumbsize=$photographer->get_thumbnail_size();
+	$thumb=unserialize($thumbsize->data);
+	
+	$previewsize=$photographer->get_preview_size();
+	$prev_size=unserialize($previewsize->data);
+	//print_r($prev_size);exit;
+	
+	foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
+		$sourceimagename = "";
+		$url = str_replace("public://", $filepath_drupal, $row->uri);
+		
+		//$url=$filepath_drupal.$filename;
+		
+		if (file_exists($url))
+		{	
+			//create the physical thumbnail image to its destination 
+			// get the file name from the source file 
+			$filearr = explode('/', $url);
+			$sourceimagename = array_pop($filearr);
+			if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
+			{
+				$forcedwidth=$thumb['width'];
+				$forcedheight=$thumb['height'];
+				$sourcefile=$url;
+				$destfile=$dest.'/'.$sourceimagename;
+				
+				$mtype=mime_content_type($url);
+				$thumb_status = resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype);
+				
+			}
+			else
+			{
+				echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
+				break;
+			}
+			if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
+			{
+				$forcedwidth1=$prev_size['width'];
+				$forcedheight1=$prev_size['height'];
+				$sourcefile1=$url;
+				$destfile1=$prev_dest.'/'.$sourceimagename;
+				$mtype1=mime_content_type($url);
+				$prev_status = resampimage( $forcedwidth1, $forcedheight1, $sourcefile1, $destfile1, $mtype1);
+			}
+			
+			if($thumb_status && $prev_status)
+			{
+				//Update the DB
+				$status = $photographer->update_thumb_status($row->fid);
+			}
+			
+			
+			
+			
+		}
+		else {
+			echo '<br>Did not find source  file '.$url;
+		}
+	}//for each
+	
+	//echo "<br>Process completed successfully.";
+	//exit;
 }
+
 
 
 /**
