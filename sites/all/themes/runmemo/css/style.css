@@ -2560,9 +2560,11 @@ text-align: center;
 .cartPane{
  border: 1px solid #CCCCCC;
  float: left;
- overflow-x: hidden;
- overflow-y: scroll;
+ overflow: hidden;
+/* overflow-x: hidden;
+ overflow-y: scroll;*/
  width: 475px;
+ min-height: 700px;
 }
 .blueHeading {
 color:#4AB0F8;
@@ -2625,27 +2627,29 @@ float: right;
 }
 .uc-cart-checkout-form .form-item label {
   float: left;
-  width: 122px;
+  width: 137px;
   padding: 0 15px 0 0;
   text-align: right;
 }
 .uc-cart-checkout-form .form-item input {
   padding: 10px 0 10px 0;
+  width: 270px;
+  border: 1px solid #DEE4E7;
+  border-radius: 5px 5px 5px 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
 }
 .uc-cart-checkout-form .form-item span {
   line-height: 20px;
 }
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
-  position: relative;
-  padding-top:5px;
-  padding-left: 136px;
-  /*top:-31px;
-  left: 202px;
-  */
+  float: right;
+  padding: 11px 109px 0 0;
+  width: 136px;
 }
 .uc-cart-checkout-form .form-submit {
   float: right;
-  margin: 0 18px 10px 0;
+  margin: 0 38px 10px 0;
   background: url("../images/submit.png") no-repeat scroll 0 0 transparent;
   width: 109px;
   height: 37px;
@@ -2731,4 +2735,17 @@ float: right;
  
  .page-search-result .cart_summ .summary_item_cost {
    padding-top: 6px;
+ }
+ /* 28.03.2012 */
+ .page-cart-checkout .paymentPane #line-items-div {
+   display: none;
+ }
+ .page-cart-checkout .paymentPane #billing-address-pane {
+   padding-top: 15px;
+ }
+ .page-cart-checkout .paymentPane #edit-panes-billing-billing-postal-code {
+   width: 110px;
+ }
+ .page-cart-checkout .paymentPane #edit-panes-payment-details-cc-cvv {
+   width: 56px;
  }
