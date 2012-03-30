@@ -1,0 +1,13 @@
+.sharePer{
+ float: left;
+    left: 63px;
+    position: relative;
+    top: -65px;
+    width: 20px;
+}
+.pshare{
+width:250px;
+}
+.pshare .form-item-share{
+width:200px;
+}

@@ -26,6 +26,15 @@ function photographer_menu(){
                         'access arguments' => array('access_photographer'),
                         'type' => MENU_CALLBACK,
                         );
+    $items['admin/photographer/share'] = array(
+	'title' => 'Managing share for Photographers',
+	'description' => t('Managing share for Photographers '),
+	'page callback' => 'drupal_get_form',
+	'page arguments' =>array('photograher_share'),
+	'access arguments' => array('administer store'),
+	
+	);
+	
 						
 						
 	
@@ -382,8 +391,53 @@ function custom_plupload_handle_uploads() {
   // Return JSON-RPC response
   die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 	
+}
+
+/**
+* For Managing share of price for photographers
+*/
+function photograher_share(){
+ 
+ $form['share']  = array(
+	'#type'=>'textfield',
+	'#title'=>'Runmemo Share',
+	'#size'=>'20',
+	'#required' => 'true',
+	'#default_value' => variable_get('photographer_share'),
+	'#prefix' => '<div class="pshare">',
+	'#suffix' => '<span class="sharePer">%</span></div>',
+	'#description' => 'Share of price of Photo',
+  );
+
+$form['submit']  = array(
+    '#type'=>'submit',
+	'#title'=>'Submit',
+	'#value'=>'Submit'
+
+  );
+return $form;
+}
+
+/**
+* Form validation for numeric values photograher_share()
+*/
+function photograher_share_validate($form, &$form_state){
+
+	$share = $form_state['values']['share'];
+
+	if (!is_numeric($share) || $share < 0) {
 	
-	
+    form_set_error('share',t('Enter a Numeric Value'));
+  }
+}
+
+/**
+* Form submission photograher_share()
+*/
+function photograher_share_submit($form,&$form_state){
+	drupal_set_message('Photographer Share set');
+	$share = $form_state['values']['share'];
+	variable_set('photographer_share',$share);
 }
 
 
