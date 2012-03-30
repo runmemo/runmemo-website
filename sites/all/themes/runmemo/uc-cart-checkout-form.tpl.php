@@ -13,51 +13,68 @@
 	<div class="cartPane">
 	<?php 
 	
-	$num = count($cart);
-	$count = 1;
-	$total = 0;
-	$photographer_1 = array();
+        $cart = uc_cart_get_contents();
+        
+        
+	$num 		  = count($cart);
+	$count 		  = 1;
+	$total 		  = 0;
+	$photographer = array();
 	$cart_content = "";
-       
+	$total = 0;
 	foreach($cart as $product => $value){
            
-            $uid = $value->uid;
-	    $qty = $value->qty;
-		$price = $qty*$value->price;
+        $qty[] 			= $value->qty;
+		$price          = $value->qty*$value->price;
+		
+		$photographer[] = $value->uid;
+		$photo[] 		= $value->uc_product_image['und'][0];
 		$total += $price;
-		//if($uid){
-                $photographer_1[] = $uid;
-		//$photographer[$uid] += 1;
-		//}
-		//else
-		//$photographer[$uid] = 1;
-		  $photo = $value->uc_product_image['und'][0];
-                  $cart_content .=  '<td>'.  theme("image_formatter", array('item' => $photo, 'image_style' => 'thumbnail')).'</td>';
-                  
-                  
-		  if($count%3==0){
-			$cart_content .= '</tr><tr>';
-			}
-			
-		 
-		  $count+=1;
+		$count+=1;
+	}
+	$p_count        = count(array_unique($photographer));
+	if($num ==1){
+	 $phototext = "photo";
+	 $photoowner = "Photographer";
+	}
+	else if($p_count==1){
+	 $photoowner = "Photographer";
+	 $phototext = "photos";
+	}
+	else{
+	 $photoowner = "Photographers";
+	 $phototext = "photos";
+	}
+       ?>
+	   <div class="cartSummary">
+			<div class="blueHeading">Order Summary</div>
+			<div class="boldText"><?php echo $num." ".$phototext;?> by <?php echo $p_count." ".$photoowner;?></div>
+			<div class="totalPrice">Total Price: <div class="currencyText">£<?php echo $total;?></div></div>
+		</div>
+		<table><tr>
+		<?php
+	for($i=1;$i<$count;$i++){
+           
+       	
+		?>
+		
+		
+		<td><?php echo theme("image_formatter", array('item' => $photo[$i-1], 'image_style' => 'thumbnail'));?></td>
+		<?php
+		if($i%3==0){?>
+			</tr><tr>
+			<?php }
+			?>
+		
+		<?php
+		
+       
 		  
 		  }
-	  $checkout_heading  =  '<div class="cartSummary"><div class="blueHeading">Order Summary</div>';
-	  if($num==1){
-	  $checkout_heading .= '<div class="boldText">'.$num.' photo by 1 photographer</div>';
-	  }else if(count(array_unique($photographer_1))==1){
-	  $checkout_heading .= '<div class="boldText">'.$num.' photos by '.count(array_unique($photographer_1)).' photographer';
-	  }else{
-	  $checkout_heading .= '<div class="boldText">'.$num.' photos by '.count(array_unique($photographer_1)).' different photographers';
-      }
-	  $checkout_heading .= '<div class="totalPrice">Total Price: <div class="currencyText">£'.$total.'</div></div></div></div>';
-	  echo $checkout_heading;
-	  echo '<table><tr>';
-	  echo $cart_content;
-	  echo '</tr></table>';
+	 
 	  
 	 ?>
+	 </tr></table>
 	</div>
   
 

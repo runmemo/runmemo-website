@@ -171,7 +171,7 @@ function runmemo_theme($existing, $type, $theme, $path) {
 		'template' => 'uc-cart-checkout-form',
 		'path' => drupal_get_path('theme', 'runmemo'),
 		),
-);
+  );
 }
 
 
@@ -193,7 +193,7 @@ function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
   $billing = $variables['form']['panes']['billing'];
   $customer = $variables['form']['panes']['customer'];
   $payment = $variables['form']['panes']['payment'];
-  $cart = $variables['form']['panes']['cart']['cart_review_table']['#items'];
+  //$cart = $variables['form']['panes']['cart']['cart_review_table']['#items'];
   $submit = $variables['form']['actions'];
   $form_build_id = $variables['form']['form_build_id'];
   
@@ -201,9 +201,18 @@ function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
   $variables['email'] = $customer['#theme']['primary_email'];
   $variables['customer'] = drupal_render($customer);
   $variables['payment']  = drupal_render_children($payment);
-  $variables['cart']     = $cart;
+  //$variables['cart']     = $cart;
   //$variables['product_image'] = $cart_details;
   $variables['submit'] = drupal_render($submit);
   $variables['form_build_id'] = drupal_render($form_build_id);
  
 }
+/*
+// Default function from uc_cart.module.
+function theme_uc_cart_checkout_review($help, $panes, $form) {
+  echo '<pre>';
+  print_r($panes);
+  exit;
+}
+ * 
+ */
