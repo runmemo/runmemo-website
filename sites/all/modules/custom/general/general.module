@@ -79,10 +79,20 @@ function general_menu() {
  */
 function general_form_alter(&$form, $form_state, $form_id){
    
-    //echo '<pre>';
-    //print_r($form['panes']);
-    //exit;
+    //alter the product node edit form
+    if($form['#form_id'] == 'product_node_form') {
+      $nid = $form['nid']['#value'];
+      $node_order_status = new photographer_model();
+      $status_of_image = $node_order_status->image_order_status($nid);
+      //Check the product already sold or not
+      //if sold means disable the selling price in the product edit forms
+      if($status_of_image != 0) {
+        $form['base']['prices']['sell_price']['#disabled'] = 'TRUE';
+      }
+      
+    }
     
+    //alter the checkout form
     if($form['#form_id'] == 'uc_cart_checkout_form') {
       
       $form['panes']['billing']['#type'] = '';
@@ -97,12 +107,13 @@ function general_form_alter(&$form, $form_state, $form_id){
       $form['actions']['continue']['#value'] = '';
     }
   
+    //alter the feedback form
     if($form['#form_id'] == 'feedback_form'){
         $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
         $form['help']['#weight'] = '-1'; 
-		$form['url_hidden'] = array('#type' => 'textfield', '#default_value' => '');
+	$form['url_hidden'] = array('#type' => 'textfield', '#default_value' => '');
         $form['#validate'][] = 'feedback_form_validate';
-		$form['#submit'] = array('custom_feedback_submit'); 
+	$form['#submit'] = array('custom_feedback_submit'); 
 		
     }
     

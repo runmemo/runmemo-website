@@ -56,7 +56,7 @@ class photographer_model{
 		$query = db_select('file_managed', 'fm');
 	    
 		$query->join('file_usage', 'fu', 'fm.fid = fu.fid');
-    $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
+                $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
 		$query->condition('fs.field_s3_status_value', 0);
 		$query->condition('fm.filename', '','<>');
 		$query->addField('fm', 'fid');
@@ -204,7 +204,15 @@ class photographer_model{
        
 
     }
-    
+    /*
+     * Get the count of particular node in the uc_order_product table to check 
+     * whether the particular product is already sold or not 
+     * if sold means disable the selling price in the node edit form
+     */
+    public function image_order_status($nid) {
+      $count = db_query("SELECT COUNT(nid) as nid FROM {uc_order_products} WHERE nid = :nid",array(':nid' => $nid))->fetchObject();
+      return $count->nid;
+    }
 		
 
 }
