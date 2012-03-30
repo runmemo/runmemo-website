@@ -1,5 +1,5 @@
 jQuery(document).ready(function(){
-     	 
+     	
 });
 
 
@@ -8,8 +8,7 @@ jQuery(document).ready(function(){
  * Function to generate preview in search results
  */
 (function ($) {
-  
-     
+      
   Drupal.behaviors.runmemo = { 
        
      attach: function (context,settings) {  
@@ -96,10 +95,33 @@ jQuery(document).ready(function(){
         else {
           $(this).html('<label class="label_check c_on" for="'+name_id+'" id="check_'+name_id+'"><input type="checkbox" name="id_'+name_id+'" id="'+name_id+'" value="'+name_id+'" checked="checked" class="img_check"/></label>');
         }
-        
+          
+       
         
         
       });
+      
+      
+      if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) { 
+        var base_path = Drupal.settings.basePath;
+        $.ajax({
+                  type: "POST",
+                  url: base_path + "cart_add_remove",
+                  success: function(msg){
+                    var msg_arr = msg.split("|");
+                    var no_of_items = msg_arr['0'];
+                    var total_cost = msg_arr['1'];
+                    $('.summary_selected_photos .placeholder').html(no_of_items);
+                    $(".summary_cost .placeholder").html(total_cost);
+                    if(no_of_items != 0) {
+                     $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                    }
+                  }
+        });
+        
+      }
+      
+      
       
       //runner number in the find section for front page
       if($(" #runner_number ").length > 0 ) {
@@ -189,78 +211,84 @@ jQuery(document).ready(function(){
       //store this nids in the array
        var checked_products_nids = new Array();
        $('div .node_check input').click(function() {
-       
-       var class_name = $(this).parent('label').attr('class');
-       if(class_name == 'label_check c_on'){
-         $(this).parent('label').removeClass('label_check c_on').addClass('label_check');
-       }
-       else {
-         $(this).parent('label').removeClass('label_check').addClass('label_check c_on');
-       }
-         
-       var base_path = Drupal.settings.basePath;
-         var checked_id = $(this).val();
-            $.ajax({
-              type: "POST",
-              url: base_path + "cart_add_remove?nid="+checked_id,
-              success: function(msg){
-                //console.log(msg);
-                var msg_arr = msg.split("|");
-                var op = msg_arr['0'];
-                var cost = msg_arr['1'];
-                if(op == 1){
-                 cart_add(cost);
-                 //for display the message when user add the item in to the cart
-                 /*
-                 $('.cart_msg').html('Item added to your shopping cart');
-                 $('.cart_msg').show();
-                 $('.cart_msg').delay(10000).fadeOut();
-                  */
-                 
 
-                 $('#check_'+checked_id).attr('class','label_check c_on');
-                 //$('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
-                 //$('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
-                 
-                }
-                else {
-                 cart_remove(cost);
-                 /*
-                 $('.cart_msg').html('Item removed from your shopping cart');
-                 $('.cart_msg').show();
-                 $('.cart_msg').delay(10000).fadeOut();
-                  */
-                 
-                 $('#check_'+checked_id).attr('class','label_check');
-                 //$('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
-                // $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
-                }
-              
-              }
-          });
-          //change add to cart button
-          var cart_hidden  = $('#cart_hidden').val();
-          var buttonclass  = $('#add_to_cart').attr('class');
-          var currentclass = buttonclass.split('form-submit ');
-
-          if(checked_id == cart_hidden){
-
-            if(currentclass[1] == 'add_cart'){
-              $('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
-              $('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
-
-            }
-            else{
-              $('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
-              $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
-            }
+          var class_name = $(this).parent('label').attr('class');
+          if(class_name == 'label_check c_on'){
+            $(this).parent('label').removeClass('label_check c_on').addClass('label_check');
           }
+          else {
+            $(this).parent('label').removeClass('label_check').addClass('label_check c_on');
+          }
+
+          
+          var base_path = Drupal.settings.basePath;
+          var checked_id = $(this).val();
+                $.ajax({
+                  type: "POST",
+                  url: base_path + "cart_add_remove?nid="+checked_id,
+                  success: function(msg){
+
+                    var msg_arr = msg.split("|");
+                    var op = msg_arr['0'];
+                    var cost = msg_arr['1'];
+                    if(op == 1){
+                      cart_add(cost,checked_id);
+                      
+
+
+                    //for display the message when user add the item in to the cart
+                    /*
+                    $('.cart_msg').html('Item added to your shopping cart');
+                    $('.cart_msg').show();
+                    $('.cart_msg').delay(10000).fadeOut();
+                      */
+
+
+                    $('#check_'+checked_id).attr('class','label_check c_on');
+                    //$('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
+                    //$('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
+
+                    }
+                    else {
+                    cart_remove(cost,checked_id);
+                    
+
+                    /*
+                    $('.cart_msg').html('Item removed from your shopping cart');
+                    $('.cart_msg').show();
+                    $('.cart_msg').delay(10000).fadeOut();
+                      */
+
+                    $('#check_'+checked_id).attr('class','label_check');
+                    //$('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
+                    // $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
+                    }
+
+                  }
+              });
+              //change add to cart button
+              var cart_hidden  = $('#cart_hidden').val();
+              var buttonclass  = $('#add_to_cart').attr('class');
+              var currentclass = buttonclass.split('form-submit ');
+
+              if(checked_id == cart_hidden){
+
+                if(currentclass[1] == 'add_cart'){
+                  $('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
+                  $('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
+
+                }
+                else{
+                  $('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
+                  $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
+                }
+              }
         
        });
        
        
        //cart add functionality
-       function cart_add(cost)  {
+       function cart_add(cost,checked_id)  {
         //changing no of photos
         var no_of_photo = $(".summary_selected_photos .placeholder").html();
         no_of_photo = parseInt(no_of_photo) + parseInt(1);
@@ -279,10 +307,19 @@ jQuery(document).ready(function(){
         //for display the proceed to checkout link in the search result page
         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
         
+        //for add the nid in the views hidden field
+          var checked_products_nids = new Array();
+          var str = $('.view-footer #cart_hidden_nids input').val();
+          checked_products_nids = str.split(",");
+          if(jQuery.inArray(checked_id, checked_products_nids) == -1) {
+            checked_products_nids.push(checked_id);
+            $('.view-footer #cart_hidden_nids input').val(checked_products_nids);
+
+          }
        }
        
        //cart remove functionality 
-       function cart_remove(cost)  {
+       function cart_remove(cost,checked_id)  {
          //changing no of photos
         var no_of_photo = $(".summary_selected_photos .placeholder").html();
         no_of_photo = parseInt(no_of_photo) - parseInt(1);
@@ -303,6 +340,15 @@ jQuery(document).ready(function(){
         //for changing default cart cost
         $(".cart-block-summary-total .uc-price").html('£' + total_cost);
         
+        //for add the nid in the views hidden field
+          var checked_products_nids = new Array();
+          var str = $('.view-footer #cart_hidden_nids input').val();
+          checked_products_nids = str.split(",");
+          checked_products_nids = jQuery.grep(checked_products_nids, function(value) {
+                                              return value != checked_id;
+                                              });
+          $('.view-footer #cart_hidden_nids input').val(checked_products_nids);
+        
        }
       // addtocart button functionality
          $('#add_to_cart').click(function() {
@@ -320,7 +366,7 @@ jQuery(document).ready(function(){
                 var op = msg_arr['0'];
                 var cost = msg_arr['1'];
                 if(op == 1){
-                  cart_add(cost);
+                  cart_add(cost,checked_id);
                   /*
                     $('.cart_msg').html('Item added to your shopping cart');
                     $('.cart_msg').show();
@@ -332,7 +378,7 @@ jQuery(document).ready(function(){
                      $('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
                 }
                 else {
-                  cart_remove(cost);
+                  cart_remove(cost,checked_id);
                   /*
                   $('.cart_msg').html('Item removed from your shopping cart');
                   $('.cart_msg').show();
@@ -549,3 +595,4 @@ Drupal.behaviors.feedbackFormSubmit = {
   /*End Check box design for search results page*/
      
 })(jQuery);
+

@@ -4,6 +4,9 @@
  */
 
 function runner_init() {
+  
+  //$cart_contents;
+  
   //to add the js file
   drupal_add_js(drupal_get_path("module","runner")."/runner.js");
   drupal_add_css(drupal_get_path('module', 'runner') . '/runner.css');
@@ -47,25 +50,44 @@ function runner_menu() {
 
 }
 
+/*
+ * AJAX cart add,remove function
+ */
 function cart_add_remove(){
  $nid = $_GET['nid'];
- foreach (uc_cart_get_contents() as $item) {
-   $cart_ids[]=$item->nid ;
-  }
-  
-  
- $node = node_load($nid);
- $price = round($node->price);
- if(in_array($nid,$cart_ids)) {
-    uc_cart_remove_item($nid, $cid = NULL, $data = array('module' => 'uc_product'));
-    echo 0 . '|'. $price;
+ 
+ if($nid == '') {
+    $subtotal = 0;
+    foreach (uc_cart_get_contents() as $item) {
+      $subtotal += $item->price * $item->qty;
+    }
+    $items = 0;
+    foreach (uc_cart_get_contents() as $item) {
+      $items += 1;
+    }
+    echo $items .'|'.$subtotal;
     exit;
-  }
-  else {
-   uc_cart_add_item($nid,1);
-   echo 1 . '|'. $price;
-   exit;
-  }
+ }
+ 
+ else {
+  foreach (uc_cart_get_contents() as $item) {
+  $cart_ids[]=$item->nid ;
+ }
+
+
+  $node = node_load($nid);
+  $price = round($node->price);
+  if(in_array($nid,$cart_ids)) {
+      uc_cart_remove_item($nid, $cid = NULL, $data = array('module' => 'uc_product'));
+      echo 0 . '|'. $price;
+      exit;
+    }
+    else {
+    uc_cart_add_item($nid,1);
+    echo 1 . '|'. $price;
+    exit;
+    }
+ }
   
 }
 
@@ -358,24 +380,10 @@ function recent_event2_image_submit($form,&$form_state){
 function search_result_cart($form,&$form_state) {
   $form = array();
   
-  $subtotal = 0;
-  foreach (uc_cart_get_contents() as $item) {
-    $subtotal += $item->price * $item->qty;
-  }
-  
-  
-  $items = 0;
-  foreach (uc_cart_get_contents() as $item) {
-    $items += 1;
-  }
-  
- $form['cart_hidden']   = array('#type' => 'textfield','#value' => '', '#id' => 'cart_hidden','#prefix' => '<div style="display:none;">', '#suffix'=>'</div>');
+  $form['cart_hidden']   = array('#type' => 'textfield','#value' => '', '#id' => 'cart_hidden','#prefix' => '<div style="display:none;">', '#suffix'=>'</div>');
   $form['selected_product'] = array('#type' => 'textfield','#title' => '','#id' => 'selected_cart_products','#prefix' => '<div style="display:none;">','#suffix' => '</div>');
   $url = url('cart/checkout');
-  $form['cart_summary'] = array('#markup' => t("<div class='cart_summ'><div class='summary_item_cost'><span class='cart-block-icon-full' title='View your shopping cart.'></span><span class='shop_cart_title'>Shopping Cart</span></div><div><span class='summary_selected_photos'>%items Items</span><span class='summary_cost'>Total:&nbsp £%subtotal</span></div><div class='proceed_to_cart'><a href=$url></a></div></div>",array('%items' => $items,'%subtotal' => $subtotal)));
-  //$url = url('cart/checkout');
-  //$form['checkout'] = array('#markup' => t("<div class='proceed_to_cart'><a href=$url></a></div>"));
-  
+  $form['cart_summary'] = array('#markup' => t("<div class='cart_summ'><div class='summary_item_cost'><span class='cart-block-icon-full' title='View your shopping cart.'></span><span class='shop_cart_title'>Shopping Cart</span></div><div><span class='summary_selected_photos'><span class='placeholder'></span> Items</span><span class='summary_cost'>Total:&nbsp £<span class='placeholder'></span></span></div><div class='proceed_to_cart'><a href=$url></a></div></div>"));
   $form['prev_img_det'] = array('#markup' => t('<div class="cost_auth_det"><span id="photo_cost">Price:<label class="photo_cost">&euro  2870 </label></span><br/><span id="photo_author">Photo by:<label class="photo_cost">James Whyte </label></span></div>'),'#prefix' => '<div class="prev_img_details">',);
   $form['add_to_cart'] = array('#type' => 'submit', '#value' => '','#id' => 'add_to_cart','#suffix' => '<div id="prev_img"><img  id="preview_image"  src="/sites/default/files/logo.png"/></div></div>',);
  
@@ -383,18 +391,18 @@ function search_result_cart($form,&$form_state) {
 }
 
 
-/**
-*	cron form alter.
-**/
+/*
+ * Cron form alter
+ */
 function runner_form_alter(&$form, &$form_state, $form_id){
   if ($form_id == 'system_cron_settings') {
     $form['cron']['cron_safe_threshold']['#options'] = array(0 => 'Never', '900' => '15 Mins', '1800' => '30 Mins', '3600' => '1 hour', '10800' => '3 hours', '21600' => '6 hours', '43200' => '12 hours', '86400' => '1 day','604800' => '1 week');
   }
 }
 
-/**
-* hook_cron().
-**/
+/*
+ * hook_cron
+ */
 function runner_cron() { 
  
   
@@ -489,22 +497,15 @@ function runner_cron() {
     //Update the DB
     $status = $photographer->update_thumb_status($row->fid);
    }
-   
-   
-   
-   
   }
   else {
    echo '<br>Did not find source  file '.$url;
   }
- }//for each
- 
- //echo "<br>Process completed successfully.";
- //exit;
+ }
 }
 
 
-/**
+/*
  * Reshapes a given image
  */
 function resampimage( $forcedwidth, $forcedheight, $sourcefile, $destfile, $mtype) {
