@@ -148,19 +148,19 @@ function general_form_alter(&$form, $form_state, $form_id){
  * $form gives form values from the user registration page
  */
 function user_role_insertion($form,&$from_state){
-	
+ 
     //call class function
-    $photographer=new photographer_model();
-    $user_role=$photographer->get_role_id();
+    $common_object=new common_model();
+    $user_role=$common_object->get_role_id();
     $role_id=$user_role->rid;
 
     $uid=$form['#user']->uid;
 
     //call the class function for update the user role in the user table
-    $photographer->user_role_update($role_id,$uid);
+    $common_object->user_role_update($role_id,$uid);
 
     //call the class function for insert the user role in the user roles table
-    $photographer->user_role_id_insert($role_id,$uid);
+    $common_object->user_role_id_insert($role_id,$uid);
 
 }
 
@@ -273,126 +273,52 @@ function custom_node_delete_page() {
 function general_cron() {
 
 
-   
-   $photographer = new photographer_model();
-   $photos_url = $photographer->get_local_photos();
-   
+   $common_object = new common_model();
+   $photos_url = $common_object->get_local_photos();
    $s3 = amazon_s3_get_instance();
    $bucket= variable_get('amazons3_bucket', '');
    $acl = 'public-read-write';
-   
    $path=drupal_realpath('public://');
-   
-    
 
     foreach ($photos_url as $photo_url) { 
-		
-		
-	    $thumb_success = $orig_success = $preview_success = "";
+  
+  
+     $thumb_success = $orig_success = $preview_success = "";
 
-	    $thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
-			$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
-			$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
-		
-			$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
-			$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
-	    $prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
-		
-		/////////////////////////////Pushing the files///////////////////////////////////////////
-		$orig_file_path = $photo_url->uri;
-		
-		if (file_exists($photo_url->uri)) {
-			$orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
-		}
-		
-		if(file_exists($thumbnail_local_path)) {
-			$thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
-		}
-		
-		if(file_exists($preview_local_path)) {
-			$preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
-		}
-		
-		if($orig_success && $thumb_success && $preview_success) {
-			$photographer->update_s3_status($photo_url->entity_id);
-			$url = str_replace("public://","s3://",$photo_url->uri);
+     $thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
+   $thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
+   $thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
+  
+   $preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
+   $prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
+     $prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
+  
+  /////////////////////////////Pushing the files///////////////////////////////////////////
+  $orig_file_path = $photo_url->uri;
+  
+  if (file_exists($photo_url->uri)) {
+   $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+  }
+  
+  if(file_exists($thumbnail_local_path)) {
+   $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+  }
+  
+  if(file_exists($preview_local_path)) {
+   $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
+  }
+  
+  if($orig_success && $thumb_success && $preview_success) {
+   $common_object->update_s3_status($photo_url->entity_id);
+   $url = str_replace("public://","s3://",$photo_url->uri);
 
-			$photographer->update_url($photo_url->fid,$url);
-			
-			file_unmanaged_delete($orig_file_path);
-			file_unmanaged_delete($thumb_local_path);
-			file_unmanaged_delete($prev_local_path);
-		}  
-	}
+   $common_object->update_url($photo_url->fid,$url);
+   
+   file_unmanaged_delete($orig_file_path);
+   file_unmanaged_delete($thumb_local_path);
+   file_unmanaged_delete($prev_local_path);
+  }  
+ }
   drupal_flush_all_caches();
 }
 	
-function testing() {
-
-
-   $photographer = new photographer_model();
-   $photos_url = $photographer->get_local_photos();
-   $s3 = amazon_s3_get_instance();
-   $bucket= variable_get('amazons3_bucket', '');
-   $acl = 'public-read-write';
-   $path=drupal_realpath('public://');
-	 $st = 0;
-    foreach ($photos_url as $photo_url) { 
-		
-		
-	
-	    	$thumbnail_local_path = $path.'/styles/thumbnail/public/'.$photo_url->filename;
-				$thumb_local_path='public://styles/thumbnail/public/'.$photo_url->filename;
-				$thumb_desc_path='styles/thumbnail/s3/'.$photo_url->filename;
-		
-				$preview_local_path=$path.'/styles/preview-with-watermark/public/'.$photo_url->filename;
-				$prev_local_path='public://styles/preview-with-watermark/public/'.$photo_url->filename;
-	    	$prev_desc_path='styles/preview-with-watermark/s3/'.$photo_url->filename;
-		
-		/////////////////////////////Pushing the files///////////////////////////////////////////
-		$orig_file_path = $photo_url->uri;
-		
-		if (file_exists($photo_url->uri)) {
-			$orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
-		}
-		
-		if(file_exists($thumbnail_local_path)) {
-			$thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
-		}
-		
-		if(file_exists($preview_local_path)) {
-			$preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
-		}
-		
-		if($orig_success && $thumb_success && $preview_success) {
-
-
-
-
-			$photographer->update_s3_status($photo_url->entity_id);
-			$url = str_replace("public://","s3://",$photo_url->uri);
-
-			
-
-			$photographer->update_url($photo_url->fid,$url);
-			
-			file_unmanaged_delete($orig_file_path);
-			file_unmanaged_delete($thumb_local_path);
-			file_unmanaged_delete($prev_local_path);
-
-                     $st++;
-
-
-		} 
-
-
-	}
-		return $st;
-
-         
-   
-}
-
-
-
-
