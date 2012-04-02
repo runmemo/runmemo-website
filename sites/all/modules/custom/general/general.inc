@@ -1,6 +1,6 @@
 <?php
 
-class photographer_model{
+class common_model{
 
     /**
      * Get the role id for set the user role as photographer to access the photgrapher page
