@@ -411,17 +411,17 @@ function runner_cron() {
  $dest = $filepath_drupal.'styles/thumbnail/public';
  $prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
  
-  $photographer = new photographer_model();
- //$photos=$photographer->get_local_photos();
+  $common_object = new common_model();
+ //$photos=$common_object->get_local_photos();
  
- $thumbsize=$photographer->get_thumbnail_size();
+ $thumbsize=$common_object->get_thumbnail_size();
  $thumb=unserialize($thumbsize->data);
  
- $previewsize=$photographer->get_preview_size();
+ $previewsize=$common_object->get_preview_size();
  $prev_size=unserialize($previewsize->data);
  //print_r($prev_size);exit;
  
- foreach ($photographer->get_local_photos() as $row) {//print_r($row);exit;
+ foreach ($common_object->get_local_photos() as $row) {//print_r($row);exit;
   $sourceimagename = "";
   $url = str_replace("public://", $filepath_drupal, $row->uri);
   
@@ -495,15 +495,21 @@ function runner_cron() {
    if($thumb_status && $prev_status)
    {
     //Update the DB
-    $status = $photographer->update_thumb_status($row->fid);
+    $status = $common_object->update_thumb_status($row->fid);
    }
+   
+   
+   
+   
   }
   else {
    echo '<br>Did not find source  file '.$url;
   }
- }
+ }//for each
+ 
+ //echo "<br>Process completed successfully.";
+ //exit;
 }
-
 
 /*
  * Reshapes a given image
