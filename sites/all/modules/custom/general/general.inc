@@ -204,7 +204,7 @@ class common_model{
        
 
     }
-    /*
+    /**
      * Get the count of particular node in the uc_order_product table to check 
      * whether the particular product is already sold or not 
      * if sold means disable the selling price in the node edit form

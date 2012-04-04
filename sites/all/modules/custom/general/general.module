@@ -24,7 +24,15 @@ function general_menu_alter(&$items) {
  * Init function for adding the external file
  */
 function general_init(){
-   
+   //for redirect the cart page
+  //when no products in the shopping cart
+  if(arg(0) == 'cart' && arg(1) == '') {
+    $no_of_cart_items = count(uc_cart_get_contents());
+    if($no_of_cart_items == '0') {
+      drupal_set_message('There are no products in your shopping cart');
+      drupal_goto();
+    }
+  }
     drupal_add_js(drupal_get_path("module","general")."/js/general.js");
     drupal_add_css(drupal_get_path('module', 'general') . '/general.css');
 	
@@ -82,13 +90,15 @@ function general_form_alter(&$form, $form_state, $form_id){
     //alter the product node edit form
     if($form['#form_id'] == 'product_node_form') {
       $nid = $form['nid']['#value'];
-      $node_order_status = new photographer_model();
+      $node_order_status = new common_model();
       $status_of_image = $node_order_status->image_order_status($nid);
       //Check the product already sold or not
       //if sold means disable the selling price in the product edit forms
       if($status_of_image != 0) {
         $form['base']['prices']['sell_price']['#disabled'] = 'TRUE';
       }
+      $form['#validate'][] = 'product_pricing_validation';
+      
       
     }
     
@@ -106,7 +116,18 @@ function general_form_alter(&$form, $form_state, $form_id){
       $form['actions']['cancel'] = '';
       $form['actions']['continue']['#value'] = '';
     }
-  
+     //alter for review order page
+	 if($form['#form_id'] == 'uc_cart_checkout_review_form') {
+      $form['actions']['back']= '';
+      $form['actions']['back']['#markup'] = l("","cart/checkout",array(
+                                            'attributes' => array(
+                                              'id' => 'edit-back',
+
+                                            )));
+      
+     
+      $form['actions']['submit']['#value'] = t('');
+      }
     //alter the feedback form
     if($form['#form_id'] == 'feedback_form'){
         $form['close'] = array('#markup' => '<div id="fb_close"><span id="feedback_title">Feedback</span><a id="fb_close_link" style="cursor:pointer">&nbsp;</a></div>','#weight'=> '-5');
@@ -116,11 +137,14 @@ function general_form_alter(&$form, $form_state, $form_id){
 	$form['#submit'] = array('custom_feedback_submit'); 
 		
     }
-    
-     if($form['#form_id']=='user_login'){
-        $form['actions']['submit']['#value'] = 'Login';
-        $form['#validate'][] = 'cookie_check_validate';
+    //alter the login form
+    if($form['#form_id']=='user_login'){
+      
+      $form['new_pwd'] = array('#markup' => l('Forgot password?','user/password',array('attributes' => array('id' => 'forgot_pwd'))));
+      $form['actions']['submit']['#value'] = 'Login';
+      $form['#validate'][] = 'cookie_check_validate';
     }
+	
     //registration page
     if($form['#form_id']=='user_register_form'){
 
@@ -141,7 +165,19 @@ function general_form_alter(&$form, $form_state, $form_id){
 
     }
 }
+/**
+* Validating product price
+*/
 
+function product_pricing_validation($form,&$form_state) {
+  
+  $img_cost = $form['base']['prices']['sell_price']['#value'];
+  
+  if(!(($img_cost>=2) && ($img_cost<=100))) {
+   form_set_error('field_sell_price',t('Enter sell price between 2 to 100 only'));
+  }
+  
+}
 /**
  *Function for insert the user role in the users table when submit the create account submit button
  * @param $form
