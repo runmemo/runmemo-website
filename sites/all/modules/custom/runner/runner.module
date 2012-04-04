@@ -76,7 +76,7 @@ function cart_add_remove(){
 
 
   $node = node_load($nid);
-  $price = round($node->price);
+  $price = $node->price;
   if(in_array($nid,$cart_ids)) {
       uc_cart_remove_item($nid, $cid = NULL, $data = array('module' => 'uc_product'));
       echo 0 . '|'. $price;
