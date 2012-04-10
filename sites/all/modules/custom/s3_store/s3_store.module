@@ -10,8 +10,8 @@
 function s3_store_cron() {
 
 
-   $user_helper_object = new user_helper_model();
-   $photos_url = $user_helper_object->get_local_photos();
+   $s3_store_object = new s3_store_model();
+   $photos_url = $s3_store_object->get_local_photos();
    $s3 = amazon_s3_get_instance();
    $bucket= variable_get('amazons3_bucket', '');
    $acl = 'public-read-write';
@@ -47,10 +47,10 @@ function s3_store_cron() {
 		}
 		
 		if($orig_success && $thumb_success && $preview_success) {
-			$user_helper_object->update_s3_status($photo_url->entity_id);
+			$s3_store_object->update_s3_status($photo_url->entity_id);
 			$url = str_replace("public://","s3://",$photo_url->uri);
 
-			$user_helper_object->update_url($photo_url->fid,$url);
+			$s3_store_object->update_url($photo_url->fid,$url);
 			
 			file_unmanaged_delete($orig_file_path);
 			file_unmanaged_delete($thumb_local_path);
@@ -59,6 +59,7 @@ function s3_store_cron() {
 	}
   drupal_flush_all_caches();
 }
+
 
 /**
  * function to create signed url to download orginal image

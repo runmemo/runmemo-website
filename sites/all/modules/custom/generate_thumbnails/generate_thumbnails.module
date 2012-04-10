@@ -13,17 +13,20 @@ function generate_thumbnails_cron() {
  $dest = $filepath_drupal.'styles/thumbnail/public';
  $prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
  
-  $user_helper_object = new user_helper_model();
- //$photos=$user_helper_object->get_local_photos();
+  $generate_thumbnails_object = new generate_thumbnails_model();
+ //$photos=$generate_thumbnails_object->get_local_photos();
  
- $thumbsize=$user_helper_object->get_thumbnail_size();
+ $thumbsize=$generate_thumbnails_object->get_thumbnail_size();
  $thumb=unserialize($thumbsize->data);
  
- $previewsize=$user_helper_object->get_preview_size();
+ $previewsize=$generate_thumbnails_object->get_preview_size();
  $prev_size=unserialize($previewsize->data);
  //print_r($prev_size);exit;
  
- foreach ($user_helper_object->get_local_photos() as $row) {//print_r($row);exit;
+ $s3_store_object = new s3_store_model();
+ 
+ 
+ foreach ($s3_store_object->get_local_photos() as $row) {//print_r($row);exit;
   $sourceimagename = "";
   $url = str_replace("public://", $filepath_drupal, $row->uri);
   
@@ -97,7 +100,7 @@ function generate_thumbnails_cron() {
    if($thumb_status && $prev_status)
    {
     //Update the DB
-    $status = $user_helper_object->update_thumb_status($row->fid);
+    $status = $generate_thumbnails_object->update_thumb_status($row->fid);
    }
    
    

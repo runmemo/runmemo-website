@@ -97,7 +97,10 @@ jQuery(document).ready(function(){
                       $('.summary_selected_photos .placeholder').html(no_of_items);
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
-                      $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                      }
+                      else {
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
                       }
                     }
           });
@@ -260,7 +263,11 @@ jQuery(document).ready(function(){
                       $('.summary_selected_photos .placeholder').html(no_of_items);
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
-                      $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                        
+                      }
+                      else {
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
                       }
                     }
           });
@@ -289,7 +296,10 @@ jQuery(document).ready(function(){
                       $('.summary_selected_photos .placeholder').html(no_of_items);
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
-                      $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
+                      }
+                      else {
+                        $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
                       }
                     }
           });

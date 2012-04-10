@@ -4,7 +4,9 @@
  */
 
 function photo_search_init() {
- 
+  
+  //$cart_contents;
+  
   //to add the js file
   drupal_add_js(drupal_get_path("module","photo_search")."/photo_search.js");
   drupal_add_css(drupal_get_path('module', 'photo_search') . '/photo_search.css');
@@ -27,65 +29,10 @@ function photo_search_menu() {
     'type' => MENU_CALLBACK
   );
   
-  $items['runner-test'] = array(
-    'title' => 'Photo Gallery',
-    'description' => t('View the objects in a event on your Amazon S3 account.'),
-    'page callback' => 'runner_test',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK
-  );
-
-  //AJAX url
-  $items['cart_add_remove'] = array(
-    'title' => '',
-    'description' => t(''),
-    'page callback' => 'cart_add_remove',
-    'access arguments' => array('access content'),
-    'type' => MENU_CALLBACK
-  );
 
     return $items;
 
 }
-
-/*
- * AJAX cart add,remove function
- */
-function cart_add_remove(){
- $nid = $_GET['nid'];
- 
- if($nid == '') {
-    $subtotal = 0;
-    foreach (uc_cart_get_contents() as $item) {
-      $subtotal += $item->price * $item->qty;
-    }
-    $items = 0;
-    foreach (uc_cart_get_contents() as $item) {
-      $items += 1;
-    }
-    echo $items .'|'.$subtotal;
-    exit;
- }
- 
- else {
-  foreach (uc_cart_get_contents() as $item) {
-    $cart_ids[]=$item->nid ;
-  }
-  if(in_array($nid,$cart_ids)) {
-    uc_cart_remove_item($nid, $cid = NULL, $data = array('module' => 'uc_product'));
-    echo 0 ;
-    exit;
-   }
-  else {
-    uc_cart_add_item($nid,1);
-    echo 1;
-    exit;
-  }
- }
-  
-}
-
-
 
 
 /**
@@ -365,27 +312,6 @@ function recent_event2_image_submit($form,&$form_state){
 
 
 /**
- * Add to cart submit button in the search result page
- * @param type $form
- * @param type $form_state
- * @return string 
- */
-
-function search_result_cart($form,&$form_state) {
-  $form = array();
-  
-  $form['cart_hidden']   = array('#type' => 'textfield','#value' => '', '#id' => 'cart_hidden','#prefix' => '<div style="display:none;">', '#suffix'=>'</div>');
-  $form['selected_product'] = array('#type' => 'textfield','#title' => '','#id' => 'selected_cart_products','#prefix' => '<div style="display:none;">','#suffix' => '</div>');
-  $url = url('cart/checkout');
-  $form['cart_summary'] = array('#markup' => t("<div class='cart_summ'><div class='summary_item_cost'><span class='cart-block-icon-full' title='View your shopping cart.'></span><span class='shop_cart_title'>Shopping Cart</span></div><div><span class='summary_selected_photos'><span class='placeholder'></span> Items</span><span class='summary_cost'>Total:&nbsp £<span class='placeholder'></span></span></div><div class='proceed_to_cart'><a href=$url></a></div></div>"));
-  $form['prev_img_det'] = array('#markup' => t('<div class="cost_auth_det"><span id="photo_cost">Price:<label class="photo_cost">&euro  2870 </label></span><br/><span id="photo_author">Photo by:<label class="photo_cost">James Whyte </label></span></div>'),'#prefix' => '<div class="prev_img_details">',);
-  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '','#id' => 'add_to_cart','#suffix' => '<div id="prev_img"><img  id="preview_image"  src="/sites/default/files/logo.png"/></div></div>',);
- 
-  return $form;
-}
-
-
-/**
  * Cron form alter
  */
 function photo_search_form_alter(&$form, &$form_state, $form_id){
@@ -394,112 +320,5 @@ function photo_search_form_alter(&$form, &$form_state, $form_id){
   }
 }
 
- /**
-  * hook_cron
-  */
-function photo_search_cron() { 
-
- $filepath_drupal = variable_get('file_public_path') .'/';
- $dest = $filepath_drupal.'styles/thumbnail/public';
- $prev_dest = $filepath_drupal.'styles/preview-with-watermark/public';
  
-  $user_helper_object = new user_helper_model();
- //$photos=$user_helper_object->get_local_photos();
- 
- $thumbsize=$user_helper_object->get_thumbnail_size();
- $thumb=unserialize($thumbsize->data);
- 
- $previewsize=$user_helper_object->get_preview_size();
- $prev_size=unserialize($previewsize->data);
- //print_r($prev_size);exit;
- 
- foreach ($user_helper_object->get_local_photos() as $row) {//print_r($row);exit;
-  $sourceimagename = "";
-  $url = str_replace("public://", $filepath_drupal, $row->uri);
-  
-  //$url=$filepath_drupal.$filename;
-  
-  
-  
-  if (file_exists($url))
-  { 
-   //create the physical thumbnail image to its destination 
-   // get the file name from the source file 
-   $filearr = explode('/', $url);
-   $sourceimagename = array_pop($filearr);
-   if (!file_exists(url($dest.'/'.$sourceimagename, array('absolute' => TRUE))))
-   {
-      
-      
-      
-      $item=array('uri'=>$row->uri,'width'=>$thumb['width'],'height'=>$thumb['height']);
-      $path=array($dest.'/'.$sourceimagename);
-      $variables=array('item'=>$item,'image_style'=>'thumbnail','path'=>$path);
-      theme_image_formatter($variables);
-      
-    ////////////////////////////////////////////////////////////////
-    $ch = curl_init();
-
-    // set URL and other appropriate options
-    curl_setopt($ch, CURLOPT_URL, url($dest.'/'.$sourceimagename, array('absolute' => TRUE)));
-    curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-
-    // grab URL and pass it to the browser
-    curl_exec($ch);
-
-    // close cURL resource, and free up system resources
-    curl_close($ch);
-    ////////////////////////////////////////////////////////////////
-      
-      
-      
-    
-   }
-   else
-   {
-    echo '<br>Found '.$dest.$sourceimagename.' already existing. Hence exiting.';
-    break;
-   }
-   if (!file_exists(url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE))))
-   {
-      $item=array('uri'=>$row->uri,'width'=>$prev_size['width'],'height'=>$prev_size['height']);
-      $path=array($prev_dest.'/'.$sourceimagename);
-      $variables=array('item'=>$item,'image_style'=>'preview-with-watermark','path'=>$path);
-      theme_image_formatter($variables);
-      
-    ////////////////////////////////////////////////////////////////
-    $ch = curl_init();
-
-    // set URL and other appropriate options
-    curl_setopt($ch, CURLOPT_URL, url($prev_dest.'/'.$sourceimagename, array('absolute' => TRUE)));
-    curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-
-    // grab URL and pass it to the browser
-    curl_exec($ch);
-
-    // close cURL resource, and free up system resources
-    curl_close($ch);
-    ////////////////////////////////////////////////////////////////
-   }
-   
-   if($thumb_status && $prev_status)
-   {
-    //Update the DB
-    $status = $user_helper_object->update_thumb_status($row->fid);
-   }
-   
-   
-   
-   
-  }
-  else {
-   echo '<br>Did not find source  file '.$url;
-  }
- }//for each
- 
- //echo "<br>Process completed successfully.";
- //exit;
-}
 
