@@ -344,6 +344,10 @@ function custom_plupload_handle_uploads() {
 				$file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 				$file['tmpname'] = $file_name;
 				$node = create_photo_node($file, $event);
+				// sending message to OCR for an uploaded image
+				if(module_exists('ocr') && function_exists('invokeSendMessage')){
+					invokeSendMessage($node->nid,$file["name"]);
+				}
 				
 				
 			}
@@ -355,6 +359,10 @@ function custom_plupload_handle_uploads() {
 					$file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
 					$file['tmpname'] = $file_name;
 					$node = create_photo_node($file, $event);
+					// sending message to OCR for an uploaded image
+					if(module_exists('ocr') && function_exists('invokeSendMessage')){
+						invokeSendMessage($node->nid,$file["name"]);
+					}
 			}
       }
       else {
