@@ -1,8 +1,0 @@
-name = user_helper
-description = A block module that is used to alter form in the core module
-core = 7.x
-
-files[] = user_helper.inc
-files[] = user_helper.test
-
-
