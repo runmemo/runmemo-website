@@ -5,8 +5,8 @@ class ocr_model{
 	 * Insert runner number from ocr response 
 	 */
 	 public function insert_runnernumber($nid = 0,$runner_num=0,$revision_id =0,$runner_count=0){
-
-	   db_insert('field_data_field_runner_number')
+    
+	   $result = db_insert('field_data_field_runner_number')
 							->fields(array(
 							'entity_type' =>'node',
 							'bundle' => 'product',
@@ -32,33 +32,40 @@ class ocr_model{
 	 /**
 	 * insert response from OCR to ocr_response if response is success
 	 */
-	 public function insert_response($responsebody="",$success=1){
-	 
+	 public function insert_response($responsebody="",$success=0,$nid = 0,$messageid = ""){
+	 $responsebody = mysql_real_escape_string($responsebody);
 	  db_insert('ocr_response')
 			->fields(array(
+			'nid' => $nid,
+			'messageid' => $messageid,
 			'ocr_response' => $responsebody,
 			'ocr_status' => $success,
 			'received' => REQUEST_TIME,
 			))
 			->execute();
 	 }
-	 /**
-	 * insert response from OCR to ocr_response if response is failure
-	 */
-	 public function insert_log($responsebody="",$success=0,$uri ="",$hostname=""){
 	 
-	  db_insert('watchdog')
-			->fields(array(
-			'uid' => 1,
-			'type' => 'ocr response',
-			'message' => $responsebody,
-			'severity'=> 3,
-			'timestamp'=>REQUEST_TIME,
-			'location' => $uri,
-			'hostname' => $hostname
-			
-			))
-			->execute();
+	
+	 /**
+	 * insert response from OCR to ocr_response if response is success
+	 */
+	 public function insert_ocr_status($entity_id=0,$success=0){
+	
+	  if($success == 1){
+	    $status = "Success";
+	  }
+	  else{
+	   $status = "Failure";
+	  }
+	  
+	  
+	  db_update('field_data_field_ocr_response')
+                        ->fields(array(
+                        'field_ocr_response_value' =>$status,
+                        ))
+                        ->condition('entity_id', $entity_id)
+                        ->execute();
 	 }
+	  
  }
 ?>
