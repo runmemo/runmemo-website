@@ -28,19 +28,17 @@ function select_event_upload(){
 /**
  * draog and drop upload validation
  */
-function drag_drop_upload_validation(){
-	
-	
-	var selected_value=document.getElementById('event_select').value;
-	if(selected_value=='select_event'){
-			alert('Select the event');
-			return false;
+function drag_drop_upload_validation() {
+  var selected_value=document.getElementById('event_select').value;
+  if (selected_value=='select_event') {
+    alert(Drupal.t('Select the event'));
+    return false;
 
-	}
-	
-	var selected_value=document.getElementById('event_select').value;
-	var uploader = jQuery("#edit-file").pluploadQueue();
-	uploader.settings.url = Drupal.settings.plupload._default.url+'&event='+selected_value;
+  }
+
+  var selected_value=document.getElementById('event_select').value;
+  var uploader = jQuery("#edit-file").pluploadQueue();
+  uploader.settings.url = Drupal.settings.plupload._default.url+'&event='+selected_value;
 	//uploader.settings.unique_names  = false;
 	
 }
