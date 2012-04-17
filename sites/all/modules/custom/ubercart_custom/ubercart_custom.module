@@ -16,7 +16,7 @@ function ubercart_custom_node_view($node, $view_mode, $langcode) {
  * Alter the menu items
  */
 function ubercart_custom_menu_alter(&$items) {
-  unset($items['cart']);
+  //unset($items['cart']);
 }
 
 
@@ -52,16 +52,29 @@ function ubercart_custom_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
   );
-
+  
+  
+  
     return $items;
 
 }
+
+
+
 
 /*
  * AJAX cart add,remove function
  */
 function cart_add_remove() {
- $nid = $_GET['nid'];
+  
+   
+  if ($_GET['nid'] != NULL) {
+    $nid = $_GET['nid'];
+  }
+  else {
+    $nid = '';
+  }
+ 
  
  global $user;
  $uid = $user->uid;
@@ -73,8 +86,12 @@ function cart_add_remove() {
       $subtotal += $item->price * $item->qty;
       $cart_ids[]=$item->nid ;      
     }
-    
-    $cart_string_nid = implode(',', $cart_ids);
+    if (!empty($cart_ids)) {
+      $cart_string_nid = implode(',', $cart_ids);
+    }
+    else {
+      $cart_string_nid = '';
+    }
     
     $items = 0;
     foreach (uc_cart_get_contents($uid) as $item) {
@@ -86,6 +103,7 @@ function cart_add_remove() {
  }
  
  else {
+   $cart_ids = array();
   foreach (uc_cart_get_contents($uid) as $item) {
     $cart_ids[]=$item->nid ;
   }

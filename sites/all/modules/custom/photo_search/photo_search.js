@@ -72,7 +72,7 @@ jQuery(document).ready(function(){
           var base_path = Drupal.settings.basePath;
           $.ajax({
                     type: "POST",
-                    url: base_path + "cart_add_remove",
+                    url: base_path + "cart_add_remove?nid",
                     success: function(msg) {
                       var msg_arr = msg.split("|");
                       var no_of_items = msg_arr['0'];
@@ -263,7 +263,7 @@ jQuery(document).ready(function(){
           var base_path = Drupal.settings.basePath;
           $.ajax({
                     type: "POST",
-                    url: base_path + "cart_add_remove",
+                    url: base_path + "cart_add_remove?nid",
                     success: function(msg){
                       var msg_arr = msg.split("|");
                       var no_of_items = msg_arr['0'];
@@ -288,7 +288,7 @@ jQuery(document).ready(function(){
           var base_path = Drupal.settings.basePath;
           $.ajax({
                     type: "POST",
-                    url: base_path + "cart_add_remove",
+                    url: base_path + "cart_add_remove?nid",
                     success: function(msg){
                       var msg_arr = msg.split("|");
                       var no_of_items = msg_arr['0'];

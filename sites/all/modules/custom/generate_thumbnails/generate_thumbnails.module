@@ -62,7 +62,7 @@ function generate_thumbnails_cron() {
   $dest = $filepath_drupal . 'styles/thumbnail/public';
   $prev_dest = $filepath_drupal . 'styles/preview-with-watermark/public';
 
-    $generate_thumbnails_object = new generate_thumbnails_model();
+  $generate_thumbnails_object = new generate_thumbnails_model();
   //$photos=$generate_thumbnails_object->get_local_photos();
 
   $thumbsize=$generate_thumbnails_object->get_thumbnail_size();
@@ -76,10 +76,6 @@ function generate_thumbnails_cron() {
   foreach ($s3_store_object->get_local_photos() as $row) {
       $sourceimagename = "";
       $url = str_replace("public://", $filepath_drupal, $row->uri);
-
-      //$url=$filepath_drupal.$filename;
-
-
 
       if (file_exists($url)) { 
         //create the physical thumbnail image to its destination 
