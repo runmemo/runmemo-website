@@ -23,7 +23,7 @@
 /**
  *  @see Amazon_SQS_Model
  */
-require_once ('Amazon/SQS/Model.php');  
+require_once DRUPAL_ROOT . '/sites/all/libraries/Amazon/SQS/Model.php';  
 
     
 

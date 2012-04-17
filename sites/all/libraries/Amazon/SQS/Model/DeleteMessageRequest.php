@@ -23,7 +23,7 @@
 /**
  *  @see Amazon_SQS_Model
  */
-require_once ('Amazon/SQS/Model.php');  
+require_once dirname(dirname(__FILE__)).'/Model.php';  
 
     
 

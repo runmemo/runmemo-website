@@ -23,7 +23,7 @@
 /**
  *  @see Amazon_SQS_Interface
  */
-require_once DRUPAL_ROOT . '/sites/all/libraries/Amazon/SQS/Interface.php';
+require_once dirname(__FILE__).'/Interface.php';
 
 
 /**
@@ -99,10 +99,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function createQueue($request)
     {
         if (!$request instanceof Amazon_SQS_Model_CreateQueueRequest) {
-            require_once ('Amazon/SQS/Model/CreateQueueRequest.php');
+            require_once dirname(__FILE__).'/Model/CreateQueueRequest.php';
             $request = new Amazon_SQS_Model_CreateQueueRequest($request);
         }
-        require_once ('Amazon/SQS/Model/CreateQueueResponse.php');
+        require_once dirname(__FILE__).'/Model/CreateQueueResponse.php';
         return Amazon_SQS_Model_CreateQueueResponse::fromXML($this->_invoke($this->_convertCreateQueue($request)));
     }
 
@@ -123,10 +123,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function listQueues($request)
     {
         if (!$request instanceof Amazon_SQS_Model_ListQueuesRequest) {
-            require_once ('Amazon/SQS/Model/ListQueuesRequest.php');
+            require_once dirname(__FILE__).'/Model/ListQueuesRequest.php';
             $request = new Amazon_SQS_Model_ListQueuesRequest($request);
         }
-        require_once ('Amazon/SQS/Model/ListQueuesResponse.php');
+        require_once dirname(__FILE__).'/Model/ListQueuesResponse.php';
         return Amazon_SQS_Model_ListQueuesResponse::fromXML($this->_invoke($this->_convertListQueues($request)));
     }
 
@@ -147,10 +147,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function addPermission($request)
     {
         if (!$request instanceof Amazon_SQS_Model_AddPermissionRequest) {
-            require_once ('Amazon/SQS/Model/AddPermissionRequest.php');
+            require_once dirname(__FILE__).'/Model/AddPermissionRequest.php';
             $request = new Amazon_SQS_Model_AddPermissionRequest($request);
         }
-        require_once ('Amazon/SQS/Model/AddPermissionResponse.php');
+        require_once dirname(__FILE__).'/Model/AddPermissionResponse.php';
         return Amazon_SQS_Model_AddPermissionResponse::fromXML($this->_invoke($this->_convertAddPermission($request)));
     }
 
@@ -171,10 +171,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function changeMessageVisibility($request)
     {
         if (!$request instanceof Amazon_SQS_Model_ChangeMessageVisibilityRequest) {
-            require_once ('Amazon/SQS/Model/ChangeMessageVisibilityRequest.php');
+            require_once dirname(__FILE__).'/Model/ChangeMessageVisibilityRequest.php';
             $request = new Amazon_SQS_Model_ChangeMessageVisibilityRequest($request);
         }
-        require_once ('Amazon/SQS/Model/ChangeMessageVisibilityResponse.php');
+        require_once dirname(__FILE__).'/Model/ChangeMessageVisibilityResponse.php';
         return Amazon_SQS_Model_ChangeMessageVisibilityResponse::fromXML($this->_invoke($this->_convertChangeMessageVisibility($request)));
     }
 
@@ -195,10 +195,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function deleteMessage($request)
     {
         if (!$request instanceof Amazon_SQS_Model_DeleteMessageRequest) {
-            require_once ('Amazon/SQS/Model/DeleteMessageRequest.php');
+            require_once dirname(__FILE__) . '/Model/DeleteMessageRequest.php';
             $request = new Amazon_SQS_Model_DeleteMessageRequest($request);
         }
-        require_once ('Amazon/SQS/Model/DeleteMessageResponse.php');
+        require_once dirname(__FILE__) . '/Model/DeleteMessageResponse.php';
         return Amazon_SQS_Model_DeleteMessageResponse::fromXML($this->_invoke($this->_convertDeleteMessage($request)));
     }
 
@@ -219,10 +219,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function deleteQueue($request)
     {
         if (!$request instanceof Amazon_SQS_Model_DeleteQueueRequest) {
-            require_once ('Amazon/SQS/Model/DeleteQueueRequest.php');
+            require_once dirname(__FILE__).'/Model/DeleteQueueRequest.php';
             $request = new Amazon_SQS_Model_DeleteQueueRequest($request);
         }
-        require_once ('Amazon/SQS/Model/DeleteQueueResponse.php');
+        require_once dirname(__FILE__).'/Model/DeleteQueueResponse.php';
         return Amazon_SQS_Model_DeleteQueueResponse::fromXML($this->_invoke($this->_convertDeleteQueue($request)));
     }
 
@@ -243,10 +243,10 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
     public function getQueueAttributes($request)
     {
         if (!$request instanceof Amazon_SQS_Model_GetQueueAttributesRequest) {
-            require_once ('Amazon/SQS/Model/GetQueueAttributesRequest.php');
+            require_once dirname(__FILE__).'/Model/GetQueueAttributesRequest.php';
             $request = new Amazon_SQS_Model_GetQueueAttributesRequest($request);
         }
-        require_once ('Amazon/SQS/Model/GetQueueAttributesResponse.php');
+        require_once dirname(__FILE__).'/Model/GetQueueAttributesResponse.php';
         return Amazon_SQS_Model_GetQueueAttributesResponse::fromXML($this->_invoke($this->_convertGetQueueAttributes($request)));
     }
 
@@ -422,7 +422,7 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
                 $code = $errorMatcherOne[2];
                 $message = $errorMatcherOne[3];
 
-                require_once ('Amazon/SQS/Exception.php');
+                require_once dirname(__FILE__).'/Exception.php';
                 $ex = new Amazon_SQS_Exception(array ('Message' => $message, 'StatusCode' => $status, 'ErrorCode' => $code,
                                                            'ErrorType' => 'Unknown', 'RequestId' => $requestId, 'XML' => $responseBody));
 
@@ -432,7 +432,7 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
                 $code = $errorMatcherTwo[1];
                 $message = $errorMatcherTwo[2];
                 $requestId = $errorMatcherTwo[4];
-                require_once ('Amazon/SQS/Exception.php');
+                require_once dirname(__FILE__).'/Exception.php';
                 $ex = new Amazon_SQS_Exception(array ('Message' => $message, 'StatusCode' => $status, 'ErrorCode' => $code,
                                                               'ErrorType' => 'Unknown', 'RequestId' => $requestId, 'XML' => $responseBody));
             } elseif (preg_match('@<Error><Type>(.*)</Type><Code>(.*)</Code><Message>(.*)</Message>.*</Error>.*(<Error>)?.*<RequestId>(.*)</RequestId>@mi',
@@ -447,11 +447,11 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
                                                               'ErrorType' => $type, 'RequestId' => $requestId, 'XML' => $responseBody));
 
             } else {
-                require_once ('Amazon/SQS/Exception.php');
+                require_once dirname(__FILE__).'/Exception.php';
                 $ex = new Amazon_SQS_Exception(array('Message' => 'Internal Error', 'StatusCode' => $status));
             }
         } else {
-            require_once ('Amazon/SQS/Exception.php');
+            require_once dirname(__FILE__).'/Exception.php';
             $ex = new Amazon_SQS_Exception(array('Message' => 'Internal Error', 'StatusCode' => $status));
         }
         return $ex;
@@ -519,7 +519,7 @@ class Amazon_SQS_Client implements Amazon_SQS_Interface
             $delay = (int) (pow(4, $retries) * 100000) ;
             usleep($delay);
         } else {
-            require_once ('Amazon/SQS/Exception.php');
+            require_once dirname(__FILE__).'/Exception.php';
             throw new Amazon_SQS_Exception (array ('Message' => "Maximum number of retry attempts reached :  $retries", 'StatusCode' => $status));
         }
     }
