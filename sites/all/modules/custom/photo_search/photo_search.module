@@ -167,7 +167,7 @@ function select_event_runner_sell_photos($form, &$form_state) {
 
   $form['sellfield']['trade'] = array('#markup' => '<div id="trade">Trade</div>  <div id="taken_picture">pictures you have taken...</div>');
 
-  if ($user->roles['1'] != NULL) {
+  if (isset($user->roles['1'])) {
     $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => '');
   }
   else {
@@ -199,11 +199,13 @@ function select_event_runner_sell_photos_submit($form, &$form_state) {
 
   global $user;
   $uid = $user->uid;
-  $selected_event_id = $form['sellfield']['events_select_runner']['#value'];    
-  if ($user->roles['1'] != NULL) {
+ 
+  
+  if (isset($user->roles['1'])) {
     $form_state['redirect'] = "login";
   }
   else {
+    $selected_event_id = $form['sellfield']['events_select_runner']['#value'];  
     if ($selected_event_id != 'select_event') {
       $form_state['redirect'] = "photographer/" . $selected_event_id;
     }
