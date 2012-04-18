@@ -44,9 +44,23 @@ function s3_store_cron() {
       $url = str_replace("public://", "s3://", $photo_url->uri);
 
       $s3_store_object->update_url($photo_url->fid, $url);
-      // sending message to OCR for an uploaded image
-      if (module_exists('ocr') && function_exists('invokeSendMessage')) {
-        invokeSendMessage($photo_url->entity_id,$photo_url->filename);
+      //checking OCR status of the node
+      $ocr_status = $s3_store_object->getocr_status($photo_url->entity_id);
+      foreach($ocr_status as $ocr_response){
+        $response = $ocr_response->field_ocr_response_value;
+      }
+      //getting default value of ocr_response
+      $field = field_info_field('field_ocr_response_value');
+      $instance = field_info_instance('node','field_ocr_response_value', $bundle_name);
+      $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
+      if($response == "Pending" || $response == ""){
+        // sending message to OCR for an uploaded image
+        if (module_exists('ocr') && function_exists('send_message')) {
+          $sendmsg = send_message($photo_url->entity_id,$photo_url->filename);
+          if($sendmsg) {
+            watchdog('ocr info', 'Messages send to OCR after file upload');
+          }
+        }
       }
       file_unmanaged_delete($orig_file_path);
       file_unmanaged_delete($thumb_local_path);
