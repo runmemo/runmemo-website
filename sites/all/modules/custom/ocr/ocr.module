@@ -59,7 +59,7 @@ function send_message($nid=0, $fname="") {
   $requestqueue  = variable_get('ocr_requestqueue');
   $responsequeue = variable_get('ocr_responsequeue');
   //create message
-  $message_arr = array('ExternalReference' => $nid,
+   $message_arr = array('ExternalReference' => $nid,
                        'ImageKey' => $fname,
                        'ImageBucket' => $bucket,
                        'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
@@ -104,7 +104,6 @@ function send_message($nid=0, $fname="") {
           $receiveMessageResult = $response->getReceiveMessageResult();
           $messageList 		= $receiveMessageResult->getMessage();
            watchdog('OCR info', 'Got SQS Responses ');
-                 
           foreach ($messageList as $message) {
             $response_count += 1 ;
             if ($message->isSetMessageId()) {
@@ -113,8 +112,7 @@ function send_message($nid=0, $fname="") {
             if ($message->isSetBody()) {
               $responsebody = $message->getBody();
             }
-	    watchdog('OCR info', 'Got SQS Message'.$messageid);
-            if ($message->isSetReceiptHandle()) {
+	    if ($message->isSetReceiptHandle()) {
                $receipthandle = $message->getReceiptHandle();
             }
             
@@ -122,11 +120,10 @@ function send_message($nid=0, $fname="") {
                   if ($responsebody) {
                    
                     update_drupal_with_responce ($responsebody);
-                    
                   }
 	   }
             catch(Exception $e) {		
-              watchdog('ocr info', $e->getMessage());
+              watchdog('OCR response',$e->getMessage(),$variables = array(),$severity = WATCHDOG_WARNING ); 
             } 
             try {
               //deleting messages
@@ -137,11 +134,11 @@ function send_message($nid=0, $fname="") {
                watchdog('ocr info', 'Message deleted'.$receipthandle);
              }
              else{
-               watchdog('ocr info', 'Problem with deleting message');
+               watchdog('ocr info', 'Problem with deleting message'.$receipthandle);
               }
             }	
             catch(Exception $e) {
-               watchdog('ocr exception', $e->getMessage());
+             watchdog('OCR Exception',$e->getMessage(),$variables = array(),$severity = WATCHDOG_WARNING );
             }
           }	
         }  				
@@ -172,32 +169,55 @@ function send_message($nid=0, $fname="") {
 	$number[]    = $responsearr->Numbers;
 	$response_object = new ocr_model();
 	if ($success == true) {
-	  //inserting runner number 
+	  $check_node = $response_object->check_node($nid);
+         foreach($check_node as $nodeid){
+	   $node_exists = $nodeid->nid;
+	  }
+          if( $node_exists ) {
+           //inserting runner number
 	  if ($nid) {
+            //checking OCR status of the node
+            $ocr_status = $response_object->getocr_status($nid);
+            foreach($ocr_status as $ocr_response){
+              $ocr_responce = $ocr_response->field_ocr_response_value;
+            }
 	    $number_count = 1;
 	    if (!empty($responsearr->Numbers)) {
-		  foreach($responsearr->Numbers as $responsenumber){
+                foreach($responsearr->Numbers as $responsenumber){
 		    $revision   = $response_object->getnoderevision($nid); 
 			foreach($revision as $revision_id){
 			  $node_revid = $revision_id->vid;
 			}
 			if ($responsenumber->Number) {
-                          $check_node = $response_object->check_node($nid);
-                          $result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
-			  $status_object   = new ocr_model();	
+                          if($ocr_responce == "Pending" || $ocr_responce == ""){
+			  $result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
+			  $status_object   = new ocr_model();
+                          
+                          
 			  $insert_status   = $status_object->insert_ocr_status($nid,1);
-                          watchdog('ocr info', 'Insert status as Success');
+                          }
+                          else{
+                            watchdog('ocrinfo','Response received for already updated node');
+                          }
+                          
 		    }										
 			$number_count +=1;
 		  }
 		}
 		else {
-		  watchdog('ocr info', 'numbers were not found');
 		  $status_object   = new ocr_model();	
-                  $insert_status   = $status_object->insert_ocr_status($nid,0);
+                  if($ocr_responce == "Pending" || $ocr_responce == ""){
+		  $insert_status   = $status_object->insert_ocr_status($nid,0);
+                  watchdog('ocr error','Runner number not present in OCR response for node ' . $nid);
+                  }
 		}
 				
 	  }
+          }
+          else{
+                watchdog('ocrinfo','Response received for a  node that does not exists');
+              }
+          
 	}
      }
   }
@@ -239,11 +259,11 @@ function send_message($nid=0, $fname="") {
   * hook_cron()
   */
   function ocr_cron(){
-    $i = 0;
-	while (receive_message() && $i<=10)
+   
+	while (receive_message())
 	{ 
            watchdog('ocr info', 'Response received');
-	   $i++;
+	  
 	}
 
 	return true;

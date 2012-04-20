@@ -64,13 +64,12 @@ class ocr_model{
    return $result;
   
   }
-  public function check_node($nid) {
-    $result = db_select('node','n')
+  public function check_node($nid=0) {
+   $result = db_select('node','nid')
 		->condition('nid', $nid)
 		->fields('nid')
 		->execute();
    return $result;
   }
-  
  }
 ?>

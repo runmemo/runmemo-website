@@ -51,14 +51,14 @@ function s3_store_cron() {
       }
       //getting default value of ocr_response
       $field = field_info_field('field_ocr_response_value');
-      $instance = field_info_instance('node','field_ocr_response_value', $bundle_name);
-      $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
+      $instance = field_info_instance('node','field_ocr_response_value', 'product');
+	  $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
       if($response == "Pending" || $response == ""){
         // sending message to OCR for an uploaded image
         if (module_exists('ocr') && function_exists('send_message')) {
           $sendmsg = send_message($photo_url->entity_id,$photo_url->filename);
           if($sendmsg) {
-            watchdog('ocr info', 'Messages send to OCR after file upload'.$photo_url->entity_id);
+              watchdog('ocr info', 'Messages send to OCR after file upload for node ' . $photo_url->entity_id);
           }
         }
       }

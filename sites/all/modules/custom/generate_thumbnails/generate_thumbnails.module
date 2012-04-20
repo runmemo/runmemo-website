@@ -83,7 +83,7 @@ function generate_thumbnails_cron() {
         $filearr = explode('/', $url);
         $sourceimagename = array_pop($filearr);
         if (!file_exists(url($dest . '/' . $sourceimagename, array('absolute' => TRUE)))) {
-            $item = array('uri' => $row->uri, 'width' => $thumb['width'], 'height' => $thumb['height']);
+            $item = array('uri' => $row->uri, 'width' => $thumb['width'], 'height' => $thumb['height'], 'alt' => $row->filename, 'title' => $row->filename);
             $path = array($dest . '/' . $sourceimagename);
             $variables = array('item' => $item, 'image_style' => 'thumbnail', 'path' => $path);
             theme_image_formatter($variables);
@@ -106,7 +106,7 @@ function generate_thumbnails_cron() {
             break;
         }
         if (!file_exists(url($prev_dest . '/' . $sourceimagename, array('absolute' => TRUE)))) {
-            $item = array('uri' => $row->uri, 'width' => $prev_size['width'], 'height' => $prev_size['height']);
+            $item = array('uri' => $row->uri, 'width' => $prev_size['width'], 'height' => $prev_size['height'], 'alt' => $row->filename, 'title' => $row->filename);
             $path = array($prev_dest . '/' . $sourceimagename);
             $variables = array('item' => $item, 'image_style' => 'preview-with-watermark', 'path' => $path);
             theme_image_formatter($variables);
@@ -122,10 +122,10 @@ function generate_thumbnails_cron() {
 
         }
 
-        if ($thumb_status && $prev_status) {
+        //if ($thumb_status && $prev_status) {
           //Update the DB
-          $status = $generate_thumbnails_object->update_thumb_status($row->fid);
-        }
+          //$status = $generate_thumbnails_object->update_thumb_status($row->fid);
+        //}
 
       }
       else {

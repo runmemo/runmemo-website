@@ -9,7 +9,7 @@ class generate_thumbnails_model {
     * @param $fid
     *  $fid is file id of the photo
     *  By using this function we can set the status whether thumbnail is created 
-    */
+    
 
   public function update_thumb_status($fid) {
 
@@ -22,7 +22,7 @@ class generate_thumbnails_model {
 
 
   }
-
+  */
   /**
    * 
    *  Getting the thumbnail size as set in admin panel 

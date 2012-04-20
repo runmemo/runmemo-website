@@ -212,7 +212,7 @@ function product_pricing_validation($form, &$form_state) {
 
 function search_result_cart($form, &$form_state) {
   $form = array();
-  
+  $form['cart_hidden_ids']   = array('#type' => 'textfield', '#value' => '', '#id' => 'cart_hidden_ids', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $form['cart_hidden']   = array('#type' => 'textfield', '#value' => '', '#id' => 'cart_hidden', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $form['selected_product'] = array('#type' => 'textfield', '#title' => '', '#id' => 'selected_cart_products', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $url = url('cart/checkout');
