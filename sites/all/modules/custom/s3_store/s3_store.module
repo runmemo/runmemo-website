@@ -58,7 +58,7 @@ function s3_store_cron() {
         if (module_exists('ocr') && function_exists('send_message')) {
           $sendmsg = send_message($photo_url->entity_id,$photo_url->filename);
           if($sendmsg) {
-            watchdog('ocr info', 'Messages send to OCR after file upload');
+            watchdog('ocr info', 'Messages send to OCR after file upload'.$photo_url->entity_id);
           }
         }
       }

@@ -1211,7 +1211,7 @@ border-radius:0px;
     -webkit-border-radius:0px;
 	background:none!important;
 }
-.content ul.sf-menu li:hover div#main-arrow {
+.content ul.sf-menu li:hover div.main-arrow {
    background: url(../images/menu-arrow.png) no-repeat;
    width:14px;
    height:8px;
@@ -1223,7 +1223,7 @@ border-radius:0px;
    position:relative;
    z-index:999;
 }
-.content ul.sf-menu li:hover li#menu-450-1 div#main-arrow {
+.content ul.sf-menu li:hover li#menu-450-1 div.main-arrow {
 	display: none;
 }
 .sf-item-3 {
@@ -1937,7 +1937,7 @@ margin-top: 235px;
    height:469px;
 }
 
- #node_check_id,#node_cost,#authour_first_name{
+ .node_check_id,.node_cost,.authour_first_name{
 display:none!important;
 }
 .page-search-result .region-content .content table tr td{
@@ -2232,7 +2232,7 @@ ul#edit-file_filelist{
 }
 
 /* 13.03.2012 */
-.page-search-result #node_cost,.page-cart #node_cost {
+.page-search-result .node_cost,.page-cart .node_cost {
   background: url("../images/price-bg.png") no-repeat scroll left center transparent;
   color:#fff;
   font-size: 12px;

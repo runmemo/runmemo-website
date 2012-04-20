@@ -30,10 +30,10 @@ jQuery(document).ready(function(){
 
           $("#prev_img").html('<img src="'+initial_preview+'" />');
 
-          var initial_cost = $('#block-system-main table.views-view-grid tr.row-first td.col-first #node_cost').text();
+          var initial_cost = $('#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost').text();
           $(".page-search-result span#photo_cost label").text(initial_cost);
 
-          var initial_authour_name = $('#block-system-main table.views-view-grid tr.row-first td.col-first #authour_first_name').text();
+          var initial_authour_name = $('#block-system-main table.views-view-grid tr.row-first td.col-first .authour_first_name').text();
           $(".page-search-result span#photo_author label").text(initial_authour_name);
           //change the addtocart hidden value.
           var wrap_id = $("#block-system-main table.views-view-grid tr.row-first td.col-first img").parent().attr('id');
@@ -66,6 +66,7 @@ jQuery(document).ready(function(){
           $(".page-search-result #sidebar-second .content").hide();
         }
 
+       
 
         //onload ajax calling in the search result page
         if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) { 
@@ -91,10 +92,10 @@ jQuery(document).ready(function(){
                       var checked_products_nids = new Array();
                       checked_products_nids = checked_string_nids.split(",");
                         
-                      $('.page-search-result #block-system-main div.node_check input').each(function(){
+                      $('.page-search-result #block-system-main span.node_check input').each(function(){
                         var name_id = $(this).val();
                         if(jQuery.inArray(name_id, checked_products_nids) != -1) {
-                          $('.page-search-result #block-system-main div.node_check #'+name_id).attr('checked','checked') ;
+                          $('.page-search-result #block-system-main span.node_check #'+name_id).attr('checked','checked') ;
                           var label_class_name = $(this).parent('label').attr('class');
                           if(label_class_name != 'label_check c_on') {
                             $(this).parent('label').removeClass('label_check').addClass('label_check c_on');
@@ -107,7 +108,7 @@ jQuery(document).ready(function(){
         }
 
         
-        $('.page-search-result #block-system-main div.node_check').each(function(){
+        $('.page-search-result #block-system-main span.node_check').each(function(){
           
           var name_id = $(this).parent().children('span').text();
           $(this).html('<label class="label_check" for="'+name_id+'" id="check_'+name_id+'"><input type="checkbox" name="id_'+name_id+'" id="'+name_id+'" value="'+name_id+'" class="img_check"/></label>');
@@ -204,7 +205,7 @@ jQuery(document).ready(function(){
         //for add to cart functionality when check the checkbox in the search result page
         //store this nids in the array
         var checked_products_nids = new Array();
-        $('div .node_check input').click(function() {
+        $('span .node_check input').click(function() {
             var class_name = $(this).parent('label').attr('class');
             if(class_name == 'label_check c_on'){
               $(this).parent('label').removeClass('label_check c_on').addClass('label_check');
@@ -359,10 +360,10 @@ jQuery(document).ready(function(){
           $(this).attr('style','border: 1px solid green;');
 
           var imgsrc = $(this).attr('src');	
-          var price_txt = $(this).parents("td").find("span#node_cost").text();
+          var price_txt = $(this).parents("td").find("span.node_cost").text();
           $(".page-search-result span#photo_cost label").text(price_txt);
 
-          var node_author_txt = $(this).parents("td").find("span#authour_first_name").text();
+          var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
           $(".page-search-result span#photo_author label").text(node_author_txt);
 
           var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
@@ -395,23 +396,23 @@ jQuery(document).ready(function(){
 
         //mouseover cost bubble for search result page
         $(".page-search-result #block-system-main div.field-content img").mouseover(function() {  
-          var img_cost = $(this).parents("td").find("span#node_cost").html();
+          var img_cost = $(this).parents("td").find("span.node_cost").html();
           var img_cost_arr = img_cost.split('.');
           if(img_cost_arr['1'] == '00') {
-            $(this).parents("td").find("span#node_cost").html(img_cost_arr['0']);
+            $(this).parents("td").find("span.node_cost").html(img_cost_arr['0']);
           }
 
-          $(this).parents("td").find("span#node_cost").attr('style','display:block !important;');   
+          $(this).parents("td").find("span.node_cost").attr('style','display:block !important;');   
         }).mouseout(function(){
-        $(this).parents("td").find("span#node_cost").attr('style','display:none !important;');
+        $(this).parents("td").find("span.node_cost").attr('style','display:none !important;');
         });
         
         //mouseover cost bubble for review order page
         $(".page-cart-checkout-review .order-review-table .review-order-img img").mouseover(function() {
-          $(this).parent("td").find("span#node_cost").attr('style','display:block !important;');   
+          $(this).parent("td").find("span.node_cost").attr('style','display:block !important;');   
         }).mouseout(function(){
           
-          $(this).parent("td").find("span#node_cost").attr('style','display:none !important;');
+          $(this).parent("td").find("span.node_cost").attr('style','display:none !important;');
         });
 
         //change the first tr class name in the review order page 

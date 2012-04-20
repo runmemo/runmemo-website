@@ -113,7 +113,7 @@ function send_message($nid=0, $fname="") {
             if ($message->isSetBody()) {
               $responsebody = $message->getBody();
             }
-	    watchdog('OCR info', 'Got SQS Message');
+	    watchdog('OCR info', 'Got SQS Message'.$messageid);
             if ($message->isSetReceiptHandle()) {
                $receipthandle = $message->getReceiptHandle();
             }
@@ -134,7 +134,7 @@ function send_message($nid=0, $fname="") {
               $delete_request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/'.$responsequeue);
               $delete_request->setReceiptHandle($receipthandle);
               if($service->deleteMessage($delete_request)) {
-               watchdog('ocr info', 'Message deleted');
+               watchdog('ocr info', 'Message deleted'.$receipthandle);
              }
              else{
                watchdog('ocr info', 'Problem with deleting message');

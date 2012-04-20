@@ -229,7 +229,7 @@ function runmemo_preprocess_uc_cart_checkout_review(&$variables) {
   $j = 0;
   for($i=0;$i<$no_of_cart_items;$i++) {
     $j++;
-    $output .=  '<td>'. '<div class="views-field-sell-price"><span id="node_cost" style="display:none">£'. $price[$i] . '</span></div>'  .theme("image_formatter", array('item' => $photo[$i], 'image_style' => 'thumbnail'));
+    $output .=  '<td>'. '<div class="views-field-sell-price"><span class="node_cost" style="display:none">&euro;'. $price[$i] . '</span></div>'  .theme("image_formatter", array('item' => $photo[$i], 'image_style' => 'thumbnail'));
     $output .= '</td>';
       
     if($j%4 == 0) {

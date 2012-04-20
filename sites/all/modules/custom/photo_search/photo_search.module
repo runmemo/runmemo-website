@@ -100,7 +100,7 @@ function select_event_runner_get_photos($form, &$form_state) {
   //text field for get the runner number
   if (arg('0') == 'search-result') {
     $form['setfield']['my_number'] = array('#markup' => '<div id="my_number">My Number</div>');
-    $form['setfield']['runner_number'] = array('#type' => 'textfield', '#title' => 'Runner Number', '#size' => '20', '#id' => 'runner_number', '#placeholder' => t('My Number'), '#prefix' => "<div style='float:right' class= 'number_search'>", '#required' => 'true');
+    $form['setfield']['runner_number'] = array('#type' => 'textfield', '#title' => 'Runner Number', '#size' => '20', '#id' => 'runner_number', '#prefix' => "<div style='float:right' class= 'number_search'>", '#required' => 'true');
     if (arg('2') != '') {
       $form['setfield']['runner_number']['#default_value'] = arg('2');
     }
@@ -221,13 +221,12 @@ function select_event_runner_sell_photos_submit($form, &$form_state) {
  *   return rendered drupal form
  */
 function find_trade_section() {
-  
-  
+    
   $find_photos = drupal_render(drupal_get_form('select_event_runner_get_photos'));
 
   $trade_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
 
-  $style = "<span style='float:right'><div>$find_photos</div><div>$trade_photos </div></span>";
+  $style = "<div style='float:right'><div>$find_photos</div><div>$trade_photos </div></div>";
 
   return $style;
 }
