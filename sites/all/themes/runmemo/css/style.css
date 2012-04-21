@@ -1041,14 +1041,8 @@ width:250px!important;
 padding:8px!important;
 }
 
-.skin-default{
-background: url("../images/slider-bg.png") no-repeat scroll 0 0 !important;
-width:498px;
-height:500px;
-}
 .views-slideshow-cycle-main-frame{
 top:6px;
-left:12px;
 z-index: 0;
 }
 .views-slideshow-cycle-main-frame .img
