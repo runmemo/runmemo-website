@@ -18,15 +18,7 @@ Drupal.t("Double Quote " + "Concat " + "strings " + "t");
 
 
 Drupal.formatPlural(1, "Standard Call plural", "Standard Call @count plural");
-Drupal
-.
-formatPlural
-(
-1,
-"Whitespace Call plural",
-"Whitespace Call @count plural",
-)
-;
+Drupal.formatPlural(1,"Whitespace Call plural","Whitespace Call @count plural");
 
 Drupal.formatPlural(1, 'Single Quote plural', 'Single Quote @count plural');
 Drupal.formatPlural(1, 'Single Quote \'Escaped\' plural', 'Single Quote \'Escaped\' @count plural');

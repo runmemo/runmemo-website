@@ -28,6 +28,32 @@ function s3_store_cron() {
 
     if (file_exists($photo_url->uri)) {
       $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+      
+      
+      //checking OCR status of the node
+      $ocr_status = $s3_store_object->getocr_status($photo_url->entity_id);
+      foreach($ocr_status as $ocr_response){
+      	$response = $ocr_response->field_ocr_response_value;
+      }
+      //getting default value of ocr_response
+      $field = field_info_field('field_ocr_response_value');
+      $instance = field_info_instance('node','field_ocr_response_value', 'product');
+      $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
+      if($response == "Pending" || $response == ""){
+      	// sending message to OCR for an uploaded image
+      	if (module_exists('ocr') && function_exists('send_message')) {
+      		
+      		$requestqueue  = variable_get('ocr_requestqueue');
+      		$responsequeue = variable_get('ocr_responsequeue');
+      		
+      		$queue = new request_queue($requestqueue);
+      		$sendmsg = $queue->send_image($photo_url->entity_id, $photo_url->filename, $responsequeue);
+      		if($sendmsg) {
+      			watchdog('OCR info', 'Messages send to OCR after file upload for node ' . $photo_url->entity_id,array(), WATCHDOG_DEBUG);
+      		}
+      	}
+      }
+      
     }
 
 
@@ -44,24 +70,7 @@ function s3_store_cron() {
       $url = str_replace("public://", "s3://", $photo_url->uri);
 
       $s3_store_object->update_url($photo_url->fid, $url);
-      //checking OCR status of the node
-      $ocr_status = $s3_store_object->getocr_status($photo_url->entity_id);
-      foreach($ocr_status as $ocr_response){
-        $response = $ocr_response->field_ocr_response_value;
-      }
-      //getting default value of ocr_response
-      $field = field_info_field('field_ocr_response_value');
-      $instance = field_info_instance('node','field_ocr_response_value', 'product');
-	  $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
-      if($response == "Pending" || $response == ""){
-        // sending message to OCR for an uploaded image
-        if (module_exists('ocr') && function_exists('send_message')) {
-          $sendmsg = send_message($photo_url->entity_id,$photo_url->filename);
-          if($sendmsg) {
-              watchdog('ocr info', 'Messages send to OCR after file upload for node ' . $photo_url->entity_id);
-          }
-        }
-      }
+     
       file_unmanaged_delete($orig_file_path);
       file_unmanaged_delete($thumb_local_path);
       file_unmanaged_delete($prev_local_path);
