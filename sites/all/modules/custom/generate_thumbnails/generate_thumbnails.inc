@@ -55,7 +55,7 @@ class generate_thumbnails_model {
     $query->join('image_effects', 'ie', 'ist.isid = ie.isid');
 
     $query->condition('ie.name', 'image_scale');
-    $query->condition('ist.name', 'preview-with-watermark');
+    $query->condition('ist.name', 'search_preview');
     $query->addField('ie', 'data');
 
     $results = $query->execute()->fetchObject();

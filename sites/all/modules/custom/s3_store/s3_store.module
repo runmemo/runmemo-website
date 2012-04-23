@@ -19,23 +19,26 @@ function s3_store_cron() {
     $thumb_local_path = 'public://styles/thumbnail/public/' . $photo_url->filename;
     $thumb_desc_path = 'styles/thumbnail/s3/' . $photo_url->filename;
 
-    $preview_local_path = $path . '/styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_local_path = 'public://styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_desc_path = 'styles/preview-with-watermark/s3/' . $photo_url->filename;
+    $preview_local_path = $path . '/styles/search_preview/public/' . $photo_url->filename;
+    $prev_local_path = 'public://styles/search_preview/public/' . $photo_url->filename;
+    $prev_desc_path = 'styles/search_preview/s3/' . $photo_url->filename;
 
     //Pushing the files
     $orig_file_path = $photo_url->uri;
 
     if (file_exists($photo_url->uri)) {
+	watchdog('S3 info','trying to move original');
       $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
     }
 
 
     if (file_exists($thumbnail_local_path)) {
+	watchdog('S3 info','trying to move thumb');
       $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
     }
 
     if (file_exists($preview_local_path)) {
+	watchdog('S3 info','trying to move preview');
       $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
     }
 
