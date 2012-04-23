@@ -67,17 +67,3 @@ class generate_thumbnails_model {
 
 }
 
-function generate_thumbnails_cron_queue_info(){
-	$queues['generate_image_styles'] = array(
-			'worker callback' => '_generate_image_styles',
-			'time' => 30
-	);
-	return $queues;
-}
-
-function _generate_image_styles($data){
-	$derivative_uri = image_style_path($style['search_thumbnail'], $data->uri);
-	if (!file_exists($data->derivative_uri)) {
-		image_style_create_derivative($data->style, $data->uri, $data->derivative_uri);
-	}
-}
