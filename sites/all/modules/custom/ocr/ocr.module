@@ -94,11 +94,10 @@ function ocr_cron(){
 	do 
 	{	
 		$messages = $queue->getMessages(10);
+		watchdog('OCR Debug', 'Got messages from SQS: ' . count($messages), array(), WATCHDOG_DEBUG);
 		foreach ($messages as $message)
 		{
 			update_drupal_with_responce($message);
 		};
 	} while ($messages != null && count($messages)>0);
-
-	return true;
 }
