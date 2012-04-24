@@ -91,7 +91,7 @@ function generate_thumbnails_cron() {
 
             // set URL and other appropriate options
             curl_setopt($ch, CURLOPT_URL, url($dest . '/' . $sourceimagename, array('absolute' => TRUE)));
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10000);
+            //curl_setopt($ch, CURLOPT_TIMEOUT, 10000);
             curl_setopt($ch, CURLOPT_HEADER, 0);
 
             // grab URL and pass it to the browser
@@ -113,7 +113,7 @@ function generate_thumbnails_cron() {
             $ch = curl_init();
             // set URL and other appropriate options
             curl_setopt($ch, CURLOPT_URL, url($prev_dest . '/' . $sourceimagename, array('absolute' => TRUE)));
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10000);
+            //curl_setopt($ch, CURLOPT_TIMEOUT, 10000);
             curl_setopt($ch, CURLOPT_HEADER, 0);
             // grab URL and pass it to the browser
             curl_exec($ch);

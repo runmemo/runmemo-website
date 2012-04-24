@@ -27,18 +27,18 @@ function s3_store_cron() {
     $orig_file_path = $photo_url->uri;
 
     if (file_exists($photo_url->uri)) {
-	watchdog('S3 info','trying to move original');
+	watchdog('S3 info','trying to move original image for node ' .$photo_url->entity_id);
       $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
     }
 
 
     if (file_exists($thumbnail_local_path)) {
-	watchdog('S3 info','trying to move thumb');
+	watchdog('S3 info','trying to move thumb for node ' .$photo_url->entity_id);
       $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
     }
 
     if (file_exists($preview_local_path)) {
-	watchdog('S3 info','trying to move preview');
+	watchdog('S3 info','trying to move preview for node ' .$photo_url->entity_id);
       $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
     }
 
@@ -48,7 +48,8 @@ function s3_store_cron() {
 
       $s3_store_object->update_url($photo_url->fid, $url);
       //checking OCR status of the node
-      $ocr_status = $s3_store_object->getocr_status($photo_url->entity_id);
+	  $status_object   = new ocr_model();
+      $ocr_status = $status_object->getocr_status($photo_url->entity_id);
       foreach($ocr_status as $ocr_response){
         $response = $ocr_response->field_ocr_response_value;
       }

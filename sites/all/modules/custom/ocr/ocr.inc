@@ -44,15 +44,31 @@ class ocr_model{
    /**
    * insert response from OCR to ocr_response if response is success
    */
-   public function insert_ocr_status($entity_id=0,$success=0){
+   public function insert_response_status($entity_id=0,$success=0){
+    if($success == 1){
+      $status = "Runner number received";
+    }
+    else{
+     $status = "Runner number missing";
+    }
+    db_update('field_data_field_ocr_response')->fields(
+            array('field_ocr_response_value' =>$status,
+                  ))->condition('entity_id', $entity_id)
+                  ->execute();
+   }
+   /**
+   * insert response from OCR to ocr_status
+   */
+   public function insert_ocr_status($entity_id=0,$success = 0){
+   watchdog('OCR Status','status'.$success);
     if($success == 1){
       $status = "Success";
     }
     else{
      $status = "Failure";
     }
-    db_update('field_data_field_ocr_response')->fields(
-            array('field_ocr_response_value' =>$status,
+    db_update('field_data_field_ocr_status')->fields(
+            array('field_ocr_status_value' =>$status,
                   ))->condition('entity_id', $entity_id)
                   ->execute();
    }

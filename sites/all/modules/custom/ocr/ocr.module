@@ -30,6 +30,7 @@ function ocr_menu() {
     'page arguments' => array('select_ocrqueue'),
     'access arguments' => array('access administration pages'),
   );
+  
   return $items;
 }
 
@@ -161,13 +162,15 @@ function send_message($nid=0, $fname="") {
   function update_drupal_with_responce ($responsebody) {
     if($responsebody){
     $responsearr   = json_decode(trim($responsebody));
-     	$nid         = $responsearr->ExternalReference;
+     $nid         = $responsearr->ExternalReference;
 	$imagekey    = $responsearr->ImageKey;
 	$imagebucket = $responsearr->ImageBucket;
 	$success = $responsearr->Success;
 	$error       = $responsearr->ErrorMessage;
 	$number[]    = $responsearr->Numbers;
 	$response_object = new ocr_model();
+    $insert_ocrstatus   = $response_object->insert_ocr_status($nid,$success);
+	watchdog('OCR status','OCR status inserted as '.$success . 'for ' . $nid);
 	if ($success == true) {
 	  $check_node = $response_object->check_node($nid);
          foreach($check_node as $nodeid){
@@ -194,7 +197,7 @@ function send_message($nid=0, $fname="") {
 			  $status_object   = new ocr_model();
                           
                           
-			  $insert_status   = $status_object->insert_ocr_status($nid,1);
+			  $insert_status   = $status_object->insert_response_status($nid,1);
                           }
                           else{
                             watchdog('ocrinfo','Response received for already updated node');
@@ -207,7 +210,7 @@ function send_message($nid=0, $fname="") {
 		else {
 		  $status_object   = new ocr_model();	
                   if($ocr_responce == "Pending" || $ocr_responce == ""){
-		  $insert_status   = $status_object->insert_ocr_status($nid,0);
+				$insert_status   = $status_object->insert_response_status($nid,0);
                   watchdog('ocr error','Runner number not present in OCR response for node ' . $nid);
                   }
 		}
@@ -218,6 +221,10 @@ function send_message($nid=0, $fname="") {
                 watchdog('ocrinfo','Response received for a  node that does not exists');
               }
           
+	}
+	else{
+	   watchdog('Ocr Status','OCR response failed for node '.$nid);
+	  
 	}
      }
   }
@@ -259,54 +266,13 @@ function send_message($nid=0, $fname="") {
   * hook_cron()
   */
   function ocr_cron(){
-  require_once libraries_get_path('Amazon') . '/SQS/Model/GetQueueAttributesRequest.php';
-  // get service credentials
-    $service = amazonsqs_config();
-    //$request = new Amazon_SQS_Model_ReceiveMessageRequest();
-    $responsequeue = variable_get('ocr_responsequeue');
-    //setting response queue url
-    $queueurl = 'https://eu-west-1.queue.amazonaws.com/374933304004/'.$responsequeue;
-    $attributelist = array('method' => 'QUERY','Action' => 'GetQueueAttributes','AttributeName' => 'ApproximateNumberOfMessages','QueueUrl' => $queueurl,);
-    //retrieving number of messages in queue
-    $messagecount = getqueue_attributes($service,$attributelist);
-	watchdog('OCR message count' , $messagecount);
-    do{
-      $response = receive_message();
-    }
-    while($messagecount == 0);
+   
+	while (receive_message())
+	{ 
+           watchdog('ocr info', 'Response received');
+	  
+	}
     drupal_flush_all_caches();
 	return true;
   }
- /**
-  * 
-  * Gets one or all attributes of a queue. Queues currently have two attributes you can get: ApproximateNumberOfMessages and VisibilityTimeout.
-  *   
-  * @param Amazon_SQS_Interface $service instance of Amazon_SQS_Interface
-  * @param mixed $request Amazon_SQS_Model_GetQueueAttributes or array of parameters
-  */
-  function getqueue_attributes(Amazon_SQS_Interface $service, $request) {
-    $response = $service->getQueueAttributes($request);
-    if ($response->isSetGetQueueAttributesResult()) { 
-      $getQueueAttributesResult = $response->getGetQueueAttributesResult();
-      $attributeList = $getQueueAttributesResult->getAttribute();
-      foreach ($attributeList as $attribute) {
-        if ($attribute->isSetName()) {
-          $attributname =  $attribute->getName();
-        }
-        if ($attribute->isSetValue()) 
-        {
-          $attributevalue = $attribute->getValue();
-          if($attributname == "ApproximateNumberOfMessages" ) {
-            $message_count = $attributevalue;
-          }
-        }
-      }
-     } 
-     if ($response->isSetResponseMetadata()) { 
-       $responseMetadata = $response->getResponseMetadata();
-       if ($responseMetadata->isSetRequestId()){
-        $requestid = $responseMetadata->getRequestId();
-       }
-     } 
-    return $message_count;
-  }
+ 
