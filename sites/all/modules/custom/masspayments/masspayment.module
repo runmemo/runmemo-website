@@ -18,12 +18,7 @@ function masspayment_menu() {
     'page callback' => 'showlist_mp',
     'access arguments' => array('administer store'),
   );
-  $items['clearlist'] = array(
-    'title'           => 'Payment ',
-    'description'     => 'Clear Payment',
-    'page callback' => 'clr_payment',
-    'access arguments' => array('administer store'),
-  );
+ 
   
   return $items;
 }
@@ -366,14 +361,3 @@ function get_months($date1, $date2) {
    $months[] = date('F Y', $time2);
    return $months;
 } 
-function clr_payment() {
-
-$clr1 = db_query("TRUNCATE {masspayment_list}")
-          ->execute();
-$clr2 = db_query("TRUNCATE {masspayment_order}")
-          ->execute();
-$clr3 = db_query("TRUNCATE {masspayment_photographer}")
-          ->execute();
-    
-
-}
