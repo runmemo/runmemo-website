@@ -6,7 +6,6 @@
  */
 
 
-
 /**
  * Implements hook_menu().
  *
@@ -17,6 +16,12 @@ function masspayment_menu() {
     'title'           => 'Payment to photographer',
     'description'     => 'Payment to photographer on Monthly basis',
     'page callback' => 'showlist_mp',
+    'access arguments' => array('administer store'),
+  );
+  $items['clearlist'] = array(
+    'title'           => 'Payment ',
+    'description'     => 'Clear Payment',
+    'page callback' => 'clr_payment',
     'access arguments' => array('administer store'),
   );
   
@@ -113,11 +118,13 @@ function listmp_monthbasis() {
       else {
         $amount_paid_for_photographer = 0;
       }
+      
+      
       $total_amount = (($record->sum*$photographer_share)/100) - $amount_paid_for_photographer;
 
       $pending_amount = $total_amount;
 
-
+      
       $userlist_object = new masspayment_model();
       $userdetails[]  = $userlist_object->getuserdetails($user_id);
       if ($pending_amount != 0) {
@@ -163,7 +170,7 @@ function listmp_monthbasis() {
     // Set request-specific fields.
   $emailSubject =urlencode('example_email_subject');
   $receiverType = urlencode('EmailAddress');
-  $currency = urlencode('USD');	
+  $currency = urlencode(variable_get('uc_paypal_wpp_currency'));	
   // Add request-specific fields to the request string.
   $nvpStr="&EMAILSUBJECT=$emailSubject&RECEIVERTYPE=$receiverType&CURRENCYCODE=$currency";
   if (isset($receiverData1)) {
@@ -218,7 +225,7 @@ function listmp_monthbasis() {
   
   if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
     $status = 1;
-	drupal_set_message('Success'); 
+    drupal_set_message('Masspayment Successfully Completed'); 
   } 
   else  {
     $status = 0;
@@ -257,7 +264,7 @@ function listmp_monthbasis() {
             $masspayment_object->masspayment_order($order_product_arr);
             
 	  }
-	 
+	
   }
 	
  }
@@ -279,12 +286,13 @@ function PPHttpPost($methodName_, $nvpStr_) {
   $API_UserName = urlencode(variable_get('uc_paypal_api_username'));
   $API_Password = urlencode(variable_get('uc_paypal_api_password'));
   $API_Signature = urlencode(variable_get('uc_paypal_api_signature'));
-  $API_Endpoint = "https://api-3t.sandbox.paypal.com/nvp";
+  //$API_Endpoint = "https://api-3t.paypal.com/nvp";
   //if ("sandbox" === $environment || "beta-sandbox" === $environment) {
-         // $API_Endpoint = "https://api-3t.sandbox.paypal.com/nvp";
- // }
+          //$API_Endpoint = "https://api-3t.".$environment.".paypal.com/nvp";
+  //}
 
-  //$API_Endpoint = $environment;
+  $API_Endpoint = $environment;
+
 
 
   $version = urlencode('51.0');
@@ -358,3 +366,14 @@ function get_months($date1, $date2) {
    $months[] = date('F Y', $time2);
    return $months;
 } 
+function clr_payment() {
+
+$clr1 = db_query("TRUNCATE {masspayment_list}")
+          ->execute();
+$clr2 = db_query("TRUNCATE {masspayment_order}")
+          ->execute();
+$clr3 = db_query("TRUNCATE {masspayment_photographer}")
+          ->execute();
+    
+
+}

@@ -13,20 +13,21 @@ class masspayment_model{
 		AND uo.order_status = 'completed'
 		JOIN node ON node.nid = ucp.nid
 		
-		WHERE  DATE_FORMAT( DATE( FROM_UNIXTIME( uo.modified ) ) , '%M' ) = DATE_FORMAT( now( ) , '%M' )
+		WHERE  DATE_FORMAT( DATE( FROM_UNIXTIME( uo.modified ) ) , '%M %Y' ) = DATE_FORMAT( now( ) , '%M %Y' )
 		GROUP BY node.uid ";
           $mp_listquery = db_query($query);
           }
           else {
+            $month_year = date('F Y', $searching_month_year);
             $query = "SELECT GROUP_CONCAT( ucp.order_product_id ) AS order_product_ids, COUNT( ucp.order_id ) AS no_of_images_sold, SUM( ucp.price ) AS sum, node.uid AS uid
 		FROM uc_order_products ucp
 		JOIN uc_orders uo ON uo.order_id = ucp.order_id
 		AND uo.order_status = 'completed'
 		JOIN node ON node.nid = ucp.nid
 		
-		WHERE  DATE_FORMAT( DATE( FROM_UNIXTIME( uo.modified ) ) , '%M' ) = DATE_FORMAT( FROM_UNIXTIME(:searching_time) , '%M' )
+		WHERE  DATE_FORMAT( DATE( FROM_UNIXTIME( uo.modified ) ) , '%M %Y' ) = :searching_time
 		GROUP BY node.uid ";
-            $mp_listquery = db_query($query, array(':searching_time' => $searching_month_year));
+            $mp_listquery = db_query($query, array(':searching_time' => $month_year));
           }
     	
           
