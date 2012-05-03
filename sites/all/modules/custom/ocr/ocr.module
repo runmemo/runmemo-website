@@ -155,7 +155,7 @@ function send_message($nid=0, $fname="") {
       }
 	}
 	while($response == NULL);			
-    if ($messagecount > 0 ) { 
+    if ($response_count > 0 ) { 
       return true;
     }
     else {
@@ -306,12 +306,13 @@ function send_message($nid=0, $fname="") {
   * hook_cron()
   */
   function ocr_cron(){
-   
+    watchdog('ocr Entrance', 'Entering cron');
 	while (receive_message())
 	{ 
            watchdog('ocr info', 'Response received');
 	  
 	}
+	watchdog('OCR exiting','Exiting cron');
     drupal_flush_all_caches();
 	return true;
   }
