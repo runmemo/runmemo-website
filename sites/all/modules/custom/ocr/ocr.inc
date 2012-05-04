@@ -72,6 +72,9 @@ class ocr_model{
                   ))->condition('entity_id', $entity_id)
                   ->execute();
    }
+   /**
+   * get ocr status
+   */
    public function getocr_status($nid =0){
    $result = db_select('field_data_field_ocr_response','field_ocr_response_value')
 		->condition('entity_id', $nid)
@@ -80,12 +83,39 @@ class ocr_model{
    return $result;
   
   }
+  /*
+  * check if such a node exists
+  */
   public function check_node($nid=0) {
    $result = db_select('node','nid')
 		->condition('nid', $nid)
 		->fields('nid')
 		->execute();
    return $result;
+  }
+  /*
+  * get images for which ocr status is pending
+  */
+  public function get_pendingphotos(){
+ 
+    $query = db_select('file_managed', 'fm');
+    $query->join('file_usage', 'fu', 'fm.fid = fu.fid');
+    $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
+	$query->join('field_data_field_ocr_response', 'ocr', 'fs.entity_id = ocr.entity_id');
+	$query->condition('fs.field_s3_status_value', 1);
+    $query->condition('ocr.field_ocr_response_value', 'Pending');
+    $query->condition('fm.filename', '', '<>');
+    $query->addField('fm', 'fid');
+    $query->addField('fm', 'filename');
+    $query->addField('fm', 'uri');
+    $query->addField('fm', 'uid');
+    $query->addField('fs', 'entity_id');
+	$query->addField('ocr', 'field_ocr_response_value');
+    $query->orderBy('fm.timestamp', 'DESC');
+    $query->range(0, 30);
+    $results = $query->execute();
+    return $results;
+  
   }
  }
 ?>

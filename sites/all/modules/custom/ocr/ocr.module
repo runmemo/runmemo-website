@@ -51,7 +51,7 @@ function amazonsqs_config() {
 * @param nid nodeid of uploaded image
 * @param fname name of uploaded image
 */
-function send_message($nid=0, $fname="") { 
+function send_message($messages = array()) { 
   require_once libraries_get_path('Amazon') . '/SQS/Model/SendMessageRequest.php';
   // get service credentials
   $service = amazonsqs_config();
@@ -60,17 +60,18 @@ function send_message($nid=0, $fname="") {
   $requestqueue  = variable_get('ocr_requestqueue');
   $responsequeue = variable_get('ocr_responsequeue');
   //create message
-  
-   $message_arr = array('ExternalReference' => $nid,
+  foreach($messages as $nid => $fname){
+    $message_arr = array('ExternalReference' => $nid,
                        'ImageKey' => $fname,
                        'ImageBucket' => $bucket,
                        'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
-  );  
-  $message = json_encode($message_arr);									
-  //setting message queue url
-  $request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/' . $requestqueue);
-  $request->setMessageBody($message);
-  $response = $service->sendMessage($request);
+    );  
+   $message = json_encode($message_arr);									
+   //setting message queue url
+   $request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/' . $requestqueue);
+   $request->setMessageBody($message);
+   $response = $service->sendMessage($request);
+  }
  
   return 1;
   
@@ -199,16 +200,14 @@ function send_message($nid=0, $fname="") {
 			  $node_revid = $revision_id->vid;
 			}
 			if ($responsenumber->Number) {
-                          if($ocr_responce == "Pending" || $ocr_responce == ""){
-			  $result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
-			  $status_object   = new ocr_model();
-                          
-                          
-			  $insert_status   = $status_object->insert_response_status($nid,1);
-                          }
-                          else{
-                            watchdog('ocrinfo','Response received for already updated node');
-                          }
+              if($ocr_responce == "Pending" || $ocr_responce == ""){
+			    $result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
+			    $status_object   = new ocr_model();  
+			    $insert_status   = $status_object->insert_response_status($nid,1);
+              }
+			  else{
+                watchdog('ocrinfo','Response received for already updated node');
+              }
                           
 		    }										
 			$number_count +=1;
@@ -306,14 +305,22 @@ function send_message($nid=0, $fname="") {
   * hook_cron()
   */
   function ocr_cron(){
-    watchdog('ocr Entrance', 'Entering cron');
-	while (receive_message())
-	{ 
-           watchdog('ocr info', 'Response received');
-	  
+    while (receive_message()){ 
+      watchdog('ocr info', 'Response received');
 	}
-	watchdog('OCR exiting','Exiting cron');
-    drupal_flush_all_caches();
+	drupal_flush_all_caches();
+	//sending message to sqs for files moved to s3 and ocr status not updated
+	$ocr_message = new ocr_model();
+    $images      = $ocr_message->get_pendingphotos();
+    $message = array();
+    $image_count = 0;
+    foreach ($images as $image) {
+	
+      $message[$image->entity_id] = $image->filename;
+	  $image_count++;
+    }
+   
+   $result = send_message($message);
 	return true;
   }
  
