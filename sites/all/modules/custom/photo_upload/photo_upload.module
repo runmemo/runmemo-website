@@ -25,11 +25,11 @@ function photo_upload_menu() {
                       'access arguments' => array('access_photographer'),
                       'type' => MENU_CALLBACK,
                       );
-  $items['admin/store/settings/runmemo-share'] = array(
-      'title' => 'Managing share for runmemo',
-      'description' => 'Managing share for runmemo',
+  $items['admin/photographer/share'] = array(
+      'title' => 'Managing share for Photographers',
+      'description' => 'Managing share for Photographers ',
       'page callback' => 'drupal_get_form',
-      'page arguments' => array('runmemo_share'),
+      'page arguments' => array('photograher_share'),
       'access arguments' => array('administer store'),
 
       );
@@ -146,71 +146,6 @@ function photographer_upload_photos() {
   return $select_event . $style;
 }
 
-
-
-
-/**
- * Implements photo node create().
- * @param $file object
- * @param $event id
- */
-
-function create_photo_node($file, $event) {
-  global $user;
-  $uid = $user->uid;
-  $selected_event = $event;
-  $price = node_load($selected_event)->field_pricing['und']['0']['value'];
-  // We create a new node object  
-  $node = new stdClass(); 
-  // content type
-  $node->type = "product";         
-  //node title
-  $node->title = $file['name'];
-  //set language
-  $node->language = 'und'; 
-  //user id
-  $node->uid = $uid; 
-  node_object_prepare($node); 
-  // Let's add standard body field
-  $node->body[$node->language][0]['value'] = 'This is a body text';
-  $node->body[$node->language][0]['summary'] = 'Here goes a summary';
-  $node->body[$node->language][0]['format'] = 'filtered_html'; 
-  //////////Change file extension////////////////////////
-  $file_path = drupal_realpath('temporary://');
-  $temp_name = $file['tmpname'];
-  $temp_path = $file_path . '/' . $temp_name;
-  chmod($temp_path, '777');
-  $original_name = $file_path . '/' . $file['name'];
-  rename($temp_path, $original_name);
-  $file_obj = (object) array(
-          'uid' => $uid,
-          'uri' => $original_name,
-          'filemime' => file_get_mimetype($original_name),
-          'status' => 1,
-          'filename' => $file['name'],
-          'alt' => 'runner-photo',
-  );
-  //file moves from temp to public folder
-  $file_obj = file_move($file_obj, 'public://', FILE_EXISTS_RENAME); 
-  $node->uc_product_image['und'][0] = (array)$file_obj; //associate the file object with the image field:
-
-    if (($selected_event == '')) {
-      $node->field_event_reference['und']['0']['nid'] = arg(1);
-  }
-  else{
-      $node->field_event_reference['und']['0']['nid'] = $selected_event;
-  }
-  if ($price != '') {
-    $node->sell_price = $price; 
-  }                 
-  $node = node_submit($node); // Prepare node for a submit
-
-  node_save($node); // After this call we'll get a nid
-
-  return $node;
-        
-}
-
 /**
  * Menu alter function for plupload_handle_uploads
  * @param $items
@@ -297,6 +232,7 @@ function custom_plupload_handle_uploads() {
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
           $file['tmpname'] = $file_name;
+          watchdog('Upload debug', 'Creating photo node', array(), WATCHDOG_DEBUG);
           $node = create_photo_node($file, $event);
         }
         elseif (isset($_REQUEST["name"]) && !isset($_REQUEST["chunks"])) {
@@ -347,35 +283,101 @@ function custom_plupload_handle_uploads() {
 /**
 * For Managing share of price for photographers
 */
-function runmemo_share() {
-$form['share']  = array('#type' => 'textfield', '#title' => 'Runmemo Share', '#size' => '20', '#required' => 'true', '#default_value' => variable_get('runmemo_share'), '#prefix' => '<div class="pshare">', '#suffix' => '<span class="sharePer"></span></div>', '#description' => 'Share of runmemo', );
+function photograher_share() {
+$form['share']  = array('#type' => 'textfield', '#title' => 'Runmemo Share', '#size' => '20', '#required' => 'true', '#default_value' => variable_get('photographer_share'), '#prefix' => '<div class="pshare">', '#suffix' => '<span class="sharePer"></span></div>', '#description' => 'Share of runmemo', );
 
 $form['submit']  = array('#type' => 'submit', '#title' => 'Submit', '#value' => 'Submit');
 return $form;
 }
 
 /**
-* Form validation for numeric values runmemo_share()
+* Form validation for numeric values photograher_share()
 */
-function runmemo_share_validate($form, &$form_state) {
+function photograher_share_validate($form, &$form_state) {
 
   $share = $form_state['values']['share'];
 
-  if (!is_numeric($share) || $share <= 0 || $share > 100) {
+  if (!is_numeric($share) || $share < 0 || $share > 100) {
 
-    form_set_error('share', t('Enter a valid runmemo share'));
+    form_set_error('share', t('Enter a Numeric Value'));
   }
 }
 
 /**
-* Form submission runmemo_share()
+* Form submission photograher_share()
 */
-function runmemo_share_submit($form, &$form_state) {
-  drupal_set_message(t('Runmemo Share set'));
+function photograher_share_submit($form, &$form_state) {
+  drupal_set_message(t('Photographer Share set'));
   $share = $form_state['values']['share'];
-  variable_set('runmemo_share', $share);
+  variable_set('photographer_share', $share);
 }
 
 
 
+/**
+ * Implements photo node create().
+ * @param $file object
+ * @param $event id
+ */
+
+function create_photo_node($file, $event) {
+	global $user;
+	$uid = $user->uid;
+	$selected_event = $event;
+	$price = node_load($selected_event)->field_pricing['und']['0']['value'];
+	// We create a new node object
+	$node = new stdClass();
+	// content type
+	$node->type = "product";
+	//node title
+	$node->title = $file['name'];
+	//set language
+	$node->language = 'und';
+	//user id
+	$node->uid = $uid;
+	node_object_prepare($node);
+	// Let's add standard body field
+	$node->body[$node->language][0]['value'] = 'This is a body text';
+	$node->body[$node->language][0]['summary'] = 'Here goes a summary';
+	$node->body[$node->language][0]['format'] = 'filtered_html';
+	//////////Change file extension////////////////////////
+	$file_path = drupal_realpath('temporary://');
+	$temp_name = $file['tmpname'];
+	$temp_path = $file_path . '/' . $temp_name;
+	chmod($temp_path, '777');
+	$original_name = $file_path . '/' . $file['name'];
+	rename($temp_path, $original_name);
+	$file_obj = (object) array(
+			'uid' => $uid,
+			'uri' => $original_name,
+			'filemime' => file_get_mimetype($original_name),
+			'status' => 1,
+			'filename' => $file['name'],
+			'alt' => $file['name'],
+
+	);
+	//file moves from temp to public folder
+	//$file_obj = file_move($file_obj, 's3://', FILE_EXISTS_RENAME);
+	$file_obj = file_move($file_obj, 'public://', FILE_EXISTS_RENAME);
+	$node->uc_product_image['und'][0] = (array)$file_obj; //associate the file object with the image field:
+
+	if (($selected_event == '')) {
+		$node->field_event_reference['und']['0']['nid'] = arg(1);
+	}
+	else{
+		$node->field_event_reference['und']['0']['nid'] = $selected_event;
+	}
+	if ($price != '') {
+		$node->sell_price = $price;
+	}
+	$node = node_submit($node); // Prepare node for a submit
+
+	node_save($node); // After this call we'll get a nid
+	$file_obj->nid = $node->nid;
+	$queue = DrupalQueue::get('generate_image_styles');
+	$queue->createItem($file_obj);
+	watchdog('Queue Item','Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+	return $node;
+
+}
 

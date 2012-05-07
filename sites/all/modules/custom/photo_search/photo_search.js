@@ -21,12 +21,13 @@ jQuery(document).ready(function(){
           }
 
         });
+        
         if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) { 
           var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');
           //for highlight the thumbnail image related to the preview image
           $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('style','border: 1px solid green;');
 
-          var initial_preview = initial_img.replace('thumbnail', 'search_preview');
+          var initial_preview = initial_img.replace('thumbnail', 'preview-with-watermark');
 
           $("#prev_img").html('<img src="'+initial_preview+'" />');
 
@@ -35,7 +36,31 @@ jQuery(document).ready(function(){
 
           var initial_authour_name = $('#block-system-main table.views-view-grid tr.row-first td.col-first .authour_first_name').text();
           $(".page-search-result span#photo_author label").text(initial_authour_name);
-          
+          //change the addtocart hidden value.
+          var wrap_id = $("#block-system-main table.views-view-grid tr.row-first td.col-first img").parent().attr('id');
+          var exploded = wrap_id.split('thumb-');
+          var new_id =  exploded[1];
+          $("#cart_hidden").val(new_id) ; 
+
+          // Add/remove functionality based on the cart contents
+          var cart_contents = new Array();
+          var cart_str = $('.view-footer #cart_hidden_nids input').val();
+
+          //var temp = new Array();
+          cart_contents = cart_str.split(",");
+
+          if(jQuery.inArray(new_id, cart_contents) == -1) {
+          $('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
+                  $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
+
+
+          }
+          else{
+
+              $('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
+              $('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
+
+          }
         }
 
         else {
@@ -58,45 +83,19 @@ jQuery(document).ready(function(){
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
-                        $('#cart_hidden_ids').val(checked_string_nids);
+                        $('.view-footer #cart_hidden_nids input').val(checked_string_nids);
                       }
                       else {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
                       }
                       
-                      //change the addtocart hidden value.
-                      var wrap_id = $("#block-system-main table.views-view-grid tr.row-first td.col-first img").parent().attr('id');
-                      var exploded = wrap_id.split('thumb-');
-                      var new_id =  exploded[1];
-                      $("#cart_hidden").val(new_id) ; 
-
-                      // Add/remove functionality based on the cart contents
-                      var cart_contents = new Array();
-                      var cart_str = $('#cart_hidden_ids').val();
-                      //var temp = new Array();
-                      cart_contents = cart_str.split(",");
-
-                      if(jQuery.inArray(new_id, cart_contents) == -1) {
-                        $('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
-                        $('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
-                      }
-                      else{
-
-                          $('.page-search-result #search-result-cart .form-submit').removeClass('add_cart');
-                          $('.page-search-result #search-result-cart .form-submit').addClass('remove_cart');
-
-                      }
-                      
-                      
-                      
-                      
                       var checked_products_nids = new Array();
                       checked_products_nids = checked_string_nids.split(",");
                         
-                      $('.page-search-result #block-system-main span.node_check input').each(function(){
+                      $('.page-search-result #block-system-main div.node_check input').each(function(){
                         var name_id = $(this).val();
                         if(jQuery.inArray(name_id, checked_products_nids) != -1) {
-                          $('.page-search-result #block-system-main span.node_check #'+name_id).attr('checked','checked') ;
+                          $('.page-search-result #block-system-main div.node_check #'+name_id).attr('checked','checked') ;
                           var label_class_name = $(this).parent('label').attr('class');
                           if(label_class_name != 'label_check c_on') {
                             $(this).parent('label').removeClass('label_check').addClass('label_check c_on');
@@ -109,7 +108,7 @@ jQuery(document).ready(function(){
         }
 
         
-        $('.page-search-result #block-system-main span.node_check').each(function(){
+        $('.page-search-result #block-system-main div.node_check').each(function(){
           
           var name_id = $(this).parent().children('span').text();
           $(this).html('<label class="label_check" for="'+name_id+'" id="check_'+name_id+'"><input type="checkbox" name="id_'+name_id+'" id="'+name_id+'" value="'+name_id+'" class="img_check"/></label>');
@@ -206,7 +205,7 @@ jQuery(document).ready(function(){
         //for add to cart functionality when check the checkbox in the search result page
         //store this nids in the array
         var checked_products_nids = new Array();
-        $('span .node_check input').click(function() {
+        $('div .node_check input').click(function() {
             var class_name = $(this).parent('label').attr('class');
             if(class_name == 'label_check c_on'){
               $(this).parent('label').removeClass('label_check c_on').addClass('label_check');
@@ -275,7 +274,7 @@ jQuery(document).ready(function(){
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
-                        $('#cart_hidden_ids').val(checked_products_nids);
+                        $('.view-footer #cart_hidden_nids input').val(checked_products_nids);
                       }
                       else {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
@@ -300,7 +299,7 @@ jQuery(document).ready(function(){
                       $(".summary_cost .placeholder").html(total_cost);
                       if(no_of_items != 0) {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:block');
-                        $('#cart_hidden_ids').val(checked_products_nids);
+                        $('.view-footer #cart_hidden_nids input').val(checked_products_nids);
                       }
                       else {
                         $('.page-search-result .content #search-result-cart .proceed_to_cart a').attr('style','display:none');
@@ -367,7 +366,7 @@ jQuery(document).ready(function(){
           var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
           $(".page-search-result span#photo_author label").text(node_author_txt);
 
-          var replacementurl = imgsrc.replace('thumbnail', 'search_preview');
+          var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
 
           $("#prev_img").html('<img src="'+replacementurl+'" />');
 
@@ -379,7 +378,7 @@ jQuery(document).ready(function(){
 
           // Add/remove functionality based on the cart contents
           var cart_contents = new Array();
-          var cart_str = $('#cart_hidden_ids').val();
+          var cart_str = $('.view-footer #cart_hidden_nids input').val();
 
           //var temp = new Array();
           if($('#'+new_id).attr('checked') == true){

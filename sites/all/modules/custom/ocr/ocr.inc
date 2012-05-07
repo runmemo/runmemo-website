@@ -112,7 +112,6 @@ class ocr_model{
     $query->addField('fs', 'entity_id');
 	$query->addField('ocr', 'field_ocr_response_value');
     $query->orderBy('fm.timestamp', 'DESC');
-    $query->range(0, 30);
     $results = $query->execute();
     return $results;
   
