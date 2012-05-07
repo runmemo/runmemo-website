@@ -183,7 +183,7 @@ function runmemo_theme($existing, $type, $theme, $path) {
 function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
  
   $form_build_id = $variables['form']['form_build_id'];
-  //$form_token  =  $variables['form']['form_token'] ;
+  $form_token  =  $variables['form']['form_token'] ;
   $form_id = $variables['form']['form_id'];
   $variables['form_build_id'] = drupal_render($form_build_id);
   $variables['form_token'] = drupal_render($form_token);
