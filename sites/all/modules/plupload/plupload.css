@@ -64,7 +64,7 @@
   float:left;
   width:937px;
   position:relative;
-  top:-7px;
+  top:-24px;
 }
 .plupload_filelist li {
   /*background:#F5F5F5 url('images/backgrounds.gif') repeat-x 0 -156px;*/
@@ -92,7 +92,7 @@
   line-height:20px;
   vertical-align:middle;
   position:relative; 
-  top:-7px;
+  top:-22px;
   left:5px;
   background:none!important;
   color:#90B5D1;
@@ -106,7 +106,7 @@
 }
 .plupload_content {
    position:relative;
-   top:241px;
+   top:289px;
 }
 .plupload_content1 {
    position:relative;
@@ -164,7 +164,7 @@
 }
 
   li.plupload_done {
-  color:#000000;
+  color:#AAA;
 }
 
   li.plupload_delete a {
@@ -218,9 +218,10 @@ li.plupload_droptext {
   text-align:center;
   vertical-align:middle;
   border:0;
-  line-height:178px;
+ line-height:20px; 
   list-style-type:none;
-  list-style:none;
+ padding-top: 85px;
+ list-style: none;
 }
 
 .page-photographer .plupload {
@@ -265,12 +266,15 @@ font-family:'Walkway Bold',sans-serif;
   z-index:1;
 }
 .page-photographer .plupload_filelist1 {
-  height:190px;
+  height:200px;
   overflow:hidden;
   background:none;
   border:1px dashed #333;
   float:left;
   width:937px;
   position:relative;
-  top:-100px;
+  top:-97px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
 }
