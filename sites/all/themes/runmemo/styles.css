@@ -6,7 +6,7 @@ body {
   margin: 0;
   padding: 0;
   background: #edf5fa;
-  font: 76%/170% Verdana, sans-serif;
+  font: 76%/170% Arial, sans-serif;
   color: #494949;
 }
 
@@ -350,7 +350,7 @@ span.form-required {
  */
 .region-header {
   min-height: 1em;
-  background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;
+ /* background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;*/
 }
 
 .region-header .block {
@@ -941,8 +941,9 @@ tr.even td.menu-disabled {
 fieldset {
   margin: 1em 0;
   padding: 1em;
-  border: 1px solid #d9eaf5;
-  background: #fff url(images/gradient-inner.png) repeat-x 0 0;
+ /* border: 1px solid #d9eaf5;*/
+   border:none;
+  /*background: #fff url(images/gradient-inner.png) repeat-x 0 0;*/
 }
 
 /* Targets IE 7. Fixes background image in field sets. */
