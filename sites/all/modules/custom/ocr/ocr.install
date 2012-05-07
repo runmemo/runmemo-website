@@ -5,9 +5,14 @@
  * Install and uninstall functions for the ocr module.
  */
 
+function ocr_install()
+{
+	variable_set('ocr_responsequeue', $conf['ocr-results-queue']);
+	variable_set('ocr_requestqueue' , $conf['ocr-requests-queue']);
+}
 /**
  * Implements hook_schema().
- */
+
 function ocr_schema() {
   $schema['ocr_response'] = array(
     'description' => 'Stores response from OCR passed through amazon sqs .',
@@ -58,3 +63,4 @@ function ocr_schema() {
   );
 return $schema;
  }
+  */

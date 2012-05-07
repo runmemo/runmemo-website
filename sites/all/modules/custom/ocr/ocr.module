@@ -4,6 +4,7 @@
  * @file
  * Module file for OCR Integration
  */
+
 require_once libraries_get_path('Amazon') . '/SQS/Client.php';
 /**
  * Implements hook_menu().
@@ -35,7 +36,7 @@ function ocr_menu() {
 
 /**
  *Configuration settings for amazon
- */
+
 function amazonsqs_service() {
 
 	$aws_access_key = variable_get('aws_access_key', '');
@@ -43,7 +44,7 @@ function amazonsqs_service() {
 	$service = new Amazon_SQS_Client($aws_access_key, $aws_secret_key);
 	return $service;
 }
-
+ */
 
 /*
  * Retrieves one or more messages from the specified queue.  For each message returned, the response includes the message body; MD5 digest of the message body; receipt handle, which is the identifier you must provide when deleting the message; and message ID of each message. Messages returned by this action stay in the queue until you delete them. However, once a message is returned to a ReceiveMessage request, it is not returned on subsequent ReceiveMessage requests for the duration of the VisibilityTimeout. If you do not specify a VisibilityTimeout in the request, the overall visibility timeout for the queue is used for the returned messages.
@@ -59,13 +60,13 @@ function select_ocrqueue(){
 			'#title'=>'Maessage Request Queue',
 			'#size'=>'20',
 			'#required' => 'true',
-			'#default_value' => variable_get('ocr_requestqueue'),
+			'#default_value' => variable_get('ocr-requests-queue', '')
 	);
 	$form['responsequeue']  = array('#type'=>'textfield',
 			'#title'=>'Maessage Response Queue',
 			'#size'=>'20',
 			'#required' => 'true',
-			'#default_value' => variable_get('ocr_responsequeue'),
+			'#default_value' => variable_get('ocr-results-queue', '')
 	);
 
 	$form['submit']        = array('#type'=>'submit',
@@ -77,7 +78,7 @@ function select_ocrqueue(){
 }
 /**
  * Submit function for  select_ocrqueue()
- */
+ 
 function select_ocrqueue_submit($form,&$form_state){
 	drupal_set_message('Message Queues set Successfully');
 	$request_queue  = $form_state['values']['requestqueue'];
@@ -85,12 +86,14 @@ function select_ocrqueue_submit($form,&$form_state){
 	variable_set('ocr_requestqueue',$request_queue);
 	variable_set('ocr_responsequeue',$response_queue);
 }
+*/
 /*
  * hook_cron()
+ *  @todo need a cron function that will pick up product nodes that were not OCRed and put them to the request queue.
 */
 function ocr_cron(){
-	$responseQueue = variable_get('ocr_responsequeue');
-	$queue = new response_queue($responseQueue);
+	$queueName= variable_get('ocr-results-queue', '');
+	$queue = new response_queue($queueName);
 	do 
 	{	
 		$messages = $queue->getMessages(10);
@@ -99,5 +102,6 @@ function ocr_cron(){
 		{
 			update_drupal_with_responce($message);
 		};
+		$queue->deleteMessages();
 	} while ($messages != null && count($messages)>0);
 }

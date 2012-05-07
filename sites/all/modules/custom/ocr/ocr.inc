@@ -1,18 +1,24 @@
 <?php
 
+
+// @todo move account url to config or install file
+define('AMAZON_SQS_PATH','https://' . variable_get('aws_sqs_region', '') . '.queue.amazonaws.com/'. $conf['aws_account_id'] . '/');
+
+/*
+ *  Represents Amason SQS Queue
+ */
 class sqs_queue
-{
-	private $amazon_sqs_base_path ='https://eu-west-1.queue.amazonaws.com/374933304004/';
-	
+{	
 	private $queueName;
 	protected $queueURL;
 	protected $service;
-	protected function __construct($responseQueue)
+	protected function __construct($queueName)
 	{
-		$this->queueName = $responseQueue;
-		$this->queueURL = $this->amazon_sqs_base_path . $this->queueName;
-		// get service credentials
-		$this->service = amazonsqs_service();
+		$this->queueName = $queueName;
+		$this->queueURL = AMAZON_SQS_PATH . $this->queueName;
+		
+		// create Amason SQS client
+		$this->service  = new Amazon_SQS_Client(variable_get('aws_access_key'. ''), variable_get('aws_secret_key',''));
 	}
 	
 };
@@ -22,9 +28,11 @@ class sqs_queue
 */
 class response_queue extends sqs_queue 
 {
-	public function __construct($responseQueue)
+	private $receiptHandle;
+	
+	public function __construct($queueName)
 	{
-		parent::__construct($responseQueue);
+		parent::__construct($queueName);
 	}
 	/*
 	 * Gets specified number of messages from
@@ -80,7 +88,10 @@ class response_queue extends sqs_queue
 		}
 		// Delete messages from the queue after processing of results is complete;
 		if ($receipthandle) {
-			$this->deleteMessages($receipthandle);
+			$this->receiptHandle = $receipthandle;
+		} else 
+		{
+			watchdog('OCR Error', 'Receipt Handle is eimpty', array(), WATCHDOG_ERROR);
 		}
 
 		return $messages;
@@ -88,25 +99,33 @@ class response_queue extends sqs_queue
 	/*
 	 *  Deletes messages from the SQS queue by receipt handle
 	*
-	* @param $receiptHandle - value recieved when messages were received from the SQS queue
+	* @param $receipthandle - value recieved when messages were received from the SQS queue
 	*/
-	private function deleteMessages($receipthandle)
+	public function deleteMessages()
 	{
 		require_once libraries_get_path('Amazon') . '/SQS/Model/DeleteMessageRequest.php';
+		if(!$this->receiptHandle)
+		{
+			throw new BadMethodCallException('getMessages must be called before messages can be deleted', $code, $previous);
+		}
 		try 
 		{	//deleting messages
 			$delete_request = new Amazon_SQS_Model_DeleteMessageRequest();
 			$delete_request->setQueueUrl($this->queueURL);
-			$delete_request->setReceiptHandle($receipthandle);
-			if($this->service->deleteMessage($delete_request)) {
+			$delete_request->setReceiptHandle($this->receiptHandle);
+			// @todo find out what response has if unsucessful and throw exception if needed.
+			$response = $this->service->deleteMessage($delete_request);
+			if($response) {
 				watchdog('OCR Debug', 'Message deleted.', array(), WATCHDOG_DEBUG);
+				// clear receiptHandle once message are deleted.
+				$this->receiptHandle = null;
 			}
-			else{
+			else {
 				watchdog('OCR Error', 'Problem with deleting message: '.$receipthandle, array(), WATCHDOG_ERROR);
 			}
 		}
 		catch(Exception $e) {
-			watchdog('OCR Exception',$e->getMessage(), array(), WATCHDOG_ERROR);
+			watchdog('OCR Exception', $e->getMessage(), array(), WATCHDOG_ERROR);
 		}
 	}
 }
@@ -116,9 +135,9 @@ class response_queue extends sqs_queue
 */
 class request_queue extends sqs_queue
 {
-	public function __construct($responseQueue)
+	public function __construct($queueName)
 	{
-		parent::__construct($responseQueue);
+		parent::__construct($queueName);
 	}
 
 	/**
@@ -136,6 +155,8 @@ class request_queue extends sqs_queue
 		$request->setQueueUrl($this->queueURL);
 		$request->setMessageBody($message);
 		$response = $this->service->sendMessage($request);
+		// @todo find out what the response status are and implement exception throw for bad statuses.
+		watchdog('SQS Responce', $responce->getSendMessageResult(),array(), WATCHDOG_DEBUG);
 	}
 }
 
@@ -224,39 +245,38 @@ function update_drupal_with_responce ($message)
 		$imagebucket = $responsearr->ImageBucket;
 		$success = $responsearr->Success;
 		$error       = $responsearr->ErrorMessage;
-		$number[]    = $responsearr->Numbers;
-		$response_object = new ocr_model();
+		$numbers[]    = $responsearr->Numbers;
+		$ocr_object = new ocr_model();
 		if ($success == true) {
-			$check_node = $response_object->check_node($nid);
+			$check_node = $ocr_object->check_node($nid);
 			foreach($check_node as $nodeid){
 				$node_exists = $nodeid->nid;
 			}
-			if( $node_exists )
+			if($node_exists)
 			{ //inserting runner number
 				//checking OCR status of the node
-				$ocr_status = $response_object->getocr_status($nid);
+				$ocr_status = $ocr_object->getocr_status($nid);
 				foreach($ocr_status as $ocr_response){
 					$ocr_responce = $ocr_response->field_ocr_response_value;
 				}
 				if (!empty($responsearr->Numbers)) {
 					foreach($responsearr->Numbers as $responsenumber){
-						$revision   = $response_object->getnoderevision($nid);
+						$revision   = $ocr_object->getnoderevision($nid);
 						foreach($revision as $revision_id){
 							$node_revid = $revision_id->vid;
 						}
-						if ($responsenumber->Number) {
-
-							$result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid);
-							$status_object   = new ocr_model();
+						if ($responsenumber->Number) 
+						{
+							$result = $ocr_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid);
 							$insert_status   = $status_object->insert_ocr_status($nid,1);
 						}
 					}
 				}
 				else { // numbers are empty
-					$status_object   = new ocr_model();
+					
 					if($ocr_responce == "Pending" || $ocr_responce == "")
 					{
-						$insert_status   = $status_object->insert_ocr_status($nid,0);
+						$insert_status   = $ocr_object->insert_ocr_status($nid,0);
 						watchdog('OCR Info','Runner number not present in OCR response for node: ' . $nid);
 					}
 				}
