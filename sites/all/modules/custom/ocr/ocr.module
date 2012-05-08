@@ -6,6 +6,7 @@
  */
 
 require_once libraries_get_path('Amazon') . '/SQS/Client.php';
+
 /**
  * Implements hook_menu().
  *
@@ -121,7 +122,12 @@ function ocr_cron()
 	while($message = $queue->getMessage()) 
 	{	
 		$message_counter++;
-		update_drupal_with_responce($message->getBody());
+		try {
+			update_drupal_with_responce($message->getBody());
+		} catch (Exception $e)
+		{
+			watchdog_exception('OCR Excpetion', $e);
+		}
 		$queue->deleteMessage($message);		
 	} 
 	watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
