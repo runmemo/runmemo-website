@@ -87,21 +87,42 @@ function select_ocrqueue_submit($form,&$form_state){
 	variable_set('ocr_responsequeue',$response_queue);
 }
 */
+
+function ocr_send_request($file)
+{
+	// sending message to OCR for an uploaded image
+	$requestqueue  = variable_get('ocr-requests-queue', '');
+	$responsequeue = variable_get('ocr-results-queue', '');
+	$bucket = variable_get('image-store-bucket','');
+	
+	$queue = new request_queue($requestqueue);
+
+	//create message
+	$message_arr = array('ExternalReference' => $file->nid,
+			'ImageKey' => $file->filename,
+			'ImageBucket' => $bucket,
+			'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
+	);
+	$message = json_encode($message_arr);
+
+	// send message to the OCR Queue
+	$queue->sendMessage($message);
+}
+
 /*
  * hook_cron()
  *  @todo need a cron function that will pick up product nodes that were not OCRed and put them to the request queue.
 */
-function ocr_cron(){
+function ocr_cron()
+{
 	$queueName= variable_get('ocr-results-queue', '');
 	$queue = new response_queue($queueName);
-	do 
+	$message_counter = 0;
+	while($message = $queue->getMessage()) 
 	{	
-		$messages = $queue->getMessages(10);
-		watchdog('OCR Debug', 'Got messages from SQS: ' . count($messages), array(), WATCHDOG_DEBUG);
-		foreach ($messages as $message)
-		{
-			update_drupal_with_responce($message);
-		};
-		$queue->deleteMessages();
-	} while ($messages != null && count($messages)>0);
+		$message_counter++;
+		update_drupal_with_responce($message->getBody());
+		$queue->deleteMessage($message);		
+	} 
+	watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
 }
