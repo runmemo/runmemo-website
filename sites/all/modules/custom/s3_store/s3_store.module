@@ -4,96 +4,75 @@
  * Implementation of hook_cron()
  * Function for getting images from local and pushing to s3
  */
- 
+
 function s3_store_cron() {
-  $s3_store_object = new s3_store_model();
-  $photos_url = $s3_store_object->get_local_photos();
-  $s3 = amazon_s3_get_instance();
-  $bucket = variable_get('amazons3_bucket', '');
-  $acl = 'public-read-write';
-  $path=drupal_realpath('public://');
-  foreach ($photos_url as $photo_url) { 
-    $thumb_success = $orig_success = $preview_success = "";
-
-    $thumbnail_local_path = $path . '/styles/thumbnail/public/' . $photo_url->filename;
-    $thumb_local_path = 'public://styles/thumbnail/public/' . $photo_url->filename;
-    $thumb_desc_path = 'styles/thumbnail/s3/' . $photo_url->filename;
-
-    $preview_local_path = $path . '/styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_local_path = 'public://styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_desc_path = 'styles/preview-with-watermark/s3/' . $photo_url->filename;
-
-    //Pushing the files
-    $orig_file_path = $photo_url->uri;
-
-    if (file_exists($photo_url->uri)) {
-      $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
-      
-      
-      //checking OCR status of the node
-      $ocr_status = $s3_store_object->getocr_status($photo_url->entity_id);
-      foreach($ocr_status as $ocr_response){
-      	$response = $ocr_response->field_ocr_response_value;
-      }
-      //getting default value of ocr_response
-      $field = field_info_field('field_ocr_response_value');
-      $instance = field_info_instance('node','field_ocr_response_value', 'product');
-      $default_ocrresponse = field_get_default_value('node', $photo_url, $field, $instance, $langcode = NULL);
-      if($response == "Pending" || $response == ""){
-      	// sending message to OCR for an uploaded image
-      	if (module_exists('ocr') && function_exists('send_message')) {
-      		
-      		$requestqueue  = variable_get('ocr_requestqueue');
-      		$responsequeue = variable_get('ocr_responsequeue');
-      		
-      		$queue = new request_queue($requestqueue);
-      		$sendmsg = $queue->send_image($photo_url->entity_id, $photo_url->filename, $responsequeue);
-      		if($sendmsg) {
-      			watchdog('OCR info', 'Messages send to OCR after file upload for node ' . $photo_url->entity_id,array(), WATCHDOG_DEBUG);
-      		}
-      	}
-      }
-      
-    }
-
-
-    if (file_exists($thumbnail_local_path)) {
-      $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
-    }
-
-    if (file_exists($preview_local_path)) {
-      $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
-    }
-
-    if ($orig_success && $thumb_success && $preview_success) {
-      $s3_store_object->update_s3_status($photo_url->entity_id);
-      $url = str_replace("public://", "s3://", $photo_url->uri);
-
-      $s3_store_object->update_url($photo_url->fid, $url);
-     
-      file_unmanaged_delete($orig_file_path);
-      file_unmanaged_delete($thumb_local_path);
-      file_unmanaged_delete($prev_local_path);
-    }  
-  }
-  drupal_flush_all_caches();
+	$queue = DrupalQueue::get('send_images_to_S3');
+	
+	//$queue->deleteQueue();
+	watchdog('S3 info', 'Started S3 cron job for jobs = ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+	//Pull items out one at a time.
+	while($item = $queue->claimItem(15)) {
+		watchdog('S3 info','Items in the queue(S3) == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+		//Try saving the data.
+		try {
+			_send_file_to_s3($item->data);
+		} catch (Exception $e)
+		{
+			watchdog_exception('S3 error', $e);
+		}
+		$queue->deleteItem($item);
+	};
+	watchdog('S3 info','Finished S3 cron job.', array(), WATCHDOG_DEBUG);
 }
 
+function _send_file_to_s3($file)
+{
+	// Check whether file exists
+	if (!file_exists($file->uri)) {
+		throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
+	}
+	
+	$bucket = variable_get('image-store-bucket');
+	// Send original file to S3
+	watchdog('S3 info','Sending file: ' . $file->uri . ' to s3://' . $bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
+	watchdog('S3 info', 'Using aws key: ' . variable_get('aws_access_key', ''), array(), WATCHDOG_DEBUG);
+	
+	$path_prefix = 'public://';
+	$acl = 'public-read'; //S3::ACL_PUBLIC_READ;
+	
+	$s3_mover = new s3_mover($path_prefix, $bucket);
+	
+	// Send cache images to S3	
+	$precached_styles = array('search_preview','thumbnail');
+	foreach(image_styles() as $style)
+	{
+		if(in_array($style['name'] , $precached_styles))
+		{
+			$s3_mover->move_imagecache($file, $acl, $style['name']);
+		}
+	};
+
+	// move original file
+	$s3_mover->move_file($file, $acl, $style);
+	
+	// Send file to OCR queue
+	ocr_send_request($file);
+}
 
 /**
  * function to create signed url to download orginal image
  */
- function get_s3_signed_url($resource) {
-  $bucket = variable_get('amazons3_bucket', '');
-  $AWS_S3_KEY        = variable_get('aws_access_key', '');
-  $AWS_s3_secret_key = variable_get('aws_secret_key', '');
-  $expires = time()+63072000;
-  // S3 Signed URL creation
-  $string_to_sign = "GET\n\n\n{$expires}\n/" . str_replace(".s3.amazonAWS.com", "", $bucket) . "/$resource";
-  $signature = urlencode(base64_encode((hash_hmac("sha1", utf8_encode($string_to_sign), $AWS_s3_secret_key, TRUE))));
+function get_s3_signed_url($resource) {
+	$bucket = variable_get('image-store-bucket','');
+	$AWS_S3_KEY        = variable_get('aws_access_key', '');
+	$AWS_s3_secret_key = variable_get('aws_secret_key', '');
+	$expires = time()+63072000;
+	// S3 Signed URL creation
+	$string_to_sign = "GET\n\n\n{$expires}\n/" . str_replace(".s3.amazonAWS.com", "", $bucket) . "/$resource";
+	$signature = urlencode(base64_encode((hash_hmac("sha1", utf8_encode($string_to_sign), $AWS_s3_secret_key, TRUE))));
 
-  $authentication_params = "AWSAccessKeyId=" . $AWS_S3_KEY;
-  $authentication_params .= "&Expires={$expires}";
-  $authentication_params .= "&Signature={$signature}";
-  return $link = "http://s3-eu-west-1.amazonAWS.com/{$bucket}/{$resource}?{$authentication_params}";
+	$authentication_params = "AWSAccessKeyId=" . $AWS_S3_KEY;
+	$authentication_params .= "&Expires={$expires}";
+	$authentication_params .= "&Signature={$signature}";
+	return $link = "http://s3-eu-west-1.amazonAWS.com/{$bucket}/{$resource}?{$authentication_params}";
 }
