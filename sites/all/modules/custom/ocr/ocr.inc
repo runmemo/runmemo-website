@@ -16,7 +16,7 @@ class sqs_queue
 		$this->queueURL = AMAZON_SQS_PATH . $this->queueName;
 		
 		// create Amason SQS client
-		$this->service  = new Amazon_SQS_Client(variable_get('aws_access_key'. ''), variable_get('aws_secret_key',''));
+		$this->service  = new Amazon_SQS_Client(variable_get('aws_access_key'), variable_get('aws_secret_key'));
 	}
 };
 
@@ -138,7 +138,8 @@ class request_queue extends sqs_queue
 	}
 }
 
-
+// @todo rename class to someting like product_node_updater
+//   and join all the functions in one like addNumbers
 class ocr_model{
 	/**
 	 * Insert runner number from ocr response
@@ -227,6 +228,7 @@ function update_drupal_with_responce ($message)
 		$numbers[]    = $responsearr->Numbers;
 		$ocr_object = new ocr_model();
 		if ($success == true) {
+			// @todo create a separate function to validate node existance
 			$check_node = $ocr_object->check_node($nid);
 			foreach($check_node as $nodeid){
 				$node_exists = $nodeid->nid;
@@ -239,6 +241,7 @@ function update_drupal_with_responce ($message)
 					$ocr_responce = $ocr_response->field_ocr_response_value;
 				}
 				if (!empty($responsearr->Numbers)) {
+					// @todo move to the node_udpater class
 					foreach($responsearr->Numbers as $responsenumber){
 						$revision   = $ocr_object->getnoderevision($nid);
 						foreach($revision as $revision_id){
