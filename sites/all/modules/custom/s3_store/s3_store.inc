@@ -23,7 +23,6 @@ class s3_store_model {
     $query->addField('fm', 'uid');
     $query->addField('fs', 'entity_id');
     $query->orderBy('fm.timestamp', 'DESC');
-    $query->range(0, 30);
     $results = $query->execute();
     return $results;
   }
