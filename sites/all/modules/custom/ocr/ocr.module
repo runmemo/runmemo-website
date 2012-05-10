@@ -60,15 +60,13 @@ function send_message($messages = array()) {
   $requestqueue  = variable_get('ocr_requestqueue');
   $responsequeue = variable_get('ocr_responsequeue');
   //create message
-  $cou = count($messages);
-  watchdog('count',$cou);
   foreach($messages as $nid => $fname){
     $message_arr = array('ExternalReference' => $nid,
                        'ImageKey' => $fname,
                        'ImageBucket' => $bucket,
                        'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
     );  
-	watchdog('nid',$nid);
+	
    $message = json_encode($message_arr);									
    //setting message queue url
    $request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/' . $requestqueue);
