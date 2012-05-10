@@ -353,7 +353,7 @@ function create_photo_node($file, $event) {
 			'filemime' => file_get_mimetype($original_name),
 			'status' => 1,
 			'filename' => $file['name'],
-			'alt' => $file['name'],
+			'alt' => 'runner photo',
 
 	);
 	//file moves from temp to public folder

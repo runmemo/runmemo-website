@@ -54,7 +54,7 @@ function s3_store_cron() {
         // sending message to OCR for an uploaded image
         if (module_exists('ocr') && function_exists('send_message')) {
 		  $message[$photo_url->entity_id] = $photo_url->filename;
-          send_message($message);
+          
 		  watchdog('OCR info','Message send to OCR after moving to s3 for '.$photo_url->entity_id);
         }
 	  }	
@@ -63,6 +63,7 @@ function s3_store_cron() {
       file_unmanaged_delete($prev_local_path);
     }  
   }
+  send_message($message);
   drupal_flush_all_caches();
 }
 
