@@ -12,6 +12,9 @@ function s3_store_cron() {
   $bucket = variable_get('amazons3_bucket', '');
   $acl = 'public-read-write';
   $path=drupal_realpath('public://');
+  $message = array();
+  $image_count = count($photos_url);
+  watchdog('image count','number - '.$image_count);
   foreach ($photos_url as $photo_url) { 
     $thumb_success = $orig_success = $preview_success = "";
 
@@ -28,16 +31,27 @@ function s3_store_cron() {
 
     if (file_exists($photo_url->uri)) {
       $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+	  watchdog($photo_url->entity_id,'Orginal image moved');
     }
-
+    else{
+	 watchdog($photo_url->entity_id,'Orginal not found'.$photo_url->uri);
+	}
 
     if (file_exists($thumbnail_local_path)) {
       $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+	  watchdog($photo_url->entity_id,'Thumbnail image moved');
     }
+	else{
+	 watchdog($photo_url->entity_id,'Thumbnail not found'.$thumbnail_local_path);
+	}
 
     if (file_exists($preview_local_path)) {
       $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
+	  watchdog($photo_url->entity_id,'Preview image moved');
     }
+	else{
+	 watchdog($photo_url->entity_id,'Preview not found'.$preview_local_path);
+	}
 
     if ($orig_success && $thumb_success && $preview_success) {
       $s3_store_object->update_s3_status($photo_url->entity_id);
@@ -63,6 +77,7 @@ function s3_store_cron() {
       file_unmanaged_delete($prev_local_path);
     }  
   }
+  watchdog('message count','Messages sent '.count($message));
   send_message($message);
   drupal_flush_all_caches();
 }

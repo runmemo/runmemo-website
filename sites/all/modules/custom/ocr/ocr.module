@@ -60,13 +60,15 @@ function send_message($messages = array()) {
   $requestqueue  = variable_get('ocr_requestqueue');
   $responsequeue = variable_get('ocr_responsequeue');
   //create message
+  $cou = count($messages);
+  watchdog('count',$cou);
   foreach($messages as $nid => $fname){
     $message_arr = array('ExternalReference' => $nid,
                        'ImageKey' => $fname,
                        'ImageBucket' => $bucket,
                        'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
     );  
-	
+	watchdog('nid',$nid);
    $message = json_encode($message_arr);									
    //setting message queue url
    $request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/' . $requestqueue);
@@ -171,7 +173,7 @@ function send_message($messages = array()) {
     if($responsebody){
 	$node_exists = 0;
     $responsearr   = json_decode(trim($responsebody));
-     $nid         = $responsearr->ExternalReference;
+    $nid         = $responsearr->ExternalReference;
 	$imagekey    = $responsearr->ImageKey;
 	$imagebucket = $responsearr->ImageBucket;
 	$success = $responsearr->Success;
@@ -195,15 +197,19 @@ function send_message($messages = array()) {
             }
 	    $number_count = 1;
 	    if (!empty($responsearr->Numbers)) {
-                foreach($responsearr->Numbers as $responsenumber){
+          foreach($responsearr->Numbers as $responsenumber){
 		    $revision   = $response_object->getnoderevision($nid); 
 			foreach($revision as $revision_id){
 			  $node_revid = $revision_id->vid;
 			}
 			if ($responsenumber->Number) {
+			  //getting x and y co-ordinates
+		      $xvalue = $responsenumber->X;
+			  $yvalue = $responsenumber->Y;
               if($ocr_responce == "Pending" || $ocr_responce == ""){
 			    $result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
-			    $status_object   = new ocr_model();  
+			    $insert_xy = $response_object->insert_xyvalues($nid,$responsenumber->Number,$xvalue,$yvalue);
+				$status_object   = new ocr_model();  
 			    $insert_status   = $status_object->insert_response_status($nid,1);
               }
 			  else{
@@ -226,11 +232,15 @@ function send_message($messages = array()) {
           }
           else{
                 watchdog('ocrinfo','Response received for a  node that does not exists');
+				
               }
           
 	}
 	else{
 	   watchdog('Ocr Status','OCR response failed for node '.$nid);
+	     $status_object   = new ocr_model();  
+	     $insert_status   = $status_object->insert_response_status($nid,0);
+	    
 	  
 	}
      }

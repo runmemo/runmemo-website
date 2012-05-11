@@ -18,6 +18,18 @@ class ocr_model{
             ))->execute();
    }
    /**
+   *Insert xy values for runner numbers
+   */
+   public function insert_xyvalues($nid,$number,$xvalue,$yvalue){
+    db_insert('ocr_xyvalues')->fields(
+	array('nid' => $nid,
+	      'runner_number' => $number,
+          'xvalue' => $xvalue,
+		  'yvalue' => $yvalue
+		  ))->execute();
+          		  
+   }
+   /**
    * retrieve revision_id for a node
    */
    public function getnoderevision($nid = 0){
@@ -103,8 +115,8 @@ class ocr_model{
     $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
 	$query->join('field_data_field_ocr_response', 'ocr', 'fs.entity_id = ocr.entity_id');
 	$query->condition('fs.field_s3_status_value', 1);
-    $query->condition('ocr.field_ocr_response_value', 'Pending');
-    $query->condition('fm.filename', '', '<>');
+    $query->condition(db_or()->condition('ocr.field_ocr_response_value', 'Pending')->condition('ocr.field_ocr_response_value', ''));
+	$query->condition('fm.filename', '', '<>');
     $query->addField('fm', 'fid');
     $query->addField('fm', 'filename');
     $query->addField('fm', 'uri');
@@ -116,5 +128,6 @@ class ocr_model{
     return $results;
   
   }
+
  }
 ?>

@@ -15,5 +15,17 @@ class ubercart_custom_model{
     $count = db_query("SELECT COUNT(nid) as nid FROM {uc_order_products} WHERE nid = :nid", array(':nid' => $nid))->fetchObject();
     return $count->nid;
   }
+  /**
+   * Get xyvalues for each node 
+   */
+   public function getxyvalues($nid){
+    $query = db_select('ocr_xyvalues', 'xy');
+    $query->condition('xy.nid', $nid);
+    $query->addField('xy', 'runner_number');
+    $query->addField('xy', 'xvalue');
+    $query->addField('xy', 'yvalue');
+    $results = $query->execute();
+    return $results;
+   }
 }
 
