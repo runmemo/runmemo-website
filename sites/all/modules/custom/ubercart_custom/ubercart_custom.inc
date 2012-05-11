@@ -24,6 +24,7 @@ class ubercart_custom_model{
     $query->addField('xy', 'runner_number');
     $query->addField('xy', 'xvalue');
     $query->addField('xy', 'yvalue');
+	$query->addField('xy', 'probability');
     $results = $query->execute();
     return $results;
    }

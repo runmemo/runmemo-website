@@ -16,7 +16,7 @@ function ubercart_custom_node_view($node, $view_mode, $langcode) {
 	$xyvalues = $xyobject->getxyvalues($node->nid);
 	
 	$header = array(
-                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value'))
+                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
 			    );
 	$rows = array();
 	$xycount = 0;
@@ -27,7 +27,8 @@ function ubercart_custom_node_view($node, $view_mode, $langcode) {
           array('data' => $xycount),
           array('data' => $xyvalue->runner_number),
           array('data' => $xyvalue->xvalue),
-          array('data' => $xyvalue->yvalue)
+          array('data' => $xyvalue->yvalue),
+		  array('data' => $xyvalue->probability) 
           );
 	   	  
 	}
@@ -177,17 +178,19 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 	$xyobject = new ubercart_custom_model();
 	$xyvalues = $xyobject->getxyvalues($nid);
 	$header = array(
-                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value'))
+                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
 			    );
 	$rows = array();
 	$xycount = 0;
 	foreach($xyvalues as $xyvalue){
+	
 	 $xycount++;
 		$rows[] = array(    
           array('data' => $xycount),
           array('data' => $xyvalue->runner_number),
           array('data' => $xyvalue->xvalue),
           array('data' => $xyvalue->yvalue),
+		  array('data' => $xyvalue->probability) 
           );
 	   	  
 	}
