@@ -1,15 +1,25 @@
 <?php
-/**
- * @file 
- * node files database query managemen 
- */
 
+/**
+ * Represents a class that moves file from local folder to S3 bucket
+ */
 class s3_mover
 {
 	private $bucket;
-	private $path; // local path prefix, e.g. "public://"
-	private $s3;
 	
+	// @var local path prefix, e.g. "public://"
+	private $path; 
+	private $s3;
+	private $acl = S3::ACL_PUBLIC_READ;
+	/**
+	 * Constracts s3_mover object
+	 * 
+	 * @param string $pathPrefix
+	 * 	local path prefix in Drupal, e.g. "public://
+	 * 
+	 * @param string $bucket 
+	 * 	name of the bucket in S3 to which files will be saved.
+	 */
 	public function __construct($pathPrefix, $bucket)
 	{
 		$this->bucket = $bucket;
@@ -27,10 +37,20 @@ class s3_mover
 		}
 		$this->s3 = $s3;
 	}
+	
+	/**
+	 * Moves original file from local path to S3
+	 * 
+	 * @param object $file 
+	 * 	Object with properties of the file to be moved.
+	 * 
+	 * @param string $acl 
+	 * 	security flag for the file to be set in S3. 
+	 */
 	public function move_file($file, $acl)
 	{
 			$path=drupal_realpath($this->path);
-			$success = $this->s3->putObjectFile($file->uri, $this->bucket, $file->filename, $acl);
+			$success = $this->s3->putObjectFile($file->uri, $this->bucket, $file->filename, $this->acl);
 			if($success) {
 				// original file was sent to S3
 				watchdog('S3 info','Sent file: ' . $file->uri . ' to s3://' . $this->bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
@@ -50,7 +70,7 @@ class s3_mover
 			}	
 	}
 	
-	public function move_imagecache ($file, $acl, $style)
+	public function move_imagecache ($file, $style)
 	{
 		// move imagecache to S3
 		$derivative_uri = image_style_path($style, $file->uri);
@@ -58,10 +78,15 @@ class s3_mover
 			
 		if (file_exists($derivative_uri)) {
 			watchdog('Image caching','Sending file to S3 from ' . $derivative_uri, array(), WATCHDOG_DEBUG);
-			$success = $this->s3->putObjectFile($derivative_uri, $this->bucket, $this->getS3_uri($style) .  $file->filename, $acl);
-			if($success)
+			try { // Copy file to S3 and remove local file.
+				$success = $this->s3->putObjectFile($derivative_uri, $this->bucket, $this->getS3_uri($style) .  $file->filename, $this->acl);
+				if($success)
+				{
+					file_unmanaged_delete($derivative_uri);
+				}		
+			} catch (Exception $e)
 			{
-				file_unmanaged_delete($derivative_uri);
+				watchdog_exception('Exception', $e);
 			}
 		}
 		else { // cached file does not exist on the server
@@ -89,14 +114,14 @@ class s3_mover
 	
 	/**
 	 * Update the s3 status field
-	 * @param $entity_id is node id of the photo
-	 * @param $status status of S3 move:
-	 * 		0 -> file was not moved
+	 * @param integer $entity_id is node id of the photo
+	 * @param boolean $status status of S3 move:
+	 * 		0 -> file was not moved; 
 	 *  	1 -> file was moved to s3.
 	 * 
 	 *  By using this function we can set the status whether files are pushed to s3
 	 */
-	public function update_s3_status($entity_id, $status) {
+	private function update_s3_status($entity_id, $status) {
 		db_update('field_data_field_s3_status')
 		->fields(array(
 				'field_s3_status_value' => $status,
@@ -105,6 +130,10 @@ class s3_mover
 		->execute();
 	
 	}
+	/**
+	 * Gets path of the folder in S3 bucket for the style
+	 * @param string $styleName
+	 */
 	private function getS3_uri($styleName)
 	{
 		return 'styles/' . $styleName . '/s3/';

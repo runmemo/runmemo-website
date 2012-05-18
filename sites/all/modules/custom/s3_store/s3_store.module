@@ -48,7 +48,7 @@ function _send_file_to_s3($file)
 	{
 		if(in_array($style['name'] , $precached_styles))
 		{
-			$s3_mover->move_imagecache($file, $acl, $style['name']);
+			$s3_mover->move_imagecache($file, $style['name']);
 		}
 	};
 
