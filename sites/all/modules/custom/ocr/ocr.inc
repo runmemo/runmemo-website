@@ -2,7 +2,7 @@
 // @todo move account url to config or install file
 define('AMAZON_SQS_PATH','https://' . variable_get('aws_sqs_region', '') . '.queue.amazonaws.com/'. variable_get('aws_account_id','') . '/');
 
-/*
+/**
  *  Represents Amason SQS Queue
  */
 class sqs_queue
@@ -10,6 +10,11 @@ class sqs_queue
 	private $queueName;
 	protected $queueURL;
 	protected $service;
+	/**
+	 * Creates new instance of sqs_queue object
+	 * @param String $queueName name of the queue in Amazon SQS
+	 * 
+	 */
 	protected function __construct($queueName)
 	{
 		$this->queueName = $queueName;
@@ -20,7 +25,7 @@ class sqs_queue
 	}
 };
 
-/*
+/**
  * Represents SQS response queue and allows to get messages from that queue.
 */
 class response_queue extends sqs_queue 
@@ -31,16 +36,21 @@ class response_queue extends sqs_queue
 		parent::__construct($queueName);
 		$this->messages = array();
 	}
+	/**
+	 * Gets a message from the SQS queue
+	 */
 	public function getMessage()
 	{
 		if(count($this->messages) == 0)
-		{
-			$this->getMessages(10);
+		{ 	// array with messages is empty
+			// so we get messages from SQS to array
+			$this->getMessages();
 		} 
 		if(count($this->messages) == 0)
-		{
+		{ // SQS queue is empty
 			return NULL;
 		}
+		// get message from array
 		$message = array_shift($this->messages);
 		return $message;
 	}
@@ -77,12 +87,11 @@ class response_queue extends sqs_queue
 		catch(Exception $e) {
 			watchdog('OCR Exception', $e->getMessage(), array(), WATCHDOG_ERROR);
 		}
-		return $messages;
 	}
-	/*
-	 *  Deletes messages from the SQS queue by receipt handle
+	
+	/**  Deletes message from the SQS queue by receipt handle
 	*
-	* @param $message - message recieved with get Message command from SQS queue
+	* @param object $message -message recieved with getMessage command from SQS queue
 	*/
 	public function deleteMessage($message)
 	{
@@ -108,9 +117,9 @@ class response_queue extends sqs_queue
 	}
 }
 
-/*
+/**
  * Represents queue with requests and allows to send messages to that queue
-*/
+ */
 class request_queue extends sqs_queue
 {
 	public function __construct($queueName)
@@ -121,8 +130,7 @@ class request_queue extends sqs_queue
 	/**
 	 * The SendMessage action delivers a message to the specified queue.
 	 *
-	 * @param $nid nodeid of uploaded image
-	 * @param $fname name of uploaded image
+	 * @param String $message message that will be added to SQS queue
 	 */
 	public function sendMessage($message) {
 		require_once libraries_get_path('Amazon') . '/SQS/Model/SendMessageRequest.php';
@@ -261,7 +269,7 @@ function update_drupal_with_responce ($message)
 				}
 			}
 			else{ // Node does not exist
-				watchdog('OCR Error','Response received for a node that does not exists',array(), WATCHDOG_ERROR);
+				watchdog('OCR Error','Response received for a node that does not exists', array(), WATCHDOG_ERROR);
 			}
 		}
 		else { // OCR response: Success == False
