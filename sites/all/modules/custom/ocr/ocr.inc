@@ -148,22 +148,8 @@ class request_queue extends sqs_queue
 
 
 class ocr_model{
-	/**
-	 * Insert runner number from ocr response
-	 */
-	public function insert_runnernumber($nid = 0,$runner_num=0,$revision_id =0,$runner_count=0){
+
 	
-		db_insert('field_data_field_runner_number')->fields(
-				array('entity_type' =>'node',
-						'bundle' => 'product',
-						'deleted' => 0,
-						'revision_id' =>$revision_id,
-						'language' => 'und',
-						'delta' => $runner_count,
-						'entity_id' =>$nid,
-						'field_runner_number_value' => $runner_num
-				))->execute();
-	}
 	/**
 	 * retrieve revision_id for a node
 	 */
@@ -188,35 +174,142 @@ class ocr_model{
 				->execute();
 	}
 
+}
+
+class OcrResultsSaver
+{
+	private $nid; // id of the Node
+	private $success; // Success flag from the responce
+	private $numbers = array();
+	private $error_message;
+	
+	public function __construct($message)
+	{
+		if (!$message)
+		{
+			throw new Exception('$message must be not be null.');
+			
+			$responsearr = json_decode(trim($message));
+			$this->nid         = $responsearr->ExternalReference;
+			$this->success = $responsearr->Success;
+			if($this->success)
+			{
+				$this->numbers[] = $responsearr->Numbers;
+			} else
+			{
+				$this->error_message 	= $responsearr->ErrorMessage;
+			}
+			//	$imagekey    = $responsearr->ImageKey;
+			//	$imagebucket = $responsearr->ImageBucket;
+			
+		}
+	}
+	
+	private function NodeExists()
+	{
+		$check_node = db_select('node','nid')
+		->condition('nid', $this->nid)
+		->fields('nid')
+		->execute();
+	
+		foreach($check_node as $nodeid){
+			return true;
+		}
+		return false;
+	}
+	
+	private function GetNodeOcrStatus ()
+	{ // @todo need to merge this function with the one that checks node existance
+		$ocr_status = db_select('field_data_field_ocr_response','field_ocr_response_value')
+		->condition('entity_id', $this->nid)
+		->fields('field_ocr_response_value')
+		->execute();
+		
+		foreach($ocr_status as $status){
+			return $status;
+		}
+		return null;
+	}
+	
 	/**
-	 * insert response from OCR to ocr_response if response is success
+	 * Update Product node with the OCR response status.
 	 */
-	public function insert_ocr_status($entity_id, $success){
-		if($success == 1){
+	private function UpdateOcrStatus()
+	{
+		if($this->success){
 			$status = "Success";
 		}
 		else{
 			$status = "Failure";
 		}
-		db_update('field_data_field_ocr_response')->fields(
-				array('field_ocr_response_value' =>$status,
-				))->condition('entity_id', $entity_id)
-				->execute();
+		db_update('field_data_field_ocr_response')
+			->fields(array('field_ocr_response_value' =>$status,))
+			->condition('entity_id', $this->nid)
+			->execute();
 	}
-	public function getocr_status($nid){
-		$result = db_select('field_data_field_ocr_response','field_ocr_response_value')
-		->condition('entity_id', $nid)
-		->fields('field_ocr_response_value')
-		->execute();
-		return $result;
-
+	
+	/**
+	 * Saves runner's number from ocr response to Drupal
+	 */
+	private function SaveNumber($number)
+	{
+		$revision   = $ocr_object->getnoderevision($nid);
+			
+		// @todo fix or document this revision nonesense:
+		foreach($revision as $revision_id){
+			$node_revid = $revision_id->vid;
+		}
+		if ($responsenumber->Number)
+		{
+			$result = $ocr_object->insert_runnernumber($nid, $responsenumber->Number,$node_revid);
+			$this->UpdateOcrStatus();
+		}
+		
+		db_insert('field_data_field_runner_number')->fields(
+				array('entity_type' =>'node',
+						'bundle' => 'product',
+						'deleted' => 0,
+						'revision_id' =>$revision_id,
+						'language' => 'und',
+						'delta' => $runner_count,
+						'entity_id' =>$this->nid,
+						'field_runner_number_value' => $runner_num
+				))->execute();
 	}
-	public function check_node($nid) {
-		$result = db_select('node','nid')
-		->condition('nid', $nid)
-		->fields('nid')
-		->execute();
-		return $result;
+	
+	/**
+	 * Saves error message from OCR responce to Product node.
+	 */
+	private function SaveError()
+	{
+		
+		if($this->error_message)
+		{
+			// @todo
+		}
+	}
+	
+	/**
+	 * Saves all details from OCR response message to Drupal
+	 */
+	public function Save()
+	{
+		$ocr_object = new ocr_model();
+		if ($success == true) {
+			
+			if($this->NodeExists())
+			{ //inserting runner number
+				foreach($this->Numbers as $number){
+					$this->SaveNumber($number);
+				}
+			}
+			else{ // Node does not exist
+				watchdog('OCR Error','Response received for a node that does not exists', array(), WATCHDOG_ERROR);
+			}
+		}
+		else { // OCR response: Success == False
+			$this->SaveError();
+		}
 	}
 }
 
@@ -225,57 +318,8 @@ class ocr_model{
  */
 function update_drupal_with_responce ($message)
 {
-	if($message){
-		$responsearr = json_decode(trim($message));
-		$nid         = $responsearr->ExternalReference;
-		$imagekey    = $responsearr->ImageKey;
-		$imagebucket = $responsearr->ImageBucket;
-		$success = $responsearr->Success;
-		$error       = $responsearr->ErrorMessage;
-		$numbers[]    = $responsearr->Numbers;
-		$ocr_object = new ocr_model();
-		if ($success == true) {
-			$check_node = $ocr_object->check_node($nid);
-			foreach($check_node as $nodeid){
-				$node_exists = $nodeid->nid;
-			}
-			if($node_exists)
-			{ //inserting runner number
-				//checking OCR status of the node
-				$ocr_status = $ocr_object->getocr_status($nid);
-				foreach($ocr_status as $ocr_response){
-					$ocr_responce = $ocr_response->field_ocr_response_value;
-				}
-				if (!empty($responsearr->Numbers)) {
-					foreach($responsearr->Numbers as $responsenumber){
-						$revision   = $ocr_object->getnoderevision($nid);
-						foreach($revision as $revision_id){
-							$node_revid = $revision_id->vid;
-						}
-						if ($responsenumber->Number) 
-						{
-							$result = $ocr_object->insert_runnernumber($nid, $responsenumber->Number,$node_revid);
-							$insert_status   = $ocr_object->insert_ocr_status($nid,1);
-						}
-					}
-				}
-				else { // numbers are empty
-					
-					if($ocr_responce == "Pending" || $ocr_responce == "")
-					{
-						$insert_status   = $ocr_object->insert_ocr_status($nid,0);
-						watchdog('OCR Info','Runner number not present in OCR response for node: ' . $nid);
-					}
-				}
-			}
-			else{ // Node does not exist
-				watchdog('OCR Error','Response received for a node that does not exists', array(), WATCHDOG_ERROR);
-			}
-		}
-		else { // OCR response: Success == False
-			// @todo
-		}
-	}
+	$results_saver = new OcrResultsSaver($message);
+	$results_saver->Save();
 }
 
 ?>

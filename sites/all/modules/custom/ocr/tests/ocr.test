@@ -90,4 +90,13 @@ class OcrTestCase extends DrupalWebTestCase {
 		
 	}
 	
+	
+	function testProductNodeIsUpdated()
+	{
+		$jOcrResults = getFakeMessage($this->testNode);
+		$results_saver = new OcrResultsSaver($jOcrResults);
+		$results_saver->Save();
+		
+	}
+	
 }
