@@ -1,3 +1,4 @@
+
 <div id="wrapper">
     <div id="inner-wrapper">
 
@@ -31,12 +32,11 @@
 
             </div>
             <?php
-            if(!in_array('Photographer',$user->roles)&& (arg(0)!='user') && (arg(0)!='login') && (!drupal_is_front_page()))
+            if(!in_array('Photographer',$user->roles) && (arg(0)!='user') && (arg(0)!='login') && (!drupal_is_front_page()))
             {
             ?>
             <div class="cart float-R">
-                <div class="cart-img float-L"></div>
-                <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
+            <?php print render($page['shopping_cart']); ?>
             </div>
 
             <?php }?>
@@ -115,7 +115,7 @@
                             <?php $path=explode('/',request_uri()); //print_r($parts);print_r($_REQUEST);?>
                             <div class="title" style="width:100%;">
                                 <?php if ((in_array('login',$path))&&(in_array('anonymous user',$user->roles))) : ?>
-                                    <h1 class="new_account_heading">  New Photograper Registration </h1> <h1 class="login_heading">I already have a Photographer account </h1>
+                                    <h1 class="new_account_heading">  Photographer Registration </h1> <h1 class="login_heading">I have an account </h1>
 
                                 <?php elseif (arg(0) == 'user' && arg(1)==null) : ?>
                                 <h1 class="log_in">  User Login</h1>
@@ -123,15 +123,16 @@
                             </div>
                             <?php print render($page['photo_search']); ?>
                             <?php print render($page['content']); ?>
+                          <?php if ($page['sidebar_second']): ?>
+                          <div id="sidebar-second" class="sidebar" style="align:right;">
+                              <?php print render($page['sidebar_second']); ?>
+                          </div>
+                          <?php endif; ?>
                         </div>
 
                     </div>
 
-                    <?php if ($page['sidebar_second']): ?>
-                    <div id="sidebar-second" class="sidebar" style="align:right;">
-                        <?php print render($page['sidebar_second']); ?>
-                    </div>
-                    <?php endif; ?>
+                    
 
                 </div>
             </div>
@@ -178,7 +179,7 @@
 
 
     <div class="footer"><!--footer-->
-	<div id="link-display" style="display:none;"><?print url("feedback", array('absolute'=> TRUE));?></div>
+		<div id="link-display" style="display:none;"><?print url("feedback", array('absolute'=> TRUE));?></div>
         <div class="footer-inner">
             <div class="social-icon float-L">
                 <a href="mailto:info@runmemo.com" target="_blank"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
@@ -190,6 +191,4 @@
     </div><!--footer ends-->
 
 </div>
-
-
 
