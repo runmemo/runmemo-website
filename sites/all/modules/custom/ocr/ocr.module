@@ -3,46 +3,58 @@
 /**
  * @file
  * Module file for OCR Integration
+ *
+ * This module provides integration with OCR workers via SQS queues.
  */
 
 require_once libraries_get_path('Amazon') . '/SQS/Client.php';
 
 /**
+ * Implements hook_help()
+ */
+function ocr_help($path, $arg)
+{
+  if ($path == 'admin/help#ocr') {
+    return t('OCR integration module.');
+  }
+}
+
+/**
  * Implements hook_menu().
  */
 function ocr_menu() {
-	$items['sendmessage'] = array(
-			'title'           => 'Send Message to OCR',
-			'description'     => 'Send Message to OCR',
-			'page callback' => 'send_message',
-			'access arguments' => array('access administration pages'),
-	);
-	$items['receivemessage'] = array(
-			'title'           => 'Receive Message from OCR',
-			'description'     => 'Receive Message from OCR',
-			'page callback' => 'receive_message',
-			'access arguments' => array('access administration pages'),
-	);
-	$items['admin/config/media/ocrqueue'] = array(
-			'title'           => 'Queues for OCR',
-			'description'     => 'Setting queues for OCR',
-			'page callback' => 'drupal_get_form',
-			'page arguments' => array('select_ocrqueue'),
-			'access arguments' => array('access administration pages'),
-	);
-	return $items;
+  $items['sendmessage'] = array(
+      'title'           => t('Send Message to OCR'),
+      'description'     => t('Send Message to OCR'),
+      'page callback' => t('send_message'),
+      'access arguments' => array(t('access administration pages')),
+  );
+  $items['receivemessage'] = array(
+      'title'           => 'Receive Message from OCR',
+      'description'     => 'Receive Message from OCR',
+      'page callback' => 'receive_message',
+      'access arguments' => array('access administration pages'),
+  );
+  $items['admin/config/media/ocrqueue'] = array(
+      'title'           => 'Queues for OCR',
+      'description'     => 'Setting queues for OCR',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('select_ocrqueue'),
+      'access arguments' => array('access administration pages'),
+  );
+  return $items;
 }
 
 /**
  *Configuration settings for amazon
 
-function amazonsqs_service() {
+ function amazonsqs_service() {
 
-	$aws_access_key = variable_get('aws_access_key', '');
-	$aws_secret_key = variable_get('aws_secret_key', '');
-	$service = new Amazon_SQS_Client($aws_access_key, $aws_secret_key);
-	return $service;
-}
+ $aws_access_key = variable_get('aws_access_key', '');
+ $aws_secret_key = variable_get('aws_secret_key', '');
+ $service = new Amazon_SQS_Client($aws_access_key, $aws_secret_key);
+ return $service;
+ }
  */
 
 /*
@@ -55,78 +67,78 @@ function amazonsqs_service() {
  * Setting OCR queue to use
  */
 function select_ocrqueue(){
-	$form['requestqueue']  = array('#type'=>'textfield',
-			'#title'=>'Maessage Request Queue',
-			'#size'=>'20',
-			'#required' => 'true',
-			'#default_value' => variable_get('ocr-requests-queue', '')
-	);
-	$form['responsequeue']  = array('#type'=>'textfield',
-			'#title'=>'Maessage Response Queue',
-			'#size'=>'20',
-			'#required' => 'true',
-			'#default_value' => variable_get('ocr-results-queue', '')
-	);
+  $form['requestqueue']  = array('#type'=>'textfield',
+      '#title'=>'Maessage Request Queue',
+      '#size'=>'20',
+      '#required' => 'true',
+      '#default_value' => variable_get('ocr-requests-queue', '')
+  );
+  $form['responsequeue']  = array('#type'=>'textfield',
+      '#title'=>'Maessage Response Queue',
+      '#size'=>'20',
+      '#required' => 'true',
+      '#default_value' => variable_get('ocr-results-queue', '')
+  );
 
-	$form['submit']        = array('#type'=>'submit',
-			'#title'=>'Submit',
-			'#value'=>'Submit'
-	);
-	return $form;
+  $form['submit']        = array('#type'=>'submit',
+      '#title'=>'Submit',
+      '#value'=>'Submit'
+  );
+  return $form;
 
 }
 /**
  * Submit function for  select_ocrqueue()
- 
+ */
 function select_ocrqueue_submit($form,&$form_state){
-	drupal_set_message('Message Queues set Successfully');
-	$request_queue  = $form_state['values']['requestqueue'];
-	$response_queue = $form_state['values']['responsequeue'];
-	variable_set('ocr_requestqueue',$request_queue);
-	variable_set('ocr_responsequeue',$response_queue);
+  drupal_set_message('Message Queues set Successfully');
+  $request_queue  = $form_state['values']['requestqueue'];
+  $response_queue = $form_state['values']['responsequeue'];
+  variable_set('ocr_requestqueue',$request_queue);
+  variable_set('ocr_responsequeue',$response_queue);
 }
-*/
+
 
 function ocr_send_request($file)
 {
-	// sending message to OCR for an uploaded image
-	$requestqueue  = variable_get('ocr-requests-queue', '');
-	$responsequeue = variable_get('ocr-results-queue', '');
-	$bucket = variable_get('image-store-bucket','');
-	
-	$queue = new request_queue($requestqueue);
+  // sending message to OCR for an uploaded image
+  $requestqueue  = variable_get('ocr-requests-queue');
+  $responsequeue = variable_get('ocr-results-queue');
+  $bucket = variable_get('image-store-bucket');
 
-	//create message
-	$message_arr = array('ExternalReference' => $file->nid,
-			'ImageKey' => $file->filename,
-			'ImageBucket' => $bucket,
-			'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
-	);
-	$message = json_encode($message_arr);
+  $queue = new request_queue($requestqueue);
 
-	// send message to the OCR Queue
-	$queue->sendMessage($message);
+  //create message
+  $message_arr = array('ExternalReference' => $file->nid,
+      'ImageKey' => $file->filename,
+      'ImageBucket' => $bucket,
+      'OutQueue' => "http://eu-west-1.queue.amazonaws.com/" . $responsequeue,
+  );
+  $message = json_encode($message_arr);
+
+  // send message to the OCR Queue
+  $queue->sendMessage($message);
 }
 
 /**
  * Implements hook_cron()
- * 
+ *
  */
 function ocr_cron()
 {
-	$queueName= variable_get('ocr-results-queue', '');
-	$queue = new response_queue($queueName);
-	$message_counter = 0;
-	while($message = $queue->getMessage()) 
-	{	
-		$message_counter++;
-		try {
-			update_drupal_with_responce($message->getBody());
-		} catch (Exception $e)
-		{
-			watchdog_exception('OCR Exception', $e);
-		}
-		$queue->deleteMessage($message);		
-	} 
-	watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
+  $queueName= variable_get('ocr-results-queue', '');
+  $queue = new response_queue($queueName);
+  $message_counter = 0;
+  while($message = $queue->getMessage())
+  {
+    $message_counter++;
+    try {
+      update_drupal_with_responce($message->getBody());
+    } catch (Exception $e)
+    {
+      watchdog_exception('OCR Exception', $e);
+    }
+    $queue->deleteMessage($message);
+  }
+  watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
 }

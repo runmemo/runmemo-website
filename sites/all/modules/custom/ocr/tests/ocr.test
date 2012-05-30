@@ -14,7 +14,8 @@ class OcrTestCase extends DrupalWebTestCase {
 	}
 	
 	function setUp() {
-
+        parent::setUp('ocr');
+        
 		// Create new user that this node will be create by
 		// @todo create function that creates user with photographer account
 		$this->testUser = $this->drupalCreateUser(array('administer blocks', 'access administration pages'));
