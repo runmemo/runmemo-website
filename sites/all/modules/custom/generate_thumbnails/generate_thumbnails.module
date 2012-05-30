@@ -1,30 +1,30 @@
 <?php
 /**
  * hook_menu
- * @return type 
+ * @return type
  * return menu items
  */
 function generate_thumbnails_menu() {
   $items['admin/image-style-manage'] = array(
-                                  'title' => 'Manage image style',
-                                  'description' => 'Manage the image style',
-                                  'page callback' => 'manage_image_style',
-                                  'access arguments' => array('Administer image styles '),
-                                  'type' => MENU_CALLBACK,
-                                  );
+      'title' => 'Manage image style',
+      'description' => 'Manage the image style',
+      'page callback' => 'manage_image_style',
+      'access arguments' => array('Administer image styles '),
+      'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 /**
- * page callback function for 
+ * page callback function for
  * mange image style
- * @return type 
+ * @return type
  */
 function manage_image_style() {
- return drupal_render(drupal_get_form('manage_image_style_form'));
+  return drupal_render(drupal_get_form('manage_image_style_form'));
 }
 /**
  * Form for manage image style
- * @return string 
+ * @return string
  */
 function manage_image_style_form() {
   $form = array();
@@ -44,7 +44,7 @@ function manage_image_style_form() {
 /**
  * submit function manage image style form
  * @param type $form
- * @param type $form_state 
+ * @param type $form_state
  */
 function manage_image_style_form_submit($form, &$form_state) {
   $prev_img_style_name = $form['preview-image']['#value'];
@@ -55,41 +55,37 @@ function manage_image_style_form_submit($form, &$form_state) {
  * Implementation of hook_cron()
  * Function for generating thumbnail images
  */
- function generate_thumbnails_cron() {
-	
-	$queue = DrupalQueue::get('generate_image_styles');
-	//Pull items out one at a time.
-	while($item = $queue->claimItem()) {
-		//Try saving the data.
-		_generate_image_styles($item->data);
-		$queue->deleteItem($item);
-		watchdog('Queue Item','Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
-	};
+function generate_thumbnails_cron() {
+
+  $queue = DrupalQueue::get('create_image_cache');
+  //Pull items out one at a time.
+  while($item = $queue->claimItem()) {
+    //Try saving the data.
+    _generate_image_styles($item->data);
+    $queue->deleteItem($item);
+    watchdog('Queue Item','Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+  };
 
 }
 
 /*
  *  Function creates imagecache for styles that appear on the search page
- *  
- *  @param $file - contains image details
- */
+*
+*  @param $file - contains image details
+*/
 function _generate_image_styles($file){
-	watchdog('Image caching',  'Queue generate_image_styles received job', array($file), WATCHDOG_DEBUG);
-	$precached_styles = array('search_preview','thumbnail');
-	foreach(image_styles() as $style)
-	{ 
-		if(in_array($style['name'] , $precached_styles))
-		{   
-			$derivative_uri = image_style_path($style['name'], $file->uri);
-			watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
+  watchdog('Image caching',  'Queue generate_image_styles received job', array($file), WATCHDOG_DEBUG);
+  $precached_styles = array('search_preview','thumbnail');
+  foreach($precached_styles as $style)
+  {
+    $derivative_uri = image_style_path($style['name'], $file->uri);
+    watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
 
-			if (!file_exists($derivative_uri)) {
-				image_style_create_derivative($style, $file->uri, $derivative_uri);
-			}
-		}
-	};
-	
-	$S3_queue = DrupalQueue::get('send_images_to_S3');
-	$S3_queue->createItem($file);
-	
+    if (!file_exists($derivative_uri)) {
+      image_style_create_derivative($style, $file->uri, $derivative_uri);
+    }
+  };
+
+  $S3_queue = DrupalQueue::get('send_images_to_S3');
+  $S3_queue->createItem($file);
 }
