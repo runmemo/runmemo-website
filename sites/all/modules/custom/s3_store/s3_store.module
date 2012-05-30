@@ -6,73 +6,73 @@
  */
 
 function s3_store_cron() {
-	$queue = DrupalQueue::get('send_images_to_S3');
-	
-	//$queue->deleteQueue();
-	watchdog('S3 info', 'Started S3 cron job for jobs = ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
-	//Pull items out one at a time.
-	while($item = $queue->claimItem(15)) {
-		watchdog('S3 info','Items in the queue(S3) == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
-		//Try saving the data.
-		try {
-			_send_file_to_s3($item->data);
-		} catch (Exception $e)
-		{
-			watchdog_exception('S3 error', $e);
-		}
-		$queue->deleteItem($item);
-	};
-	watchdog('S3 info','Finished S3 cron job.', array(), WATCHDOG_DEBUG);
+  $queue = DrupalQueue::get('send_images_to_S3');
+
+  //$queue->deleteQueue();
+  watchdog('S3 info', 'Started S3 cron job for jobs = ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+  //Pull items out one at a time.
+  while($item = $queue->claimItem(15)) {
+    watchdog('S3 info','Items in the queue(S3) == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+    //Try saving the data.
+    try {
+      _send_file_to_s3($item->data);
+    } catch (Exception $e)
+    {
+      watchdog_exception('S3 error', $e);
+    }
+    $queue->deleteItem($item);
+  };
+  watchdog('S3 info','Finished S3 cron job.', array(), WATCHDOG_DEBUG);
 }
 
 function _send_file_to_s3($file)
 {
-	// Check whether file exists
-	if (!file_exists($file->uri)) {
-		throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
-	}
-	
-	$bucket = variable_get('image-store-bucket');
-	// Send original file to S3
-	watchdog('S3 info','Sending file: ' . $file->uri . ' to s3://' . $bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
-	watchdog('S3 info', 'Using aws key: ' . variable_get('aws_access_key', ''), array(), WATCHDOG_DEBUG);
-	
-	$path_prefix = 'public://';
-	$acl = 'public-read'; //S3::ACL_PUBLIC_READ;
-	
-	$s3_mover = new s3_mover($path_prefix, $bucket);
-	
-	// Send cache images to S3	
-	$precached_styles = array('search_preview','thumbnail');
-	foreach(image_styles() as $style)
-	{
-		if(in_array($style['name'] , $precached_styles))
-		{
-			$s3_mover->move_imagecache($file, $style['name']);
-		}
-	};
+  // Check whether file exists
+  if (!file_exists($file->uri)) {
+    throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
+  }
 
-	// move original file
-	$s3_mover->move_file($file, $acl, $style);
-	
-	// Send file to OCR queue
-	ocr_send_request($file);
+  $bucket = variable_get('image-store-bucket');
+  // Send original file to S3
+  watchdog('S3 info','Sending file: ' . $file->uri . ' to s3://' . $bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
+  watchdog('S3 info', 'Using aws key: ' . variable_get('aws_access_key', ''), array(), WATCHDOG_DEBUG);
+
+  $path_prefix = 'public://';
+  $acl = 'public-read'; //S3::ACL_PUBLIC_READ;
+
+  $s3_mover = new s3_mover($path_prefix, $bucket);
+
+  // Send cache images to S3
+  $precached_styles = array('search_preview','thumbnail');
+  foreach(image_styles() as $style)
+  {
+    if(in_array($style['name'] , $precached_styles))
+    {
+      $s3_mover->move_imagecache($file, $style['name']);
+    }
+  };
+
+  // move original file
+  $s3_mover->move_file($file, $acl);
+
+  // Send file to OCR queue
+  ocr_send_request($file);
 }
 
 /**
  * function to create signed url to download orginal image
  */
 function get_s3_signed_url($resource) {
-	$bucket = variable_get('image-store-bucket','');
-	$AWS_S3_KEY        = variable_get('aws_access_key', '');
-	$AWS_s3_secret_key = variable_get('aws_secret_key', '');
-	$expires = time()+63072000;
-	// S3 Signed URL creation
-	$string_to_sign = "GET\n\n\n{$expires}\n/" . str_replace(".s3.amazonAWS.com", "", $bucket) . "/$resource";
-	$signature = urlencode(base64_encode((hash_hmac("sha1", utf8_encode($string_to_sign), $AWS_s3_secret_key, TRUE))));
+  $bucket = variable_get('image-store-bucket','');
+  $AWS_S3_KEY        = variable_get('aws_access_key', '');
+  $AWS_s3_secret_key = variable_get('aws_secret_key', '');
+  $expires = time()+63072000;
+  // S3 Signed URL creation
+  $string_to_sign = "GET\n\n\n{$expires}\n/" . str_replace(".s3.amazonAWS.com", "", $bucket) . "/$resource";
+  $signature = urlencode(base64_encode((hash_hmac("sha1", utf8_encode($string_to_sign), $AWS_s3_secret_key, TRUE))));
 
-	$authentication_params = "AWSAccessKeyId=" . $AWS_S3_KEY;
-	$authentication_params .= "&Expires={$expires}";
-	$authentication_params .= "&Signature={$signature}";
-	return $link = "http://s3-eu-west-1.amazonAWS.com/{$bucket}/{$resource}?{$authentication_params}";
+  $authentication_params = "AWSAccessKeyId=" . $AWS_S3_KEY;
+  $authentication_params .= "&Expires={$expires}";
+  $authentication_params .= "&Signature={$signature}";
+  return $link = "http://s3-eu-west-1.amazonAWS.com/{$bucket}/{$resource}?{$authentication_params}";
 }
