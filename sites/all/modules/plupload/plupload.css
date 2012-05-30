@@ -168,7 +168,7 @@
 }
 
   li.plupload_delete a {
-  background:url('images/delete.png');
+  background:url('images/delete.gif');
 }
 
   li.plupload_failed a {
@@ -177,7 +177,7 @@
 }
 
   li.plupload_done a {
-  background:url('images/done.png');
+  background:url('images/done.gif');
   cursor:default;
 }
 
