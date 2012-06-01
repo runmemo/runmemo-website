@@ -1,5 +1,8 @@
 <?php
 /**
+* @file module for thumbnail generation that happens after image upload
+*/
+/**
  * hook_menu
  * @return type
  * return menu items
@@ -68,22 +71,40 @@ function generate_thumbnails_cron() {
 
 }
 
+function image_style($name) {
+  foreach (image_styles() as $style){
+    if ($style['name'] == $name) {
+      return $style;
+    }
+    else {
+      return NULL;
+    }
+  }
+}
+
 /*
  *  Function creates imagecache for styles that appear on the search page
-*
-*  @param $file - contains image details
-*/
+ *
+ *  @param $file - contains image details
+ */
 function _generate_image_styles($file){
   watchdog('Image caching',  'Queue generate_image_styles received job', array($file), WATCHDOG_DEBUG);
   $precached_styles = array('search_preview','thumbnail');
-  foreach($precached_styles as $style)
+  foreach($precached_styles as $style_name)
   {
-    $derivative_uri = image_style_path($style['name'], $file->uri);
-    watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
+    $style = image_style($style_name);
+    if($style) {
+      $derivative_uri = image_style_path($style['name'], $file->uri);
+      watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
 
-    if (!file_exists($derivative_uri)) {
-      image_style_create_derivative($style, $file->uri, $derivative_uri);
+      if (!file_exists($derivative_uri)) {
+        image_style_create_derivative($style, $file->uri, $derivative_uri);
+      }
+    } 
+    else { // style does not exists
+      watchdog('Image caching', 'Style does not exists: ' . $style_name . '.', array(), WATCHDOG_WARNING);
     }
+     
   };
 
   $S3_queue = DrupalQueue::get('send_images_to_S3');
