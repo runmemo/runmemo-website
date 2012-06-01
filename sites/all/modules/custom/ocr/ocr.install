@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the ocr module.
+ */
+
+function ocr_schema() {
+  $schema['ocr_numbers'] = array (
+			'description' => 'Stores numbers and their properties from OCR Response',
+			'fields' => array (
+					'nid' => array (
+							'description' => 'The ID of the node that contains the image.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+        					'not null' => TRUE,
+  ),
+					'number' => array (
+							'description' => 'Number of runner.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'top' => array (
+							'description' => 'Top position of the number on the image.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'left' => array (
+							'description' => 'Left postition of the number on the image.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'width' => array (
+							'description' => 'Width of the number.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'height' => array (
+							'description' => 'height of the number.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'probability' => array (
+							'description' => 'Probability that the number is correct.',
+							'type' => 'double precision (2,5)',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+  ),
+					'timestamp' => array(
+							'description' => 'UNIX timestamp for when the number was added.',
+							'type' => 'int',
+							'unsigned' => TRUE,
+							'not null' => TRUE,
+							'default' => 0,
+  ),
+  ),
+			'primary key' => array('nid','number'),
+  );
+
+}
+
+function ocr_install() {
+  variable_set('ocr_responsequeue', $conf['ocr-results-queue']);
+  variable_set('ocr_requestqueue' , $conf['ocr-requests-queue']);
+}
+/**
+ * Implements hook_schema().
+
+ function ocr_schema() {
+ $schema['ocr_response'] = array(
+ 'description' => 'Stores response from OCR passed through amazon sqs .',
+ 'fields' => array(
+ 'ocr_responseid' => array(
+ 'type' => 'int',
+
+ 'not null' => TRUE,
+
+ 'description' => "The unique id for response.",
+ ),
+ 'nid' => array(
+ 'type' => 'int',
+
+ 'not null' => TRUE,
+
+ 'description' => "The unique id for response.",
+ ),
+ 'ocr_messageid' => array(
+ 'type' => 'varchar',
+ 'length' => 128,
+ 'not null' => TRUE,
+
+ 'description' => 'The messageid of the message.',
+ ),
+ 'ocr_response' => array(
+ 'type' => 'text',
+ 'not null' => TRUE,
+ 'description' => 'The response from OCR.',
+ ),
+
+ 'ocr_status' => array(
+ 'type' => 'int',
+
+ 'not null' => TRUE,
+
+ 'description' => "The status of the response.",
+ ),
+ 'received' => array(
+ 'type' => 'int',
+ 'not null' => TRUE,
+
+ 'description' => 'The timestamp of the response.',
+ ),
+
+ 'primary key' => 'ocr_responseid',
+ )
+ );
+ return $schema;
+ }
+ */

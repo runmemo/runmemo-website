@@ -6,3 +6,6 @@ sites/*/settings*.php
 sites/*/files
 sites/*/private
  
+/.settings
+/.buildpath
+/.project

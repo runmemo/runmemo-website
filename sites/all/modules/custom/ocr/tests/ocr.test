@@ -1,0 +1,103 @@
+<?php
+class OcrTestCase extends DrupalWebTestCase {
+
+	protected $testNode;
+	protected $testUser;
+	protected $eventNode;
+	
+	public static function getInfo() {
+		return array(
+				'name' => 'OCR functionality',
+				'description' => 'Tests OCR integration functionality.',
+				'group' => 'OCR',
+		);
+	}
+	
+	function setUp() {
+        parent::setUp('ocr');
+        
+		// Create new user that this node will be create by
+		// @todo create function that creates user with photographer account
+		$this->testUser = $this->drupalCreateUser(array('administer blocks', 'access administration pages'));
+		$uid = $this->testUser->uid;
+		
+		//$this->drupalLogin($this->admin_user);
+		
+		// Create new event node to use for product node
+		// @todo create function that creates new Product node without image
+		$event = new stdClass();
+		$event->field_pricing['und']['0']['value'] = 5;
+		$event->title = 'OCR Test Event';
+		$event->uid = $uid;
+		$event = node_submit($event); // Prepare node for a submit
+		node_save($event); // After this call we'll get a nid
+		
+		$this->eventNode = $event;
+		
+		// Create node that we want to update with numbers and OCR status.
+		
+		$price = $event->field_pricing['und']['0']['value'];
+		
+		$node->field_event_reference['und']['0']['nid'] = $event;
+
+		// We create a new node object
+		$node = new stdClass();
+		// content type
+		$node->type = "product";
+		//node title
+		$node->title = $file['name'];
+		//set language
+		$node->language = 'und';
+		//user id
+		$node->uid = $uid;
+		node_object_prepare($node);
+		// Let's add standard body field
+		$node->body[$node->language][0]['value'] = 'This is a body text';
+		$node->body[$node->language][0]['summary'] = 'Here goes a summary';
+		$node->body[$node->language][0]['format'] = 'filtered_html';
+		
+		$node = node_submit($node); // Prepare node for a submit
+		node_save($node); // After this call we'll get a nid
+		
+		// save to attribute
+		$this->testNode = $node;
+		
+	}
+	function testResponceToUpdateNode() {
+		
+		// @todo 
+		
+		
+		
+		
+	}
+	
+	/**
+	 * Test that message that is sent to the queue is the same as the one that is read from the queue.
+	 */
+	function testQueueSendsMessage()
+	{ 
+		
+		
+		$queue_name = 'test-queue';
+		$q = new request_queue($queue_name);
+		$message_sent = 'test message';
+		$q->sendMessage($message_sent);
+		
+		$q2 = new response_queue($queueName);
+		$message_got = $q2->getMessage();
+		
+		$this->assertEqual($message_sent, $message_got, 'Message sent to the queue must be same as the message that we got back');
+		
+	}
+	
+	
+	function testProductNodeIsUpdated()
+	{
+		$jOcrResults = getFakeMessage($this->testNode);
+		$results_saver = new OcrResultsSaver($jOcrResults);
+		$results_saver->Save();
+		
+	}
+	
+}

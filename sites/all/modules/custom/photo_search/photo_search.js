@@ -27,7 +27,7 @@ jQuery(document).ready(function(){
           //for highlight the thumbnail image related to the preview image
           $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('style','border: 1px solid green;');
 
-          var initial_preview = initial_img.replace('thumbnail', 'preview-with-watermark');
+          var initial_preview = initial_img.replace('thumbnail', 'search_preview');
 
           $("#prev_img").html('<img src="'+initial_preview+'" />');
 
@@ -366,7 +366,7 @@ jQuery(document).ready(function(){
           var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
           $(".page-search-result span#photo_author label").text(node_author_txt);
 
-          var replacementurl = imgsrc.replace('thumbnail', 'preview-with-watermark');
+          var replacementurl = imgsrc.replace('thumbnail', 'search_preview');
 
           $("#prev_img").html('<img src="'+replacementurl+'" />');
 
