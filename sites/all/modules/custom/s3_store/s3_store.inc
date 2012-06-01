@@ -1,5 +1,7 @@
 <?php
 
+module_load_include('inc','amazon_s3','s3');
+
 /**
  * Represents a class that moves file from local folder to S3 bucket
  */
@@ -19,21 +21,22 @@ class s3_mover {
    * @param string $bucket
    * 	name of the bucket in S3 to which files will be saved.
    */
-  public function __construct($pathPrefix, $bucket) {
-    require_once drupal_get_path('module', 'amazon_s3') . '/s3.inc';
+ public function __construct($pathPrefix, $bucket)
+  {
+    
     $this->bucket = $bucket;
     $this->path = $pathPrefix;
     if ($this->s3 == NULL) {
-      module_load_include('inc', 'amazon_s3', 's3');
+     
       $aws_access_key = variable_get('aws_access_key');
       $aws_secret_key = variable_get('aws_secret_key');
 
       if (!($aws_access_key) OR !($aws_secret_key)) {
-        drupal_set_message(t('You must ') . l(t('set your aws access key and secret key'), 'admin/config/amazon-s3') . '.', 'error');
+        drupal_set_message('You must ' . l('set your aws access key and secret key', 'admin/config/amazon-s3') . '.', 'error');
       }
 
-      $s3 = amazon_s3_get_instance(); //new S3($aws_access_key, $aws_secret_key);
-    }
+      $s3 = new S3($aws_access_key, $aws_secret_key);
+    } 
     $this->s3 = $s3;
   }
 
@@ -135,29 +138,3 @@ class s3_mover {
   }
 
 }
-
-class s3_store_model {
-  /**
-   * Getting the local files
-   *
-   *  By using this function we can get the files that are not pushed to s3
-   */
-
-  public function get_local_photos() {
-    $query = db_select('file_managed', 'fm');
-    $query->join('file_usage', 'fu', 'fm.fid = fu.fid');
-    $query->join('field_data_field_s3_status', 'fs', 'fu.id = fs.entity_id');
-    $query->condition('fs.field_s3_status_value', 0);
-    $query->condition('fm.filename', '', '<>');
-    $query->addField('fm', 'fid');
-    $query->addField('fm', 'filename');
-    $query->addField('fm', 'uri');
-    $query->addField('fm', 'uid');
-    $query->addField('fs', 'entity_id');
-    $query->orderBy('fm.timestamp', 'DESC');
-    $query->range(0, 30);
-    $results = $query->execute();
-    return $results;
-  }
-}
-
