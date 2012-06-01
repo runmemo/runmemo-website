@@ -12,8 +12,7 @@ require_once libraries_get_path('Amazon') . '/SQS/Client.php';
 /**
  * Implements hook_help()
  */
-function ocr_help($path, $arg)
-{
+function ocr_help($path, $arg) {
   if ($path == 'admin/help#ocr') {
     return t('OCR integration module.');
   }
@@ -24,8 +23,8 @@ function ocr_help($path, $arg)
  */
 function ocr_menu() {
   $items['sendmessage'] = array(
-      'title'           => t('Send Message to OCR'),
-      'description'     => t('Send Message to OCR'),
+      'title'           =>  'Send Message to OCR',
+      'description'     =>  'Send Message to OCR',
       'page callback' => t('send_message'),
       'access arguments' => array(t('access administration pages')),
   );
@@ -66,23 +65,23 @@ function ocr_menu() {
 /**
  * Setting OCR queue to use
  */
-function select_ocrqueue(){
-  $form['requestqueue']  = array('#type'=>'textfield',
-      '#title'=>'Maessage Request Queue',
-      '#size'=>'20',
+function select_ocrqueue() {
+  $form['requestqueue'] = array('#type' => 'textfield',
+      '#title' => 'Maessage Request Queue',
+      '#size' => '20',
       '#required' => 'true',
       '#default_value' => variable_get('ocr-requests-queue', '')
   );
-  $form['responsequeue']  = array('#type'=>'textfield',
-      '#title'=>'Maessage Response Queue',
-      '#size'=>'20',
+  $form['responsequeue']  = array('#type' => 'textfield',
+      '#title' => 'Maessage Response Queue',
+      '#size' => '20',
       '#required' => 'true',
       '#default_value' => variable_get('ocr-results-queue', '')
   );
 
-  $form['submit']        = array('#type'=>'submit',
-      '#title'=>'Submit',
-      '#value'=>'Submit'
+  $form['submit'] = array('#type' => 'submit',
+      '#title' => 'Submit',
+      '#value' => 'Submit'
   );
   return $form;
 
@@ -90,17 +89,16 @@ function select_ocrqueue(){
 /**
  * Submit function for  select_ocrqueue()
  */
-function select_ocrqueue_submit($form,&$form_state){
-  drupal_set_message('Message Queues set Successfully');
+function select_ocrqueue_submit($form, &$form_state) {
+  drupal_set_message(t('Message Queues set Successfully'));
   $request_queue  = $form_state['values']['requestqueue'];
   $response_queue = $form_state['values']['responsequeue'];
-  variable_set('ocr_requestqueue',$request_queue);
-  variable_set('ocr_responsequeue',$response_queue);
+  variable_set('ocr_requestqueue', $request_queue);
+  variable_set('ocr_responsequeue', $response_queue);
 }
 
 
-function ocr_send_request($file)
-{
+function ocr_send_request($file) {
   // sending message to OCR for an uploaded image
   $requestqueue  = variable_get('ocr-requests-queue');
   $responsequeue = variable_get('ocr-results-queue');
@@ -124,18 +122,15 @@ function ocr_send_request($file)
  * Implements hook_cron()
  *
  */
-function ocr_cron()
-{
+function ocr_cron() {
   $queueName= variable_get('ocr-results-queue', '');
   $queue = new response_queue($queueName);
   $message_counter = 0;
-  while($message = $queue->getMessage())
-  {
+  while ($message = $queue->getMessage()) {
     $message_counter++;
     try {
       update_drupal_with_responce($message->getBody());
-    } catch (Exception $e)
-    {
+    } catch (Exception $e) {
       watchdog_exception('OCR Exception', $e);
     }
     $queue->deleteMessage($message);
