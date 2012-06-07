@@ -62,7 +62,7 @@ function generate_thumbnails_cron() {
 
   $queue = DrupalQueue::get('create_image_cache');
   //Pull items out one at a time.
-  while($item = $queue->claimItem()) {
+  while($item = $queue->claimItem(60)) {
     //Try saving the data.
     _generate_image_styles($item->data);
     $queue->deleteItem($item);
