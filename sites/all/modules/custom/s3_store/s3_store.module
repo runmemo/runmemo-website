@@ -4,7 +4,6 @@
  * Implementation of hook_cron()
  * Function for getting images from local and pushing to s3
  */
-
 function s3_store_cron() {
   $queue = DrupalQueue::get('send_images_to_S3');
 
@@ -25,6 +24,11 @@ function s3_store_cron() {
   watchdog('S3 info', 'Finished S3 cron job.', array(), WATCHDOG_DEBUG);
 }
 
+/**
+ * 
+ * Sends file to S3 backet with image cache
+ * @param object $file contains properties of the file
+ */
 function _send_file_to_s3($file) {
   // Check whether file exists
   if (!file_exists($file->uri)) {
