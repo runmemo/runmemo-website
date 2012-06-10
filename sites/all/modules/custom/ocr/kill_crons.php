@@ -1,5 +1,0 @@
-<?php
-
-drupal_flush_all_caches();
-
-?>
