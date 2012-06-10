@@ -3,6 +3,9 @@ description = Testing module for OCR integration functionality.
 package = OCR
 core = 7.x
 files[] = ocr_test.module
+files[] = ocr_test.inc
+files[] = ocr_product_saver.test
+files[] = ocr_sqs_queues.test
 hidden = TRUE
 
 ; Information added by Bulat Yapparov packaging script on 2012-05-02

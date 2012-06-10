@@ -4,6 +4,10 @@ package = Runmemo Custom Modules
 core = 7.x
 files[] = ocr.module
 files[] = ocr.inc
+files[] = ocr_product_node_saver.inc
+files[] = ocr_sqs_queues.inc
+files[] = tests/ocr.test
+
 
 ; Information added by drupal.org packaging script on 2011-11-24
 version = "7.x-1.x-dev"
