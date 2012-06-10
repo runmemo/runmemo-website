@@ -1,0 +1,90 @@
+<?php
+/**
+ * @file contains OcrProductSaverTest class that updates Product node
+ * with information from OCR message
+ */
+
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
+
+/**
+ *
+ * Test cases for ProductNodeSaver class.
+ * @author Bulat Yapparov
+ *
+ */
+class OcrProductSaverTest extends DrupalWebTestCase {
+
+  private $testNode;
+
+  public static function getInfo() {
+    return array(
+				'name' => 'Test ProductNodeSaver',
+				'description' => 'Test ProductNodeSaver class in OCR module.',
+				'group' => 'OCR',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('ocr');
+    // create a Product node for testing;
+    $this->testNode = product_node_creator::getNewProductNode();
+
+  }
+
+  /**
+   *
+   * Test that OCR Success status is saved correctly by the ProductNodeSaver.
+   */
+  function testSuccessStatusSavedOnTheNode() {
+
+    $productSaver = new ProductNodeSaver($this->testNode->nid);
+    $ocr_status = 1;
+
+    // Set the status to TRUE and save the changes
+    $productSaver->SetOcrStatus(TRUE);
+    $productSaver->Save();
+
+    $node = node_load($this->testNode->nid);
+    // get the value of the field
+    $saved_ocr_status = field_get_items('node', $node, 'ocr_success', $node->language);
+    // $saved_ocr_status = $productSave->GetOcrStatus();
+
+    $this->assertEqual($saved_ocr_status[0]['value'], $ocr_status, 'OCR Success=True is saved to the database.');
+
+
+  }
+
+  /**
+   *
+   * Function to test that numbers are saved to the node correctly by ProductNodeSaver.
+   */
+  function testNumbersAddedToTheProductNode() {
+    $productSaver = new ProductNodeSaver($this->testNode->nid);
+    // array of test nunbers that we will try to add to the node.
+    $numbers = array(10, 15, 20, 1000, 34000, 100000);
+     
+    // Save numbers to the node.
+    foreach ($numbers as $number) {
+      $productSaver->AddNumber($number);
+    }
+    $productSaver->Save();
+     
+    // Load the node and check that we can get same numbers.
+    $node = node_load($this->testNode->nid);
+
+    $saved_ocr_numbers = field_get_items('node', $node, 'ocr_numbers', $node->language);
+     
+    $count_matches = 0;
+    $count_saved_numbers = 0;
+    foreach ($saved_ocr_numbers as $saved_number) {
+      $count_saved_numbers++;
+      if (in_array($saved_number['value'], $numbers)) {
+        $count_matches++;
+      }
+    }
+    $this->assertEqual($count_saved_numbers, count($numbers), 'Number of saved OCR numbers is correct.');
+    $this->assertEqual($count_matches, count($numbers), 'OCR numbers are saved correctly to Product node by ProductNodeSaver. Matches = ' . $count_matches . ' out of ' . count($numbers));
+     
+  }
+
+}
