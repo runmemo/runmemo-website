@@ -10,7 +10,6 @@ require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 
  *
  * Test cases for ProductNodeSaver class.
  * @author Bulat Yapparov
- *
  */
 class OcrProductSaverTest extends DrupalWebTestCase {
 
@@ -55,7 +54,6 @@ class OcrProductSaverTest extends DrupalWebTestCase {
   }
 
   /**
-   *
    * Function to test that numbers are saved to the node correctly by ProductNodeSaver.
    */
   function testNumbersAddedToTheProductNode() {

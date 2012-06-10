@@ -7,7 +7,7 @@
  * /
 
  /**
- * Saves Json response message to Drupal.
+ * Saves OCR response message.
  */
 class OcrResultsSaver {
   public $nid; // id of the Node
@@ -27,7 +27,9 @@ class OcrResultsSaver {
 
     $response = json_decode(trim($message));
     $this->nid = $response->ExternalReference;
-    $this->success = $response->Success;
+    
+    // convert success to boolean
+    $this->success = (strcasecmp($response->Success, 'True') == 0);
     if ($this->success) {
       foreach ($response->Numbers as $number) {
         $this->numbers[] = new OcrResponceNumber($this->nid, $number);
@@ -44,7 +46,7 @@ class OcrResultsSaver {
    * Saves all details from OCR response message to Drupal
    */
   public function Save() {
-    if ($this->success == TRUE) {
+  	if ($this->success) {
       try {
         $this->product = new ProductNodeSaver($this->nid);
 
@@ -66,13 +68,13 @@ class OcrResultsSaver {
   }
 
   /**
-   * Saves error message from OCR responce to Product node.
+   * Saves error message from OCR responce.
    */
   private function SaveError() {
 
     if ($this->error_message) {
       // @todo - maybe need to save this on the Product Node.
-      watchdog('OCR Result Error', 'OCR Message: ' . $this->error_message, array(), WATCHDOG_WARNING);
+      watchdog('OCR Message Error', $this->error_message, array(), WATCHDOG_WARNING);
     }
   }
 }

@@ -1,0 +1,32 @@
+{     "ExternalReference":"1234567",
+      "Success" : "True",
+      "Numbers" : [
+        {
+          "Number" : "4745",
+          "Probability" : 0.443243,
+          "X" : 94,
+          "Y" : 93,
+          "Width" : 73,
+          "Height" : 34,
+          "Correct" : true
+        },
+        {
+          "Number" : "500",
+          "Probability" : 0.473652,
+          "X" : 94,
+          "Y" : 93,
+          "Width" : 73,
+          "Height" : 30,
+          "Correct" : false
+        },
+        {
+          "Number" : "5",
+          "Probability" : 0.311642,
+          "X" : 189,
+          "Y" : 10,
+          "Width" : 11,
+          "Height" : 17,
+          "Correct" : false
+        }
+      ]
+    }

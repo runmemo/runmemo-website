@@ -1,19 +1,51 @@
 <?php
 
-
+/**
+ * 
+ * Provides fake OCR response messages.
+ * @author Bulat Yapparov
+ *
+ */
 class sqs_fake {
+  private $reference;
   /**
    * 
-   * Gets fake OCR repsponse message
-   * @param integer $nid ID of the node that message will be used for.
+   * Initiates the class
+   * @param integer $reference reference of the object for OCR response message
    */
-  public static function getFakeResponseMessage($nid) {
-    $testsPath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/';
-    $message = file_get_contents($testsPath . 'response_message_fake.json');
+  public function __construct($reference) {
+  	$this->reference = $reference;
+  }
+  /**
+   * 
+   * Gets fake OCR repsponse message from teplate of the JSON file
+   * @param string $file_name name of the template file for the message
+   */
+  public function getFakeMessage($file_name) {
+    $message = $this->GetMessageFromFakeFile($file_name);
+    return $this->GetMessageWithExternalReference($message);
+  }
+  
+  /**
+   * 
+   * Gets text from the specified file
+   * @param string $file_name name of the file that we want to read text from.
+   */
+  private function GetMessageFromFakeFile($file_name) {
+  	$testsPath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/';
+    return file_get_contents($testsPath . $file_name);
+  }
 
-    $messageJSON = json_decode($message);
-    // Overwrite external reference with node id of the test node
-    $messageJSON->ExternalReference = $nid;
+  /**
+   * 
+   * Replaces ExternalReference attribute in Json message with value provided.
+   * @param string $message JSON message from OCR response
+   * @param integer $reference New value for ExternalReference attribute
+   */
+  private function GetMessageWithExternalReference($message) {
+  	$messageJSON = json_decode($message);
+  	 // Overwrite external reference with node id of the test node
+    $messageJSON->ExternalReference = $this->reference;
     $message = json_encode($messageJSON);
     return $message;
   }
@@ -27,9 +59,7 @@ class sqs_fake {
  */
 class product_node_creator {
   /**
-   * 
    * Creates and saves instance of Product node.
-   * @param integer $uid ID of the user that will be set as creator of the node.
    */
   public static function getNewProductNode() {
      // Create new event node to use for product node
