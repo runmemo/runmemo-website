@@ -1,7 +1,7 @@
 <?php
 /**
-* @file module for thumbnail generation that happens after image upload
-*/
+ * @file module for thumbnail generation that happens after image upload
+ */
 /**
  * hook_menu
  * @return type
@@ -71,15 +71,18 @@ function generate_thumbnails_cron() {
 
 }
 
+/**
+ * 
+ * Get image style by name
+ * @param string $name name of the image style 
+ */
 function image_style($name) {
   foreach (image_styles() as $style){
     if ($style['name'] == $name) {
       return $style;
     }
-    else {
-      return NULL;
-    }
   }
+  return NULL;
 }
 
 /*
@@ -93,18 +96,17 @@ function _generate_image_styles($file){
   foreach($precached_styles as $style_name)
   {
     $style = image_style($style_name);
-    if($style) {
-      $derivative_uri = image_style_path($style['name'], $file->uri);
-      watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
-
-      if (!file_exists($derivative_uri)) {
-        image_style_create_derivative($style, $file->uri, $derivative_uri);
-      }
-    } 
-    else { // style does not exists
+    
+    if(!$style) {
       watchdog('Image caching', 'Style does not exists: ' . $style_name . '.', array(), WATCHDOG_WARNING);
     }
-     
+
+    $derivative_uri = image_style_path($style['name'], $file->uri);
+    watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
+
+    if (!file_exists($derivative_uri)) {
+      image_style_create_derivative($style, $file->uri, $derivative_uri);
+    }     
   };
 
   $S3_queue = DrupalQueue::get('send_images_to_S3');
