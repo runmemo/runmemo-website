@@ -1,9 +1,8 @@
-
 <?php 
+
 /**
  * Init function for adding the external file
  */
-
 function photo_upload_init() {
   //to add the js file
   drupal_add_js(drupal_get_path("module", "photo_upload") . "/js/photo_upload.js");
@@ -384,4 +383,3 @@ function create_photo_node($file, $event) {
   return $node;
 
 }
-
