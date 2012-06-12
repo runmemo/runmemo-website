@@ -12,9 +12,9 @@ class OcrSQSIntegrationTestCase extends DrupalWebTestCase {
 
   public static function getInfo() {
     return array(
-				'name' => 'OCR SQS queues functionality',
-				'description' => 'Tests SQS integration for OCR.',
-				'group' => 'OCR',
+      'name' => 'OCR SQS queues functionality',
+      'description' => 'Tests SQS integration for OCR.',
+      'group' => 'OCR',
     );
   }
   

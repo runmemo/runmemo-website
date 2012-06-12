@@ -27,7 +27,7 @@ class OcrResultsSaver {
 
     $response = json_decode(trim($message));
     $this->nid = $response->ExternalReference;
-    
+
     // convert success to boolean
     $this->success = (strcasecmp($response->Success, 'True') == 0);
     if ($this->success) {
@@ -36,7 +36,7 @@ class OcrResultsSaver {
       }
     }
     else {
-      $this->error_message 	= $response->ErrorMessage;
+      $this->error_message = $response->ErrorMessage;
     }
     //	$imagekey    = $response->ImageKey;
   }
@@ -46,7 +46,7 @@ class OcrResultsSaver {
    * Saves all details from OCR response message to Drupal
    */
   public function Save() {
-  	if ($this->success) {
+    if ($this->success) {
       try {
         $this->product = new ProductNodeSaver($this->nid);
 
@@ -97,11 +97,11 @@ class OcrResponceNumber {
   public function __construct($nid, $number) {
     $this->nid    = $nid;
     $this->number = $number->Number;
-    $this->left 	= $number->X;
-    $this->top 		= $number->Y;
-    $this->width 	= $number->Width;
+    $this->left   = $number->X;
+    $this->top    = $number->Y;
+    $this->width  = $number->Width;
     $this->height = $number->Height;
-    $this->probability 	= $number->Probability;
+    $this->probability = $number->Probability;
   }
 
   /**
@@ -110,12 +110,12 @@ class OcrResponceNumber {
   public function Save() {
     // @todo write insert query that will add OCR results to DB table.
     db_insert('ocr_numbers')->fields(
-    array(	'nid' 		=> $this->nid,
-            'number'	=> $this->number,
-            'left'		=> $this->left,
-            'top'		=> $this->top,
-            'width'		=> $this->width,
-            'height'	=> $this->height,
+    array(  'nid'    => $this->nid,
+            'number' => $this->number,
+            'left'   => $this->left,
+            'top'    => $this->top,
+            'width'  => $this->width,
+            'height' => $this->height,
             'probability' => $this->probability,
             'received' => REQUEST_TIME,
     ))

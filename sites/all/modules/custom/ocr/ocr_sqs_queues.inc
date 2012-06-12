@@ -28,7 +28,7 @@ class sqs_queue {
   public function GetURL() {
     return $this->queueURL;
   }
-  
+
 };
 
 /**
@@ -44,7 +44,8 @@ class response_queue extends sqs_queue {
    * Gets a message from the SQS queue
    */
   public function getMessage() {
-    if (count($this->messages) == 0) { 	// array with messages is empty
+    if (count($this->messages) == 0) {
+      // array with messages is empty
       // so we get messages from SQS to array
       $this->getMessages();
     }
@@ -72,16 +73,16 @@ class response_queue extends sqs_queue {
     $this->receiptHandle = NULL;
     $messages=array();
 
-      $response = $this->service->receiveMessage($request);
-      if ($response->isSetReceiveMessageResult()) {
-        $receiveMessageResult = $response->getReceiveMessageResult();
-        $messageList 		  = $receiveMessageResult->getMessage();
-        foreach ($messageList as $message) {
-          // loop through messages in the list within SQS responce
-          $this->messages[] = $message;
-        }
+    $response = $this->service->receiveMessage($request);
+    if ($response->isSetReceiveMessageResult()) {
+      $receiveMessageResult = $response->getReceiveMessageResult();
+      $messageList = $receiveMessageResult->getMessage();
+      foreach ($messageList as $message) {
+        // loop through messages in the list within SQS responce
+        $this->messages[] = $message;
       }
-   }
+    }
+  }
 
   /**  Deletes message from the SQS queue by receipt handle
    *
@@ -89,16 +90,16 @@ class response_queue extends sqs_queue {
    */
   public function deleteMessage($message) {
     require_once libraries_get_path('Amazon') . '/SQS/Model/DeleteMessageRequest.php';
-    
-      //deleting messages
-      $delete_request = new Amazon_SQS_Model_DeleteMessageRequest();
-      $delete_request->setQueueUrl($this->queueURL);
-      $delete_request->setReceiptHandle($message->receiptHandle);
-      // @todo find out what response has if unsuccessful and throw exception if needed.
-      $response = $this->service->deleteMessage($delete_request);
-      if (!$response) {
-        watchdog('OCR Error', 'Problem with deleting message: ' . $message->receiptHandle, array(), WATCHDOG_ERROR);
-      }
+
+    //deleting messages
+    $delete_request = new Amazon_SQS_Model_DeleteMessageRequest();
+    $delete_request->setQueueUrl($this->queueURL);
+    $delete_request->setReceiptHandle($message->receiptHandle);
+    // @todo find out what response has if unsuccessful and throw exception if needed.
+    $response = $this->service->deleteMessage($delete_request);
+    if (!$response) {
+      watchdog('OCR Error', 'Problem with deleting message: ' . $message->receiptHandle, array(), WATCHDOG_ERROR);
+    }
   }
 }
 

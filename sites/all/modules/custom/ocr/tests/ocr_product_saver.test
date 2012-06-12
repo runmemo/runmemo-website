@@ -17,9 +17,9 @@ class OcrProductSaverTest extends DrupalWebTestCase {
 
   public static function getInfo() {
     return array(
-				'name' => 'Test ProductNodeSaver',
-				'description' => 'Test ProductNodeSaver class in OCR module.',
-				'group' => 'OCR',
+    'name' => 'Test ProductNodeSaver',
+    'description' => 'Test ProductNodeSaver class in OCR module.',
+    'group' => 'OCR',
     );
   }
 

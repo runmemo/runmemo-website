@@ -6,70 +6,69 @@
  */
 
 function ocr_schema() {
-  $schema['ocr_numbers'] = array (
-			'description' => 'Stores numbers and their properties from OCR Response',
-			'fields' => array (
-					'nid' => array (
-							'description' => 'The ID of the node that contains the image.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-        					'not null' => TRUE,
-  ),
-					'number' => array (
-							'description' => 'Number of runner.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'top' => array (
-							'description' => 'Top position of the number on the image.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'left' => array (
-							'description' => 'Left postition of the number on the image.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'width' => array (
-							'description' => 'Width of the number.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'height' => array (
-							'description' => 'height of the number.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'probability' => array (
-							'description' => 'Probability that the number is correct.',
-							'type' => 'double precision (2,5)',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-  ),
-					'timestamp' => array(
-							'description' => 'UNIX timestamp for when the number was added.',
-							'type' => 'int',
-							'unsigned' => TRUE,
-							'not null' => TRUE,
-							'default' => 0,
-  ),
-  ),
-			'primary key' => array('nid','number'),
-  );
-
+  $schema['ocr_numbers'] = array(
+    'description' => 'Stores numbers and their properties from OCR Response',
+    'fields' => array(
+                  'nid' => array(
+                      'description' => 'The ID of the node that contains the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                    ),
+                   'number' => array(
+                     'description' => 'Number of runner.',
+                     'type' => 'int',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,
+                    ),
+                    'top' => array(
+                      'description' => 'Top position of the number on the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                    ),
+                    'left' => array(
+                      'description' => 'Left postition of the number on the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                    ),
+                    'width' => array(
+                      'description' => 'Width of the number.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                    ),
+                    'height' => array(
+                      'description' => 'height of the number.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+                     ),
+                     'probability' => array(
+                       'description' => 'Probability that the number is correct.',
+                       'type' => 'double precision (2,5)',
+                       'unsigned' => TRUE,
+                       'not null' => TRUE,
+                     ),
+                     'timestamp' => array(
+                       'description' => 'UNIX timestamp for when the number was added.',
+                       'type' => 'int',
+                       'unsigned' => TRUE,
+                       'not null' => TRUE,
+                       'default' => 0,
+                     ),
+                   ),
+                'primary key' => array('nid', 'number'),
+               );
 }
 
 function ocr_install() {
   variable_set('ocr_responsequeue', variable_get('ocr-results-queue'));
   variable_set('ocr_requestqueue' , variable_get('ocr-requests-queue'));
- 
-  
- // Create fields on Product node for.
+
+
+  // Create fields on Product node for.
   foreach (_node_product_ocr_fields() as $field) {
     field_create_field($field);
   }
@@ -81,11 +80,11 @@ function ocr_install() {
     $instance['default_value'] = array(NULL);
     field_create_instance($instance);
   }
-  
+
 }
 
 /**
- * 
+ *
  *  An associative array specifying the fields we wish to add to Product node
  *  that Images will be associated with.
  */
@@ -93,16 +92,16 @@ function _node_product_ocr_fields() {
   $t = get_t();
   return array(
     'node_product_numbers' => array(
-      'field_name' => 'ocr_numbers',
-      'cardinality' => 10,
-      'type'        => 'number_integer',
-      'size'				=> 'normal',
+    'field_name' => 'ocr_numbers',
+    'cardinality' => 10,
+    'type' => 'number_integer',
+    'size' => 'normal',
     ),
     'node_product_ocr_status' => array(
-      'field_name'  => 'ocr_success',
-      'cardinality' => 1,
-      'type'        => 'number_integer',
-      'size'			=> 'tiny',
+    'field_name'  => 'ocr_success',
+    'cardinality' => 1,
+    'type' => 'number_integer',
+    'size' => 'tiny',
     ),
-   );
+  );
 }

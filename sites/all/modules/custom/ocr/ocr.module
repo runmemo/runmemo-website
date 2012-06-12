@@ -127,8 +127,7 @@ function _ocr_send_request($file) {
  * 
  * Adds nodes pending OCR to the queue for S3
  */
-function _add_ocr_pending_nodes_to_queue()
-{
+function _add_ocr_pending_nodes_to_queue() {
   $query = new EntityFieldQuery();
 
   $query->entityCondition('entity_type', 'node', '=')
@@ -137,14 +136,14 @@ function _add_ocr_pending_nodes_to_queue()
   //->fieldCondition('ocr_success','value', array(1,0), 'NOT IN');
    
   $result = $query->execute();
-  if(!$result['node'] || empty($result)) {
+  if (!$result['node'] || empty($result)) {
     return 0;
   }
   foreach ($result['node'] as $nid => $v) {
     $node = node_load($nid);
     // because fieldCondition does not allow to check for NULL values
     // we have to check whether field is null this way
-    if(is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
+    if (is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
       $file = $node->uc_product_image[LANGUAGE_NONE][0];
       $q = DrupalQueue::get('send_images_to_S3');
       $q->createItem($file);
