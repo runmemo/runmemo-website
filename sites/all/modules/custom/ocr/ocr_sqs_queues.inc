@@ -72,22 +72,16 @@ class response_queue extends sqs_queue {
     $this->receiptHandle = NULL;
     $messages=array();
 
-    try { // fetch messages from SQS queue
       $response = $this->service->receiveMessage($request);
       if ($response->isSetReceiveMessageResult()) {
         $receiveMessageResult = $response->getReceiveMessageResult();
-        $messageList 		= $receiveMessageResult->getMessage();
-        watchdog('OCR Debug', 'Got SQS Responses', array(), WATCHDOG_DEBUG);
+        $messageList 		  = $receiveMessageResult->getMessage();
         foreach ($messageList as $message) {
           // loop through messages in the list within SQS responce
           $this->messages[] = $message;
         }
       }
-    }
-    catch (Exception $e) {
-      watchdog('OCR Exception', $e->getMessage(), array(), WATCHDOG_ERROR);
-    }
-  }
+   }
 
   /**  Deletes message from the SQS queue by receipt handle
    *
@@ -96,23 +90,15 @@ class response_queue extends sqs_queue {
   public function deleteMessage($message) {
     require_once libraries_get_path('Amazon') . '/SQS/Model/DeleteMessageRequest.php';
     
-    try {	
       //deleting messages
       $delete_request = new Amazon_SQS_Model_DeleteMessageRequest();
       $delete_request->setQueueUrl($this->queueURL);
       $delete_request->setReceiptHandle($message->receiptHandle);
       // @todo find out what response has if unsuccessful and throw exception if needed.
       $response = $this->service->deleteMessage($delete_request);
-      if ($response) {
-        watchdog('OCR Debug', 'Message deleted for handler: ' . $message->receiptHandle, array(), WATCHDOG_DEBUG);
-      }
-      else {
+      if (!$response) {
         watchdog('OCR Error', 'Problem with deleting message: ' . $message->receiptHandle, array(), WATCHDOG_ERROR);
       }
-    }
-    catch (Exception $e) {
-      watchdog('OCR Exception', $e->getMessage(), array(), WATCHDOG_ERROR);
-    }
   }
 }
 
@@ -139,6 +125,5 @@ class request_queue extends sqs_queue {
     $request->setMessageBody($message);
     $response = $this->service->sendMessage($request);
     // @todo find out what the response status are and implement exception throw for bad statuses.
-    //watchdog('SQS Responce', $response->getSendMessageResult(),array(), WATCHDOG_DEBUG);
   }
 }
