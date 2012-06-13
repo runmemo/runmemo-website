@@ -80,6 +80,7 @@ class OcrProductSaverTest extends DrupalWebTestCase {
         $count_matches++;
       }
     }
+
     $this->assertEqual($count_saved_numbers, count($numbers), 'Number of saved OCR numbers is correct.');
     $this->assertEqual($count_matches, count($numbers), 'OCR numbers are saved correctly to Product node by ProductNodeSaver. Matches = ' . $count_matches . ' out of ' . count($numbers));
      

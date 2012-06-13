@@ -77,7 +77,6 @@ function ocr_install() {
   foreach (_node_product_ocr_fields() as $instance) {
     $instance['entity_type'] = 'node';
     $instance['bundle'] = 'product';
-    $instance['default_value'] = array(NULL);
     field_create_instance($instance);
   }
 
@@ -102,6 +101,7 @@ function _node_product_ocr_fields() {
     'cardinality' => 1,
     'type' => 'number_integer',
     'size' => 'tiny',
+    'default_value' => array(NULL),
     ),
   );
 }

@@ -4,6 +4,8 @@
  * @author Bulat Yapparov
  */
 
+require_once libraries_get_path('Amazon') . '/SQS/Client.php';
+
 /** @todo move account url to config or install file
  */
 define('AMAZON_SQS_PATH', 'https://' . variable_get('aws_sqs_region') . '.queue.amazonaws.com/' . variable_get('aws_account_id') . '/');
