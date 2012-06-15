@@ -1,5 +1,4 @@
 <?php
-// $Id: utility-form.inc,v 1.2 2010/12/16 05:17:44 dman Exp $
 /**
  * @file Utility form, conversion and rendering functions for image processes
  */

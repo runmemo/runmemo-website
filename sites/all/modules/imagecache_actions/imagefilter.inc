@@ -1,5 +1,4 @@
 <?php
-// $Id: imagefilter.inc,v 1.1 2008/05/28 11:45:08 dman Exp $
 
 //include this file whenever you have to use imageconvolution…
 //you can use in your project, but keep the comment below

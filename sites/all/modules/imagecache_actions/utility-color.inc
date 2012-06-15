@@ -1,5 +1,4 @@
 <?php
-// $Id: utility-color.inc,v 1.2.2.1 2011/02/03 21:26:11 dman Exp $
 /**
  * @file Utility functions for color widgets
  */
@@ -25,9 +24,26 @@ function imagecache_rgb_form($action) {
     '#title' => t('HEX'),
     '#default_value' => $action['HEX'],
     '#size' => 7,
+    '#element_validate' => array('imagecache_rgb_validate'),
   );
 
   return $form;
+}
+
+/**
+ * Element validate handler to ensure a hexadecimal color value.
+ * 
+ * The core image_effect_color_validate() was not intelligent enough. 
+ * Actually parse the value in order to see if it is parsable.
+ */
+function imagecache_rgb_validate($element, &$form_state) {
+  if ($element['#value'] != '') {
+    $rgba_value = imagecache_actions_hex2rgba($element['#value']);
+    if (!$rgba_value) {
+      // Returning NULL means a parse error
+      form_error($element, t('!name must be a hexadecimal color value.', array('!name' => $element['#title'])));
+    }
+  }
 }
 
 /**
@@ -81,7 +97,7 @@ function theme_imagecacheactions_rgb_form($variables) {
  * @see http://drupal.org/node/1354
  */
 function theme_imagecacheactions_rgb($variables) {
-  $rgb = $variables['rgb'];
+  $rgb = $variables['RGB'];
   if ($rgb['HEX']) {
     return " <span style=\"width:2em; border:1px solid white; background-color:#{$rgb['HEX']}\" >&nbsp;#{$rgb['HEX']}&nbsp;</span>";
   }
