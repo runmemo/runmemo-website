@@ -1,7 +1,11 @@
 <?php
+
 /**
  * @file module for thumbnail generation that happens after image upload
  */
+
+require_once 'generate_thumbnails.inc';
+
 /**
  * hook_menu
  * @return type
@@ -60,11 +64,12 @@ function manage_image_style_form_submit($form, &$form_state) {
  */
 function generate_thumbnails_cron() {
 
+  $styles = _pre_image_cache_styles();
   $queue = DrupalQueue::get('create_image_cache');
   //Pull items out one at a time.
   while($item = $queue->claimItem()) {
     //Try saving the data.
-    _generate_image_styles($item->data);
+    _generate_image_styles($item->data, $styles);
     $queue->deleteItem($item);
     watchdog('Queue Item','Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
   };
@@ -90,20 +95,19 @@ function image_style($name) {
  *
  *  @param $file - contains image details
  */
-function _generate_image_styles($file){
-  watchdog('Image caching',  'Queue generate_image_styles received job', array($file), WATCHDOG_DEBUG);
-  $precached_styles = array('search_preview','thumbnail');
-  foreach($precached_styles as $style_name)
-  {
+function _generate_image_styles($file, $styles){
+  
+  foreach($styles as $style_name)
+  { 
     $style = image_style($style_name);
-    
+     
     if(!$style) {
       watchdog('Image caching', 'Style does not exists: ' . $style_name . '.', array(), WATCHDOG_WARNING);
+      return;
     }
 
     $derivative_uri = image_style_path($style['name'], $file->uri);
-    watchdog('Image caching','Building ImageCache for Style == ' . $style['name'] . '. Saving from ' . $file->uri . ' to ' . $derivative_uri, array(), WATCHDOG_DEBUG);
-
+    
     if (!file_exists($derivative_uri)) {
       image_style_create_derivative($style, $file->uri, $derivative_uri);
     }     

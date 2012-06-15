@@ -1,0 +1,83 @@
+<?php
+
+/**
+ *
+ * Test cases for thumbnail creation.
+ * @author Bulat Yapparov
+ */
+class GenerateImageCacheTest extends DrupalWebTestCase {
+  private $testFile;
+
+  public static function getInfo() {
+    return array(
+    'name' => 'Test Thumbnail Creation',
+    'description' => 'Test Thumbnail Creation',
+    'group' => 'Thumbnail Creation',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('image', 'imagecache_canvasactions', 'generate_thumbnails');
+
+    // test image file for tests.
+    $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'generate_thumbnails') . '/tests/' . 'test_image.jpg';
+    $file = (object) array(
+      'uid' => 1,
+      'uri' => $filepath,
+      'filemime' => file_get_mimetype($filepath),
+      'status' => 1,
+    );
+    $this->testFile = $file;
+  }
+
+  // tests that files are created for pre-caching image styles
+  function testImageCacheCreatedForFileInQueue() {
+    // canvasactions_aspect_image()
+    $file = file_copy($this->testFile, 'public://');
+    $queue = DrupalQueue::get('create_image_cache');
+    $queue->createItem($file);
+    generate_thumbnails_cron();
+    // $this->cronRun();
+
+    foreach (_pre_image_cache_styles() as $style_name) {
+      $derivative_file_uri = image_style_path($style_name, $file->uri);
+      $derivative_file_path = drupal_realpath($derivative_file_uri);
+      $file_exists = file_exists($derivative_file_path);
+      $this->assertEqual($file_exists, TRUE, 'Thumnail ws created for the image in the queue for image stlye: ' . $style_name . '.');
+    }
+     
+  }
+  
+  function testImageChacheWatchdogMessageIfStyleDoesNotExists() {
+
+    $file = file_copy($this->testFile, 'public://');
+   _generate_image_styles($file, array('non_existing_image_style'));
+    
+   $this->assertWatchdog('Image caching', 1, 'Watchdog message was created for non existing image style.');
+    
+  }
+  /**
+   *
+   * Check to see whether watchdog function was called specified number of times
+   * @param string $watchdog_type
+   *   type of the watchdog we are looking for
+   * @param integer $times
+   *   How many times it must have been called
+   * @param string $message
+   *   The message to display along with the assertion
+   * @return
+   *   TRUE if the assertion succeeded, FALSE otherwise.
+   */
+  private function assertWatchdog($watchdog_type, $times, $message) {
+
+    $sql = 'SELECT w.message FROM {watchdog} w WHERE w.type = :type';
+    $result =  db_query_range($sql, 0, $times+1,
+    array( ':type'    => $watchdog_type,));
+    $count_matches = 0;
+    foreach ($result as $record) {
+      $count_matches++;
+    }
+    return $this->assertEqual($times, $count_matches, $message);
+  }
+  
+}

@@ -1,0 +1,20 @@
+<?php 
+
+
+/**
+ * Implements install hook
+ */
+function generate_thumbnails_install() {
+  
+  foreach(search_results_image_styles() as $style) {
+    // Create Style
+    $new_style = image_style_save($style);
+    $isid = $new_style['isid'];
+    foreach ($style['effects'] as $effect) {
+      $effect['isid'] = $isid; // appends effect to style
+      // Create Effect
+      image_effect_save($effect);
+    }
+  }
+  
+}

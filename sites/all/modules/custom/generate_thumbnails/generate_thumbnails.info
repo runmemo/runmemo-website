@@ -4,3 +4,5 @@ core = 7.x
 
 files[] = generate_thumbnails.module
 files[] = generate_thumbnails.inc
+files[] = generate_thumbnails.install
+files[] = tests/generate_thumbnails.test
