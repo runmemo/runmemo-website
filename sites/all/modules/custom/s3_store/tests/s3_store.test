@@ -1,0 +1,88 @@
+<?php
+module_load_include('inc','amazon_s3','s3');
+/**
+ *
+ * Test cases for S3 store.
+ * @author Bulat Yapparov
+ */
+class S3StoreTests extends DrupalWebTestCase {
+
+  public static function getInfo() {
+    return array(
+    'name' => 'Test S3 integration',
+    'description' => 'Test S3 Integration',
+    'group' => 'S3 Integration',
+    );
+  }
+
+  function setUp() {
+    parent::setUp ('amazon_s3', 'generate_thumbnails', 'ocr', 's3_store');
+
+    variable_set('aws_access_key', 'AKIAJ77I2DG2NPHMNDIQ');
+    variable_set('aws_secret_key', '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');
+     
+
+    // test image file for tests.
+    $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'generate_thumbnails') . '/tests/' . 'test_image.jpg';
+    $file = (object) array(
+      'uid' => 1,
+      'uri' => $filepath,
+      'filemime' => file_get_mimetype($filepath),
+      'status' => 1,
+    );
+    $this->testFile = $file;
+
+  }
+
+  function testFileIsSentToS3() {
+    $file = file_copy($this->testFile, 'public://');
+
+    _generate_image_styles($file, _pre_image_cache_styles());
+
+    $derivative_file_path = drupal_realpath($derivative_file_uri);
+    $file_exists = file_exists($derivative_file_path);
+    debug ();
+    debug($file_exists);
+    $queue = DrupalQueue::get('send_images_to_S3');
+    $queue->createItem($file);
+     
+     
+    s3_store_cron();
+     
+     
+     
+    $s3_url = '';
+    $fileExists = false;
+    $this->assert($fileExists, TRUE , 'File was successfully saved to S3 bucket.');
+     
+     
+     
+  }
+
+
+  function testS3MoverImageStyleIsSentToS3 () {
+
+    $file = file_copy($this->testFile, 'public://');
+
+    $mover = new s3_mover('public://', 'runmemo-test');
+    $mover->move_file($file);
+
+    $aws_access_key = variable_get('aws_access_key');
+    $aws_secret_key = variable_get('aws_secret_key');
+    $s3 = new S3($aws_access_key, $aws_secret_key);
+
+    $object_info =  $s3->getObjectInfo('runmemo-test', 'test_image.jpg');
+
+    $type = $object_info['type'];
+     
+    $this->assertEqual('image/jpeg', $type, 'Type of file in Amazon S3 is same as of uploaded test file.');
+     
+    if (!$s3->deleteObject('runmemo-test', 'test_image.jpg')) {
+      throw Exception('Failed to delete test image from S3.');
+    }
+
+     
+
+  }
+
+}

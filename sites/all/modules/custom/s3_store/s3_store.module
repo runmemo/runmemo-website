@@ -50,7 +50,7 @@ function _send_file_to_s3($file) {
 	$s3_mover = new s3_mover($path_prefix, $bucket);
 
 	// Send cache images to S3
-	$precached_styles = array('search_preview', 'thumbnail');
+	$precached_styles = _pre_image_cache_styles();
 	foreach ($precached_styles as $style_name) {
 		$style = image_style($style_name);
 		if ($style) {

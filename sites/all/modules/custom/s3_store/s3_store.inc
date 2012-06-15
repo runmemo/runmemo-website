@@ -21,13 +21,13 @@ class s3_mover {
    * @param string $bucket
    * 	name of the bucket in S3 to which files will be saved.
    */
- public function __construct($pathPrefix, $bucket)
+  public function __construct($pathPrefix, $bucket)
   {
-    
+
     $this->bucket = $bucket;
     $this->path = $pathPrefix;
     if ($this->s3 == NULL) {
-     
+       
       $aws_access_key = variable_get('aws_access_key');
       $aws_secret_key = variable_get('aws_secret_key');
 
@@ -36,7 +36,7 @@ class s3_mover {
       }
 
       $s3 = new S3($aws_access_key, $aws_secret_key);
-    } 
+    }
     $this->s3 = $s3;
   }
 
@@ -49,9 +49,15 @@ class s3_mover {
    * @param string $acl
    * 	security flag for the file to be set in S3.
    */
-  public function move_file($file, $acl) {
+  public function move_file($file, $acl = NULL) {
+
+    if (!$acl) {
+      $acl = $this->acl;
+    }
+
     $path=drupal_realpath($this->path);
-    $success = $this->s3->putObjectFile($file->uri, $this->bucket, $file->filename, $this->acl);
+    $file_path = drupal_realpath($file->uri);
+    $success = $this->s3->putObjectFile($file_path, $this->bucket, $file->filename, $this->acl);
     if ($success) {
       // original file was sent to S3
       watchdog('S3 info', 'Sent file: ' . $file->uri . ' to s3://' . $this->bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
@@ -63,8 +69,8 @@ class s3_mover {
       file_unmanaged_delete($local_uri);
 
       // update status on the node
-      $this->update_s3_status($file->nid, 1);
-      	
+      // $this->update_s3_status($file->nid, 1);
+       
     }
     else {
       watchdog('S3 info', 'Failed to send file: ' . $file->uri . ' to s3://' . $this->bucket . '/' . $file->filename, array(), WATCHDOG_ERROR);
@@ -73,12 +79,13 @@ class s3_mover {
 
   public function move_imagecache ($file, $style) {
     // move imagecache to S3
-    $derivative_uri = image_style_path($style, $file->uri);
+    $derivative_uri = drupal_realpath(image_style_path($style, $file->uri));
+
     watchdog('Image caching', 'Sending file to S3 for Style == ' . $style, array(), WATCHDOG_DEBUG);
-    	
+     
     if (file_exists($derivative_uri)) {
-      watchdog('Image caching', 'Sending file to S3 from ' . $derivative_uri, array(), WATCHDOG_DEBUG);
       try { // Copy file to S3 and remove local file.
+
         $success = $this->s3->putObjectFile($derivative_uri, $this->bucket, $this->getS3_uri($style) .  $file->filename, $this->acl);
         if($success) {
           file_unmanaged_delete($derivative_uri);

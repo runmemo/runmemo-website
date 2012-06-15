@@ -4,3 +4,4 @@ core = 7.x
 
 files[] = s3_store.module
 files[] = s3_store.inc
+files[] = tests/s3_store.test
