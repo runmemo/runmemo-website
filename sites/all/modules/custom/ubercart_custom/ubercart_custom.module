@@ -3,7 +3,7 @@
 /**
  * product Node view function
  */
-function ubercart_custom_node_view($node, $view_mode, $langcode) {
+/*function ubercart_custom_node_view($node, $view_mode, $langcode) {
   global $user;
   $uid = $user->uid;
   $node_type = $node->type;
@@ -25,9 +25,9 @@ function ubercart_custom_node_view($node, $view_mode, $langcode) {
 	 $xycount++;
 		$rows[] = array(    
           array('data' => $xycount),
-          array('data' => $xyvalue->runner_number),
-          array('data' => $xyvalue->xvalue),
-          array('data' => $xyvalue->yvalue),
+          array('data' => $xyvalue->number),
+          array('data' => $xyvalue->position_left),
+          array('data' => $xyvalue->position_top),
 		  array('data' => $xyvalue->probability) 
           );
 	   	  
@@ -42,7 +42,7 @@ function ubercart_custom_node_view($node, $view_mode, $langcode) {
      
   }
 }
-
+*/
 /**
  * Alter the menu items
  */
@@ -162,6 +162,7 @@ function cart_add_remove() {
  * $form give the form value
  * $form_id is the form id
  */
+/*
 function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
   //alter the product node edit form
@@ -248,7 +249,7 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
 }
 
-
+*/
  
 //validate the sell price when edit the product node
 function product_pricing_validation($form, &$form_state) {

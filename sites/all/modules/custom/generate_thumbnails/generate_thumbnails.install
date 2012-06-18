@@ -1,20 +1,36 @@
-<?php 
+<?php
 
 
 /**
  * Implements install hook
  */
 function generate_thumbnails_install() {
-  
+
+  create_image_styles();
+
+}
+/**
+ * 
+ * Implements enable hook
+ */
+function generate_thumbnails_enable() {
+  create_image_styles();
+}
+
+function create_image_styles() {
+
   foreach(search_results_image_styles() as $style) {
     // Create Style
-    $new_style = image_style_save($style);
-    $isid = $new_style['isid'];
-    foreach ($style['effects'] as $effect) {
-      $effect['isid'] = $isid; // appends effect to style
-      // Create Effect
-      image_effect_save($effect);
+    if(!image_style($style['name'])){
+      $new_style = image_style_save($style);
+
+      foreach ($style['effects'] as $effect) {
+         
+        $effect['isid'] = $new_style['isid']; // appends effect to style
+        // Create Effect
+        image_effect_save($effect);
+      }
     }
   }
-  
+   
 }

@@ -41,7 +41,7 @@ function search_results_image_styles() {
           'xpos' => 'left',
           'ypos' => 'center',
           'alpha' => '15',
-          'path' => 'sites/default/files/runmemo_wm_V03.png',
+          'path' => 'module://generate_thumbnails/preview_watermark.png',
         ),
         'weight' => '2',
       ),

@@ -30,7 +30,9 @@ class GenerateImageCacheTest extends DrupalWebTestCase {
     $this->testFile = $file;
   }
 
-  // tests that files are created for pre-caching image styles
+  /**
+   *  tests that files are created for pre-caching image styles
+   */
   function testImageCacheCreatedForFileInQueue() {
     // canvasactions_aspect_image()
     $file = file_copy($this->testFile, 'public://');
@@ -47,7 +49,10 @@ class GenerateImageCacheTest extends DrupalWebTestCase {
     }
      
   }
-  
+  /**
+   * 
+   * Check that watchdog message is created if image style does not exist.
+   */
   function testImageChacheWatchdogMessageIfStyleDoesNotExists() {
 
     $file = file_copy($this->testFile, 'public://');

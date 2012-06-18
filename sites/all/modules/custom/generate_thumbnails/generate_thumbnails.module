@@ -109,7 +109,10 @@ function _generate_image_styles($file, $styles){
     $derivative_uri = image_style_path($style['name'], $file->uri);
     
     if (!file_exists($derivative_uri)) {
-      image_style_create_derivative($style, $file->uri, $derivative_uri);
+      $success = image_style_create_derivative($style, $file->uri, $derivative_uri);
+      if (!$success) {
+        watchdog('Image caching', 'Failed to create image cache for style: ' . $style['name'] . '.');
+      }
     }     
   };
 
