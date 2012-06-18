@@ -61,8 +61,7 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
       'status' => 1,
     );
     $this->testFile = $file;
-
-
+    
   }
 
   /**

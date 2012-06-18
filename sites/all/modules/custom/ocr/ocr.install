@@ -14,65 +14,65 @@ function ocr_schema() {
                       'type' => 'int',
                       'unsigned' => TRUE,
                       'not null' => TRUE,
-                    ),
+  ),
                    'number' => array(
                      'description' => 'Number of runner.',
                      'type' => 'int',
                      'unsigned' => TRUE,
                      'not null' => TRUE,
-                    ),
-                    'top' => array(
+  ),
+                    'position_top' => array(
                       'description' => 'Top position of the number on the image.',
                       'type' => 'int',
                       'unsigned' => TRUE,
                       'not null' => TRUE,
-                    ),
-                    'left' => array(
+  ),
+                    'position_left' => array(
                       'description' => 'Left postition of the number on the image.',
                       'type' => 'int',
                       'unsigned' => TRUE,
                       'not null' => TRUE,
-                    ),
+  ),
                     'width' => array(
                       'description' => 'Width of the number.',
                       'type' => 'int',
                       'unsigned' => TRUE,
                       'not null' => TRUE,
-                    ),
+  ),
                     'height' => array(
                       'description' => 'height of the number.',
                       'type' => 'int',
                       'unsigned' => TRUE,
                       'not null' => TRUE,
-                     ),
+  ),
                      'probability' => array(
                        'description' => 'Probability that the number is correct.',
                        'type' => 'double precision (2,5)',
                        'unsigned' => TRUE,
                        'not null' => TRUE,
-                     ),
+  ),
                      'timestamp' => array(
                        'description' => 'UNIX timestamp for when the number was added.',
                        'type' => 'int',
                        'unsigned' => TRUE,
                        'not null' => TRUE,
                        'default' => 0,
-                     ),
-                   ),
+  ),
+  ),
                 'primary key' => array('nid', 'number'),
-               );
+  );
 }
 
-function ocr_install() {
+function ocr_enable() {
+  // Set variables for response queues
   variable_set('ocr_responsequeue', variable_get('ocr-results-queue'));
   variable_set('ocr_requestqueue' , variable_get('ocr-requests-queue'));
-
 
   // Create fields on Product node for.
   foreach (_node_product_ocr_fields() as $field) {
     field_create_field($field);
   }
-
+   
   // Create all the instances for our fields on Product node.
   foreach (_node_product_ocr_fields() as $instance) {
     $instance['entity_type'] = 'node';
@@ -95,13 +95,24 @@ function _node_product_ocr_fields() {
     'cardinality' => 10,
     'type' => 'number_integer',
     'size' => 'normal',
-    ),
+  ),
     'node_product_ocr_status' => array(
+  //'active' => '1',
     'field_name'  => 'ocr_success',
+    'label' => 'OCR Success',
     'cardinality' => 1,
     'type' => 'number_integer',
     'size' => 'tiny',
     'default_value' => array(NULL),
-    ),
+  // 'module' => 'list',
+  //'settings' => array(
+  //  'allowed_values' => array(
+  //    NULL => 'None',
+  //    -1 => 'Pending',
+  //    0 => 'False',
+  //    1 => 'True',
+  //'translatable' => '0',
+  //'type' => 'list_boolean',
+  ),
   );
 }

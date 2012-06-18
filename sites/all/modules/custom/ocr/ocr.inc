@@ -112,8 +112,8 @@ class OcrResponceNumber {
     db_insert('ocr_numbers')->fields(
     array(  'nid'    => $this->nid,
             'number' => $this->number,
-            'left'   => $this->left,
-            'top'    => $this->top,
+            'position_left'   => $this->left,
+            'position_top'    => $this->top,
             'width'  => $this->width,
             'height' => $this->height,
             'probability' => $this->probability,

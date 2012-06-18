@@ -68,13 +68,13 @@ function ocr_menu() {
  */
 function select_ocrqueue() {
   $form['requestqueue'] = array('#type' => 'textfield',
-      '#title' => 'Maessage Request Queue',
+      '#title' => 'Message Request Queue',
       '#size' => '20',
       '#required' => 'true',
       '#default_value' => variable_get('ocr-requests-queue', '')
   );
-  $form['responsequeue']  = array('#type' => 'textfield',
-      '#title' => 'Maessage Response Queue',
+  $form['resultsqueue']  = array('#type' => 'textfield',
+      '#title' => 'Message Results Queue',
       '#size' => '20',
       '#required' => 'true',
       '#default_value' => variable_get('ocr-results-queue', '')
@@ -93,9 +93,9 @@ function select_ocrqueue() {
 function select_ocrqueue_submit($form, &$form_state) {
   drupal_set_message(t('Message Queues set Successfully'));
   $request_queue  = $form_state['values']['requestqueue'];
-  $response_queue = $form_state['values']['responsequeue'];
-  variable_set('ocr_requestqueue', $request_queue);
-  variable_set('ocr_responsequeue', $response_queue);
+  $results_queue = $form_state['values']['resultsqueue'];
+  variable_set('ocr-requests-queue', $request_queue);
+  variable_set('ocr-results-queue', $results_queue);
 }
 
 /**
