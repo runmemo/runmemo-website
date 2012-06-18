@@ -67,11 +67,11 @@ function generate_thumbnails_cron() {
   $styles = _pre_image_cache_styles();
   $queue = DrupalQueue::get('create_image_cache');
   //Pull items out one at a time.
-  while($item = $queue->claimItem()) {
+  while ($item = $queue->claimItem()) {
     //Try saving the data.
     _generate_image_styles($item->data, $styles);
     $queue->deleteItem($item);
-    watchdog('Queue Item','Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+    watchdog('Queue Item', 'Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
   };
 
 }
@@ -82,7 +82,7 @@ function generate_thumbnails_cron() {
  * @param string $name name of the image style 
  */
 function image_style($name) {
-  foreach (image_styles() as $style){
+  foreach (image_styles() as $style) {
     if ($style['name'] == $name) {
       return $style;
     }
@@ -95,13 +95,12 @@ function image_style($name) {
  *
  *  @param $file - contains image details
  */
-function _generate_image_styles($file, $styles){
+function _generate_image_styles($file, $styles) {
   
-  foreach($styles as $style_name)
-  { 
+  foreach ($styles as $style_name) { 
     $style = image_style($style_name);
      
-    if(!$style) {
+    if (!$style) {
       watchdog('Image caching', 'Style does not exists: ' . $style_name . '.', array(), WATCHDOG_WARNING);
       return;
     }

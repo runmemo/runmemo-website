@@ -1,4 +1,7 @@
 <?php
+/**
+ * @file contains tests for pre-image-caching
+ */
 
 /**
  *
@@ -77,7 +80,7 @@ class GenerateImageCacheTest extends DrupalWebTestCase {
 
     $sql = 'SELECT w.message FROM {watchdog} w WHERE w.type = :type';
     $result =  db_query_range($sql, 0, $times+1,
-    array( ':type'    => $watchdog_type,));
+    array( ':type' => $watchdog_type,));
     $count_matches = 0;
     foreach ($result as $record) {
       $count_matches++;

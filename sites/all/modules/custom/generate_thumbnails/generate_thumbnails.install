@@ -19,9 +19,9 @@ function generate_thumbnails_enable() {
 
 function create_image_styles() {
 
-  foreach(search_results_image_styles() as $style) {
+  foreach (search_results_image_styles() as $style) {
     // Create Style
-    if(!image_style($style['name'])){
+    if (!image_style($style['name'])) {
       $new_style = image_style_save($style);
 
       foreach ($style['effects'] as $effect) {

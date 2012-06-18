@@ -1,5 +1,10 @@
 <?php
-module_load_include('inc','amazon_s3','s3');
+
+/**
+ * @file contains tests for sending images and image-cache to s3.
+ */
+
+module_load_include('inc', 'amazon_s3', 's3');
 /**
  *
  * Test cases for S3 store.
@@ -40,7 +45,7 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
  * 
  * Checkes whether Image Styles are saved correctly to S3
  */
-  function testImageStylesAreSentToS3 () {
+  function testImageStylesAreSentToS3() {
 
     $file = file_copy($this->testFile, 'public://');
     // Create image cache
@@ -50,14 +55,14 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
     $mover = new s3_mover('public://', 'runmemo-test');
     $s3 = new S3($this->aws_access_key, $this->aws_secret_key);
 
-    foreach(_pre_image_cache_styles() as $style_name) {
+    foreach (_pre_image_cache_styles() as $style_name) {
       // move image cache file for the style
       
       $mover->move_imagecache($file, $style_name);
 
       // get info
      
-      $s3_uri =  'styles/'. $style_name . '/s3/test_image.jpg';
+      $s3_uri =  'styles/' . $style_name . '/s3/test_image.jpg';
       $object_info =  $s3->getObjectInfo('runmemo-test', $s3_uri);
 
       $type = $object_info['type'];
@@ -74,7 +79,7 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
  * 
  * Checks whether file is sent to S3
  */
-  function testFileIsSentToS3 () {
+  function testFileIsSentToS3() {
 
     $file = file_copy($this->testFile, 'public://');
     $file_path = drupal_realpath($file->uri);

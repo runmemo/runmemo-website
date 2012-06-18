@@ -1,6 +1,10 @@
 <?php
 
-module_load_include('inc','amazon_s3','s3');
+/**
+ * @file contains s3_mover class.
+ */
+
+module_load_include('inc', 'amazon_s3', 's3');
 
 /**
  * Represents a class that moves file from local folder to S3 bucket
@@ -21,8 +25,7 @@ class s3_mover {
    * @param string $bucket
    * 	name of the bucket in S3 to which files will be saved.
    */
-  public function __construct($pathPrefix, $bucket)
-  {
+  public function __construct($pathPrefix, $bucket) {
 
     $this->bucket = $bucket;
     $this->path = $pathPrefix;
@@ -32,7 +35,7 @@ class s3_mover {
       $aws_secret_key = variable_get('aws_secret_key');
 
       if (!($aws_access_key) OR !($aws_secret_key)) {
-        drupal_set_message('You must ' . l('set your aws access key and secret key', 'admin/config/amazon-s3') . '.', 'error');
+        drupal_set_message(t('You must ' . l(t('set your aws access key and secret key'), 'admin/config/amazon-s3')) . '.', 'error');
       }
 
       $s3 = new S3($aws_access_key, $aws_secret_key);
@@ -77,7 +80,7 @@ class s3_mover {
     }
   }
 
-  public function move_imagecache ($file, $style) {
+  public function move_imagecache($file, $style) {
     // move imagecache to S3
     $derivative_uri = drupal_realpath(image_style_path($style, $file->uri));
 
@@ -86,8 +89,8 @@ class s3_mover {
     if (file_exists($derivative_uri)) {
       try { // Copy file to S3 and remove local file.
 
-        $success = $this->s3->putObjectFile($derivative_uri, $this->bucket, $this->getS3_uri($style) .  $file->filename, $this->acl);
-        if($success) {
+        $success = $this->s3->putObjectFile($derivative_uri, $this->bucket, $this->getS3_uri($style) . $file->filename, $this->acl);
+        if ($success) {
           file_unmanaged_delete($derivative_uri);
         }
       }
@@ -111,7 +114,7 @@ class s3_mover {
     $s3_uri = str_replace($this->path, "s3://", $uri);
     db_update('file_managed')
     ->fields(array(
-				'uri' => $s3_uri,
+      'uri' => $s3_uri,
     ))
     ->condition('fid', $fid)
     ->execute();
@@ -130,7 +133,7 @@ class s3_mover {
   private function update_s3_status($entity_id, $status) {
     db_update('field_data_field_s3_status')
     ->fields(array(
-				'field_s3_status_value' => $status,
+      'field_s3_status_value' => $status,
     ))
     ->condition('entity_id', $entity_id)
     ->execute();
