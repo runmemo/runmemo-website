@@ -1,8 +1,16 @@
 <?php
+
+
+/**
+ * Implements hook_views_api().
+ */
+function photo_search_views_api() {
+  return array("version" => "3.0");
+}
+
 /**
  * Init function for adding the external file
  */
-
 function photo_search_init() {
   
   //$cart_contents;
