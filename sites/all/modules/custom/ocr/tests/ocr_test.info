@@ -1,6 +1,5 @@
 name = OCR Test
 description = Testing module for OCR integration functionality.
-package = OCR
 core = 7.x
 files[] = ocr_test.module
 files[] = ocr_test.inc

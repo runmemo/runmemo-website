@@ -27,13 +27,13 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('ocr'); // 'uc_store', 'rules', 'uc_order', 'uc_product', 'uc_cart');
+    parent::setUp('list', 'ocr'); // 'uc_store', 'rules', 'uc_order', 'uc_product', 'uc_cart');
 
     // instead of setting up 'uc_product' and all projects it depends on we just create
     // product content type
     if (!in_array('Product', node_type_get_names())) {
       $type = array( 'type' => 'product', 'name' => st('Product'), 'base' => 'node_content', 'custom' => 1, 'modified' => 1, 'locked' => 0, 'title_label' => 'Product' );
-
+      
       $type = node_type_set_defaults($type);
       node_type_save($type);
       node_add_body_field($type);
@@ -69,6 +69,7 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
    * Checks that nodes that have OCR success status are not added to the queue
    */
   function testNodesWithOcrSuccessNotAddedToTheQueue() {
+   // debug($this->testNode->ocr_success[LANGUAGE_NONE][0]['value']);
     $this->testNode->ocr_success[LANGUAGE_NONE][0]['value'] = 0;
     node_save($this->testNode);
 

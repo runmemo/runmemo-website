@@ -98,21 +98,22 @@ function _node_product_ocr_fields() {
   ),
     'node_product_ocr_status' => array(
   //'active' => '1',
-    'field_name'  => 'ocr_success',
-    'label' => 'OCR Success',
-    'cardinality' => 1,
-    'type' => 'number_integer',
-    'size' => 'tiny',
-    'default_value' => array(NULL),
-  // 'module' => 'list',
-  //'settings' => array(
-  //  'allowed_values' => array(
-  //    NULL => 'None',
-  //    -1 => 'Pending',
-  //    0 => 'False',
-  //    1 => 'True',
-  //'translatable' => '0',
-  //'type' => 'list_boolean',
-  ),
+      'field_name'  => 'ocr_success',
+      'label' => 'OCR Success',
+      'cardinality' => 1,
+      'type' => 'list_integer',
+      'size' => 'tiny',
+      'default_value' => NULL,
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+         -1 => 'None',
+          0 => 'False',
+          1 => 'True',
+         ),
+         'allowed_values_function' => '',
+       ),
+       'translatable' => '0',
+     ),
   );
 }

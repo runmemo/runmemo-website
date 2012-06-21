@@ -42,8 +42,9 @@ class OcrSQSIntegrationTestCase extends DrupalWebTestCase {
     $q2 = new response_queue($queue_url);
     $message = $q2->getMessage();
     $message_got = $message->getBody();
-
+    
     $this->assertEqual($message_sent, $message_got, 'Message sent to the queue must be same as the message that we got back');
+    $q2->deleteMessage($message);
   }
   
 }

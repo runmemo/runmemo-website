@@ -8,7 +8,7 @@
  */
 
 require_once libraries_get_path('Amazon') . '/SQS/Client.php';
-//require_once DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/' . 'ocr_sqs_queues.inc'
+module_load_include('inc', 'ocr', 'ocr');
 
 /**
  * Implements hook_help()
@@ -103,7 +103,7 @@ function select_ocrqueue_submit($form, &$form_state) {
  * Sends message to the requests queue with details specified in $file object.
  * @param object $file - contains details of the image file.
  */
-function _ocr_send_request($file) {
+function _ocr_send_request ($file) {
   // sending message to OCR for an uploaded image
   $requestsQueueURL  = variable_get('ocr_requests_queue_url');
   $resultsQueueURL = variable_get('ocr_results_queue_url');
@@ -112,10 +112,11 @@ function _ocr_send_request($file) {
   $queue = new request_queue($requestsQueueURL);
 
   //create message
-  $message_arr = array('ExternalReference' => $file->nid,
-      'ImageKey' => $file->filename,
-      'ImageBucket' => $bucket,
-      'OutQueue' => $resultsQueueURL,
+  $message_arr = array(
+    'ExternalReference' => $file->nid,
+    'ImageKey' => $file->filename,
+    'ImageBucket' => $bucket,
+    'OutQueue' => 'http://eu-west-1.queue.amazonaws.com/' . variable_get('ocr-results-queue'), // $resultsQueueURL,
   );
   $message = json_encode($message_arr);
 
@@ -143,7 +144,7 @@ function _add_ocr_pending_nodes_to_queue() {
     $node = node_load($nid);
     // because fieldCondition does not allow to check for NULL values
     // we have to check whether field is null this way
-    if (is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
+    if (!isset($node->ocr_success[LANGUAGE_NONE]) || is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
       $file = $node->uc_product_image[LANGUAGE_NONE][0];
       $q = DrupalQueue::get('send_images_to_S3');
       $q->createItem($file);
@@ -156,13 +157,17 @@ function _add_ocr_pending_nodes_to_queue() {
  *
  */
 function ocr_cron() {
-  $queueURL= variable_get('ocr_requests_queue_url');
+  $queueURL= variable_get('ocr_results_queue_url');
   $queue = new response_queue($queueURL);
   $message_counter = 0;
   while ($message = $queue->getMessage()) {
     $message_counter++;
     try {
-      update_drupal_with_responce($message->getBody());
+      $message_body = $message->getBody();
+      watchdog('OCR info' , 'Getting body from the message.');
+      watchdog('OCR info' , $message_body);
+      $results_saver = new OcrResultsSaver($message_body);
+      $results_saver->Save();
     } catch (Exception $e) {
       watchdog_exception('OCR Exception', $e);
     }
@@ -170,5 +175,5 @@ function ocr_cron() {
   }
   watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
   // put files that were not processed to the S3 queue ?
-  _add_ocr_pending_nodes_to_queue();
+   //_add_ocr_pending_nodes_to_queue();
 }

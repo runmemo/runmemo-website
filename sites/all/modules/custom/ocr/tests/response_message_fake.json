@@ -1,5 +1,7 @@
 {     "ExternalReference":"1234567",
-      "Success" : "True",
+	  "Success" : true,
+      "ErrorMessage" : "",
+      "ExtraAttributeIgnore" : "Sample Value",
       "Numbers" : [
         {
           "Number" : "4745",
@@ -8,7 +10,7 @@
           "Y" : 93,
           "Width" : 73,
           "Height" : 34,
-          "Correct" : true
+          "ExtraAttributeIgnore" : "Sample Value"
         },
         {
           "Number" : "500",
@@ -16,8 +18,7 @@
           "X" : 94,
           "Y" : 93,
           "Width" : 73,
-          "Height" : 30,
-          "Correct" : false
+          "Height" : 30
         },
         {
           "Number" : "5",
@@ -25,8 +26,7 @@
           "X" : 189,
           "Y" : 10,
           "Width" : 11,
-          "Height" : 17,
-          "Correct" : false
+          "Height" : 17
         }
       ]
     }

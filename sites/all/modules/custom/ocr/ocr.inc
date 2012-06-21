@@ -21,15 +21,15 @@ class OcrResultsSaver {
   }
 
   public function __construct($message) {
-    if (!$message) {
+    if (is_null($message)) {
       throw new IvalidArgumentException('$message must be not be null for OcrResultSaver construction.');
     }
 
     $response = json_decode(trim($message));
     $this->nid = $response->ExternalReference;
-
+     
     // convert success to boolean
-    $this->success = (strcasecmp($response->Success, 'True') == 0);
+    $this->success = $response->Success;
     if ($this->success) {
       foreach ($response->Numbers as $number) {
         $this->numbers[] = new OcrResponceNumber($this->nid, $number);
@@ -46,21 +46,20 @@ class OcrResultsSaver {
    * Saves all details from OCR response message to Drupal
    */
   public function Save() {
+    watchdog('OCR info', 'Saving OCR Message.');
     if ($this->success) {
-      try {
-        $this->product = new ProductNodeSaver($this->nid);
+      watchdog('OCR info', 'OCR Success = True.');
+      
+      $this->product = new ProductNodeSaver($this->nid);
 
-        // adding runner's numbers
-        foreach ($this->numbers as $number) {
-          $this->product->AddNumber($number->number);
-          //    $number->Save();
-        }
-        $this->product->SetOcrStatus($this->success);
-        $this->product->Save();
+      // adding runner's numbers
+      foreach ($this->numbers as $number) {
+        $this->product->AddNumber($number->number);
+        //    $number->Save();
       }
-      catch (Exception $e) {
-        watchdog_exception('OCR Exception', $e);
-      }
+      $this->product->SetOcrStatus($this->success);
+      $this->product->Save();
+
     }
     else { // OCR response: Success == False
       $this->SaveError();
@@ -121,14 +120,4 @@ class OcrResponceNumber {
     ))
     ->execute();
   }
-}
-
-
-
-/**
- * updating OCR response
- */
-function update_drupal_with_responce($message) {
-  $results_saver = new OcrResultsSaver($message);
-  $results_saver->Save();
 }
