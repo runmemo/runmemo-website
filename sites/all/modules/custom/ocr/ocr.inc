@@ -46,9 +46,8 @@ class OcrResultsSaver {
    * Saves all details from OCR response message to Drupal
    */
   public function Save() {
-    watchdog('OCR info', 'Saving OCR Message.');
+    
     if ($this->success) {
-      watchdog('OCR info', 'OCR Success = True.');
       
       $this->product = new ProductNodeSaver($this->nid);
 
