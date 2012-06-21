@@ -3,7 +3,7 @@
 INSTANCE="i-0f8e1f47"
 echo "instance=${INSTANCE}"
 
-CERT="web_staging.pem"
+CERT="/root/web_staging.pem"
 echo "certificate=${CERT}"
 
 #get ip of test instance
