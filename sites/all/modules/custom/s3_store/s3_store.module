@@ -46,9 +46,7 @@ function _send_file_to_s3($file) {
 
   $bucket = variable_get('image-store-bucket');
   // Send original file to S3
-  watchdog('S3 info', 'Sending file: ' . $file->uri . ' to s3://' . $bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
-  watchdog('S3 info', 'Using aws key: ' . variable_get('aws_access_key', ''), array(), WATCHDOG_DEBUG);
-
+ 
   $path_prefix = 'public://';
   $acl = 'public-read'; //S3::ACL_PUBLIC_READ;
 
@@ -66,29 +64,6 @@ function _send_file_to_s3($file) {
     }
 
   };
-  // Check whether file exists
-  if (!file_exists($file->uri)) {
-    throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
-  }
-
-  $bucket = variable_get('image-store-bucket');
-  // Send original file to S3
-  watchdog('S3 info', 'Sending file: ' . $file->uri . ' to s3://' . $bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
-  watchdog('S3 info', 'Using aws key: ' . variable_get('aws_access_key', ''), array(), WATCHDOG_DEBUG);
-
-  $path_prefix = 'public://';
-  $acl = 'public-read'; //S3::ACL_PUBLIC_READ;
-
-  $s3_mover = new s3_mover($path_prefix, $bucket);
-
-  // Send cache images to S3
-  $precached_styles = array('search_preview', 'thumbnail');
-  foreach (image_styles() as $style) {
-    if (in_array($style['name'] , $precached_styles)) {
-      $s3_mover->move_imagecache($file, $style['name']);
-    }
-  };
-
   // move original file
   $s3_mover->move_file($file, $acl);
 }

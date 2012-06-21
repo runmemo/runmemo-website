@@ -1,5 +1,5 @@
 {     "ExternalReference":"1234567",
-      "Success" : "False",
+      "Success" : false,
       "ErrorMessage" : "Mock error message in OCR responce",
       "Numbers" : []
     }

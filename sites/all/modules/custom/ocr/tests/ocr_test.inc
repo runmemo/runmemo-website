@@ -67,8 +67,6 @@ class product_node_creator {
    */
   public static function getNewProductNode() {
     // Create new event node to use for product node
-    // @todo create function that creates new Product node without image
-
     global $user;
     $uid = $user->uid;
     $event = new stdClass();

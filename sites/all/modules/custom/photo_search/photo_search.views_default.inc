@@ -127,7 +127,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['uc_product_image']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
   $handler->display->display_options['fields']['uc_product_image']['settings'] = array(
-    'image_style' => 'thumbnail',
+    'image_style' => 'search_thumbnail',
     'image_link' => '',
   );
   $handler->display->display_options['fields']['uc_product_image']['group_rows'] = 1;
