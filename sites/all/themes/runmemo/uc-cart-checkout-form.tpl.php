@@ -59,7 +59,7 @@
 		?>
 		
 		
-		<td><?php echo theme("image_formatter", array('item' => $photo[$i-1], 'image_style' => 'thumbnail'));?></td>
+		<td><?php echo theme("image_formatter", array('item' => $photo[$i-1], 'image_style' => 'search_thumbnail'));?></td>
 		<?php
 		if($i%3==0){?>
 			</tr><tr>

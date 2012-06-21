@@ -69,6 +69,7 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
       $this->assertEqual('image/jpeg', $type , 'Image cache was successfully saved to S3 bucket for style: ' . $style_name);
 
       if (!$s3->deleteObject('runmemo-test', $s3_uri)) {
+        // @todo change to Assert
         throw Exception('Failed to delete image cache for test image from S3.');
       }
     }
@@ -103,6 +104,7 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
      
     // Delete created S3 file
     if (!$s3->deleteObject('runmemo-test', 'test_image.jpg')) {
+       // @todo change to Assert
       throw Exception('Failed to delete test image from S3.');
     }
   }
