@@ -7,7 +7,7 @@
  * Implements hook_views_default_views().
  */
 function photo_search_views_default_views() {
-  
+
   $export = array();
 
   $view = new view;
@@ -102,46 +102,14 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
   $handler->display->display_options['fields']['sell_price']['precision'] = '0';
   $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
-  /* Field: Content: Image */
-  $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
-  $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
-  $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
-  $handler->display->display_options['fields']['uc_product_image']['label'] = '';
-  $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid_1]" class="wrapDiv">[uc_product_image]</div>';
-  $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['uc_product_image']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
-  $handler->display->display_options['fields']['uc_product_image']['settings'] = array(
-    'image_style' => 'search_thumbnail',
-    'image_link' => '',
-  );
-  $handler->display->display_options['fields']['uc_product_image']['group_rows'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['delta_offset'] = '0';
-  $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['delta_first_last'] = 0;
-  $handler->display->display_options['fields']['uc_product_image']['field_api_classes'] = 0;
+  
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
   $handler->display->display_options['fields']['nid']['table'] = 'node';
   $handler->display->display_options['fields']['nid']['field'] = 'nid';
   $handler->display->display_options['fields']['nid']['label'] = '';
-  $handler->display->display_options['fields']['nid']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['nid']['alter']['text'] = '<span class="node_check" ></span><span class="node_check_id" style="display:none;">[nid]</span>';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['nid']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['nid']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['nid']['alter']['external'] = 0;
@@ -160,7 +128,64 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['nid']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['nid']['link_to_node'] = 0;
 
+  /* Field: Content: Image */
+  $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
+  $handler->display->display_options['fields']['uc_product_image']['label'] = '';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]" class="wrapDiv">[uc_product_image]</div>';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['uc_product_image']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['uc_product_image']['settings'] = array('image_style' => 'search_thumbnail', 'image_link' => '',);
+  $handler->display->display_options['fields']['uc_product_image']['group_rows'] = 1;
+  $handler->display->display_options['fields']['uc_product_image']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['delta_first_last'] = 0;
+  $handler->display->display_options['fields']['uc_product_image']['field_api_classes'] = 0;
+  
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
+  $handler->display->display_options['fields']['check_box']['table'] = 'node';
+  $handler->display->display_options['fields']['check_box']['field'] = 'nid';
+  $handler->display->display_options['fields']['check_box']['label'] = '';
+  $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['text'] = '<span class="node_check" ></span><span class="node_check_id" style="display:none;">[check_box]</span>';
+  $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['check_box']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['check_box']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['check_box']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['check_box']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['check_box']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['check_box']['link_to_node'] = 0;
+  
   /* Field: User: First Name */
+
   $handler->display->display_options['fields']['field_first_name']['id'] = 'field_first_name';
   $handler->display->display_options['fields']['field_first_name']['table'] = 'field_data_field_first_name';
   $handler->display->display_options['fields']['field_first_name']['field'] = 'field_first_name';
@@ -244,7 +269,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['arguments']['ocr_numbers_value']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['ocr_numbers_value']['break_phrase'] = 0;
   $handler->display->display_options['arguments']['ocr_numbers_value']['not'] = 0;
-  
+
   $handler->display->display_options['path'] = 'search-result/%/%';
 
   $export['search_results'] = $view;

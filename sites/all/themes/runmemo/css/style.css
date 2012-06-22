@@ -1944,7 +1944,7 @@ display:none!important;
 position:relative;
 
 }
-.page-search-result .region-content .content table tr td .views-field-nid .field-content .node_check{
+.page-search-result .region-content .content table tr td .views-field-check-box .field-content .node_check{
 float: right;
     margin-top: -127px;
     position: relative;

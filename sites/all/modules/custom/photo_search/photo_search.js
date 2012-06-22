@@ -27,7 +27,7 @@ jQuery(document).ready(function(){
           //for highlight the thumbnail image related to the preview image
           $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('style','border: 1px solid green;');
 
-          var initial_preview = initial_img.replace('thumbnail', 'search_preview');
+          var initial_preview = initial_img.replace('search_thumbnail', 'search_preview');
 
           $("#prev_img").html('<img src="'+initial_preview+'" />');
 
@@ -92,10 +92,10 @@ jQuery(document).ready(function(){
                       var checked_products_nids = new Array();
                       checked_products_nids = checked_string_nids.split(",");
                         
-                      $('.page-search-result #block-system-main div.node_check input').each(function(){
+                      $('.page-search-result #block-system-main span.node_check input').each(function(){
                         var name_id = $(this).val();
                         if(jQuery.inArray(name_id, checked_products_nids) != -1) {
-                          $('.page-search-result #block-system-main div.node_check #'+name_id).attr('checked','checked') ;
+                          $('.page-search-result #block-system-main span.node_check #'+name_id).attr('checked','checked') ;
                           var label_class_name = $(this).parent('label').attr('class');
                           if(label_class_name != 'label_check c_on') {
                             $(this).parent('label').removeClass('label_check').addClass('label_check c_on');
@@ -108,7 +108,7 @@ jQuery(document).ready(function(){
         }
 
         
-        $('.page-search-result #block-system-main div.node_check').each(function(){
+        $('.page-search-result #block-system-main span.node_check').each(function(){
           
           var name_id = $(this).parent().children('span').text();
           $(this).html('<label class="label_check" for="'+name_id+'" id="check_'+name_id+'"><input type="checkbox" name="id_'+name_id+'" id="'+name_id+'" value="'+name_id+'" class="img_check"/></label>');
@@ -205,7 +205,7 @@ jQuery(document).ready(function(){
         //for add to cart functionality when check the checkbox in the search result page
         //store this nids in the array
         var checked_products_nids = new Array();
-        $('div .node_check input').click(function() {
+        $('span.node_check input').click(function() {
             var class_name = $(this).parent('label').attr('class');
             if(class_name == 'label_check c_on'){
               $(this).parent('label').removeClass('label_check c_on').addClass('label_check');
@@ -366,7 +366,7 @@ jQuery(document).ready(function(){
           var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
           $(".page-search-result span#photo_author label").text(node_author_txt);
 
-          var replacementurl = imgsrc.replace('thumbnail', 'search_preview');
+          var replacementurl = imgsrc.replace('search_thumbnail', 'search_preview');
 
           $("#prev_img").html('<img src="'+replacementurl+'" />');
 
