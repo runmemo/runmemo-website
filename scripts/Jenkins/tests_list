@@ -1,2 +1,6 @@
-OCR
+GenerateImageCacheTest
+OcrProductSaverTest
+OcrSQSIntegrationTestCase
 OcrPendingNodesTestCase
+OcrIntegrationTestCase
+S3MoverClassTestCase
