@@ -4,45 +4,45 @@
  * product Node view function
  */
 /*function ubercart_custom_node_view($node, $view_mode, $langcode) {
-  global $user;
-  $uid = $user->uid;
-  $node_type = $node->type;
-  if (($uid != 1) && (arg(0) == 'node') && ($node_type == 'product')) {
-     drupal_goto();
-  }
+ global $user;
+ $uid = $user->uid;
+ $node_type = $node->type;
+ if (($uid != 1) && (arg(0) == 'node') && ($node_type == 'product')) {
+ drupal_goto();
+ }
  if ($node->type == 'product' && $view_mode == 'full') {
-      
-	$xyobject = new ubercart_custom_model();  
-	$xyvalues = $xyobject->getxyvalues($node->nid);
-	
-	$header = array(
-                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
-			    );
-	$rows = array();
-	$xycount = 0;
-	foreach($xyvalues as $xyvalue){
-	
-	 $xycount++;
-		$rows[] = array(    
-          array('data' => $xycount),
-          array('data' => $xyvalue->number),
-          array('data' => $xyvalue->position_left),
-          array('data' => $xyvalue->position_top),
-		  array('data' => $xyvalue->probability) 
-          );
-	   	  
-	}
-	
-	
-	if($xycount>0){
-	  $node->content['body'][0]['#markup'] =  theme('table', array('header' => $header, 'rows'=> $rows));
-	}
-	
-            
-     
-  }
-}
-*/
+
+ $xyobject = new ubercart_custom_model();
+ $xyvalues = $xyobject->getxyvalues($node->nid);
+
+ $header = array(
+ array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
+ );
+ $rows = array();
+ $xycount = 0;
+ foreach($xyvalues as $xyvalue){
+
+ $xycount++;
+ $rows[] = array(
+ array('data' => $xycount),
+ array('data' => $xyvalue->number),
+ array('data' => $xyvalue->position_left),
+ array('data' => $xyvalue->position_top),
+ array('data' => $xyvalue->probability)
+ );
+  
+ }
+
+
+ if($xycount>0){
+ $node->content['body'][0]['#markup'] =  theme('table', array('header' => $header, 'rows'=> $rows));
+ }
+
+
+  
+ }
+ }
+ */
 /**
  * Alter the menu items
  */
@@ -68,8 +68,8 @@ function ubercart_custom_init() {
 }
 
 
-/**  
- * Create the hook menu for each page 
+/**
+ * Create the hook menu for each page
  * by using this we can map to the related page
  * @return
  * return menu items
@@ -83,10 +83,10 @@ function ubercart_custom_menu() {
     'access arguments' => array('access content'),
     'type' => MENU_CALLBACK
   );
-  
-  
-  
-    return $items;
+
+
+
+  return $items;
 
 }
 
@@ -97,25 +97,23 @@ function ubercart_custom_menu() {
  * AJAX cart add,remove function
  */
 function cart_add_remove() {
-  
-  
+
   if ($_GET['nid'] != NULL) {
     $nid = $_GET['nid'];
   }
   else {
     $nid = '';
   }
- 
- 
- global $user;
- $uid = $user->uid;
- 
- 
- if ($nid == '') {
+
+  global $user;
+  $uid = $user->uid;
+
+
+  if ($nid == '') {
     $subtotal = 0;
     foreach (uc_cart_get_contents($uid) as $item) {
       $subtotal += $item->price * $item->qty;
-      $cart_ids[]=$item->nid ;      
+      $cart_ids[]=$item->nid ;
     }
     if (!empty($cart_ids)) {
       $cart_string_nid = implode(',', $cart_ids);
@@ -123,33 +121,33 @@ function cart_add_remove() {
     else {
       $cart_string_nid = '';
     }
-    
+
     $items = 0;
     foreach (uc_cart_get_contents($uid) as $item) {
       $items += 1;
     }
-    
+
     echo $items . '|' . $subtotal . '|' . $cart_string_nid;
     exit;
- }
- 
- else {
-   $cart_ids = array();
-  foreach (uc_cart_get_contents($uid) as $item) {
-    $cart_ids[]=$item->nid ;
   }
-  if (in_array($nid, $cart_ids)) {
-    uc_cart_remove_item($nid, $cid = $uid, $data = array('module' => 'uc_product'));
-    echo 0 ;
-    exit;
-   }
+
   else {
-    uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid = $uid);
-    echo 1;
-    exit;
+    $cart_ids = array();
+    foreach (uc_cart_get_contents($uid) as $item) {
+      $cart_ids[]=$item->nid ;
+    }
+    if (in_array($nid, $cart_ids)) {
+      uc_cart_remove_item($nid, $cid = $uid, $data = array('module' => 'uc_product'));
+      echo 0 ;
+      exit;
+    }
+    else {
+      uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid = $uid);
+      echo 1;
+      exit;
+    }
   }
- }
-  
+
 }
 
 
@@ -162,7 +160,6 @@ function cart_add_remove() {
  * $form give the form value
  * $form_id is the form id
  */
-/*
 function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
   //alter the product node edit form
@@ -176,32 +173,34 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
       $form['base']['prices']['sell_price']['#disabled'] = 'TRUE';
     }
     $form['#validate'][] = 'product_pricing_validation';
-	$xyobject = new ubercart_custom_model();
-	$xyvalues = $xyobject->getxyvalues($nid);
-	$header = array(
-                    array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
-			    );
-	$rows = array();
-	$xycount = 0;
-	foreach($xyvalues as $xyvalue){
-	
-	 $xycount++;
-		$rows[] = array(    
-          array('data' => $xycount),
-          array('data' => $xyvalue->runner_number),
-          array('data' => $xyvalue->xvalue),
-          array('data' => $xyvalue->yvalue),
-		  array('data' => $xyvalue->probability) 
-          );
-	   	  
-	}
-	
-	if($xycount>0){
-	$form['ocr_xydetails'] = array(
-            '#markup' => theme('table', array('header' => $header, 'rows'=> $rows))
-            );
-	}
+    /*
+     $xyobject = new ubercart_custom_model();
+     $xyvalues = $xyobject->getxyvalues($nid);
+     $header = array(
+     array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
+     );
+     $rows = array();
+     $xycount = 0;
+     foreach($xyvalues as $xyvalue){
 
+     $xycount++;
+     $rows[] = array(
+     array('data' => $xycount),
+     array('data' => $xyvalue->runner_number),
+     array('data' => $xyvalue->xvalue),
+     array('data' => $xyvalue->yvalue),
+     array('data' => $xyvalue->probability)
+     );
+      
+     }
+
+     if($xycount>0){
+     $form['ocr_xydetails'] = array(
+     '#markup' => theme('table', array('header' => $header, 'rows'=> $rows))
+     );
+     }
+
+     */
 
   }
 
@@ -210,8 +209,8 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
     //$form['panes']['payment']['payment_method']['#options']['paypal_wps'] = 'Paypal Standard';
     //$form['panes']['payment']['details']['#markup'] = '';
-    
-    
+
+
     $form['panes']['billing']['#type'] = '';
     $form['panes']['customer']['#type'] = '';
     $form['panes']['cart']['#type'] = '';
@@ -221,10 +220,10 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
 
     $form['panes']['payment']['payment_method']['#type'] = 'hidden';
-    $form['panes']['payment']['details']['cc_number']['#required'] = TRUE; 
-    $form['panes']['payment']['details']['cc_cvv']['#required'] = TRUE; 
-    
-    
+    $form['panes']['payment']['details']['cc_number']['#required'] = TRUE;
+    $form['panes']['payment']['details']['cc_cvv']['#required'] = TRUE;
+
+
     $form['panes']['payment']['details']['cc_policy']['#markup'] = '';
     $form['panes']['payment']['details']['cc_number']['#size'] = '32';
     $form['panes']['payment']['details']['cc_exp_month']['#title'] = 'Expiration Month';
@@ -232,7 +231,7 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
     $form['actions']['continue']['#value'] = '';
 
   }
-    
+
   //alter for review order page
   if ($form['#form_id'] == 'uc_cart_checkout_review_form') {
     $form['actions']['back']= '';
@@ -240,7 +239,7 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
                                           'attributes' => array(
                                             'id' => 'edit-back',
 
-                                          )));
+    )));
 
 
     $form['actions']['submit']['#value'] = t('');
@@ -249,24 +248,23 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
 
 }
 
-*/
- 
+
 //validate the sell price when edit the product node
 function product_pricing_validation($form, &$form_state) {
-  
+
   $img_cost = $form['base']['prices']['sell_price']['#value'];
-  
+
   if (!(($img_cost >= 2) && ($img_cost <= 100))) {
-   form_set_error('field_sell_price', t('Enter sell price between 2 to 100 only'));
+    form_set_error('field_sell_price', t('Enter sell price between 2 to 100 only'));
   }
-  
+
 }
 
 /**
  * Add to cart submit button in the search result page
  * @param type $form
  * @param type $form_state
- * @return string 
+ * @return string
  */
 
 function search_result_cart($form, &$form_state) {
@@ -277,7 +275,7 @@ function search_result_cart($form, &$form_state) {
   $url = url('cart/checkout');
   $form['cart_summary'] = array('#markup' => t("<div class='cart_summ'><div class='summary_item_cost'><span class='cart-block-icon-full' title='View your shopping cart.'></span><span class='shop_cart_title'>Shopping Cart</span></div><div><span class='summary_selected_photos'><span class='placeholder'></span> Items</span><span class='summary_cost'>Total:&nbsp; &euro;<span class='placeholder'></span></span></div><div class='proceed_to_cart'><a href='$url'></a></div></div>"));
   $form['prev_img_det'] = array('#markup' => t('<div class="cost_auth_det"><span id="photo_cost">Price:<label class="photo_cost">&euro;</label></span><br/><span id="photo_author">Photo by:<label class="photo_cost">James Whyte </label></span></div>'), '#prefix' => '<div class="prev_img_details">', );
-  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-img"/></div></div>', );
+  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
  
   return $form;
 }
