@@ -9,6 +9,6 @@ cd /var/www/html/runmemo/runmemo-website
 drush status
 drush cache-clear all
 while read -r testname; do
-	drush test-run --jenkins=/tmp/tests/drupal-tests ${testname}
+	drush test-run --jenkins=/tmp/tests/ ${testname}
 done < ./scripts/Jenkins/tests_list
   
