@@ -7,6 +7,8 @@ files[] = ocr.inc
 files[] = ocr_product_node_saver.inc
 files[] = ocr_sqs_queues.inc
 files[] = tests/ocr.test
+files[] = tests/ocr_product_saver.test
+files[] = tests/ocr_sqs_queues.test
 
 
 ; Information added by drupal.org packaging script on 2011-11-24
