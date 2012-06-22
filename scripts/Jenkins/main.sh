@@ -1,5 +1,40 @@
 #!/bin/sh -x
 
+#/**
+# * @file main.sh
+# * @author  Leonid <leonid@runmemo.com>
+# * @version 1.0
+# *
+# * @section DESCRIPTION
+# *
+# * This is the main script should be executed by Jenkins when a code change is detected.  
+# * The script pulls git repo on test instance, executes test_run.sh on test instance  
+# * and downloads resuls. 
+# * 
+# * WARNING Test instance must be running
+# * WARNING Following parametrs must be set by Jenkins:
+# * #Exporting Instance ID and certificate
+# * export INSTANCE=i-0f8e1f47
+# * export CERT=/root/web_staging.pem
+# * #Exporting EC2 settings
+# * export EC2_KEYPAIR=TestMicroInstances 
+# * export EC2_URL=https://ec2.eu-west-1.amazonaws.com
+# * export EC2_PRIVATE_KEY=/root/.ec2/pk-SCD4I2VBV4QEHCXU4XGVMBE7PXPGD363.pem
+# * export EC2_CERT=/root/.ec2/cert-SCD4I2VBV4QEHCXU4XGVMBE7PXPGD363.pem
+# * export JAVA_HOME=/usr/lib/jvm/java-6-openjdk/
+# *
+# */
+
+if [ -z ${INSTANCE} ]; then
+	echo "Parametr INSTANCE is not defined"
+	exit 1
+fi
+
+if [ -z ${CERT} ]; then
+	echo "Parametr CERT is not defined"
+	exit 1
+fi
+
 echo "main.sh"
 echo "instance=${INSTANCE}"
 echo "certificate=${CERT}"
@@ -29,6 +64,8 @@ if [ $? -ne 0 ]; then
 fi
 
 #get results
+#Create directory for test results
+mkdir -p ${WORKSPACE}/${BUILD_ID}
 scp ${SSH_OPTIONS} -i ${CERT} root@${ip}:"/tmp/tests/*"  ${WORKSPACE}/${BUILD_ID}
 if [ $? -ne 0 ]; then
 	echo "Failed to get results"
