@@ -1,9 +1,7 @@
-#!/bin/sh
+#!/bin/sh -x
 
-INSTANCE="i-0f8e1f47"
+echo "main.sh"
 echo "instance=${INSTANCE}"
-
-CERT="/root/web_staging.pem"
 echo "certificate=${CERT}"
 
 SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no"
@@ -24,16 +22,14 @@ if [ $? -ne 0 ]; then
 fi
 
 #run tests
-ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "/bin/sh /var/www/html/runmemo/runmemo-website/scripts/Jenkins/tests_run.sh"
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "/bin/sh -x /var/www/html/runmemo/runmemo-website/scripts/Jenkins/tests_run.sh"
 if [ $? -ne 0 ]; then
 	echo "Failed to run tests"
 	exit 1
 fi
 
 #get results
-mkdir -p /tmp/tests/${BUILD_ID}
-echo "test-dir=/tmp/tests/${BUILD_ID}"
-scp ${SSH_OPTIONS} -i ${CERT} root@${ip}:"/tmp/tests/*" /tmp/tests/${BUILD_ID}/
+scp ${SSH_OPTIONS} -i ${CERT} root@${ip}:"/tmp/tests/*"  ${WORKSPACE}/${BUILD_ID}
 if [ $? -ne 0 ]; then
 	echo "Failed to get results"
 	exit 1

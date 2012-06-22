@@ -1,8 +1,7 @@
-#!/bin/sh
+#!/bin/sh -x
 
 
-INSTANCE=i-0f8e1f47
-echo ${INSTANCE}
+echo "Stop test instance: ${INSTANCE}"
 
 
 ec2-describe-instances ${INSTANCE} --filter "instance-state-code=80" | grep ${INSTANCE}

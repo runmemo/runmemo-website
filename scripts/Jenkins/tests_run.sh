@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -x
 
 rm 	  -rf /tmp/tests/*
 mkdir  -p /tmp/tests/
@@ -6,9 +6,9 @@ chmod 777 /tmp/tests/
 
 cd /var/www/html/runmemo/runmemo-website
 
-drush status >> /tmp/tests/drush.log
-
+drush status
+drush cache-clear all
 while read -r testname; do
-	drush test-run --jenkins=/tmp/tests/drupal-tests ${testname} >> drush.log 2 >> drush.err
+	drush test-run --jenkins=/tmp/tests/drupal-tests ${testname}
 done < ./scripts/Jenkins/tests_list
   
