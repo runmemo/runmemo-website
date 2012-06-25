@@ -108,5 +108,15 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
       throw Exception('Failed to delete test image from S3.');
     }
   }
+  
+/**
+ * 
+ * Checks whether false = true
+ */  
+  function testThatAlwaysFails() {
+   $this->assertEqual(TRUE, FALSE, 'Hello');  
+  }
+  
+}
 
 }
