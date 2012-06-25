@@ -114,9 +114,8 @@ class S3MoverClassTestCase extends DrupalWebTestCase {
  * Checks whether false = true
  */  
   function testThatAlwaysFails() {
-   $this->assertEqual(TRUE, FALSE, 'Hello');  
+    
+    $this->assertEqual(TRUE, FALSE, 'Hello');  
   }
   
-}
-
 }
