@@ -76,34 +76,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   $handler->display->display_options['relationships']['uid']['required'] = 0;
-  /* Field: Product: Sell price */
-  $handler->display->display_options['fields']['sell_price']['id'] = 'sell_price';
-  $handler->display->display_options['fields']['sell_price']['table'] = 'uc_products';
-  $handler->display->display_options['fields']['sell_price']['field'] = 'sell_price';
-  $handler->display->display_options['fields']['sell_price']['label'] = '';
-  $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span class="node_cost" style="display:none;">[sell_price]</span>';
-  $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['sell_price']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['sell_price']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['sell_price']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['sell_price']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['sell_price']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
-  $handler->display->display_options['fields']['sell_price']['precision'] = '0';
-  $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
-  
-  /* Field: Content: Nid */
+    /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
   $handler->display->display_options['fields']['nid']['table'] = 'node';
   $handler->display->display_options['fields']['nid']['field'] = 'nid';
@@ -127,14 +100,41 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['nid']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nid']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['nid']['link_to_node'] = 0;
-
+  /* Field: Product: Sell price */
+  $handler->display->display_options['fields']['sell_price']['id'] = 'sell_price';
+  $handler->display->display_options['fields']['sell_price']['table'] = 'uc_products';
+  $handler->display->display_options['fields']['sell_price']['field'] = 'sell_price';
+  $handler->display->display_options['fields']['sell_price']['label'] = '';
+  $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">[sell_price]</span>';
+  $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['sell_price']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['sell_price']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['sell_price']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['sell_price']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['sell_price']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['sell_price']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['sell_price']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['sell_price']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
+  $handler->display->display_options['fields']['sell_price']['precision'] = '0';
+  $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
+  $handler->display->display_options['fields']['sell_price']['format'] = 'numeric';
+  
   /* Field: Content: Image */
   $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['label'] = '';
   $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]" class="wrapDiv">[uc_product_image]</div>';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]">[uc_product_image]</div>';
   $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;
