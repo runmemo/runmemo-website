@@ -80,21 +80,21 @@ function ubercart_custom_menu() {
     'title' => '',
     'description' => '',
     'page callback' => 'cart_remove_item',
-    'access arguments' => array('access content'),
+    'access arguments' => array('Access runner'),
     'type' => MENU_CALLBACK
   );
   $items['cart_add_item'] = array(
     'title' => '',
     'description' => '',
     'page callback' => 'cart_add_item',
-    'access arguments' => array('access content'),
+    'access arguments' => array('Access runner'),
     'type' => MENU_CALLBACK
   );
   $items['cart_list_items'] = array(
     'title' => '',
     'description' => '',
     'page callback' => 'cart_list_items',
-    'access arguments' => array('access content'),
+    'access arguments' => array('Access runner'),
     'type' => MENU_CALLBACK
   );
   return $items;
