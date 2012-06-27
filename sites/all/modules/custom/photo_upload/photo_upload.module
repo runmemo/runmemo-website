@@ -11,6 +11,14 @@ function photo_upload_init() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function photo_upload_views_api() {
+  return array("version" => "3.0");
+}
+
+
+/**
  * Create the hook menu for each page
  * by using this we can map to the related page
  * @return
