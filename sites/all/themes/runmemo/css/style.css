@@ -2170,17 +2170,6 @@ top: -42px;
 
 }
 
-/*Design for check box in search results page*/
-.page-search-result label { display: block; cursor: pointer; line-height: 20px; padding-bottom: 26px; text-shadow: 0 -1px 0 rgba(0,0,0,.2); }
-
-.page-search-result .label_check    { background: url(../images/checkbox.png) no-repeat; }
-.page-search-result label.c_on      { background: url(../images/checkbox-hover.png) no-repeat; }
-
-.page-search-result .label_check input,
-.page-search-result .label_radio input  { position: absolute; left: -9999px; }
-
-/*End Design for check box in search results page*/
-
 div.form-item-url-hidden ,
 .page-search-result .left-corner #tabs-wrapper h1{
 display:none; 
@@ -2249,6 +2238,31 @@ ul#edit-file_filelist{
   z-index:1; 
  
 }
+.page-cart #prev_img_cart {
+  text-align: right;
+  width: 464px;
+}
+.page-cart #cart-result{
+  border-radius: 6px;
+  -moz-border-radius: 6px;
+  -webkit-border-radius: 6px;
+  border: 1px solid #E8E8E8;
+  margin-left: 62px;
+  width: 401px;
+  padding: 5px 0 0 0;
+}
+.page-cart #cart_result_subtotal {
+  width: 180px;
+  float: left;
+  padding: 9px 0 0 4px;
+  
+}
+.page-cart #proceed_checkout {
+background: url("../images/Cart-Summary.png") no-repeat scroll 0 0 transparent !important;
+width: 210px;
+height: 45px;
+border: none;
+}
 
 
 .page-cart #uc-cart-view-form .content {
@@ -2261,20 +2275,6 @@ ul#edit-file_filelist{
     width: none!important;
 }
 
-/* 14.03.2012 */
-.page-search-result .region-content {
-   float: left ;
-   width: 557px;
-}
-.page-search-result #sidebar-second {
-  float:none !important;
-}
-
-.page-search-result #sidebar-second .contextual-links-region
-{
- float: none !important;
-/*width: 435px;*/
-}
 
 #block-uc-cart-cart .content {
   border-radius: none !important;
@@ -2328,31 +2328,7 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
   width: 480px;
   padding: 15px 0 0 0;
 }
-.page-cart #prev_img_cart {
-  text-align: right;
-  width: 464px;
-}
-.page-cart #cart-result{
-  border-radius: 6px;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  border: 1px solid #E8E8E8;
-  margin-left: 62px;
-  width: 401px;
-  padding: 5px 0 0 0;
-}
-.page-cart #cart_result_subtotal {
-  width: 180px;
-  float: left;
-  padding: 9px 0 0 4px;
-  
-}
-.page-cart #proceed_checkout {
-background: url("../images/Cart-Summary.png") no-repeat scroll 0 0 transparent !important;
-width: 210px;
-height: 45px;
-border: none;
-}
+
 .page-cart #cart_result_subtotal .total_cost {
   color: #00a14e;
 }
@@ -2580,7 +2556,7 @@ float: right;
   padding-right: 2px;
 }
 
-.page-search-result .view-content table td img {
+.image-thumbnail img {
   border: 1px solid #e9e9e9;
   padding: 2px;
 }
