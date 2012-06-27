@@ -33,7 +33,7 @@ function photo_search_menu() {
     'title' => 'Photo Gallery',
     'description' => 'View the objects in a event on your Amazon S3 account.',
     'page callback' => 'find_trade_section',
-    'access arguments' => array('access_runner'),
+    'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
   
@@ -50,13 +50,33 @@ function photo_search_menu() {
 function photo_search_permission() {
 
   return array(
-      'access_runner' => array(
-      'title' => t('Access runner'),
-      'description' => t('Access runner'),
+      'search photos' => array(
+      'title' => t('Search photos'),
+      'description' => t('Search photos'),
       'restrict access' => TRUE
     ),
 
   );
+}
+
+/**
+ * Implements photo_search_user_default_permissions().
+ */
+function photo_search_user_default_permissions() {
+  $permissions = array();
+
+  // Exported permission: access_runner.
+  $permissions['search photos'] = array(
+    'name' => 'search photos',
+    'roles' => array(
+      0 => 'administrator',
+      1 => 'anonymous user',
+      2 => 'authenticated user',
+    ),
+    'module' => 'photo_search',
+  );
+
+  return $permissions;
 }
 
 

@@ -26,6 +26,34 @@
     top: 12px;
 }
 
+/*Design for check box in search results page*/
+.page-search-result label { display: block; cursor: pointer; line-height: 20px; padding-bottom: 26px; text-shadow: 0 -1px 0 rgba(0,0,0,.2); }
+
+.page-search-result .label_check    { background: url(images/checkbox.png) no-repeat; }
+.page-search-result label.c_on      { background: url(images/checkbox-hover.png) no-repeat; }
+
+.page-search-result .label_check input,
+.page-search-result .label_radio input  { position: absolute; left: -9999px; }
+
+.proceed_to_cart a.disabled {
+	display:none;
+}
+
+
+
+.page-search-result .region-content {
+   float: left ;
+   width: 557px;
+}
+.page-search-result #sidebar-second {
+  float:none !important;
+}
+
+.page-search-result #sidebar-second .contextual-links-region
+{
+ float: none !important;
+/*width: 435px;*/
+}
 
 
 

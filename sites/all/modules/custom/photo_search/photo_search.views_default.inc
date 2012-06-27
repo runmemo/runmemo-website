@@ -134,7 +134,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['label'] = '';
   $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]">[uc_product_image]</div>';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]" class="image-thumbnail">[uc_product_image]</div>';
   $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;
