@@ -79,7 +79,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
    */
   private function HttpRequest($url, $nid) {
 
-    $url = $GLOBALS['base_url'] . '/' . $url .'?nid=' . $nid;
+    $url = url(NULL, array('absolute' => TRUE)) . $url .'?nid=' . $nid;
     debug($url);
 
     //open connection
