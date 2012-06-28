@@ -49,15 +49,6 @@ if [ -z ${ip} ]; then
 fi
 echo "ip=${ip}"
 
-#get ip of test instance
-url=$(ec2-describe-instances ${INSTANCE} --filter "instance-state-code=16" | grep ^INSTANCE | cut -f 18)
-if [ -z ${url} ]; then
-	echo "Failed to get url of test instance"
-	exit 1
-fi
-url="http://${url}"
-echo "url=${url}"
-
 #pull repo on test instance
 ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd /var/www/html/runmemo/runmemo-website/; git pull"
 if [ $? -ne 0 ]; then
@@ -66,7 +57,7 @@ if [ $? -ne 0 ]; then
 fi
 
 #run tests
-ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "/bin/sh -x /var/www/html/runmemo/runmemo-website/scripts/Jenkins/tests_run.sh ${url}"
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "/bin/sh -x /var/www/html/runmemo/runmemo-website/scripts/Jenkins/tests_run.sh"
 if [ $? -ne 0 ]; then
 	echo "Failed to run tests"
 	exit 1
