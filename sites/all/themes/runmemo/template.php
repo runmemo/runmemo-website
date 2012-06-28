@@ -1,24 +1,5 @@
 <?php
 
-/**
- * Return a themed breadcrumb trail.
- *
- * @param $breadcrumb
- *   An array containing the breadcrumb links.
- * @return a string containing the breadcrumb output.
- */
-function runmemo_breadcrumb($variables) {
-  $breadcrumb = $variables['breadcrumb'];
-
-  if (!empty($breadcrumb)) {
-    // Provide a navigational heading to give context for breadcrumb links to
-    // screen-reader users. Make the heading invisible with .element-invisible.
-    $output = '<h2 class="element-invisible">' . t('You are here') . '</h2>';
-
-      $output .= '<div class="breadcrumb"><div class="start">  </div>' . implode("<div class='arrow'>  </div>", $breadcrumb) . '<div class="end">  </div></div>';
-    return $output;
-  }
-}
 
 /**
  * Override or insert variables into the maintenance page template.
@@ -137,7 +118,7 @@ function runmemo_preprocess_comment(&$vars) {
  */
 function runmemo_preprocess_block(&$vars) {
   $vars['title_attributes_array']['class'][] = 'title';
-  $vars['classes_array'][] = 'clearfix';
+ // $vars['classes_array'][] = 'clearfix';
 }
 
 /**
@@ -229,7 +210,7 @@ function runmemo_preprocess_uc_cart_checkout_review(&$variables) {
   $j = 0;
   for($i=0;$i<$no_of_cart_items;$i++) {
     $j++;
-    $output .=  '<td>'. '<div class="views-field-sell-price"><span id="node_cost" style="display:none">&euro;'. $price[$i] . '</span></div>'  .theme("image_formatter", array('item' => $photo[$i], 'image_style' => 'thumbnail'));
+    $output .=  '<td>'. '<div class="views-field-sell-price"><span id="node_cost" style="display:none">&euro;'. $price[$i] . '</span></div>'  .theme("image_formatter", array('item' => $photo[$i], 'image_style' => 'search_thumbnail'));
     $output .= '</td>';
       
     if($j%4 == 0) {

@@ -39,14 +39,125 @@
 	display:none;
 }
 
+.page-search-result .region-content .content table tr td  {
+	border:1px solid #cccccc;
+	text-align:center;
+ 	border: 0 none;
+}
 
+.page-search-result  #sidebar-second .block .content{
+float:left;
+ width: 437px;
+ position: relative;
+ top: 16px;
+ padding: 0 0 0 10px;
+}
 
+.page-search-result  #sidebar-second .clearfix:after{
+display:inline !important;
+}
+.page-search-result  #sidebar-second {
+display:inline !important;
+}
+.page-search-result .fieldset-wrapper
+{
+width:980px;
+border:1px solid #ccc;
+float:left;
+border-radius:5px;
+-webkit-border-radius:5px;
+-moz-border-radius:5px;
+}
+
+.page-search-result .number_search {
+  margin-right: 18px !important;
+}
+.page-search-result #edit-search
+{
+    margin-top:45px;
+    position: relative;
+    top: -50px;
+}
+.page-search-result .region-photo-search .content
+{
+ min-height:0px;
+}
+.page-search-result #center
+{
+width:100%;
+float:left;
+}
+.page-search-result .contextual-links-region
+{
+float: left;
+/*width: 435px;*/
+}
+
+img.thumbnail {
+	border: 1px solid #E9E9E9;
+	}
+
+img.selected-thumbnail {
+	border: 1px solid green;
+}
+
+.page-search-result #sidebar-second
+{
+float: right;
+clear:right;
+/*margin-top: 235px;*/
+width:420px;
+}
+.page-search-result #sidebar-second .region-sidebar-second
+{
+/*position:absolute;*/
+}
+.page-search-result .left-corner 
+{  
+    float:left;
+    width: 550px;
+}
+.page-search-result .left-corner .clearfix
+{
+  width:980px;
+}
+
+.page-search-result .form-item-events-select-runner
+{
+  float:left;
+  padding:20px;
+}
+/*.page-search-result .number_search
+{ 
+padding:20px;
+}*/
+
+.region-content {
+	float: left;
+	clear:left;
+	display: block;
+	}
+.view-search-results {
+	float: left;
+	clear:left;
+	display: block;
+}
+
+.region-photo-search {
+	clear:both;
+	display: block;
+	}
+
+form#select-event-runner-get-photos {
+	clear:both;
+	display: block;
+	}
 .page-search-result .region-content {
    float: left ;
    width: 557px;
 }
 .page-search-result #sidebar-second {
-  float:none !important;
+ /* float:none !important;*/
 }
 
 .page-search-result #sidebar-second .contextual-links-region

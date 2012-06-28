@@ -67,13 +67,10 @@ class product_node_creator {
    */
   public static function getNewProductNode() {
     // Create new event node to use for product node
-    global $user;
-    $uid = $user->uid;
     $event = new stdClass();
     $event->language = LANGUAGE_NONE;
     $event->field_pricing[$event->language]['0']['value'] = 5;
     $event->title = 'OCR Test Event';
-    $event->uid = $uid;
     $event->type = 'event';
     $event->status = 1;
     $event = node_submit($event); // Prepare node for a submit
@@ -88,11 +85,8 @@ class product_node_creator {
     //set language
     $node->language = LANGUAGE_NONE;
     //user id
-    $node->uid = $uid;
     $node->status = 1;
     $node->comment = 1;
-     
-     
      
     // Create node that we want to update with numbers and OCR status.
     // $price = $event->field_pricing['und']['0']['value'];
