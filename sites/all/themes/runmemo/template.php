@@ -208,7 +208,7 @@ function runmemo_preprocess_uc_cart_checkout_review(&$variables) {
  
   $output = '<table class="review-order-img" ><tr>';
   $j = 0;
-  for($i=0;$i<$no_of_cart_items;$i++) {
+  for($i=0; $i<$no_of_cart_items; $i++) {
     $j++;
     $output .=  '<td>'. '<div class="views-field-sell-price"><span id="node_cost" style="display:none">&euro;'. $price[$i] . '</span></div>'  .theme("image_formatter", array('item' => $photo[$i], 'image_style' => 'search_thumbnail'));
     $output .= '</td>';
@@ -264,7 +264,7 @@ function runmemo_preprocess_uc_cart_complete_sale(&$variables) {
     }
     
     $j++;
-    $output .=  '<td><a href="' . $original_img_url .'" target="_blank">' . theme("image_formatter", array('item' => $img_uri[$i], 'image_style' => 'thumbnail')) .'</a>';
+    $output .=  '<td><a href="' . $original_img_url .'" target="_blank">' . theme("image_formatter", array('item' => $img_uri[$i], 'image_style' => 'search_thumbnail')) .'</a>';
     $output .= '</td>';
     
         
