@@ -20,26 +20,18 @@ jQuery(document).ready(function() {
 			});
 
 			if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) {
-				var initial_img = $(
-						'#block-system-main table.views-view-grid tr.row-first td.col-first img')
-						.attr('src');
+				var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');
 				// for highlight the thumbnail image related to the preview
 				// image
-				$(
-						'#block-system-main table.views-view-grid tr.row-first td.col-first img')
-						.attr('style', 'border: 1px solid green;');
+				$('#block-system-main table.views-view-grid tr.row-first td.col-first img').addClass('selected-thumbnail');
 
-				var initial_preview = initial_img.replace('search_thumbnail',
-						'search_preview');
+				var initial_preview = initial_img.replace('search_thumbnail', 'search_preview');
 
 				$("#prev_img").html('<img src="' + initial_preview + '" />');
 
-				var initial_cost = $(
-						'#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost')
-						.text();
+				var initial_cost = $('#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost').text();
 
-				$(".page-search-result span#photo_cost label").text(
-						initial_cost);
+				$("span#photo_cost label").text(initial_cost);
 
 				var initial_authour_name = $(
 						'#block-system-main table.views-view-grid tr.row-first td.col-first .authour_first_name')
@@ -51,8 +43,8 @@ jQuery(document).ready(function() {
 						"#block-system-main table.views-view-grid tr.row-first td.col-first img")
 						.parent().attr('id');
 				var exploded = wrap_id.split('thumb-');
-				var new_id = exploded[1];
-				$("#cart_hidden").val(new_id);
+				var nid = exploded[1];
+				$("#cart_hidden").val(nid);
 
 				// Add/remove functionality based on the cart contents
 				var cart_contents = new Array();
@@ -63,7 +55,7 @@ jQuery(document).ready(function() {
 				// var temp = new Array();
 				cart_contents = cart_str.split(",");
 
-				if (jQuery.inArray(new_id, cart_contents) == -1) {
+				if (jQuery.inArray(nid, cart_contents) == -1) {
 					show_add_button();
 
 				} else {
@@ -91,39 +83,18 @@ jQuery(document).ready(function() {
 
 				var items = new Array();
 
+				// uncheck all checks on the page
+				$('span.node_check input').each(function() {
+					var nid = $(this).val();
+					set_to_unchecked(nid);						
+				});
+				
 				for (i = 0; i < cart.items.length; i++) {
 					items.push(cart.items[i].nid);
+					set_to_checked(cart.items[i].nid);
 				}
 
-				$(
-						'.page-search-result #block-system-main span.node_check input')
-						.each(
-								function() {
-									var name_id = $(this).val();
-									if (jQuery.inArray(name_id, items) != -1) {
-										$(
-												'.page-search-result #block-system-main span.node_check #'
-														+ name_id).attr(
-												'checked', 'checked');
-										var label_class_name = $(this).parent(
-												'label').attr('class');
-										if (label_class_name != 'label_check c_on') {
-											$(this).parent('label')
-													.removeClass('label_check')
-													.addClass(
-															'label_check c_on');
-										}
-									}
-
-								});
-			}
-
-			function selected_photos() {
-				$(
-						'.page-search-result #block-system-main span.node_check input')
-						.each(function() {
-
-						})
+				
 			}
 
 			function load_selected_products_from_ubercart() {
@@ -147,25 +118,14 @@ jQuery(document).ready(function() {
 				load_selected_products_from_ubercart();
 			}
 
-			$('.page-search-result #block-system-main span.node_check')
-					.each(
-							function() {
-
-								var nid = $(this).parent().children('span')
-										.text();
-								$(this)
-										.html(
-												'<label class="label_check" for="'
-														+ nid
-														+ '" id="check_'
-														+ nid
-														+ '"><input type="checkbox" name="id_'
-														+ nid
-														+ '" id="'
-														+ nid
-														+ '" value="'
-														+ nid
-														+ '" class="img_check"/></label>');
+			$('span.node_check').each(
+				function() {
+						var nid = $(this).parent().children('span').text();
+						$(this).html(
+						'<label class="label_check" for="'+ nid + '" id="check_'+ nid 
+							+ '"><input type="checkbox" name="id_' + nid 
+							+ '" id="' + nid + '" value="'+ nid
+							+ '" class="img_check"/></label>');
 							});
 
 			// message for adding and removing cart
@@ -305,17 +265,18 @@ jQuery(document).ready(function() {
 			
 			function set_to_checked(nid) {
 				$('#check_' + nid).addClass('c_on');
+				$('span.node_check #'+ nid).attr('checked', true);
 			}
 			
 			function set_to_unchecked(nid) {
 				$('#check_' + nid).removeClass('c_on');
+				$('span.node_check #'+ nid).attr('checked', false);
 			}
 		
 			
 			function add_to_cart(nid) {
 				set_to_checked(nid);
-				$('#cart_hidden_nids').children('ul').append(
-						'<li id="item-' + nid + '">' + nid + '</li>');
+				$('#cart_hidden_nids').children('ul').append('<li id="item-' + nid + '">' + nid + '</li>');
 				show_proceed_to_checkout();
 				set_cart_summary();
 
@@ -388,10 +349,8 @@ jQuery(document).ready(function() {
 			 * Shows Add to Cart button
 			 */
 			function show_add_button() {
-				$('.page-search-result #search-result-cart .form-submit')
-						.removeClass('remove_cart');
-				$('.page-search-result #search-result-cart .form-submit')
-						.addClass('add_cart');
+				$('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
+				$('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
 			}
 
 			/**
@@ -414,34 +373,14 @@ jQuery(document).ready(function() {
 								var base_path = Drupal.settings.basePath;
 								var nid = $('#cart_hidden').val();
 
-								var class_name = $('#check_' + nid).attr(
-										'class');
-								if (class_name == 'label_check c_on') {
-									$(this).parent('label').removeClass(
-											'label_check c_on').addClass(
-											'label_check');
-									$('#' + nid).attr('checked', false);
-
-								} else {
-									$(this).parent('label').removeClass(
-											'label_check').addClass(
-											'label_check c_on');
-									$('#' + nid).attr('checked', true);
-
-								}
-
 								var in_cart = is_product_in_cart(nid);
 
 								if (in_cart) {
 									remove_from_cart(nid);
-									$('#check_' + nid).attr('class',
-											'label_check');
 									show_add_button();
 
 								} else {
 									add_to_cart(nid);
-									$('#check_' + nid).attr('class',
-											'label_check c_on');
 									show_remove_button();
 								}
 
@@ -451,59 +390,48 @@ jQuery(document).ready(function() {
 			/**
 			 * Click Event for the thumbnail image.
 			 */
-			$('.page-search-result #block-system-main div.field-content img')
-					.bind(
-							'click',
-							function() {
+			$('div.field-content img').bind('click',function() {
 
-								// for highlight the thumbnail image related to
-								// the preview image
-								$(
-										'.page-search-result #block-system-main div.field-content img')
-										.attr('style',
-												'border: 1px solid #E9E9E9;');
-								$(this).attr('style',
-										'border: 1px solid green;');
+						// for highlight the thumbnail image related to
+						// the preview image
+				
+						$('div.field-content img').removeClass('selected-thumbnail').addClass('thumbnail');
+						
+						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
 
-								var imgsrc = $(this).attr('src');
-								var price_txt = $(this).parents("td").find(
-										"span.node_cost").text();
-								$(".page-search-result span#photo_cost label")
-										.text(price_txt);
+						var imgsrc = $(this).attr('src');
+						var price_txt = $(this).parents('td').find('span.node_cost').text();
+						$('.page-search-result span#photo_cost label').text(price_txt);
 
-								var node_author_txt = $(this).parents("td")
-										.find("span.authour_first_name").text();
-								$(".page-search-result span#photo_author label")
-										.text(node_author_txt);
+						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
+						$(".page-search-result span#photo_author label").text(node_author_txt);
 
-								var replacementurl = imgsrc.replace(
-										'search_thumbnail', 'search_preview');
+						var replacementurl = imgsrc.replace('search_thumbnail', 'search_preview');
 
-								$("#prev_img").html(
-										'<img src="' + replacementurl + '" />');
+						$("#prev_img").html('<img src="' + replacementurl + '" />');
 
-								// change the addtocart button id
-								var wrap_id1 = $(this).parent().attr('id');
-								var exploded = wrap_id1.split('thumb-');
-								var new_id = exploded[1];
-								$("#cart_hidden").val(new_id);
+						// change the addtocart button id
+						var wrap_id1 = $(this).parent().attr('id');
+						var exploded = wrap_id1.split('thumb-');
+						var new_id = exploded[1];
+						$("#cart_hidden").val(new_id);
 
-								// Add/remove functionality based on the cart
-								// contents
-								var cart_contents = new Array();
-								var cart_str = $(
-										'.view-footer #cart_hidden_nids input')
-										.val();
+						// Add/remove functionality based on the cart
+						// contents
+						var cart_contents = new Array();
+						var cart_str = $(
+								'.view-footer #cart_hidden_nids input')
+								.val();
 
-								// var temp = new Array();
-								if ($('#' + new_id).attr('checked') == true) {
+						// var temp = new Array();
+						if ($('#' + new_id).attr('checked') == true) {
 
-									show_remove_button();
-								} else {
-									show_add_button();
-								}
+							show_remove_button();
+						} else {
+							show_add_button();
+						}
 
-							});
+				});
 
 			/**
 			 * Mouseover Event for thumbnail image that shows the bubble with
@@ -554,8 +482,7 @@ jQuery(document).ready(function() {
 			if ($('.page-cart-checkout-review .content .order-review-table').length > 0) {
 				$(
 						'.page-cart-checkout-review .content .order-review-table tr:first')
-						.removeClass('pane-title-row').addClass(
-								'review-order-title');
+						.removeClass('pane-title-row').addClass('review-order-title');
 				$(
 						'.page-cart-checkout-review .content .order-review-table tr.review-button-row #uc-cart-checkout-review-form div:first')
 						.attr('id', 'review-order-action');
