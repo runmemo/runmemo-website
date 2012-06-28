@@ -37,7 +37,36 @@
 
 .proceed_to_cart a.disabled {
 	opacity : 0.4;
-    filter: alpha(opacity=40); // msie
+    filter: alpha(opacity=40); /* msie */
+    cursor:default;
+}
+
+.page-search-result .content #search-result-cart .proceed_to_cart a
+{
+	background: transparent url(images/Cart-Summary.png) no-repeat scroll 0px 0px;
+	font-size: 14px;
+	text-align: center;
+	float:right;
+	width:211px;
+	height:39px;
+	padding: 0px 0 3px 11px;
+	position: relative;
+	top: -42px;
+}
+.proceed_to_cart a
+{
+  color: #34373A;
+}
+.page-search-result .region-content .views-field-uc-product-image
+{
+   text-align:center;
+  height:100px;
+  position: relative;
+  top:-18px;
+}
+.page-search-result .right-corner
+{
+   margin-right: -235px;
 }
 
 .page-search-result .region-content .content table tr td  {
