@@ -36,7 +36,8 @@
 .page-search-result .label_radio input  { position: absolute; left: -9999px; }
 
 .proceed_to_cart a.disabled {
-	display:none;
+	opacity : 0.4;
+    filter: alpha(opacity=40); // msie
 }
 
 .page-search-result .region-content .content table tr td  {
@@ -132,7 +133,7 @@ width:420px;
 padding:20px;
 }*/
 
-.region-content {
+.page-search-result .region-content {
 	float: left;
 	clear:left;
 	display: block;
