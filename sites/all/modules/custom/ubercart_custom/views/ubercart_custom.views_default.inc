@@ -3,7 +3,7 @@
 /**
  * Implements hook_views_default_views().
  */
-function photo_search_views_default_views() {
+function ubercart_custom_views_default_views() {
 
   $export = array();
   $view = new view;
