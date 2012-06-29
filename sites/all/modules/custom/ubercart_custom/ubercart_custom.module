@@ -50,7 +50,7 @@
 function ubercart_custom_views_api() {
   return array(
   	'version' => '3.0', 
-  	'path' => drupal_get_path('module', 'ubercart_custom') . 'views');
+  	'path' => drupal_get_path('module', 'ubercart_custom') . '/views');
 }
 
 /**
