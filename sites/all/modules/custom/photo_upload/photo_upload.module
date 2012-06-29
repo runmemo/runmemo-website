@@ -167,9 +167,9 @@ function photo_upload_menu_alter(&$items) {
   }
 }
 
-function photo_upload_form_alter(&$form, $form_state, $form_id) {
+function photo_upload_form_alter(&$form, &$form_state, $form_id) {
   
-  if($form_state['view']->name == 'myphotos') {
+  if(isset($form_state['view']) && $form_state['view']->name == 'myphotos') {
     $form['field_event_reference_nid']['#options']['All'] = t('Select Event');
   }
 }
