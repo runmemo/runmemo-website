@@ -168,7 +168,6 @@ jQuery(document).ready(function() {
 					nid = cart.items[i].nid;
 					items.push(nid);
 					set_to_checked(nid);
-					add_to_cart_local_cache(nid);
 				}				
 			}
 
@@ -262,21 +261,19 @@ jQuery(document).ready(function() {
 			function set_to_checked(nid) {
 				$('#check_' + nid).addClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', true);
+				$('#cart_hidden_nids').children('ul').append('<li id="item-' + nid + '">' + nid + '</li>');
+	
 			}
 			
 			function set_to_unchecked(nid) {
 				$('#check_' + nid).removeClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', false);
+				$('#cart_hidden_nids ul li#item-' + nid).remove();
 			}
 		
-			function add_to_cart_local_cache(nid) {
-				$('#cart_hidden_nids').children('ul').append('<li id="item-' + nid + '">' + nid + '</li>');
-				
-			}
 			
 			function add_to_cart(nid) {
 				set_to_checked(nid);
-				add_to_cart_local_cache(nid);
 				show_proceed_to_checkout();
 				set_cart_summary();
 
@@ -310,7 +307,6 @@ jQuery(document).ready(function() {
 			
 			function remove_from_cart(nid) {
 				set_to_unchecked(nid);
-				$('#cart_hidden_nids ul li#item-' + nid).remove();
 				if (size_of_the_cart() == 0) {
 					hide_proceed_to_checkout();
 				}
