@@ -43,6 +43,16 @@
  }
  }
  */
+
+/**
+ * Implements hook_views_api().
+ */
+function ubercart_custom_views_api() {
+  return array(
+  	'version' => '3.0', 
+  	'path' => drupal_get_path('module', 'ubercart_custom') . 'views');
+}
+
 /**
  * Alter the menu items
  */
