@@ -1,4 +1,3 @@
-
 <div id="wrapper">
     <div id="inner-wrapper">
 
@@ -25,12 +24,39 @@
 
             <?php if ($primary_nav): print $primary_nav; endif; ?>
             <?php if ($secondary_nav): print $secondary_nav; endif; ?>
-
-            <?php print render($page['header']); ?>
-
-            <div class="clr">
-
-            </div>
+		   
+		    <?php print render($page['menu']); ?>
+		   
+           <div class="float-R">	
+			<div class="login-btn-lft float-L" ></div>
+			<div class="login-btn float-L">		
+				<?php
+				global $user;
+				if (empty($user->name)) {?>
+				<div class="login-btn-mid float-L">
+					<a href="<?php echo base_path();?>user"><span class="float-L">Login</span>
+					</a> <img
+						src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
+						width="1" height="23" alt="separator" /> <a
+						href="<?php echo base_path();?>login"><span
+						class="float-R underline">Register</span> </a>
+				</div>
+				<?php
+				}
+				else {?>
+				<div class="login-btn-mid float-L">
+					<a href="<?php echo base_path();?>user"><span class="float-L">My
+							Account </span> </a> <img
+						src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
+						width="1" height="23" alt="separator" /> <a
+						href="<?php echo base_path();?>user/logout"><span
+						class="float-R underline">Logout</span> </a>
+				</div>
+				<?php }?>
+			</div>
+				<div class="login-btn-rig float-L"></div>
+			</div>
+           
             <?php
             if(!in_array('Photographer',$user->roles) && (arg(0)!='user') && (arg(0)!='login') && (!drupal_is_front_page()))
             {
@@ -191,4 +217,3 @@
     </div><!--footer ends-->
 
 </div>
-

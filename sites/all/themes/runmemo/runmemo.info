@@ -10,6 +10,7 @@ settings[garland_width] = fluid
 regions[sidebar_first] = Left sidebar
 regions[sidebar_second] = Right sidebar
 regions[content] = Content
+regions[menu] = Main menu
 regions[header] = Header
 regions[footer] = Footer
 regions[highlighted] = Highlighted
