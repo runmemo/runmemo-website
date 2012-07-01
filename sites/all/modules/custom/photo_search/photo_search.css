@@ -28,8 +28,15 @@
 
 /*Design for check box in search results page*/
 
-.page-search-result .label_check    { background: url(images/checkbox.png) no-repeat; }
-.page-search-result label.c_on      { background: url(images/checkbox-hover.png) no-repeat; }
+.page-search-result .label_check {
+	 background: url(images/checkbox.png) no-repeat; 
+	 display: block; 
+	 cursor: pointer; 
+	 line-height: 20px; 
+	 padding-bottom: 26px; 
+	 text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+	 }
+.page-search-result label.c_on { background: url(images/checkbox-hover.png) no-repeat; }
 
 .page-search-result .label_check input,
 .page-search-result .label_radio input  { position: absolute; left: -9999px; }
@@ -96,7 +103,7 @@ float:left;
 border-radius:5px;
 -webkit-border-radius:5px;
 -moz-border-radius:5px;
-margin-left:-7px;
+margin-left:-10px;
 }
 #field-event label{
 	
