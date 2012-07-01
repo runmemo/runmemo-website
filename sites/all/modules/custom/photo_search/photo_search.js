@@ -38,7 +38,7 @@ jQuery(document).ready(function() {
 						.text();
 				$('.page-search-result span#photo_author label').text(
 						initial_authour_name);
-				// change the addtocart hidden value.
+				// change the add to cart hidden value.
 				var wrap_id = $(
 						"#block-system-main table.views-view-grid tr.row-first td.col-first img")
 						.parent().attr('id');

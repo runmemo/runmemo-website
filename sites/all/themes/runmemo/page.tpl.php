@@ -66,12 +66,9 @@
             </div>
 
             <?php }?>
-
+		       
         </div><!--header close-->
-        <div class="clr">
-
-        </div>
-
+        <div class="gray-bdr"></div>
 
         <!-- <div id="container" class="clearfix">-->
 
@@ -79,7 +76,7 @@
             <div id="squeeze">
                 <div class="right-corner">
                     <div class="left-corner">
-                        <?php if(!drupal_is_front_page()):?>
+                        <?php if($is_front):?>
                             <?php //print $breadcrumb; ?>
                             <?php if ($page['highlighted']): ?>
                                 <div id="highlighted">
@@ -129,9 +126,7 @@
 
 
                         <div class="clearfix"> 
-                            <div class="gray-bdr" style="margin-top:30px;">
 
-                            </div>
                             <?php if ($page['sidebar_first']): ?>
                                 <div id="sidebar-first" class="sidebar">
                                     <?php print render($page['sidebar_first']); ?>
@@ -139,14 +134,6 @@
                             <?php endif; ?>
 
                             <?php $path=explode('/',request_uri()); //print_r($parts);print_r($_REQUEST);?>
-                            <div class="title" style="width:100%;">
-                                <?php if ((in_array('login',$path))&&(in_array('anonymous user',$user->roles))) : ?>
-                                    <h1 class="new_account_heading">  Photographer Registration </h1> <h1 class="login_heading">I have an account </h1>
-
-                                <?php elseif (arg(0) == 'user' && arg(1)==null) : ?>
-                                <h1 class="log_in">  User Login</h1>
-                                <?php endif ; ?>
-                            </div>
                             <?php print render($page['photo_search']); ?>
                             <?php print render($page['content']); ?>
                           <?php if ($page['sidebar_second']): ?>
@@ -165,10 +152,7 @@
         </div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 
         <div class="clr"></div>
-	<?php if(drupal_is_front_page()):?>
-		<div class="gray-bdr">
-          
-		</div>
+	<?php if($is_front):?>
 
 		<div class="content float-L">
 		    <div class="cont-header-bg float-L">

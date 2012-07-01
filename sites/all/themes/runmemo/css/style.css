@@ -295,8 +295,13 @@ float:left;
 }
 .gray-bdr {
 	width:100%;
-	height:10px;
-	background:#e8e8e8;
+	height:3px;
+	margin-top:15px;
+	margin-bottom:15px;
+	background:#585858;
+	display:block;
+	float:left;
+	clear:both;
 }
 .content {
 	width:100%;
@@ -441,62 +446,13 @@ float:left;
 	margin-top:25px;
 	margin-right:20px;
 }
-.footer-inner p smallSelect Event
-
-    * Select Event
-    * halfmarathon2011
-    * halfrace
-    * multirace
-    * ultramarathon
-
-Trade
-pictures you have taken
-Select Event
-
-    * Select Event
-    * halfmarathon2011
-    * halfrace
-    * home_page
-    * multirace
-    * ultramarathon
-
-image 	image 	image 	.cart image 	image
-image 	image 	image 	image 	imageSelect Event
-
-    * Select Event
-
-
-
-    * halfmarathon2011
-    * halfrace
-    * multirace
-    * ultramarathon
-
-Trade
-pictures you have taken
-Select Event
-
-    * Select Event
-    * halfmarathon2011
-    * halfrace
-    * home_page
-    * multirace
-    * ultramarathon
-
-image 	image 	image 	image 	image
-image 	image 	image 	image 	image
-image 	image 	image
-
-image 	image 	image
+.footer-inner p 
 
 {
 	color:#797979;
 	font-weight:normal;
 }
 
-.form-item-runner-number{
-float:left; 
-}
 #edit-search{
 float:left;
 margin-top:13px;
@@ -513,7 +469,7 @@ background:none !important;
 padding:0 !important;
 margin:0 !important;
 }
-#find,#trade{
+#find, #trade{
  color: #94BB1F;
     font-family: 'Walkway Bold',sans-serif;
     font-size: 36px;
@@ -521,17 +477,15 @@ margin:0 !important;
     letter-spacing: 2px;
     margin: 25px 0 0;
     padding: 0;
-position:relative;
-right:75px;
+	position:relative;
+	
 }
-#great_photos,#taken_picture{
+#great_photos, #taken_picture{
 font-family: 'Futura LT Light',sans-serif;
     font-size: 18px;
     font-weight: normal;
     margin: 10px 0 10px 0;
     padding: 0;
-position:relative;
-right:75px;
 }
 #trade{
 color:#4AB0F8;
@@ -549,8 +503,6 @@ border:0 none !important;
   
   /* padding:0 10px 0 0;*/
 }
-
-
 
 /**************************************Login Page********************************/
 .page-user #center{
@@ -766,6 +718,18 @@ display:none;
 
 
 /********************HOme Page**********************************************************/
+.front #center .content{
+	margin-left:20px;
+}
+.front #field-number label, .front #field-event label {
+	display:none;
+}
+.front #field-number, .front #field-event {
+	margin-left:20px;
+	}
+.front #edit-get-started {
+	float-right;
+	}
 .one-sidebar .content span table{
 display:none !important;
 }
@@ -777,9 +741,7 @@ float:left;
 	-moz-box-shadow: none !important; 
 	box-shadow: none !important;
 }
-.front #center .content{
-  width:315px !important;
-}
+
 .page-runner #inner-wrapper #center,.page-runner #inner-wrapper #center #squeeze{
 float:left;
 margin:0;
@@ -813,6 +775,15 @@ position: relative;
 top: 50px;
 margin:0;
 }
+
+.page-login .new_account_heading {
+  position:relative;
+  z-index:1;
+  top:48px;
+  font-family:'Walkway Bold',sans-serif;
+  color:#94BB17;
+}
+
 .login_heading{
 /*float:right;*/
 font-size: 26px !important;
@@ -937,30 +908,27 @@ float:right;
 .toboggan-unified{
 margin-bottom:20px;
 }
-.page-search-result #runner_number {
+
+#runner_number {
     border: 1px solid #DEE4E7;
     border-radius: 5px 5px 5px 5px;
     color: #1A253C;
     color: #1A253C;
     font-family: Arial,Helvetica,sans-serif;
-    font-size: 13px;
-    height: 34px;
+    font-size: 18px;
+    height: 39px;
     -webkit-box-shadow: none !important; 
     -moz-box-shadow: none !important; 
-box-shadow: none !important;
-    padding: 2px;
+	box-shadow: none !important;
     text-indent: 7px;
     width: 167px;
-margin-left:8px;
-    position: relative;
-    top:-16px;
-    left:-47px;
+    
 }
 
 
 
-#runner_number	{ line-height:34px;}
-#runner_number, #number_recent_event1, #number_recent_event2{
+
+#number_recent_event1, #number_recent_event2{
 	border: 1px solid #DEE4E7;
     border-radius: 5px 5px 5px 5px;
     color: #1A253C;
@@ -973,7 +941,7 @@ margin-left:8px;
     padding: 2px;
     text-indent: 7px;
     width: 167px;
-margin-left:8px;
+	margin-left:8px;
 }
 #runner_number {
 	  margin-left: 0px!important;
@@ -1012,12 +980,14 @@ border: 1px solid #BFBFBF;
 {
 	background:url(../images/get-started-hover.png) no-repeat!important;
 }
-.page-search-result .chzn-container-single .chzn-single, .page-photographer .chzn-container-single .chzn-single{
-width:400px!important;
+.page-search-result .chzn-container-single .chzn-single,
+.page-photographer .chzn-container-single .chzn-single{
+width:450px!important;
 height:39px!important; 
 /* padding:0 10px; */
 }
-.page-search-result .chzn-drop, .page-photographer .chzn-drop {
+.page-search-result .chzn-drop, 
+.page-photographer .chzn-drop {
 /*width:307px!important; */
 padding:0 10px;
 width:388px!important;
@@ -1063,7 +1033,7 @@ position:relative;
 left:150px;
 color: #34373A;
 cursor:pointer;
-font-family:helvetica,san-serif;
+font-family:Arial,Helvetica,sans-serif;
 font-size:14px;
 font-weight:bold;
 }
@@ -1218,27 +1188,27 @@ border:none !important;
 .page-login .fieldset-legend {
    display:none;
 }
-.page-login .new_account_heading {
-  position:relative;
-  z-index:1;
-  top:48px;
-  font-family:'Walkway Bold',sans-serif;
-  color:#94BB17;
-}
+
 .page-login .login_heading {
   position:relative;
   z-index:1;
   top:47px;
-  font-family:'Walkway Bold',sans-serif;
+  font-family:'Walkway Bold',Arial,Helvetica,sans-serif;
   color:#4AB0F8 !important;
 }
 .page-login #user-login label {
   position:relative;
   z-index:1;
 }
-.page-login #tabs-wrapper {
+.page-login #tabs-wrapper, .front #tabs-wrapper {
   display:none;
 }
+
+#field-number {
+	padding:0px;
+	float:left;
+}
+
 .page-login .content {
   border:none!important;
   -moz-box-shadow:none!important;
@@ -1296,7 +1266,7 @@ float:right;
     border: 1px solid #BFBFBF;
     color: #34373A;
     cursor: pointer;
-    font-family: helvetica,san-serif;
+    font-family: Arial,Helvetica,sans-serif;
     font-size: 14px;
     font-weight: bold;
     left: 150px;
@@ -1421,7 +1391,7 @@ padding:10px;
    position:relative;
    top:237px;
    color: #94BB1F;
-   font-family: 'Walkway Bold',sans-serif;
+   font-family: 'Walkway Bold',Arial,Helvetica,sans-serif;
    font-size: 36px;
    width: 100%;
    border-top:1px solid #999;
@@ -1574,7 +1544,7 @@ text-align:center;
 #user-profile-form label {
     color: #1A253C;
     float: left;
-    font-family: arial;
+    font-family: Arial,Helvetica,sans-serif;
     font-size: 13px;
     font-weight: 300;
     margin-top: 14px;
@@ -1683,7 +1653,7 @@ text-align:center;
     background: url("../images/find-btn-hover.png") no-repeat scroll 0 0 transparent;
 }
 
-.form-item-runner-number-event2
+r-event2
 {
   float:left;
   margin-right:10px;
@@ -1707,34 +1677,6 @@ text-align:center;
 .block .content
 {
    margin:0px 0px!important;
-}
-
-#event-search
-{
-    color: #94BB1F;
-    font-family: 'Walkway Bold',sans-serif;
-    font-size: 36px;
-    font-weight: normal;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-    position:relative;
-    left:19px;
-    float:left;
-    margin-right:auto;
-    top:30px;
-}
-#my_number
-{
-    color: #4AB0F8;<div class=​"form-item form-type-select form-item-events-select-runner">​…​</div>​
-    font-family: 'Walkway Bold',sans-serif;
-    font-size: 36px;
-    font-weight: normal;
-    letter-spacing: 2px;
-    margin-bottom: 15px;
-    position:relative;
-    left:394px;
-    top:30px;
-    width: 46%;
 }
 
 .plupload_upload_status
@@ -1824,7 +1766,7 @@ text-align:justify;
    border:0 none;
    cursor:pointer;
    outline:none;
-   font-family:'Conv_HelveticaBold',Sans-Serif;
+   font-family:Arial,Helvetica,sans-serif,Sans-Serif;
    font-weight: bold;
    position: relative;
    top: -22px;
@@ -1883,7 +1825,7 @@ text-align:justify;
 .page-search-result .content #search-result-cart .summary_title
 {
    color: #00a14e;
-    font-family: 'Walkway Bold',sans-serif;
+    font-family: 'Walkway Bold', Arial,Helvetica,sans-serif;
     font-size: 28px;
     font-weight: bold;
     letter-spacing: 2px;
@@ -1933,13 +1875,15 @@ text-align:justify;
   width: 431px;
   height:176px;
 }
-
-
-
-
 #select-event-runner-get-photos label {
-   display: none;
+    font-family: 'Walkway Bold',Arial,Helvetica,sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    position:relative;
+    
 }
+
 #recent-event1-image label {
    display: none;
 }
