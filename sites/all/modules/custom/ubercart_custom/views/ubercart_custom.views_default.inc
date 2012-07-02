@@ -273,7 +273,7 @@ function ubercart_custom_views_default_views() {
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Admin page', 'admin_page');
-  $handler->display->display_options['path'] = 'admin/store/sales/photographer';
+  $handler->display->display_options['path'] = 'admin/store/reports/sales/photographer';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Sales by Photographer';
   $handler->display->display_options['menu']['description'] = 'Allows to see total sales for photographer monthly';
