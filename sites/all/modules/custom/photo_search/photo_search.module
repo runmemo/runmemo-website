@@ -149,7 +149,6 @@ function select_event_runner_get_photos($form, &$form_state) {
   //submit get my photo in the runner side
   $form['search_filter']['search'] = array('#type' => 'submit', '#value' => '');
 
-  dvm($form, 'Search filter form.');
   return $form;
 
 }
