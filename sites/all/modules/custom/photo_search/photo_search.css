@@ -26,8 +26,225 @@
     top: 12px;
 }
 
+/*Design for check box in search results page*/
+
+.page-search-result .label_check {
+	 background: url(images/checkbox.png) no-repeat; 
+	 display: block; 
+	 cursor: pointer; 
+	 line-height: 20px; 
+	 padding-bottom: 26px; 
+	 text-shadow: 0 -1px 0 rgba(0,0,0,.2);
+	 }
+.page-search-result label.c_on { background: url(images/checkbox-hover.png) no-repeat; }
+
+.page-search-result .label_check input,
+.page-search-result .label_radio input  { position: absolute; left: -9999px; }
+
+.proceed_to_cart a.disabled {
+	opacity : 0.4;
+    filter: alpha(opacity=40); /* msie */
+    cursor:default;
+}
+
+.page-search-result .content #search-result-cart .proceed_to_cart a
+{
+	background: transparent url(images/Cart-Summary.png) no-repeat scroll 0px 0px;
+	font-size: 14px;
+	text-align: center;
+	float:right;
+	width:211px;
+	height:39px;
+	padding: 0px 0 3px 11px;
+	position: relative;
+	top: -42px;
+}
+.proceed_to_cart a
+{
+  color: #34373A;
+}
+
+.page-search-result .right-corner
+{
+   margin-right: -235px;
+}
 
 
 
+.page-search-result  #sidebar-second .block .content{
+float:left;
+ width: 437px;
+ position: relative;
+ top: 16px;
+ padding: 0 0 0 10px;
+}
+
+.page-search-result  #sidebar-second .clearfix:after{
+display:inline !important;
+}
+.page-search-result  #sidebar-second {
+display:inline !important;
+}
+.page-search-result .fieldset-wrapper
+{
+width:980px;
+border:1px solid #ccc;
+float:left;
+border-radius:5px;
+-webkit-border-radius:5px;
+-moz-border-radius:5px;
+margin-left:-10px;
+}
+#field-event label {
+	color: rgb(148, 187, 31);
+	width:455px;	
+}
+#field-number label{
+	
+	color: rgb(74, 176, 248);
+	width:200px;
+}
+#field-number label,
+#field-event label {
+	margin-bottom:3px;	
+}
+
+#field-event span.form-required,
+#field-number span.form-required {
+	display:none;
+}
+
+#field-event .chzn-container {
+	font-size:18px;
+	}
+
+.page-search-result .number_search {
+  	margin-right: 18px;
+}
+.page-search-result #edit-search
+{
+    margin-top:44px; 
+}
+
+.page-search-result .form-item {
+	margin-top:0px;
+	margin-bottom:0px;
+	}
+
+.page-search-result .region-photo-search .content
+{
+ 	min-height:0px;
+}
+.page-search-result #center
+{
+width:100%;
+float:left;
+}
+.page-search-result .contextual-links-region
+{
+float: left;
+/*width: 435px;*/
+}
+
+img.thumbnail {
+	border: 1px solid #E9E9E9;
+	}
+
+img.selected-thumbnail {
+	border: 1px solid green;
+}
+
+.page-search-result #sidebar-second
+{
+float: right;
+clear:right;
+/*margin-top: 235px;*/
+width:420px;
+}
+.page-search-result #sidebar-second .region-sidebar-second
+{
+/*position:absolute;*/
+}
+.page-search-result .left-corner 
+{  
+    float:left;
+    width: 550px;
+}
+.page-search-result .left-corner .clearfix
+{
+  width:980px;
+}
+
+.page-search-result .form-item-events-select-runner,
+.page-search-result .form-item-runner-number
+{
+  float:left;
+  padding:20px;
+}
+/*.page-search-result .number_search
+{ 
+padding:20px;
+}*/
+
+.view-search-results {
+	float: left;
+	clear:left;
+	display: block;
+}
+
+.region-photo-search {
+	clear:both;
+	display: block;
+	}
+
+form#select-event-runner-get-photos {
+	clear:both;
+	display: block;
+	}
+.page-search-result .region-content {
+   float: left ;
+   width: 557px;
+}
+.page-search-result #sidebar-second {
+ /* float:none !important;*/
+}
+
+.page-search-result #sidebar-second .contextual-links-region
+{
+ float: none !important;
+/*width: 435px;*/
+}
 
 
+/* *********** View with results ************* */
+
+.page-search-result .region-content {
+	float: left;
+	clear:left;
+	display: block;
+	}
+
+.page-search-result .region-content .view-content{
+    height: 640px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 550px;
+    border: 1px solid #CCCCCC;
+}
+.page-search-result .region-content .view-content table{
+  margin:0px;
+}
+
+.page-search-result .region-content .views-field-uc-product-image
+{
+   text-align:center;
+  height:100px;
+  position: relative;
+  top:-18px;
+}
+
+.page-search-result .region-content .content table tr td  {
+	border:1px solid #cccccc;
+	text-align:center;
+ 	border: 0 none;
+}

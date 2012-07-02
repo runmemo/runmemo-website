@@ -5,56 +5,115 @@
  * Install and uninstall functions for the ocr module.
  */
 
-/**
- * Implements hook_schema().
- */
 function ocr_schema() {
-  $schema['ocr_response'] = array(
-    'description' => 'Stores response from OCR passed through amazon sqs .',
+  $schema['ocr_numbers'] = array(
+    'description' => 'Stores numbers and their properties from OCR Response',
     'fields' => array(
-      'ocr_responseid' => array(
-        'type' => 'int',
-       
-        'not null' => TRUE,
-        
-        'description' => "The unique id for response.",
-      ),
-	  'nid' => array(
-        'type' => 'int',
-       
-        'not null' => TRUE,
-       
-        'description' => "The unique id for response.",
-      ),
-      'ocr_messageid' => array(
-        'type' => 'varchar',
-        'length' => 128,
-        'not null' => TRUE,
-       
-        'description' => 'The messageid of the message.',
-       ),
-      'ocr_response' => array(
-        'type' => 'text',
-       'not null' => TRUE,       
-       'description' => 'The response from OCR.',
-       ),
-    
-	'ocr_status' => array(
-        'type' => 'int',
-        
-        'not null' => TRUE,
-        
-        'description' => "The status of the response.",
-      ),
-	  'received' => array(
-         'type' => 'int',
-        'not null' => TRUE,
-        
-        'description' => 'The timestamp of the response.',
-      ),
-    
-    'primary key' => 'ocr_responseid',
-    )
+                  'nid' => array(
+                      'description' => 'The ID of the node that contains the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+  ),
+                   'number' => array(
+                     'description' => 'Number of runner.',
+                     'type' => 'int',
+                     'unsigned' => TRUE,
+                     'not null' => TRUE,
+  ),
+                    'position_top' => array(
+                      'description' => 'Top position of the number on the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+  ),
+                    'position_left' => array(
+                      'description' => 'Left postition of the number on the image.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+  ),
+                    'width' => array(
+                      'description' => 'Width of the number.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+  ),
+                    'height' => array(
+                      'description' => 'height of the number.',
+                      'type' => 'int',
+                      'unsigned' => TRUE,
+                      'not null' => TRUE,
+  ),
+                     'probability' => array(
+                       'description' => 'Probability that the number is correct.',
+                       'type' => 'double precision (2,5)',
+                       'unsigned' => TRUE,
+                       'not null' => TRUE,
+  ),
+                     'timestamp' => array(
+                       'description' => 'UNIX timestamp for when the number was added.',
+                       'type' => 'int',
+                       'unsigned' => TRUE,
+                       'not null' => TRUE,
+                       'default' => 0,
+  ),
+  ),
+                'primary key' => array('nid', 'number'),
   );
-return $schema;
- }
+}
+
+function ocr_enable() {
+  // Set variables for response queues
+  variable_set('ocr_responsequeue', variable_get('ocr-results-queue'));
+  variable_set('ocr_requestqueue' , variable_get('ocr-requests-queue'));
+
+  // Create fields on Product node for.
+  foreach (_node_product_ocr_fields() as $field) {
+    field_create_field($field);
+  }
+   
+  // Create all the instances for our fields on Product node.
+  foreach (_node_product_ocr_fields() as $instance) {
+    $instance['entity_type'] = 'node';
+    $instance['bundle'] = 'product';
+    field_create_instance($instance);
+  }
+
+}
+
+/**
+ *
+ *  An associative array specifying the fields we wish to add to Product node
+ *  that Images will be associated with.
+ */
+function _node_product_ocr_fields() {
+  $t = get_t();
+  return array(
+    'node_product_numbers' => array(
+    'field_name' => 'ocr_numbers',
+    'cardinality' => 10,
+    'type' => 'number_integer',
+    'size' => 'normal',
+  ),
+    'node_product_ocr_status' => array(
+  //'active' => '1',
+      'field_name'  => 'ocr_success',
+      'label' => 'OCR Success',
+      'cardinality' => 1,
+      'type' => 'list_integer',
+      'size' => 'tiny',
+      'default_value' => NULL,
+      'module' => 'list',
+      'settings' => array(
+        'allowed_values' => array(
+         -1 => 'None',
+          0 => 'False',
+          1 => 'True',
+         ),
+         'allowed_values_function' => '',
+       ),
+       'translatable' => '0',
+     ),
+  );
+}

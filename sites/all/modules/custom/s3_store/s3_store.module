@@ -1,67 +1,78 @@
 <?php
 
 /**
+ * @file contains S3 Store module for pre-caching of images in Amazon S3.
+ * @author Bulat Yapparov
+ */
+
+/**
  * Implementation of hook_cron()
  * Function for getting images from local and pushing to s3
  */
- 
 function s3_store_cron() {
-  $s3_store_object = new s3_store_model();
-  $photos_url = $s3_store_object->get_local_photos();
-  $s3 = amazon_s3_get_instance();
-  $bucket = variable_get('amazons3_bucket', '');
-  $acl = 'public-read-write';
-  $path=drupal_realpath('public://');
-  foreach ($photos_url as $photo_url) { 
-    $thumb_success = $orig_success = $preview_success = "";
+  $queue = DrupalQueue::get('send_images_to_S3');
 
-    $thumbnail_local_path = $path . '/styles/thumbnail/public/' . $photo_url->filename;
-    $thumb_local_path = 'public://styles/thumbnail/public/' . $photo_url->filename;
-    $thumb_desc_path = 'styles/thumbnail/s3/' . $photo_url->filename;
-
-    $preview_local_path = $path . '/styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_local_path = 'public://styles/preview-with-watermark/public/' . $photo_url->filename;
-    $prev_desc_path = 'styles/preview-with-watermark/s3/' . $photo_url->filename;
-
-    //Pushing the files
-    $orig_file_path = $photo_url->uri;
-
-    if (file_exists($photo_url->uri)) {
-      $orig_success = $s3->putObjectFile($photo_url->uri, $bucket, $photo_url->filename, $acl);
+  //$queue->deleteQueue();
+  watchdog('S3 info', 'Started S3 cron job for jobs = ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+  //Pull items out one at a time.
+  while ($item = $queue->claimItem(15)) {
+    watchdog('S3 info', 'Items in the queue(S3) == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+    //Try saving the data.
+    $file = $item->data;
+    try {
+      // send file and associated image cache files to s3
+      _send_file_to_s3($file);
+      // send file to OCR queue
+      _ocr_send_request($file);
     }
-
-
-    if (file_exists($thumbnail_local_path)) {
-      $thumb_success = $s3->putObjectFile($thumb_local_path, $bucket, $thumb_desc_path, $acl);
+    catch (Exception $e) {
+      watchdog_exception('S3 error', $e);
     }
-
-    if (file_exists($preview_local_path)) {
-      $preview_success = $s3->putObjectFile($prev_local_path, $bucket, $prev_desc_path, $acl);
-    }
-
-    if ($orig_success && $thumb_success && $preview_success) {
-      $s3_store_object->update_s3_status($photo_url->entity_id);
-      $url = str_replace("public://", "s3://", $photo_url->uri);
-
-      $s3_store_object->update_url($photo_url->fid, $url);
-      // sending message to OCR for an uploaded image
-      if (module_exists('ocr') && function_exists('invokeSendMessage')) {
-        invokeSendMessage($photo_url->entity_id,$photo_url->filename);
-      }
-      file_unmanaged_delete($orig_file_path);
-      file_unmanaged_delete($thumb_local_path);
-      file_unmanaged_delete($prev_local_path);
-    }  
-  }
-  drupal_flush_all_caches();
+    $queue->deleteItem($item);
+  };
+  watchdog('S3 info', 'Finished S3 cron job.', array(), WATCHDOG_DEBUG);
 }
 
+/**
+ *
+ * Sends file to S3 backet with image cache
+ * @param object $file contains properties of the file
+ */
+function _send_file_to_s3($file) {
+  // Check whether file exists
+  if (!file_exists($file->uri)) {
+    throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
+  }
+
+  $bucket = variable_get('image-store-bucket');
+  // Send original file to S3
+ 
+  $path_prefix = 'public://';
+  $acl = 'public-read'; //S3::ACL_PUBLIC_READ;
+
+  $s3_mover = new s3_mover($path_prefix, $bucket);
+
+  // Send cache images to S3
+  $precached_styles = _pre_image_cache_styles();
+  foreach ($precached_styles as $style_name) {
+    $style = image_style($style_name);
+    if ($style) {
+      $s3_mover->move_imagecache($file, $style_name);
+    }
+    else {
+      watchdog('S3 info', 'Style does not exists: ' . $style_name, array(), WATCHDOG_WARNING);
+    }
+
+  };
+  // move original file
+  $s3_mover->move_file($file, $acl);
+}
 
 /**
  * function to create signed url to download orginal image
  */
- function get_s3_signed_url($resource) {
-  $bucket = variable_get('amazons3_bucket', '');
+function get_s3_signed_url($resource) {
+  $bucket = variable_get('image-store-bucket', '');
   $AWS_S3_KEY        = variable_get('aws_access_key', '');
   $AWS_s3_secret_key = variable_get('aws_secret_key', '');
   $expires = time()+63072000;

@@ -24,7 +24,7 @@
 	$total = 0;
 	foreach($cart as $product => $value){
            
-        $qty[] 			= $value->qty;
+                $qty[] 		= $value->qty;
 		$price          = $value->qty*$value->price;
 		
 		$photographer[] = $value->uid;
@@ -49,7 +49,7 @@
 	   <div class="cartSummary">
 			<div class="blueHeading">Order Summary</div>
 			<div class="boldText"><?php echo $num." ".$phototext;?> by <?php echo $p_count." ".$photoowner;?></div>
-			<div class="totalPrice">Total Price: <div class="currencyText">£<?php echo $total;?></div></div>
+			<div class="totalPrice">Total Price: <div class="currencyText">&euro;<?php echo $total;?></div></div>
 		</div>
 		<table><tr>
 		<?php
@@ -59,7 +59,7 @@
 		?>
 		
 		
-		<td><?php echo theme("image_formatter", array('item' => $photo[$i-1], 'image_style' => 'thumbnail'));?></td>
+		<td><?php echo theme("image_formatter", array('item' => $photo[$i-1], 'image_style' => 'search_thumbnail'));?></td>
 		<?php
 		if($i%3==0){?>
 			</tr><tr>

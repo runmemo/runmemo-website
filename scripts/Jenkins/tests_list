@@ -1,0 +1,7 @@
+GenerateImageCacheTest
+OcrProductSaverTest
+OcrSQSIntegrationTestCase
+OcrPendingNodesTestCase
+OcrIntegrationTestCase
+S3MoverClassTestCase
+Ubercart_Custom_API_TestCase

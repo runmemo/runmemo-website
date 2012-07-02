@@ -1,0 +1,209 @@
+<?php
+
+/**
+ *  @file contains test cases for OCR module.
+ */
+
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
+
+/**
+ *
+ * Test that files is sent for S3 and OCR if its OCR Success field is blank
+ * and that file is not added to S3/OCR queues if it has OCR Success set to 1 or 0
+ * @author Bulat Yapparov
+ *
+ */
+class OcrPendingNodesTestCase extends DrupalWebTestCase {
+
+  protected $testNode;
+  private $testFile;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'OCR Pending Nodes Test Case',
+      'description' => 'Tests that product nodes pending OCR are being processed.',
+      'group' => 'OCR',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('list', 'ocr'); // 'uc_store', 'rules', 'uc_order', 'uc_product', 'uc_cart');
+
+    // instead of setting up 'uc_product' and all projects it depends on we just create
+    // product content type
+    if (!in_array('Product', node_type_get_names())) {
+      $type = array( 'type' => 'product', 'name' => st('Product'), 'base' => 'node_content', 'custom' => 1, 'modified' => 1, 'locked' => 0, 'title_label' => 'Product' );
+      
+      $type = node_type_set_defaults($type);
+      node_type_save($type);
+      node_add_body_field($type);
+
+      $uc_product_image_filed =  array(
+      'field_name'  => 'uc_product_image',
+      'cardinality' => 1,
+      'type'        => 'image',
+      'bundle'      => 'product',
+      'entity_type' => 'node',
+      );
+      field_create_field($uc_product_image_filed);
+      field_create_instance($uc_product_image_filed);
+
+    }
+
+    // Create test node for tests.
+    $this->testNode = product_node_creator::getNewProductNode();
+    // test image file for tests.
+    $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'test_image.jpg';
+    $file = (object) array(
+      'uid' => 1,
+      'uri' => $filepath,
+      'filemime' => file_get_mimetype($filepath),
+      'status' => 1,
+    );
+    $this->testFile = $file;
+    
+  }
+
+  /**
+   * 
+   * Checks that nodes that have OCR success status are not added to the queue
+   */
+  function testNodesWithOcrSuccessNotAddedToTheQueue() {
+   // debug($this->testNode->ocr_success[LANGUAGE_NONE][0]['value']);
+    $this->testNode->ocr_success[LANGUAGE_NONE][0]['value'] = 0;
+    node_save($this->testNode);
+
+    _add_ocr_pending_nodes_to_queue();
+
+    $q = DrupalQueue::get('send_images_to_S3');
+    $number_of_messages = $q->numberOfItems();
+
+    $this->assertEqual(0, $number_of_messages, 'No files are waiting OCR processing - S3 queue is empty.');
+
+
+  }
+
+  /**
+   * 
+   * Checks whether nodes pending OCR are added to the corresponding queue
+   */
+  function testNodesPendingOcrAddedToTheQueue() {
+    $file= file_copy($this->testFile, 'public://');
+    $this->testNode->uc_product_image[LANGUAGE_NONE][0] = (array)$file;
+    node_save($this->testNode);
+     
+    _add_ocr_pending_nodes_to_queue();
+
+    $q = DrupalQueue::get('send_images_to_S3');
+    $number_of_messages = $q->numberOfItems();
+
+    debug('Got messages in S3 queue: ' . $number_of_messages);
+    $this->assertEqual(1, $number_of_messages, 'File pending OCR processing was added to the queue.');
+     
+
+  }
+
+}
+
+/**
+ * 
+ * Contains integration tests for OCR functionality
+ * @author Bulat Yapparov
+ *
+ */
+class OcrIntegrationTestCase extends DrupalWebTestCase {
+
+  protected $testNode;
+
+  public static function getInfo() {
+    return array(
+      'name' => 'OCR Integration Test Case',
+      'description' => 'Integration tests for OCR functionality.',
+      'group' => 'OCR',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('ocr');
+
+    $this->testNode = product_node_creator::getNewProductNode();
+  }
+
+  /**
+   *
+   * Test that product node is updated correclty with data from fake response message
+   */
+  function testResponceToUpdateProductNode() {
+    // get message with OCR Results
+    $fake = new sqs_fake($this->testNode->nid);
+    $MessageOcrResponse = $fake->getFakeMessage('response_message_fake.json');
+     
+    $results_saver = new OcrResultsSaver($MessageOcrResponse);
+    $results_saver->Save();
+
+    // load node to check that it has correct values saved to it.
+    $node = node_load($this->testNode->nid);
+
+    // check success field
+    $ocr_success_on_node = field_get_items('node', $node, 'ocr_success', $node->language);
+    $ocr_success_val = $ocr_success_on_node[0]['value'];
+
+    $this->assertEqual(1, $ocr_success_val, 'Ocr Success filed is successfully updated with True value.');
+
+    // check numbers field
+    // numbers matching numbers in the file with fake message.
+    $numbers = array(4745, 500, 5);
+    $setValues = field_get_items('node', $node, 'ocr_numbers', $node->language);
+     
+    $matches = 0;
+    foreach ($setValues as $setValue) {
+      if (in_array($setValue['value'], $numbers)) {
+        $matches++;
+      }
+    }
+    $this->assertEqual(3, $matches, 'All 3 numbers were added correctly to the node.');
+     
+  }
+  /**
+   *
+   * Tests that watchdog messsage is created for the unsuccessful OCR result.
+   */
+  function testResponseWithErrorIsSaved() {
+    // get message with OCR Results
+    $fake = new sqs_fake($this->testNode->nid);
+    $MessageOcrResponse = $fake->getFakeMessage('response_error_fake.json');
+    $results_saver = new OcrResultsSaver($MessageOcrResponse);
+    $results_saver->Save();
+     
+    $this->assertWatchdog('OCR Message Error', 'Mock error message in OCR responce', 1,
+                          'Watchdog message was created for errorred OCR response.');
+  }
+
+  /**
+   *
+   * Check to see whether watchdog function was called specified number of times
+   * @param string $watchdog_type
+   *   type of the watchdog we are looking for
+   * @param string $watchdog_message
+   *   message in the watchdog entry
+   * @param integer $times
+   *   How many times it must have been called
+   * @param string $message
+   *   The message to display along with the assertion
+   * @return
+   *   TRUE if the assertion succeeded, FALSE otherwise.
+   */
+  private function assertWatchdog($watchdog_type, $watchdog_message, $times, $message) {
+
+    $sql = 'SELECT w.message FROM {watchdog} w WHERE w.type = :type AND w.message = :message';
+    $result =  db_query_range($sql, 0, $times+1,
+    array( ':type'    => $watchdog_type, 
+           ':message' => $watchdog_message));
+    $count_matches = 0;
+    foreach ($result as $record) {
+      $count_matches++;
+    }
+    return $this->assertEqual($times, $count_matches, $message);
+  }
+}
+

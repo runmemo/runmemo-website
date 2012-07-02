@@ -1,5 +1,8 @@
-name = s3_store
+name = S3 integration
 description = A module that is used to push files to s3 via cron job
+package = Runmemo Custom Modules
 core = 7.x
 
+files[] = s3_store.module
 files[] = s3_store.inc
+files[] = tests/s3_store.test

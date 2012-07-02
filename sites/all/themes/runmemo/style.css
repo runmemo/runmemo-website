@@ -442,8 +442,6 @@ body.fluid-width #wrapper #container {
 }
 
 #branding img {
-  padding-top: 14px;
-  padding-right: 20px; /* LTR */
   float: left; /* LTR */
 }
 
@@ -1253,3 +1251,5 @@ table.system-status-report tr.ok th {
   background-color: #dfd;
   border-color: #beb;
 }
+
+

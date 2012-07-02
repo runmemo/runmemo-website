@@ -1,30 +1,37 @@
 <?php
+
+/**
+ * @file module for thumbnail generation that happens after image upload
+ */
+
+require_once 'generate_thumbnails.inc';
+
 /**
  * hook_menu
- * @return type 
+ * @return type
  * return menu items
  */
 function generate_thumbnails_menu() {
   $items['admin/image-style-manage'] = array(
-                                  'title' => 'Manage image style',
-                                  'description' => 'Manage the image style',
-                                  'page callback' => 'manage_image_style',
-                                  'access arguments' => array('Administer image styles '),
-                                  'type' => MENU_CALLBACK,
-                                  );
+      'title' => 'Manage image style',
+      'description' => 'Manage the image style',
+      'page callback' => 'manage_image_style',
+      'access arguments' => array('Administer image styles '),
+      'type' => MENU_CALLBACK,
+  );
   return $items;
 }
 /**
- * page callback function for 
+ * page callback function for
  * mange image style
- * @return type 
+ * @return type
  */
 function manage_image_style() {
- return drupal_render(drupal_get_form('manage_image_style_form'));
+  return drupal_render(drupal_get_form('manage_image_style_form'));
 }
 /**
  * Form for manage image style
- * @return string 
+ * @return string
  */
 function manage_image_style_form() {
   $form = array();
@@ -44,7 +51,7 @@ function manage_image_style_form() {
 /**
  * submit function manage image style form
  * @param type $form
- * @param type $form_state 
+ * @param type $form_state
  */
 function manage_image_style_form_submit($form, &$form_state) {
   $prev_img_style_name = $form['preview-image']['#value'];
@@ -55,82 +62,59 @@ function manage_image_style_form_submit($form, &$form_state) {
  * Implementation of hook_cron()
  * Function for generating thumbnail images
  */
- 
-function generate_thumbnails_cron() { 
+function generate_thumbnails_cron() {
 
-  $filepath_drupal = variable_get('file_public_path') . '/';
-  $dest = $filepath_drupal . 'styles/thumbnail/public';
-  $prev_dest = $filepath_drupal . 'styles/preview-with-watermark/public';
+  $styles = _pre_image_cache_styles();
+  $queue = DrupalQueue::get('create_image_cache');
+  //Pull items out one at a time.
+  while ($item = $queue->claimItem()) {
+    //Try saving the data.
+    _generate_image_styles($item->data, $styles);
+    $queue->deleteItem($item);
+    watchdog('Queue Item', 'Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
+  };
 
-  $generate_thumbnails_object = new generate_thumbnails_model();
-  //$photos=$generate_thumbnails_object->get_local_photos();
-
-  $thumbsize=$generate_thumbnails_object->get_thumbnail_size();
-  $thumb=unserialize($thumbsize->data);
-
-  $previewsize=$generate_thumbnails_object->get_preview_size();
-  $prev_size=unserialize($previewsize->data);
-  //print_r($prev_size);exit;
-
-  $s3_store_object = new s3_store_model();
-  foreach ($s3_store_object->get_local_photos() as $row) {
-      $sourceimagename = "";
-      $url = str_replace("public://", $filepath_drupal, $row->uri);
-
-      if (file_exists($url)) { 
-        //create the physical thumbnail image to its destination 
-        // get the file name from the source file 
-        $filearr = explode('/', $url);
-        $sourceimagename = array_pop($filearr);
-        if (!file_exists(url($dest . '/' . $sourceimagename, array('absolute' => TRUE)))) {
-            $item = array('uri' => $row->uri, 'width' => $thumb['width'], 'height' => $thumb['height']);
-            $path = array($dest . '/' . $sourceimagename);
-            $variables = array('item' => $item, 'image_style' => 'thumbnail', 'path' => $path);
-            theme_image_formatter($variables);
-            $ch = curl_init();
-
-            // set URL and other appropriate options
-            curl_setopt($ch, CURLOPT_URL, url($dest . '/' . $sourceimagename, array('absolute' => TRUE)));
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-
-            // grab URL and pass it to the browser
-            curl_exec($ch);
-
-            // close cURL resource, and free up system resources
-            curl_close($ch);
-
-        }
-        else {
-            echo '<br>Found ' . $dest . $sourceimagename . ' already existing. Hence exiting.';
-            break;
-        }
-        if (!file_exists(url($prev_dest . '/' . $sourceimagename, array('absolute' => TRUE)))) {
-            $item = array('uri' => $row->uri, 'width' => $prev_size['width'], 'height' => $prev_size['height']);
-            $path = array($prev_dest . '/' . $sourceimagename);
-            $variables = array('item' => $item, 'image_style' => 'preview-with-watermark', 'path' => $path);
-            theme_image_formatter($variables);
-            $ch = curl_init();
-            // set URL and other appropriate options
-            curl_setopt($ch, CURLOPT_URL, url($prev_dest . '/' . $sourceimagename, array('absolute' => TRUE)));
-            curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            // grab URL and pass it to the browser
-            curl_exec($ch);
-            // close cURL resource, and free up system resources
-            curl_close($ch);
-
-        }
-
-        if ($thumb_status && $prev_status) {
-          //Update the DB
-          $status = $generate_thumbnails_object->update_thumb_status($row->fid);
-        }
-
-      }
-      else {
-        echo '<br>Did not find source  file ' . $url;
-      }
-  }
 }
 
+/**
+ * 
+ * Get image style by name
+ * @param string $name name of the image style 
+ */
+function image_style($name) {
+  foreach (image_styles() as $style) {
+    if ($style['name'] == $name) {
+      return $style;
+    }
+  }
+  return NULL;
+}
+
+/*
+ *  Function creates imagecache for styles that appear on the search page
+ *
+ *  @param $file - contains image details
+ */
+function _generate_image_styles($file, $styles) {
+  
+  foreach ($styles as $style_name) { 
+    $style = image_style($style_name);
+     
+    if (!$style) {
+      watchdog('Image caching', 'Style does not exists: ' . $style_name . '.', array(), WATCHDOG_WARNING);
+      return;
+    }
+
+    $derivative_uri = image_style_path($style['name'], $file->uri);
+    
+    if (!file_exists($derivative_uri)) {
+      $success = image_style_create_derivative($style, $file->uri, $derivative_uri);
+      if (!$success) {
+        watchdog('Image caching', 'Failed to create image cache for style: ' . $style['name'] . '.');
+      }
+    }     
+  };
+
+  $S3_queue = DrupalQueue::get('send_images_to_S3');
+  $S3_queue->createItem($file);
+}

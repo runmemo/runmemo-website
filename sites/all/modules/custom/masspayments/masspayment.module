@@ -1,0 +1,370 @@
+<?php
+
+/**
+ * @file
+ * Module file for Managing Payment to Photographers
+ */
+
+function masspayment_init() {
+  drupal_add_css(drupal_get_path('module', 'masspayment') . '/masspayment.css');
+}
+/**
+ * Implements hook_menu().
+ *
+ * 
+ */
+function masspayment_menu() {
+  
+  
+  $items['admin/store/settings/listpayments'] = array(
+    'title'           => 'Payment to photographer',
+    'description'     => 'Payment to photographer on Monthly basis',
+    'page callback' => 'showlist_mp',
+    'access arguments' => array('administer store'),
+  );
+  
+  
+  
+  return $items;
+}
+function showlist_mp(){
+   return drupal_render(drupal_get_form('list_payment_period')).drupal_render(drupal_get_form('listmp_monthbasis'));
+}
+
+/**
+ * Drop down list for search the payment details 
+ * @return string 
+ */
+function list_payment_period() {
+  $mplist_object = new masspayment_model();
+  $start  = $mplist_object->get_site_created_time($uid=1); 
+  $fromDate = date("Y-m-d",$start ); 
+  $toDate = date("Y-m-d",REQUEST_TIME);
+  $current_month = date("F Y",REQUEST_TIME);
+  
+  
+  
+  if (arg(4) == '') {
+    $current_month = date("F Y",REQUEST_TIME);
+  }
+    
+  else {
+    $current_month = date("F Y",arg(4));
+   }
+   
+  $month_arr = array();
+  $month_arr = get_months($fromDate, $toDate);
+  
+  $form['payment-period'] = array('#type' => 'select', '#title' => 'Select Period', '#default_value' =>  $current_month);
+  foreach ($month_arr as $value) {
+    $form['payment-period']['#options'][$value] =  $value;
+  }
+  
+  $form['payment-search'] = array('#type' => 'submit', '#value' => 'Search');
+  
+  return $form;
+}
+
+function list_payment_period_submit($form, &$form_state) {
+  $searching_month_year = $form['payment-period']['#value'];
+  
+  drupal_goto('admin/store/settings/listpayments/'.strtotime($searching_month_year));
+}
+
+
+
+
+function listmp_monthbasis() {
+  
+  
+  $photographer_share = get_photographershare();
+
+   
+  $mplist_object = new masspayment_model();
+  
+  
+  
+  if (arg(4) != '') {
+    $searching_month_year = arg(4);
+    $mp_listquery  = $mplist_object->list_photographerpayments($searching_month_year);
+  }
+  else {
+    $mp_listquery  = $mplist_object->list_photographerpayments($searching_month_year = '');
+  }
+  
+  $header = array();
+  $header = array(
+    array('data' => t('Sl.no')), array('data' => t('Name')), array('data' => t('Email')), array('data' => t('Phone')), array('data' => 'No of Images Sold'), array('data' => t('Amount Paid')), array('data' => t('Amount Pending')),array('data' => t('Status'))
+  );
+ 
+  $rows = array();
+  $count = 1;
+
+  $mp_payment = array();
+  $mp_order   = array();
+  $mp_photographers = array();
+  $usercount = 0;
+  $hidden_order_ids_arr = array();
+ 
+    foreach ($mp_listquery as $record) {
+   
+      $user_id = $record->uid;
+      $hidden_order_ids_arr[] =  $record->order_product_ids;  
+      $masspayment_object = new masspayment_model();
+      $paid_amount = $masspayment_object->get_paid_amount_details($status=1,$user_id);
+
+      if (isset($paid_amount->count) != NULL) {
+        $amount_paid_for_photographer = $paid_amount->amount;
+
+      }
+      else {
+        $amount_paid_for_photographer = 0;
+      }
+      
+      
+      $total_amount = (($record->sum*$photographer_share)/100) - $amount_paid_for_photographer;
+
+      $pending_amount = $total_amount;
+
+      
+      $userlist_object = new masspayment_model();
+      $userdetails[]  = $userlist_object->getuserdetails($user_id);
+      if ($pending_amount != 0) {
+        $receiverData1[] = array(
+          'email' => $userdetails[$usercount]['email'],
+          'amount' => round($pending_amount,2),
+          'uniqueid' => $user_id,
+          'note' => 'Thankyou for your bussiness' ,
+          );
+      }
+
+      if ($amount_paid_for_photographer != 0) {
+        $rows[] = array(    
+          array('data' => $usercount+1),
+          array('data' => $userdetails[$usercount]['name']),
+          array('data' => $userdetails[$usercount]['email']),
+          array('data' => $userdetails[$usercount]['phone']),
+          array('data' => $record->no_of_images_sold), 
+          array('data' => uc_currency_format(round($amount_paid_for_photographer,2))),  
+          array('data' => uc_currency_format(round($pending_amount,2))),
+          array('data' => '<p class="mp_status_success" >&nbsp;</p>'),
+        );
+      }
+      else {
+        $rows[] = array(    
+          array('data' => $usercount+1),
+          array('data' => $userdetails[$usercount]['name']),
+          array('data' => $userdetails[$usercount]['email']),
+          array('data' => $userdetails[$usercount]['phone']),
+          array('data' => $record->no_of_images_sold), 
+          array('data' => uc_currency_format(round($amount_paid_for_photographer,2))),  
+          array('data' => uc_currency_format(round($pending_amount,2))),
+          array('data' => '<p class="mp_status_failure" >&nbsp;</p>'),
+        );
+      }
+      $usercount +=1;
+    }
+     
+
+  //hidden value for getting the order product id 
+  $hidden_order_ids = implode(',',$hidden_order_ids_arr);
+
+    // Set request-specific fields.
+  $emailSubject =urlencode('example_email_subject');
+  $receiverType = urlencode('EmailAddress');
+  $currency = urlencode(variable_get('uc_paypal_wpp_currency'));	
+  // Add request-specific fields to the request string.
+  $nvpStr="&EMAILSUBJECT=$emailSubject&RECEIVERTYPE=$receiverType&CURRENCYCODE=$currency";
+  if (isset($receiverData1)) {
+	  foreach ($receiverData1 as $i => $receiverData) {
+	    $receiverEmail = urlencode($receiverData['email']);
+	    $amount = urlencode($receiverData['amount']);
+	    $uniqueID = urlencode($receiverData['uniqueid']);
+	    $note = urlencode($receiverData['note']);
+	    $nvpStr .= "&L_EMAIL$i=$receiverEmail&L_Amt$i=$amount&L_UNIQUEID$i=$uniqueID&L_NOTE$i=$note";
+
+	  }
+  }
+
+  if(!empty($rows)) {
+    $form['order_product_ids'] = array(
+            '#type'=>'hidden',
+            '#value'=>$hidden_order_ids,);
+
+    $form['form_mytable'] = array(
+            '#markup' => theme('table', array('header' => $header, 'rows'=> $rows))
+            );
+    $form['mp_values'] = array(
+            '#type'=>'hidden',
+            '#value'=>$nvpStr,);
+    $form['submit']  = array(
+            '#type'=>'submit',
+            '#value'=>'Make Mass payment',
+            '#prefix' => '<div style="float:right">' , 
+            '#suffix' => '</div>',
+            );
+  }
+  else {
+    $form['form_mytable'] = array('#markup' => "<div id='empty-payment'>No order in this month</div>");
+  }
+  return $form;
+ 
+ }
+ 
+ /**
+ * Submit function for listmp_monthbasis()
+ */
+ function listmp_monthbasis_submit($form,&$form_state) {
+   
+  $order_products_ids = $form_state['values']['order_product_ids'];
+  
+  $nvpStr = $form_state['values']['mp_values'];
+  $nvparray = explode('&',$nvpStr);
+  
+  $httpParsedResponseAr = PPHttpPost('MassPay', $nvpStr);
+  
+  
+  
+  if("SUCCESS" == strtoupper($httpParsedResponseAr["ACK"]) || "SUCCESSWITHWARNING" == strtoupper($httpParsedResponseAr["ACK"])) {
+    $status = 1;
+    drupal_set_message('Masspayment Successfully Completed'); 
+  } 
+  else  {
+    $status = 0;
+    $error_msg = urldecode($httpParsedResponseAr['L_LONGMESSAGE0']);
+    drupal_set_message('Masspayment failure because '.$error_msg,'error');
+  
+  }
+
+  if (count($nvparray)>4) {
+	  $masspayment_object = new masspayment_model();
+	  $mp_list_insertid   = $masspayment_object->insert_masspayment($status);
+
+	  for ($i = 4;$i<count($nvparray);$i+=4){
+	    $uid = explode('=',$nvparray[$i+2]);
+	    $amount = explode('=',$nvparray[$i+1]);
+	    $values[] = array(
+		'masspayment_id' => $mp_list_insertid,
+		'uid' => $uid[1] ,
+		'amount' => $amount[1],
+		'paymentdate'=> REQUEST_TIME,
+		'payment_status'=>$status,
+		);
+	  }
+		 
+	  $masspayment_object->masspayment_photographer($values);
+
+	  if( $status = 1 ) {
+            $order_product_ids_arr = explode(',',$order_products_ids);
+            foreach ($order_product_ids_arr as $order_products) {
+              $order_product_arr[] = array(
+                  'order_product_id' => $order_products,
+                  'masspayment_id' => $mp_list_insertid,
+                  );
+            }
+
+            $masspayment_object->masspayment_order($order_product_arr);
+            
+	  }
+	
+  }
+	
+ }
+
+/**
+ * Send HTTP POST Request
+ *
+ * @param	string	The API method name
+ * @param	string	The POST Message fields in &name=value pair format
+ * @return	array	Parsed HTTP Response body
+ */
+function PPHttpPost($methodName_, $nvpStr_) {
+  global $environment;
+  
+  $environment = variable_get('uc_paypal_wpp_server');
+
+  
+  // Set up your API credentials, PayPal end point, and API version.
+  $API_UserName = urlencode(variable_get('uc_paypal_api_username'));
+  $API_Password = urlencode(variable_get('uc_paypal_api_password'));
+  $API_Signature = urlencode(variable_get('uc_paypal_api_signature'));
+  //$API_Endpoint = "https://api-3t.paypal.com/nvp";
+  //if ("sandbox" === $environment || "beta-sandbox" === $environment) {
+          //$API_Endpoint = "https://api-3t.".$environment.".paypal.com/nvp";
+  //}
+
+  $API_Endpoint = $environment;
+
+
+
+  $version = urlencode('51.0');
+
+  // Set the curl parameters.
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_URL, $API_Endpoint);
+  curl_setopt($ch, CURLOPT_VERBOSE, 1);
+
+  // Turn off the server and peer verification (TrustManager Concept).
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_POST, 1);
+
+  // Set the API operation, version, and API signature in the request.
+  $nvpreq = "METHOD=$methodName_&VERSION=$version&PWD=$API_Password&USER=$API_UserName&SIGNATURE=$API_Signature$nvpStr_";
+
+  // Set the request as a POST FIELD for curl.
+  curl_setopt($ch, CURLOPT_POSTFIELDS, $nvpreq);
+
+  // Get response from the server.
+  $httpResponse = curl_exec($ch);
+    
+  if (!$httpResponse) {
+          exit("$methodName_ failed: ".curl_error($ch).'('.curl_errno($ch).')');
+  }
+  // Extract the response details.
+  $httpResponseAr = explode("&", $httpResponse);
+
+  $httpParsedResponseAr = array();
+  foreach ($httpResponseAr as $i => $value) {
+    $tmpAr = explode("=", $value);
+    if (sizeof($tmpAr) > 1) {
+      $httpParsedResponseAr[$tmpAr[0]] = $tmpAr[1];
+    }
+  }
+
+  if ((0 == sizeof($httpParsedResponseAr)) || !array_key_exists('ACK', $httpParsedResponseAr)) {
+    exit("Invalid HTTP Response for POST request($nvpreq) to $API_Endpoint.");
+  }
+
+  return $httpParsedResponseAr;
+}
+/**
+ * Get Photographer share amount in percentage
+ * @return type 
+ */
+function get_photographershare(){
+  $share = variable_get('photographer_share');
+  $photographer_share = 100 - $share;
+  return $photographer_share;
+ }
+
+ 
+ 
+function get_months($date1, $date2) {
+   $time1  = strtotime($date1);
+   $time2  = strtotime($date2);
+   $my     = date('mY', $time2);
+
+   $months = array(date('F Y', $time1));
+
+   while($time1 < $time2) {
+      $time1 = strtotime(date('Y-m-d', $time1).' +1 month');
+      if(date('mY', $time1) != $my && ($time1 < $time2))
+         $months[] = date('F Y', $time1);
+   }
+
+   $months[] = date('F Y', $time2);
+   return $months;
+} 

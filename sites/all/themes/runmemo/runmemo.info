@@ -10,6 +10,7 @@ settings[garland_width] = fluid
 regions[sidebar_first] = Left sidebar
 regions[sidebar_second] = Right sidebar
 regions[content] = Content
+regions[menu] = Main menu
 regions[header] = Header
 regions[footer] = Footer
 regions[highlighted] = Highlighted
@@ -23,6 +24,7 @@ regions[recent_event2_images] = Recent Event2 Images
 regions[recent_event2_submit] = Recent Event2 Submit
 
 regions[photo_search] = Photo search
+regions[shopping_cart] = Shopping cart
 
 
 ; Information added by drupal.org packaging script on 2011-10-26

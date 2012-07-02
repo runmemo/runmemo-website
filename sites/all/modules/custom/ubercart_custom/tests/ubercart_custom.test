@@ -1,0 +1,105 @@
+<?php
+
+module_load_include('inc', 'ocr', 'tests/ocr_test');
+
+class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
+  private $product;
+
+  public static function getInfo() {
+    return array(
+    'name' => 'Ubercart Custom API',
+    'description' => 'Tests Ubercart Custom API points for AJAX calls',
+    'group' => 'Ubercart Custom',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('photo_search');
+    // create product node
+    $this->product = product_node_creator::getNewProductNode();
+     
+    
+  }
+  function testAddCartItem_Call_Success_New_Item() {
+    
+    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    debug($response_json);
+    $response = json_decode($response_json);
+
+    $this->assertEqual($response->success, TRUE, 'Item Added to Cart. Got Message: ' . $response->message);
+
+  }
+
+  function testAddCartItem_Call_Fail_Item_Exists() {
+
+    $user = $this->drupalCreateUser(array('search photos'));
+    $this->drupalLogin($user);
+    drupal_save_session(TRUE);
+    
+    // 1st request to add product to cart
+    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    debug($response_json);
+    $response = json_decode($response_json);
+    $this->assertEqual($response->success, TRUE, '1st Item Added to Cart. Got Message: ' . $response->message);
+    // 2nd request to add product to cart
+
+    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    debug($response_json);
+    $response = json_decode($response_json);
+    // @todo figure out how to execute HttpRequest from the same session.
+    // $this->assertEqual($response->success, FALSE, '2nd Item not Added to Cart. Got Message: ' . $response->message);
+  }
+
+  function testRemoveCartItem_Call_Fail_Item_not_in_Cart() {
+
+     
+    $response_json = $this->HttpRequest('cart_remove_item', $this->product->nid);
+    debug($response_json);
+    $response = json_decode($response_json);
+    $this->assertEqual($response->success, FALSE, 'Item was not removed from cart. Got Message: ' . $response->message);
+  }
+
+  function testRemoveCartItem_Call_Success() {
+
+    $cid = uc_cart_get_id($create = TRUE);
+    debug($cid);
+    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    $response_json = $this->HttpRequest('cart_remove_item', $this->product->nid);
+    debug($response_json);
+    $response = json_decode($response_json);
+    // @todo figure out how to do
+    // $this->assertEqual($response->success, TRUE, 'Item was removed from cart. Got Message: ' . $response->message);
+
+  }
+  /**
+   *
+   * Sends post request to specified API point
+   * @param string $url API point
+   * @param integer $nid Product identifier
+   */
+  private function HttpRequest($url, $nid) {
+
+    global $base_url;
+    $url = $base_url . '/' . $url .'?nid=' . $nid;
+    debug($url);
+
+    //open connection
+    $ch = curl_init();
+
+    //set the url, number of POST vars, POST data
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS,'nid=' . $nid);
+
+    //execute post
+    $result = curl_exec($ch);
+
+    //close connection
+    curl_close($ch);
+
+    return $result;
+
+  }
+
+}

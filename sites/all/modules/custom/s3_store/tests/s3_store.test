@@ -1,0 +1,121 @@
+<?php
+
+/**
+ * @file contains tests for sending images and image-cache to s3.
+ */
+
+module_load_include('inc', 'amazon_s3', 's3');
+/**
+ *
+ * Test cases for S3 store.
+ * @author Bulat Yapparov
+ */
+class S3MoverClassTestCase extends DrupalWebTestCase {
+
+  private  $aws_access_key;
+  private  $aws_secret_key;
+  public static function getInfo() {
+    return array(
+    'name' => 'Test S3 integration',
+    'description' => 'Test S3 Integration',
+    'group' => 'S3 Integration',
+    );
+  }
+
+  function setUp() {
+    parent::setUp ('image', 'imagecache_actions', 'imagecache_canvasactions', 'amazons3', 'amazon_s3', 'generate_thumbnails', 'ocr', 's3_store');
+
+    $this->aws_access_key = 'AKIAJ77I2DG2NPHMNDIQ';
+    $this->aws_secret_key = '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';
+     
+    variable_set('amazons3_bucket', 'runmemo-test');
+    
+    // test image file for tests.
+    $filepath = DRUPAL_ROOT . '/' . drupal_get_path('module', 'generate_thumbnails') . '/tests/' . 'test_image.jpg';
+    $file = (object) array(
+      'uid' => 1,
+      'uri' => $filepath,
+      'filemime' => file_get_mimetype($filepath),
+      'status' => 1,
+    );
+    $this->testFile = $file;
+
+  }
+/**
+ * 
+ * Checkes whether Image Styles are saved correctly to S3
+ */
+  function testImageStylesAreSentToS3() {
+
+    $file = file_copy($this->testFile, 'public://');
+    // Create image cache
+    _generate_image_styles($file, _pre_image_cache_styles()); 
+    
+   // $file = file_copy ($this->testFile, 's3://');
+    $mover = new s3_mover('public://', 'runmemo-test');
+    $s3 = new S3($this->aws_access_key, $this->aws_secret_key);
+
+    foreach (_pre_image_cache_styles() as $style_name) {
+      // move image cache file for the style
+      
+      $mover->move_imagecache($file, $style_name);
+
+      // get info
+     
+      $s3_uri =  'styles/' . $style_name . '/s3/test_image.jpg';
+      $object_info =  $s3->getObjectInfo('runmemo-test', $s3_uri);
+
+      $type = $object_info['type'];
+      $this->assertEqual('image/jpeg', $type , 'Image cache was successfully saved to S3 bucket for style: ' . $style_name);
+
+      if (!$s3->deleteObject('runmemo-test', $s3_uri)) {
+        // @todo change to Assert
+        throw Exception('Failed to delete image cache for test image from S3.');
+      }
+    }
+     
+  }
+
+/**
+ * 
+ * Checks whether file is sent to S3
+ */
+  function testFileIsSentToS3() {
+
+    $file = file_copy($this->testFile, 'public://');
+    $file_path = drupal_realpath($file->uri);
+   
+    $this->assertEqual(TRUE, file_exists($file_path), 'Original file exists.');
+    
+    $mover = new s3_mover('public://', 'runmemo-test');
+    $mover->move_file($file);
+
+    // @todo need to be able to use s3 wrapper as shown bellow:
+    //$file = file_move($file, 's3://');
+    //debug($file);
+    
+     $this->assertEqual(FALSE, file_exists($file_path), 'Original file was removed.');
+    
+    // Check that file exists in S3    
+    $s3 = new S3($this->aws_access_key, $this->aws_secret_key);
+    $object_info =  $s3->getObjectInfo('runmemo-test', 'test_image.jpg');
+    $type = $object_info['type'];
+    $this->assertEqual('image/jpeg', $type, 'Type of file in Amazon S3 is same as of uploaded test file.');
+     
+    // Delete created S3 file
+    if (!$s3->deleteObject('runmemo-test', 'test_image.jpg')) {
+       // @todo change to Assert
+      throw Exception('Failed to delete test image from S3.');
+    }
+  }
+  
+///**
+// * 
+// * Checks whether false = true
+// */  
+//  function testThatAlwaysFails() {
+//    
+//    $this->assertEqual(TRUE, FALSE, 'Hello');  
+//  }
+  
+}

@@ -24,28 +24,51 @@
 
             <?php if ($primary_nav): print $primary_nav; endif; ?>
             <?php if ($secondary_nav): print $secondary_nav; endif; ?>
-
-            <?php print render($page['header']); ?>
-
-            <div class="clr">
-
-            </div>
+		   
+		    <?php print render($page['menu']); ?>
+		   
+           <div class="float-R">	
+			<div class="login-btn-lft float-L" ></div>
+			<div class="login-btn float-L">		
+				<?php
+				global $user;
+				if (empty($user->name)) {?>
+				<div class="login-btn-mid float-L">
+					<a href="<?php echo base_path();?>user"><span class="float-L">Login</span>
+					</a> <img
+						src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
+						width="1" height="23" alt="separator" /> <a
+						href="<?php echo base_path();?>login"><span
+						class="float-R underline">Register</span> </a>
+				</div>
+				<?php
+				}
+				else {?>
+				<div class="login-btn-mid float-L">
+					<a href="<?php echo base_path();?>user"><span class="float-L">My
+							Account </span> </a> <img
+						src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
+						width="1" height="23" alt="separator" /> <a
+						href="<?php echo base_path();?>user/logout"><span
+						class="float-R underline">Logout</span> </a>
+				</div>
+				<?php }?>
+			</div>
+				<div class="login-btn-rig float-L"></div>
+			</div>
+           
             <?php
-            if(!in_array('Photographer',$user->roles)&& (arg(0)!='user') && (arg(0)!='login') && (!drupal_is_front_page()))
+            if(!in_array('Photographer',$user->roles) && (arg(0)!='user') && (arg(0)!='login') && (!drupal_is_front_page()))
             {
             ?>
             <div class="cart float-R">
-                <div class="cart-img float-L"></div>
-                <div class="cart-cont float-R"> <span class="shopping float-L">Shopping Cart</span> <span class="items float-L">0 items(s)- $1000.00</span> <span class="float-L"><img src="<?php echo base_path().path_to_theme(); ?>/images/cart-drop-img.png" width="9" height="5" /></span> </div>
+            <?php print render($page['shopping_cart']); ?>
             </div>
 
             <?php }?>
-
+		       
         </div><!--header close-->
-        <div class="clr">
-
-        </div>
-
+        <div class="gray-bdr"></div>
 
         <!-- <div id="container" class="clearfix">-->
 
@@ -53,7 +76,7 @@
             <div id="squeeze">
                 <div class="right-corner">
                     <div class="left-corner">
-                        <?php if(!drupal_is_front_page()):?>
+                        <?php if($is_front):?>
                             <?php //print $breadcrumb; ?>
                             <?php if ($page['highlighted']): ?>
                                 <div id="highlighted">
@@ -103,9 +126,7 @@
 
 
                         <div class="clearfix"> 
-                            <div class="gray-bdr" style="margin-top:30px;">
 
-                            </div>
                             <?php if ($page['sidebar_first']): ?>
                                 <div id="sidebar-first" class="sidebar">
                                     <?php print render($page['sidebar_first']); ?>
@@ -113,35 +134,25 @@
                             <?php endif; ?>
 
                             <?php $path=explode('/',request_uri()); //print_r($parts);print_r($_REQUEST);?>
-                            <div class="title" style="width:100%;">
-                                <?php if ((in_array('login',$path))&&(in_array('anonymous user',$user->roles))) : ?>
-                                    <h1 class="new_account_heading">  New Photograper Registration </h1> <h1 class="login_heading">I already have a Photographer account </h1>
-
-                                <?php elseif (arg(0) == 'user' && arg(1)==null) : ?>
-                                <h1 class="log_in">  User Login</h1>
-                                <?php endif ; ?>
-                            </div>
                             <?php print render($page['photo_search']); ?>
                             <?php print render($page['content']); ?>
+                          <?php if ($page['sidebar_second']): ?>
+                          <div id="sidebar-second" class="sidebar" style="align:right;">
+                              <?php print render($page['sidebar_second']); ?>
+                          </div>
+                          <?php endif; ?>
                         </div>
 
                     </div>
 
-                    <?php if ($page['sidebar_second']): ?>
-                    <div id="sidebar-second" class="sidebar" style="align:right;">
-                        <?php print render($page['sidebar_second']); ?>
-                    </div>
-                    <?php endif; ?>
+                    
 
                 </div>
             </div>
         </div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 
         <div class="clr"></div>
-	<?php if(drupal_is_front_page()):?>
-		<div class="gray-bdr">
-          
-		</div>
+	<?php if($is_front):?>
 
 		<div class="content float-L">
 		    <div class="cont-header-bg float-L">
@@ -178,7 +189,7 @@
 
 
     <div class="footer"><!--footer-->
-	<div id="link-display" style="display:none;"><?print url("feedback", array('absolute'=> TRUE));?></div>
+		<div id="link-display" style="display:none;"><?print url("feedback", array('absolute'=> TRUE));?></div>
         <div class="footer-inner">
             <div class="social-icon float-L">
                 <a href="mailto:info@runmemo.com" target="_blank"><img src="<?php echo base_path().path_to_theme(); ?>/images/iconnect.png" width="167" height="27"  alt="iconnect"/></a>
@@ -190,6 +201,3 @@
     </div><!--footer ends-->
 
 </div>
-
-
-

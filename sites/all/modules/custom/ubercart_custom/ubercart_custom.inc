@@ -15,5 +15,18 @@ class ubercart_custom_model{
     $count = db_query("SELECT COUNT(nid) as nid FROM {uc_order_products} WHERE nid = :nid", array(':nid' => $nid))->fetchObject();
     return $count->nid;
   }
+  /**
+   * Get details for ocr numbers.
+   */
+   public function getxyvalues($nid){
+    $query = db_select('ocr_numbers', 'on');
+    $query->addField('on', 'number');
+    $query->addField('on', 'position_left');
+    $query->addField('on', 'position_top');
+	$query->addField('on', 'probability');
+    $query->condition('on.nid', $nid);
+    $results = $query->execute();
+    return $results;
+   }
 }
 

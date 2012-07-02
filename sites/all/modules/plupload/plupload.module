@@ -254,7 +254,7 @@ function plupload_library() {
         // they have hyphens instead).
         '_default' => array(
           // @todo Provide a settings page for configuring these.
-          'runtimes' => 'html5,flash,html4',
+          'runtimes' => 'html5,flash,html4,gears,silverlight,browserplus',
           'url' => url('plupload-handle-uploads', array('query' => array('plupload_token' => drupal_get_token('plupload-handle-uploads')))),
           'max_file_size' => '10mb',
           'chunk_size' => '1mb',
@@ -341,6 +341,10 @@ function plupload_handle_uploads() {
 
         fclose($out);
         unlink($_FILES['file']['tmp_name']);
+		
+		$fh = fopen( '/tmp/run.log',"a");
+		fputs($fh, $temp_directory . $file_name."\n");
+		fclose($fh);
       }
       else {
         die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
@@ -443,6 +447,7 @@ function plupload_fix_temporary_filename($filename) {
 function _plupload_default_upload_validators() {
   return array(
     // See file_save_upload() for details.
-    'file_validate_extensions' => array('jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp'),
+    'file_validate_extensions' => array('jpg jpeg'),
+    //hided by resource 2 array('jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp'),
   );
 }

@@ -3,269 +3,177 @@
 /**
  * @file
  * Module file for OCR Integration
+ *
+ * This module provides integration with OCR workers via SQS queues.
  */
- 	
-	require_once libraries_get_path('Amazon').'/SQS/Client.php';
- 
+
+require_once libraries_get_path('Amazon') . '/SQS/Client.php';
+module_load_include('inc', 'ocr', 'ocr');
+
+/**
+ * Implements hook_help()
+ */
+function ocr_help($path, $arg) {
+  if ($path == 'admin/help#ocr') {
+    return t('OCR integration module.');
+  }
+}
+
 /**
  * Implements hook_menu().
- *
- * 
  */
 function ocr_menu() {
   $items['sendmessage'] = array(
-    'title'           => 'Send Message to OCR',
-    'description'     => 'Send Message to OCR',
-	'page callback' => array('invokeSendMessage'),
-	'access arguments' => array('access administration pages'),
-	
+      'title'           =>  'Send Message to OCR',
+      'description'     =>  'Send Message to OCR',
+      'page callback' => t('send_message'),
+      'access arguments' => array(t('access administration pages')),
   );
   $items['receivemessage'] = array(
-    'title'           => 'Receive Message from OCR',
-    'description'     => 'Receive Message from OCR',
-	'page callback' => 'invokeReceiveMessage',
-	'access arguments' => array('access administration pages'),
-	
+      'title'           => 'Receive Message from OCR',
+      'description'     => 'Receive Message from OCR',
+      'page callback' => 'receive_message',
+      'access arguments' => array('access administration pages'),
   );
-   $items['admin/config/media/ocrqueue'] = array(
-    'title'           => 'Queues for OCR',
-    'description'     => 'Setting queues for OCR',
-	'page callback' => 'drupal_get_form',
-	'page arguments'=>array('select_ocrqueue'),
-	'access arguments' => array('access administration pages'),
-	
+  $items['admin/config/media/ocrqueue'] = array(
+      'title'           => 'Queues for OCR',
+      'description'     => 'Setting queues for OCR',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('select_ocrqueue'),
+      'access arguments' => array('access administration pages'),
   );
- 
-  
   return $items;
 }
 
 /**
-*Configuration settings for amazon
-*/
-function amazonsqs_config(){
+ *Configuration settings for amazon
 
-	$aws_access_key = variable_get('aws_access_key', '');
-    $aws_secret_key = variable_get('aws_secret_key', '');
-	$service = new Amazon_SQS_Client($aws_access_key,$aws_secret_key);
-	return $service;
+ function amazonsqs_service() {
+
+ $aws_access_key = variable_get('aws_access_key', '');
+ $aws_secret_key = variable_get('aws_secret_key', '');
+ $service = new Amazon_SQS_Client($aws_access_key, $aws_secret_key);
+ return $service;
+ }
+ */
+
+/*
+ * Retrieves one or more messages from the specified queue.  For each message returned, the response includes the message body; MD5 digest of the message body; receipt handle, which is the identifier you must provide when deleting the message; and message ID of each message. Messages returned by this action stay in the queue until you delete them. However, once a message is returned to a ReceiveMessage request, it is not returned on subsequent ReceiveMessage requests for the duration of the VisibilityTimeout. If you do not specify a VisibilityTimeout in the request, the overall visibility timeout for the queue is used for the returned messages.
+ *
+ */
+
+
+/**
+ * Setting OCR queue to use
+ */
+function select_ocrqueue() {
+  $form['requestqueue'] = array('#type' => 'textfield',
+      '#title' => 'Message Request Queue',
+      '#size' => '20',
+      '#required' => 'true',
+      '#default_value' => variable_get('ocr-requests-queue', '')
+  );
+  $form['resultsqueue']  = array('#type' => 'textfield',
+      '#title' => 'Message Results Queue',
+      '#size' => '20',
+      '#required' => 'true',
+      '#default_value' => variable_get('ocr-results-queue', '')
+  );
+
+  $form['submit'] = array('#type' => 'submit',
+      '#title' => 'Submit',
+      '#value' => 'Submit'
+      );
+      return $form;
+
+}
+/**
+ * Submit function for  select_ocrqueue()
+ */
+function select_ocrqueue_submit($form, &$form_state) {
+  drupal_set_message(t('Message Queues set Successfully'));
+  $request_queue  = $form_state['values']['requestqueue'];
+  $results_queue = $form_state['values']['resultsqueue'];
+  variable_set('ocr-requests-queue', $request_queue);
+  variable_set('ocr-results-queue', $results_queue);
 }
 
 /**
-* The SendMessage action delivers a message to the specified queue.
-*   
-* @param nid nodeid of uploaded image
-* @param fname name of uploaded image
-*/
-function invokeSendMessage($nid=0,$fname="") { 
-
-    require_once DRUPAL_ROOT . '/sites/all/libraries/Amazon/SQS/Model/SendMessageRequest.php';
-	// get service credentials
-    $service = amazonsqs_config();
-    $request = new Amazon_SQS_Model_SendMessageRequest();
-	$bucket = variable_get('amazons3_bucket', '');
-	$requestqueue  = variable_get('ocr_requestqueue');
-	$responsequeue = variable_get('ocr_responsequeue');
-	//create message
-	$message_arr = array(
-						'ExternalReference' => $nid,
-						'ImageKey' => $fname,
-						'ImageBucket' => $bucket,
-						'OutQueue' => "http://eu-west-1.queue.amazonaws.com/".$responsequeue,
-						);  
-	$message = json_encode($message_arr);									
-	//setting message queue url
-	$request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/'.$requestqueue);
-	$request->setMessageBody($message);
-	$response = $service->sendMessage($request);
-	
-	
- }
- /*
-  * Retrieves one or more messages from the specified queue.  For each message returned, the response includes the message body; MD5 digest of the message body; receipt handle, which is the identifier you must provide when deleting the message; and message ID of each message. Messages returned by this action stay in the queue until you delete them. However, once a message is returned to a ReceiveMessage request, it is not returned on subsequent ReceiveMessage requests for the duration of the VisibilityTimeout. If you do not specify a VisibilityTimeout in the request, the overall visibility timeout for the queue is used for the returned messages.
-  *   
-  */
-  function invokeReceiveMessage() 
-  {
-	require_once DRUPAL_ROOT . '/sites/all/libraries/Amazon/SQS/Model/ReceiveMessageRequest.php';
-	
-    // get service credentials
-	$service = amazonsqs_config();
-	$request = new Amazon_SQS_Model_ReceiveMessageRequest();
-	$responsequeue = variable_get('ocr_responsequeue');
-	
-	//setting response queue url
-	$request->setQueueUrl('https://eu-west-1.queue.amazonaws.com/374933304004/'.$responsequeue);
-	$request->SetMaxNumberOfMessages(10);
-	$request->SetVisibilityTimeout(1000);
-	$responsebody = "";
-	
-	//retrieve messages
-	//   If SQS returns empty, the message is not available yet.  We keep retrying until message is
-	//   delivered.
-	$response = NULL;
-	$response_count =1 ;
-	do
-	{
-			try
-			{
-				
-				$response = $service->receiveMessage($request);
-				if ($response->isSetReceiveMessageResult()) { 
-						   
-					$receiveMessageResult = $response->getReceiveMessageResult();
-					$messageList 		  = $receiveMessageResult->getMessage();
-					
-					foreach ($messageList as $message) {
-						
-						if ($message->isSetMessageId()) 
-						{
-						   
-							$messageid = $message->getMessageId() ;
-						}
-						if ($message->isSetBody()) 
-						{
-							
-							$responsebody = $message->getBody();
-							
-						}
-						if ($message->isSetReceiptHandle()) 
-                        {
-                           
-                            $receipthandle = $message->getReceiptHandle();
-                        }
-					     
-				
-						if($responsebody){
-						
-							$responsearr   = json_decode(trim($responsebody));
-
-							
-							$nid         = $responsearr->ExternalReference;
-							$imagekey    = $responsearr->ImageKey;
-							$imagebucket = $responsearr->ImageBucket;
-							$success     = $responsearr->Success;
-							$error       = $responsearr->ErrorMessage;
-							$number[]    = $responsearr->Numbers;
-							$response_object = new ocr_model();
-							
-							if($success == true){
-							
-								//inserting runner number 
-								if($responsearr->ExternalReference){
-								
-									$number_count = 1;
-									if(!empty($responsearr->Numbers)) {
-									  
-										foreach($responsearr->Numbers as $responsenumber){	
-										
-												$revision   = $response_object->getnoderevision($nid); 	
-												foreach($revision as $revision_id){
-												   $node_revid = $revision_id->vid;
-												}
-												
-												if($responsenumber->Number){
-												
-													$result = $response_object->insert_runnernumber($nid,$responsenumber->Number,$node_revid,$number_count);
-													
-													$status_object   = new ocr_model();	
-													
-													$insert_status   = $status_object->insert_ocr_status($nid,1);
-													
-												}
-																						
-											$number_count +=1;	
-									
-										}
-									}
-									else {
-
-										$status_object   = new ocr_model();	
-										$insert_status   = $status_object->insert_ocr_status($nid,0);
-									}
-									
-									
-									
-									
-								}
-								
-							 $insert_response = $response_object->insert_response($responsebody,$success,$nid,$messageid); 
-							 
-							  if($service->deleteMessage($receipthandle)) {
-								echo 'Message deleted', "\n<br />\n";
-							 }
-							 
-							}
-							else{
-								watchdog('OCR response', 
-										 $error, 
-										 $variables = array(), 
-										 $severity = WATCHDOG_NOTICE, 
-										 base_path().'receivemessage');
-							}
-							
-								
-							
-						}
-					} 	
-                }  				
-		    }
-			catch(Exception $e)
-			{
-				echo 'Test message not available - keep polling...', "\n<br />\n";
-				sleep(1);
-			}
-		$response_count += 1 ; 
-	}
-	while($response == NULL);			
-		       
-			
-	 
- }
- /**
- * Setting OCR queue to use 
+ *
+ * Sends message to the requests queue with details specified in $file object.
+ * @param object $file - contains details of the image file.
  */
- function select_ocrqueue(){
-   $form['requestqueue']  = array(
-							'#type'=>'textfield',
-							'#title'=>'Maessage Request Queue',
-							'#size'=>'20',
-							'#required' => 'true',
-							'#default_value' => variable_get('ocr_requestqueue'),
-							);
-	$form['responsequeue']  = array(
-							'#type'=>'textfield',
-							'#title'=>'Maessage Response Queue',
-							'#size'=>'20',
-							'#required' => 'true',
-							'#default_value' => variable_get('ocr_responsequeue'),
-							);
+function _ocr_send_request ($file) {
+  // sending message to OCR for an uploaded image
+  $requestsQueueURL  = variable_get('ocr_requests_queue_url');
+  $resultsQueueURL = variable_get('ocr_results_queue_url');
+  $bucket = variable_get('image-store-bucket');
 
-	$form['submit']        = array(
-							'#type'=>'submit',
-							'#title'=>'Submit',
-							'#value'=>'Submit'
-							);
-	return $form;
-  
- }
- /**
- * Submit function for  select_ocrqueue()
+  $queue = new request_queue($requestsQueueURL);
+
+  //create message
+  $message_arr = array(
+    'ExternalReference' => $file->nid,
+    'ImageKey' => $file->filename,
+    'ImageBucket' => $bucket,
+    'OutQueue' => 'http://eu-west-1.queue.amazonaws.com/' . variable_get('ocr-results-queue'), // $resultsQueueURL,
+  );
+  $message = json_encode($message_arr);
+
+  // send message to the OCR Queue
+  $queue->sendMessage($message);
+}
+
+/**
+ * 
+ * Adds nodes pending OCR to the queue for S3
  */
- function select_ocrqueue_submit($form,&$form_state){
-    drupal_set_message('Message Queues set Successfully');
-	$request_queue  = $form_state['values']['requestqueue'];
-	$response_queue = $form_state['values']['responsequeue'];
-	variable_set('ocr_requestqueue',$request_queue);
-	variable_set('ocr_responsequeue',$response_queue);
-  
- }
+function _add_ocr_pending_nodes_to_queue() {
+  $query = new EntityFieldQuery();
 
-/*
-* hook_cron()
-*/
-  function ocr_cron(){
-	$response     = invokeReceiveMessage();
-	
-	
- }
+  $query->entityCondition('entity_type', 'node', '=')
+  ->entityCondition('bundle', 'product')
+  ->propertyCondition('status', 1, '=');
+  //->fieldCondition('ocr_success','value', array(1,0), 'NOT IN');
+   
+  $result = $query->execute();
+  if (!$result['node'] || empty($result)) {
+    return 0;
+  }
+  foreach ($result['node'] as $nid => $v) {
+    $node = node_load($nid);
+    // because fieldCondition does not allow to check for NULL values
+    // we have to check whether field is null this way
+    if (!isset($node->ocr_success[LANGUAGE_NONE]) || is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
+      $file = $node->uc_product_image[LANGUAGE_NONE][0];
+      $q = DrupalQueue::get('send_images_to_S3');
+      $q->createItem($file);
+    }
+  }
+}
+
+/**
+ * Implements hook_cron()
+ *
+ */
+function ocr_cron() {
+  $queueURL= variable_get('ocr_results_queue_url');
+  $queue = new response_queue($queueURL);
+  $message_counter = 0;
+  while ($message = $queue->getMessage()) {
+    $message_counter++;
+    try {
+      $message_body = $message->getBody();
+      watchdog('OCR info' , 'Getting body from the message.');
+      watchdog('OCR info' , $message_body);
+      $results_saver = new OcrResultsSaver($message_body);
+      $results_saver->Save();
+    } catch (Exception $e) {
+      watchdog_exception('OCR Exception', $e);
+    }
+    $queue->deleteMessage($message);
+  }
+  watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
+  // put files that were not processed to the S3 queue ?
+   //_add_ocr_pending_nodes_to_queue();
+}
