@@ -1853,18 +1853,6 @@ text-align:justify;
   font-style: normal!important;
 }
 
-
-.page-search-result .region-content .view-content{
-    height: 640px;
-    margin-top: 20px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    width: 550px;
-    border: 1px solid #CCCCCC;
-}
-.page-search-result .region-content .view-content table{
-  margin:0px;
-}
 .chzn-container .chzn-results li{
   line-height: 18px;
 }

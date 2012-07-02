@@ -105,7 +105,7 @@ function select_event_runner_get_photos($form, &$form_state) {
   }
   $form['search_filter']['events_select_runner'] = array(
     		'#type' => 'select', 
-    		'#title' => "Event", 
+    		'#title' => "I ran this event: ", 
     		'#id' => 'event_runner', 
     		'#prefix' => "<div id='field-event'>", '#suffix' => '</div>',  '#required' => 'true');
 
@@ -128,7 +128,7 @@ function select_event_runner_get_photos($form, &$form_state) {
 
   $form['search_filter']['runner_number'] = array(
     		'#type' => 'textfield', 
-    		'#title' => 'My Number', 
+    		'#title' => 'With number:', 
     		'#size' => '20', 
     		'#id' => 'runner_number', 
     		'#prefix' => "<div id='field-number'>", 

@@ -562,8 +562,7 @@ jQuery(document).ready(function() {
 				}
 			});
 
-			$("#number_recent_event2 ").blur(
-					function() {
+			$("#number_recent_event2 ").blur(function() {
 						if (($(" #number_recent_event2 ").val() == 'My Number')
 								|| ($(" #number_recent_event2 ").val() == ''))
 							$(" #number_recent_event2 ").val("My Number");
@@ -581,11 +580,8 @@ jQuery(document).ready(function() {
 				$("input#edit-url-hidden").val(txt_link);
 			}
 			var link_chg = $("div#link-display").text();
-			$("#block-feedback-form h2")
-					.html(
-							'<a class="feedback-link-new" href="' + link_chg
-									+ '"></a>');
-
+			$("#block-feedback-form h2").html('<a class="feedback-link-new" href="' + link_chg + '"></a>');
+		
 			Drupal.feedbackFormToggle = function($block, enable) {
 				$block.find('form').slideToggle('medium');
 				if (enable) {
