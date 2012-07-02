@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-Readme
-=======
-test
-
->>>>>>> master
 CONTENTS OF THIS FILE
 ---------------------
 
