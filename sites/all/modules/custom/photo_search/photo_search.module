@@ -110,24 +110,28 @@ function select_event_runner_get_photos($form, &$form_state) {
     		'#type' => 'select', 
     		'#title' => "I ran this event: ", 
     		'#id' => 'event_runner', 
-    		'#prefix' => "<div id='field-event'>", '#suffix' => '</div>',  '#required' => 'true');
+    		'#prefix' => "<div id='field-event'>", 
+    		'#suffix' => '</div>', 
+    		'#required' => 'true',
+            '#default_value' => 'None');
 
 
-  $form['search_filter']['events_select_runner']['#options'] = array('select_event' => "Select Event");
+  $form['search_filter']['events_select_runner']['#options']['None'] = t('Select Event');
+  //$form['search_filter']['events_select_runner']['#options'] = array('select_event' => "Select Event");
   //select event options from content type 'event'
   $event_helper = new event_helper();
   //get the event name from content type 'event'
   $event_name = $event_helper->get_events();
   foreach ($event_name as $event_name_value) {
-    $event_title = $event_name_value->title;
     $event_title_nid = $event_name_value->nid;
+    $event_title = $event_name_value->title;
     $form['search_filter']['events_select_runner']['#options'][$event_title_nid]=$event_title;
   }
 
   if ((is_numeric(arg(1))) && (arg(1) != '')) {
     $default=arg(1);
     $form['search_filter']['events_select_runner']['#default_value']=$default;
-  }
+  } 
 
   $form['search_filter']['runner_number'] = array(
     		'#type' => 'textfield', 
@@ -151,20 +155,20 @@ function select_event_runner_get_photos($form, &$form_state) {
 
   //submit get my photo in the runner side
   $form['search_filter']['search'] = array('#type' => 'submit', '#value' => '');
-
+  dvm($form, 'Search form');
   return $form;
 
 }
 
 function select_event_runner_get_photos_validate($form, &$form_state) {
   $event_selected = $form['search_filter']['events_select_runner']['#value'];
-  if ($event_selected == 'select_event') {
-    form_set_error('', t('Please select event'));
+  if ($event_selected == 'None') {
+    form_set_error('search_filter][events_select_runner', t('Please select event'));
   }
 
   $runner_num = $form['search_filter']['runner_number']['#value'];
   if ($runner_num == 'My Number') {
-    form_set_error('', t('Please enter your number'));
+    form_set_error('runner_number', t('Please enter your number'));
   }
 
 }
@@ -216,11 +220,11 @@ function select_event_runner_sell_photos($form, &$form_state) {
     //select event options from content type 'event'
     $event_helper = new event_helper();
     //get the event name from content type 'event'
-    $event_name = $event_helper->get_events();
-    foreach ($event_name as $event_name_value) {
-      $event_title = $event_name_value->title;
-      $event_title_nid = $event_name_value->nid;
-      $form['sellfield']['events_select_runner']['#options'][$event_title_nid] = $event_title;
+    $events = $event_helper->get_events();
+    foreach ($events as $event) {
+      $event_title = $event->title;
+      $event_nid   = $event->nid;
+      $form['sellfield']['events_select_runner']['#options'][$event_nid] = $event_title;
     }
     $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => '');
   }

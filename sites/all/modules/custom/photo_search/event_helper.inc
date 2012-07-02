@@ -14,7 +14,7 @@ class event_helper {
     */
   public function get_events() {
 
-    $event_title = db_query("SELECT title,nid FROM {node} WHERE type='event'");
+    $event_title = db_query('SELECT nid, title FROM {node} WHERE type = :type', array(':type' => 'event'));
     return $event_title;
   }
        
