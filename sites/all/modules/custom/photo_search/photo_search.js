@@ -567,69 +567,7 @@ jQuery(document).ready(function() {
 								|| ($(" #number_recent_event2 ").val() == ''))
 							$(" #number_recent_event2 ").val("My Number");
 					});
-
-			// Feedback
-
-			if (($("#block-feedback-form")).length > 0) {
-
-				$("#block-feedback-form .content").hide();
-				$("body.page-feedback #block-feedback-form .content").show();
-				$("body.page-feedback #block-feedback-form #feedback-form")
-						.show();
-				var txt_link = parent.window.document.location;
-				$("input#edit-url-hidden").val(txt_link);
-			}
-			var link_chg = $("div#link-display").text();
-			$("#block-feedback-form h2").html('<a class="feedback-link-new" href="' + link_chg + '"></a>');
-		
-			Drupal.feedbackFormToggle = function($block, enable) {
-				$block.find('form').slideToggle('medium');
-				if (enable) {
-					$('#feedback-form-toggle', $block).html('[ + ]');
-					$("#block-feedback-form .content").hide();
-					$("#feedback-form").attr('style', 'display:none;');
-
-				} else {
-					$('#feedback-form-toggle', $block).html('[ &minus; ]');
-					$("#block-feedback-form .content").show();
-					$("#feedback-form").attr('style', 'display:block;');
-
-				}
-			};
-
-			if ($("#feedback-form .error").length > 0) {
-
-				$("#block-feedback-form .content").show();
-				$("#feedback-form").attr('style', 'display:block;');
-
-			}
-
-			$("#fb_close_link").click(function() {
-
-				parent.Drupal.overlay.close();
-
-			});
-
-			Drupal.behaviors.feedbackFormSubmit = {
-				attach : function(context) {
-
-					var $context = $(context);
-					if (!$context.is('#feedback-status-message')) {
-						return;
-					}
-					// Collapse the form.
-					$('#block-feedback-form .feedback-link').click();
-					// Blend out and remove status message.
-					window.setTimeout(function() {
-						$context.fadeOut('slow', function() {
-							$context.remove();
-						});
-					}, 3000);
-
-					parent.Drupal.overlay.close();
-				}
-			};
-
+			
 		}
 
 	};

@@ -5,9 +5,15 @@
  */
 function photo_upload_init() {
   //to add the js file
-  drupal_add_js(drupal_get_path("module", "photo_upload") . "/js/photo_upload.js");
-  drupal_add_css(drupal_get_path('module', 'photo_upload') . '/photo_upload.css');
   drupal_add_css(drupal_get_path('theme', 'runmemo') . '/css/style.css');
+ 
+}
+
+function photo_upload_preprocess_page(&$variables) {
+  if('photographer' === arg(0)) {
+    drupal_add_js(drupal_get_path("module", "photo_upload") . "/js/photo_upload.js");
+    drupal_add_css(drupal_get_path('module', 'photo_upload') . '/photo_upload.css');
+  }
 }
 
 /**

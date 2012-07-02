@@ -12,13 +12,16 @@ function photo_search_views_api() {
  * Init function for adding the external file
  */
 function photo_search_init() {
-
-  //$cart_contents;
-
-  //to add the js file
-  drupal_add_js(drupal_get_path("module", "photo_search") . "/photo_search.js");
-  drupal_add_css(drupal_get_path('module', 'photo_search') . '/photo_search.css');
+  
 }
+
+function photo_search_preprocess_page(&$variables) {
+  if('search-result' === arg(0)) {
+    drupal_add_css(drupal_get_path('module', 'photo_search') . '/photo_search.css');
+    drupal_add_js(drupal_get_path('module', 'photo_search') . '/photo_search.js');
+  }
+}
+
 
 ///////////////////////////////////////////////////////////
 /**
