@@ -76,7 +76,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
   $handler->display->display_options['relationships']['uid']['field'] = 'uid';
   $handler->display->display_options['relationships']['uid']['required'] = 0;
-    /* Field: Content: Nid */
+  /* Field: Content: Nid */
   $handler->display->display_options['fields']['nid']['id'] = 'nid';
   $handler->display->display_options['fields']['nid']['table'] = 'node';
   $handler->display->display_options['fields']['nid']['field'] = 'nid';
@@ -127,7 +127,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['sell_price']['precision'] = '0';
   $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
   $handler->display->display_options['fields']['sell_price']['format'] = 'numeric';
-  
+
   /* Field: Content: Image */
   $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
@@ -158,7 +158,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['delta_first_last'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['field_api_classes'] = 0;
-  
+
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
   $handler->display->display_options['fields']['check_box']['table'] = 'node';
@@ -183,7 +183,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['check_box']['empty_zero'] = 0;
   $handler->display->display_options['fields']['check_box']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['check_box']['link_to_node'] = 0;
-  
+
   /* Field: User: First Name */
 
   $handler->display->display_options['fields']['field_first_name']['id'] = 'field_first_name';
@@ -273,5 +273,6 @@ echo $cart_items;}?>" />
   $handler->display->display_options['path'] = 'search-result/%/%';
 
   $export['search_results'] = $view;
+
   return $export;
 }

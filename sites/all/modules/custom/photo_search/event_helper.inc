@@ -12,20 +12,35 @@ class event_helper {
     * @return
     * $event_title return event title,nid array 
     */
-  public function get_events() {
+  public static function get_events() {
 
-    $event_title = db_query('SELECT nid, title FROM {node} WHERE type = :type', array(':type' => 'event'));
-    return $event_title;
+    $events= db_query('SELECT nid, title FROM {node} WHERE type = :type', array(':type' => 'event'));
+    return $events;
   }
-       
+
+  public static function get_event($nid) {
+    
+    $event = db_query('SELECT nid, title 
+    					FROM {node} 
+    					WHERE nid = :nid', 
+                        array(':nid' => $nid));
+    return $event;
+    
+  }
+  
+
+  
  /**
    * Get the recent event id 
    * @return
    * $event_id recently created event id
    */
-  public function get_recent_event_id($start, $end) {
+  public static function get_recent_event_id($start, $end) {
 
-    $event_id = db_query_range("SELECT nid FROM {node} WHERE type = :type ORDER BY nid DESC", $start, $end, array(':type' => 'event'))->fetchField();
+    $event_id = db_query_range(
+    				"SELECT nid FROM {node} 
+    				WHERE type = :type 
+    				ORDER BY nid DESC", $start, $end, array(':type' => 'event'))->fetchField();
     
     return $event_id;
   }

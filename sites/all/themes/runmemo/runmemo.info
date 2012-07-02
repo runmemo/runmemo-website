@@ -15,13 +15,8 @@ regions[header] = Header
 regions[footer] = Footer
 regions[highlighted] = Highlighted
 
-regions[recent_event1_title] = Recent Event1 Title
-regions[recent_event1_images] = Recent Event1 Images
-regions[recent_event1_submit] = Recent Event1 Submit
-
-regions[recent_event2_title] = Recent Event2 Title
-regions[recent_event2_images] = Recent Event2 Images
-regions[recent_event2_submit] = Recent Event2 Submit
+regions[recent_event_left] = Recent Event Left
+regions[recent_event_right] = Recent Event Right
 
 regions[photo_search] = Photo search
 regions[shopping_cart] = Shopping cart
