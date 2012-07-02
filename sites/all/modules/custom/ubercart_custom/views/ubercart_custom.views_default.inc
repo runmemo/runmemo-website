@@ -272,14 +272,13 @@ function ubercart_custom_views_default_views() {
   $handler->display->display_options['filters']['created']['year_range'] = '-2:+0';
 
   /* Display: Page */
-  $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'admin/store/reports/sales/by-photographer';
+  $handler = $view->new_display('page', 'Admin page', 'admin_page');
+  $handler->display->display_options['path'] = 'admin/store/sales/photographer';
   $handler->display->display_options['menu']['type'] = 'normal';
-  $handler->display->display_options['menu']['title'] = 'Sales Summary by Photographer';
+  $handler->display->display_options['menu']['title'] = 'Sales by Photographer';
   $handler->display->display_options['menu']['description'] = 'Allows to see total sales for photographer monthly';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'management';
-  $handler->display->display_options['menu']['context'] = 0;
 
   $export['sales_summary_by_photographer'] = $view;
   return $export;
