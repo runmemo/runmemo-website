@@ -65,9 +65,9 @@ echo $cart_items;}?>" />
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = FALSE;
   $handler->display->display_options['empty']['area']['content'] =
-  	'<div class="no-result-found">
-		It looks like not all photos have been uploaded to the website. 
-		Come back in a few days, or email us at info@runmemo.com with your number in the subject line and we will keep you updated.
+    '<div class="no-result-found">
+      It looks like not all photos have been uploaded to the website.
+      Come back in a few days, or email us at info@runmemo.com with your number in the subject line and we will keep you updated.
 	</div>';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['empty']['area']['tokenize'] = 0;
@@ -152,7 +152,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['uc_product_image']['empty_zero'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
-  $handler->display->display_options['fields']['uc_product_image']['settings'] = array('image_style' => 'search_thumbnail', 'image_link' => '',);
+  $handler->display->display_options['fields']['uc_product_image']['settings'] = array('image_style' => 'search_thumbnail', 'image_link' => '', );
   $handler->display->display_options['fields']['uc_product_image']['group_rows'] = 1;
   $handler->display->display_options['fields']['uc_product_image']['delta_offset'] = '0';
   $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
