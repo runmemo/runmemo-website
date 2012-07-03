@@ -12,7 +12,7 @@ function photo_search_views_api() {
  * Init function for adding the external file
  */
 function photo_search_init() {
-  
+
 }
 
 function photo_search_preprocess_page(&$variables) {
@@ -81,34 +81,33 @@ function photo_search_user_default_permissions() {
 }
 
 function photo_search_block_info() {
-  
-    $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'),);
-    $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'),);
+
+  $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'),);
+  $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'),);
    
-   	return $blocks;
-} 
+  return $blocks;
+}
 
 function  photo_search_block_view($delta = '') {
   // The $delta parameter tells us which block is being requested.
   $nid = 0;
   switch ($delta) {
-      case 'recent_event_left':
-        $nid = event_helper::get_recent_event_id(0, 1);
-        return recent_events_block($nid);
-      case 'recent_event_right':
-    	$nid = event_helper::get_recent_event_id(1, 1);
-    	return recent_events_block($nid);;
-    break;
+    case 'recent_event_left':
+      $nid = event_helper::get_recent_event_id(0, 1);
+      return recent_events_block($nid);
+    case 'recent_event_right':
+      $nid = event_helper::get_recent_event_id(1, 1);
+      return recent_events_block($nid);;
+      break;
   }
 
 }
 
-function recent_events_block($nid) 
+function recent_events_block($nid)
 {
   $event = node_load($nid);
-//  $view = block('recent_event_images');
+  //  $view = block('recent_event_images');
 
-//  dvm($view, 'view'); 
   $block = array();
   $block['subject'] = $event->title;
   $query = new EntityFieldQuery;
@@ -118,28 +117,28 @@ function recent_events_block($nid)
   ->propertyCondition('status', 1)
   ->fieldCondition('field_event_reference', 'nid', $nid, '=')
   ->fieldCondition('field_promote', 'value', TRUE, '=')
-  ->range(0,4)
+  ->range(0, 4)
   ->execute();
-  
+
   $products = node_load_multiple(array_keys($entities['node']));
-  
+
+  $block['content'][] = array('#markup' => '<div class="recent-event-images">');
   foreach ($products as $product) {
-    
-    dvm($product->uc_product_image['und'][0]['uri'],'product node');
-   // $image = $product_node->field['uc_product_image'];
-   $img_url = image_style_url('search_thumnail', $product->uc_product_image['und'][0]['uri']);
-     $block['content'][] = array('#markup' => '<img src=' . $img_url . '>');
+    // $image = $product_node->field['uc_product_image'];
+    $img_url = image_style_url('search_thumnail', $product->uc_product_image['und'][0]['uri']);
+    $block['content'][] = array('#markup' => '<img src=' . $img_url . '>');
   }
-
-
-  $block['content'][] = recent_event_search_form($nid);//views_embed_view('recent_event_images', 'default', $nid);
+  $block['content'][] = array('#markup' => '</div>');
+  
+  // add form to search products from same event
+  $block['content'][] = drupal_get_form('recent_event_search_form_' . $nid, $nid); ;
   // @ todo get event title.
 
-  //print drupal_render(drupal_get_form("recent_event2_image"));
+
   //recent_events_form($nid);
 
   return $block;
-  
+
 }
 
 /**
@@ -178,7 +177,7 @@ function select_event_runner_get_photos($form, &$form_state) {
   $form['search_filter']['events_select_runner']['#options']['None'] = t('Select Event');
   //$form['search_filter']['events_select_runner']['#options'] = array('select_event' => "Select Event");
   //select event options from content type 'event'
-  
+
   //get the event name from content type 'event'
   $event_name = event_helper::get_events();
   foreach ($event_name as $event_name_value) {
@@ -190,7 +189,7 @@ function select_event_runner_get_photos($form, &$form_state) {
   if ((is_numeric(arg(1))) && (arg(1) != '')) {
     $default=arg(1);
     $form['search_filter']['events_select_runner']['#default_value']=$default;
-  } 
+  }
 
   $form['search_filter']['runner_number'] = array(
     		'#type' => 'textfield', 
@@ -231,6 +230,8 @@ function select_event_runner_get_photos_validate($form, &$form_state) {
   }
 
 }
+
+
 
 /**
  * Function for runner photo search submit.
@@ -277,7 +278,7 @@ function select_event_runner_sell_photos($form, &$form_state) {
 
     $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
     //select event options from content type 'event'
-    
+
     //get the event name from content type 'event'
     $events = event_helper::get_events();
     foreach ($events as $event) {
@@ -334,36 +335,50 @@ function find_trade_section() {
 }
 
 
+function photo_search_forms($form_id) {
+ 
+  $forms = array();
+  if (strpos($form_id, 'recent_event_search_form_') === 0) {
+    $nids = array_map('strrev', explode('_', strrev($form_id)));
+    $forms[$form_id] = array(
+      'callback' => 'recent_event_search_form',
+      'callback arguments' => array($nids[0]),
+    );
+  }
+  return $forms;
+
+}
+
 
 /**
  * For search the photo using runner number in the recent event section
  * @return string
  */
 //function recent_event1_image() {
-function recent_event_search_form($nid) {
-
+function recent_event_search_form() {
+  
   $form = array();
+  $form['runner_number'] = 
+    array (
+  		'#type' => 'textfield', 
+  		'#title' => 'Runner Number', 
+  		'#size' => '20', 	
+    	'#required' => 'true');
+  $form['submit_button'] =
+         array ( // search button
+  				'#type' => 'submit', 
+  				'#value' => '', 
+  				'#submit' => array('recent_event_search_submit'), 
+         );
 
-  $form['recent_event_search_' . $nid] = array(
-  	'#type' => 'textfield', 
-  	'#title' => 'Runner Number', 
-  	'#size' => '20', 
-  	'#id' => 'number_recent_event'. $nid, 
-  	'#required' => 'true');
-
-  $form['submit'] = array('#type' => 'submit', '#value' => '', );
-   
   return  $form;
 
-}  
+}
 
-function recent_event_image_validate($form, &$form_state) {
-  foreach($form as $key => $item) {
-    if(substr($key, 0, strlen('recent_event_search')) === 'recent_event_search') {
-      if ($item['runner_number']['#value']  == 'My Number' || $item['runner_number']['#value']  == '') {
-         form_set_error('runner_number', t('Please enter your number'));
-      }
-    }
+function ecent_event_search_validate($form, &$form_state) {
+
+  if ($form['runner_number']['#value']  == 'My Number' || $form['runner_number']['#value']  == '') {
+    form_set_error('runner_number', t('Please enter your number'));
   }
 }
 
@@ -372,60 +387,66 @@ function recent_event_image_validate($form, &$form_state) {
  * @param type $form
  * @param type $form_state
  */
-function recent_event_image_submit($form, &$form_state) {
-  foreach($form as $key => $item) {
-    if(substr($key, 0, strlen('recent_event_search')) === 'recent_event_search') {
-      /*$event_helper = new event_helper();
-       $event_nid = $event_helper->get_recent_event_id(0, 1);
-       $runner_number = $form['runner_number']['#value'];
-       $path = 'search-result/' . $event_nid . '/' . $runner_number;
-       drupal_goto($path); */
-    }
-  }
+function recent_event_search_submit($form, &$form_state) {
+
+
+  $eid = $form['event_id']['#value'];
+  $number = $form['runner_number']['#value'];
+  
+  $path = 'search-result/' . $eid . '/' . $number;
+  $form_state['redirect'] = array(
+    $path,
+    // $options
+    array(),
+    // $http_response_code
+    302,
+    );
+  // drupal_goto($path);
+  
 }
 
 /**
  * For search the photo using runner number in the recent event section
  * @return string
-*/
+ */
 
 /*
-function recent_event2_image() {
+ function recent_event2_image() {
 
-  $form = array();
+ $form = array();
 
-  $form['runner_number_event2'] = array('#type' => 'textfield', '#title' => 'Runner Number', '#size' => '20', '#id' => 'number_recent_event2', '#required' => 'true');
+ $form['runner_number_event2'] = array('#type' => 'textfield', '#title' => 'Runner Number', '#size' => '20', '#id' => 'number_recent_event2', '#required' => 'true');
 
-  $form['submit_event2'] = array('#type' => 'submit', '#value' => '', );
-   
-  return  $form;
+ $form['submit_event2'] = array('#type' => 'submit', '#value' => '', );
+  
+ return  $form;
 
-}  */
+ }  */
 
 /**
  * Form validation
  */
 /*
-function recent_event2_image_validate($form, &$form_state) {
-  $runner_num_event2 = $form['runner_number_event2']['#value'];
-  if ($runner_num_event2 == 'My Number' || $runner_num_event2 == '') {
-    form_set_error('', t('Please enter your number'));
-  }
-} */
+ function recent_event2_image_validate($form, &$form_state) {
+ $runner_num_event2 = $form['runner_number_event2']['#value'];
+ if ($runner_num_event2 == 'My Number' || $runner_num_event2 == '') {
+ form_set_error('', t('Please enter your number'));
+ }
+ } */
 /**
  * For testing purpose
  * @param type $form
  * @param type $form_state
  */
 /*
-function recent_event2_image_submit($form, &$form_state) {
-  $event_helper = new event_helper();
-  $event_id = $event_helper->get_recent_event_id(1, 1);
-  $runner_number = $form['runner_number_event2']['#value'];
-  $path = 'search-result/' . $event_id . '/' . $runner_number;
-  drupal_goto($path);
-}
-*/
+ function recent_event_image_submit($form, &$form_state) {
+ $event_helper = new event_helper();
+ $event_id = $event_helper->get_recent_event_id(1, 1);
+ $runner_number = $form['runner_number_event2']['#value'];
+ $path = 'search-result/' . $event_id . '/' . $runner_number;
+ drupal_goto($path);
+ }
+ */
 
 /**
  * Cron form alter
@@ -434,6 +455,11 @@ function photo_search_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'system_cron_settings') {
     $form['cron']['cron_safe_threshold']['#options'] = array(0 => 'Never', '900' => '15 Mins', '1800' => '30 Mins', '3600' => '1 hour', '10800' => '3 hours', '21600' => '6 hours', '43200' => '12 hours', '86400' => '1 day', '604800' => '1 week');
   }
+  
+   if (strpos($form_id, 'recent_event_search_form_') === 0) {
+     $nid = $form_state['build_info']['args'][0];
+     $form['event_id'] = array('#type' => 'hidden', '#value' => $nid, ); 
+   }
 }
 
 
