@@ -109,7 +109,7 @@ fi
 #   pm-update (up)
 #          Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).
 
-ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush pm-update && drush cc al"
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush pm-update && drush cc all"
 if [ $? -ne 0 ]; then
 	echo "Failed to run update script"
 	exit 1
