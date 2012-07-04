@@ -135,8 +135,8 @@ cat << EOF
 EOF
 
 # Bring website out of maintenance mode
-#ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush vset --always-set site_offline 0 && drush cc all"
-#if [ $? -ne 0 ]; then
-#	echo "Failed to bring website back"
-#	exit 1
-#fi
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush vset --always-set site_offline 0 && drush cc all"
+if [ $? -ne 0 ]; then
+	echo "Failed to bring website back"
+	exit 1
+fi
