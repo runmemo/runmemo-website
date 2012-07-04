@@ -86,7 +86,7 @@ for vol in $(ec2-describe-instances ${INSTANCE} | grep ^BLOCKDEVICE | cut -f3); 
 	
 # 	Wait until backup complete
 	backup_start_at=$(date +%s) 
-	until [ $(ec2-describe-snapshots ${snap} | cut -f4) == "completed" ]; do
+	until [ "$(ec2-describe-snapshots ${snap} | cut -f4)" == "completed" ]; do
 		if [ $(( ( $(date +%s) - $backup_start_at ) / 60 )) -gt ${BACKUP_TIMELIMIT} ]; then
 			echo "Failed to create a snapshot(${snap}) of a volume(${vol})"
 			echo "Backup killed by timeout(${BACKUP_TIMELIMIT}min)"
@@ -116,7 +116,7 @@ fi
 #   pm-update (up)
 #          Update Drupal core and contrib projects and apply any pending database updates (Same as pm-updatecode + updatedb).
 
-ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush pm-update && drush cc all"
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush updatedb --yes && drush cc all"
 if [ $? -ne 0 ]; then
 	echo "Failed to run update script"
 	exit 1
