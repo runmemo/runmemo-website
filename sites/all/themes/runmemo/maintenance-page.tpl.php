@@ -50,7 +50,8 @@
             if ($logo) {
               print '<img src="' . $logo . '" alt="' . $site_title . '" id="logo" />';
             }
-            print $site_html . '</a></h1>';
+           // print $site_html; 
+           print '</a></h1>';
           }
         ?>
         </div>
