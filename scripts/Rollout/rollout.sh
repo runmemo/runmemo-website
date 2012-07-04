@@ -21,6 +21,7 @@
 # * Answer=yes
 # * export INSTANCE=i-0f8e1f47
 # * export CERT=/root/website-live.pem
+# * export SITE_WORKDIR="/var/www/html/runmemo/runmemo-website"
 # * #Exporting EC2 settings(required by ec2 tools)
 # * export EC2_KEYPAIR=TestMicroInstances 
 # * export EC2_URL=https://ec2.eu-west-1.amazonaws.com
@@ -45,11 +46,15 @@ if [ -z ${CERT} ]; then
 	exit 1
 fi
 
+if [ -z ${SITE_WORKDIR} ]; then
+	echo "Parametr SITE_WORKDIR is not defined"
+	exit 1
+fi
+
 echo "rollout.sh"
 echo "instance=${INSTANCE}"
 echo "certificate=${CERT}"
 
-export SITE_WORKDIR="/var/www/html/runmemo/runmemo-website"
 SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no"
 BACKUP_TIMELIMIT=30
 
@@ -85,7 +90,7 @@ for vol in $(ec2-describe-instances ${INSTANCE} | grep ^BLOCKDEVICE | cut -f3); 
 			echo "Backup killed by timeout(${BACKUP_TIMELIMIT}min)"
 			exit 1					
 		fi 
-		sleep 1
+		sleep 1m
 	done
 	
 done
