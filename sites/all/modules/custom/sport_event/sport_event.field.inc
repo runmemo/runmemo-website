@@ -7,10 +7,10 @@
 /**
  * Gents definitions of custom fieds and instances for Event node.
  */
-function sport_event_field_default_fields() {
+function _sport_event_field_default_fields() {
   $fields = array();
 
-  // Exported field: 'node-event-field_registered_photographers'
+  // Field for photographers registered at the event
   $fields['node-event-field-registered-photographers'] = array(
     'field_config' => array(
       'active' => '1',

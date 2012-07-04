@@ -12,6 +12,7 @@ function sport_event_block_info() {
   return $blocks;
 }
 
+
 /**
  *
  * implements hook_block_view()
