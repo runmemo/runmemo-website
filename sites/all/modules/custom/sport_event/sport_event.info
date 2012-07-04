@@ -1,0 +1,8 @@
+name = Sport Event
+description = Implements functionality for sport events
+package = Runmemo Custom Modules
+core = 7.x
+
+files[] = sport_event.module
+files[] = sport_event.inc
+files[] = sport_event.field.inc

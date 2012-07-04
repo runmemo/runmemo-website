@@ -152,43 +152,27 @@
         </div> <!-- /.left-corner, /.right-corner, /#squeeze, /#center -->
 
         <div class="clr"></div>
+        
+    <!-- Region Recent Events -->
 	<?php if($is_front):?>
-
-		<div class="content float-L">
+		<div class="content float-L region-recent-events">
 		    <div class="cont-header-bg float-L">
 		        <h1 class="float-L">Recent Events</h1>
 		    </div>
-		    <div class="cont-lft float-L">
-		        <div class="cont-lft-header">
-		            <?php print render($page['recent_event1_title']); ?>
-		        </div>
-		        <div class="find-palyers float-L">
-		            <?php print render($page['recent_event1_images']); ?>
-		        </div>
-
-		        <div class="float-R w-275">
-		            <?php print render($page['recent_event1_submit']); ?>
-		        </div>
+		    <div class="cont-lft float-L recent-event recent-event-left">
+		            <?php print render($page['recent_event_left']); ?>
 		    </div>
-		    <div class="cont-rig float-R">
-		        <div class="cont-lft-header">
-		            <?php print render($page['recent_event2_title']); ?>
-		        </div>
-		        <div class="find-palyers float-L">
-		            <?php print render($page['recent_event2_images']); ?>
-		        </div>
-		        <div class="float-R w-275">
-		            <?php print render($page['recent_event2_submit']); ?>
-		        </div>
-		    </div>
+		    <div class="cont-rig float-R recent-event recent-event-right">
+		            <?php print render($page['recent_event_right']); ?>
+		     </div>
 		</div>
 		<div class="clr"></div>
 	<?php endif; ?>
     </div>
 
 
-
-    <div class="footer"><!--footer-->
+	<!--Page Footer-->
+    <div class="footer">
 		<div id="link-display" style="display:none;">
 		  <?php print url("feedback", array('absolute'=> TRUE));?>
 		</div>

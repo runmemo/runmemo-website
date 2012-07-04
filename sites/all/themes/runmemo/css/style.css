@@ -364,15 +364,7 @@ float:left;
         position: relative;
         min-height: 245px;
 }
-.cont-lft-header {
-	color:#444;
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:14px;
-	text-align:center;
-	padding-top:20px;
-	padding-bottom:10px;
-	border-bottom:1px solid #dedede;
-}
+
 .find-palyers {
 	margin-left:10px;
 	margin-top:9px;
@@ -927,32 +919,12 @@ margin-bottom:20px;
 
 
 
-
-#number_recent_event1, #number_recent_event2{
-	border: 1px solid #DEE4E7;
-    border-radius: 5px 5px 5px 5px;
-    color: #1A253C;
-    color: #1A253C;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 13px;
-    height: 34px;-webkit-box-shadow: none !important; 
-	-moz-box-shadow: none !important; 
-	box-shadow: none !important;
-    padding: 2px;
-    text-indent: 7px;
-    width: 167px;
-	margin-left:8px;
-}
 #runner_number {
 	  margin-left: 0px!important;
 	  width:184px;
 	}
-#number_recent_event1, #number_recent_event2
-{
-   width:160px!important;
-   line-height:25px;
-   height:25px!important;
-}
+	
+
    /*background: none repeat scroll 0 0 #F5F5F5;
 border: 1px solid #BFBFBF;
     color: #34373A;
@@ -1618,7 +1590,6 @@ text-align:center;
     top: -53px;
 }
 
-/* For Recent event home page */
 .page-runner .content 
 {
     margin-bottom: 20px;
@@ -1633,13 +1604,71 @@ text-align:center;
     -moz-box-shadow:none!important;
     -webkit-box-shadow:none!important;
 }
-.page-runner .content #recent-event1-image div
+
+/* ****************** For Recent event home page ******************* */
+
+.recent-event-images
 {
-  margin-top: 0px;
-  margin-right:10px;
-  margin-left: -4px;
+  margin-left: 4px;
+  float: left;
+  width: 431px;
+  height:176px;
 }
-.page-runner .content #recent-event1-image .form-submit
+
+.region-recent-events .title {
+	color:#444;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:14px;
+	text-align:center;
+	padding-top:20px;
+	padding-bottom:10px;
+	border-bottom:1px solid #dedede;
+}
+
+.region-recent-events img
+{
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right:10px;
+  margin-left: 10px;
+  
+  border-bottom: 1px solid #e0e0e0;
+  border-right : 1px solid #e0e0e0;
+  padding-bottom:2px;
+  padding-right: 2px;
+}
+.region-recent-events form {
+	float:right;
+	width:230px;
+	display:block;
+	padding-bottom:5px;
+}
+.region-recent-events label {
+	/* hide label of the text field*/
+	display:none;
+}
+
+.region-recent-events .form-text {
+	width:100px;
+   	line-height:25px;
+   	height:25px;
+	border: 1px solid #DEE4E7;
+    border-radius: 5px 5px 5px 5px;
+    color: #1A253C;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 13px;
+    -webkit-box-shadow: none !important; 
+	-moz-box-shadow: none !important; 
+	box-shadow: none !important;
+    padding: 2px;
+    text-indent: 7px;
+	margin-right:10px;
+	float:left;
+	
+
+}
+
+.region-recent-events .form-submit
 {
   	margin-top:0px;
 	cursor:pointer;
@@ -1648,30 +1677,7 @@ text-align:center;
     cursor: pointer;
     height: 32px;
     width: 88px;
-}
-.page-runner .content #recent-event1-image .form-submit:hover, .page-runner .content #recent-event2-image .form-submit:hover {
-    background: url("../images/find-btn-hover.png") no-repeat scroll 0 0 transparent;
-}
-
-r-event2
-{
-  float:left;
-  margin-right:10px;
-}
-.page-runner .content #recent-event2-image
-{
-  margin-top:-11px;
-  margin-left: -8px;
-}
-.page-runner .content #recent-event2-image .form-submit
-{
- 	 margin-top:11px;
-	cursor:pointer;
-    background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
-    border: 0 none;
-    cursor: pointer;
-    height: 32px;
-    width: 88px;
+    float:left;
 }
 
 .block .content
@@ -1856,13 +1862,10 @@ text-align:justify;
 .chzn-container .chzn-results li{
   line-height: 18px;
 }
-.page-runner .region-recent-event1-images .view-content, .page-runner .region-recent-event2-images .view-content
-{
-  margin-left: 4px;
-  float: left;
-  width: 431px;
-  height:176px;
-}
+
+
+
+
 #select-event-runner-get-photos label {
     font-family: 'Walkway Bold',Arial,Helvetica,sans-serif;
     font-size: 20px;
@@ -1871,14 +1874,6 @@ text-align:justify;
     position:relative;
     
 }
-
-#recent-event1-image label {
-   display: none;
-}
-#recent-event2-image label {
-   display: none;
-}
-
 
 /* 06:03:12 */
 @font-face {
@@ -2104,12 +2099,7 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
 }
 
 
-.front .region-recent-event1-images img,.front .region-recent-event2-images img{
-  border-bottom: 1px solid #e0e0e0;
-  border-right : 1px solid #e0e0e0;
-  padding-bottom:2px;
-  padding-right: 2px;
-}
+
 
 .page-cart .cart_table table tbody tr td {
   width: 145px;

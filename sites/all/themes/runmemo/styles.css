@@ -1098,6 +1098,9 @@ tr.taxonomy-term-divider-bottom {
 .theme-selector .operations li {
   list-style-image: none;
 }
+.element-invisible {
+	diplay:none;
+	}
 
 /**
  * CSS support

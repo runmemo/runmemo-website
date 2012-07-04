@@ -5,5 +5,5 @@ core = 7.x
 
 files[] = photo_search.module
 files[] = photo_search.views_default.inc
-files[] = event_helper.inc
 files[] = photo_search.js
+dependencies[] = sport_event
