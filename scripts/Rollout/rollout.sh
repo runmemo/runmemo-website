@@ -58,6 +58,8 @@ echo "certificate=${CERT}"
 SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no"
 BACKUP_TIMELIMIT=30
 
+rel=$(git describe --tag)
+
 # Get an ip address
 ip=$(ec2-describe-instances ${INSTANCE} | grep ^INSTANCE | cut -f18)
 if [ -z ${ip} ]; then
@@ -76,7 +78,7 @@ fi
 # * 2. Backup all attached volumes & wait until comlete
 for vol in $(ec2-describe-instances ${INSTANCE} | grep ^BLOCKDEVICE | cut -f3); do
 #   Start snapshot process, get snapshot name
-	snap=$(ec2-create-snapshot ${vol} --description "Backup before rollout >> ${rel} for ${vol}" | cut -f2)
+	snap=$(ec2-create-snapshot ${vol} --description "Backup before rollout new release(${rel}) for ${vol}" | cut -f2)
 	if [ $? -ne 0 ] || [ -z ${snap} ]; then
 		echo "Failed to create a snapshot of a volume(${vol})"
 		exit 1		
@@ -84,8 +86,8 @@ for vol in $(ec2-describe-instances ${INSTANCE} | grep ^BLOCKDEVICE | cut -f3); 
 	
 # 	Wait until backup complete
 	backup_start_at=$(date +%s) 
-	until [ $(ec2-describe-snapshots ${snap} | cut -f2) == "completed" ]; do
-		if [ $(( ( $(date +%s) - $backup_start_at ) / 60 )) >= ${BACKUP_TIMELIMIT} ]; then
+	until [ $(ec2-describe-snapshots ${snap} | cut -f4) == "completed" ]; do
+		if [ $(( ( $(date +%s) - $backup_start_at ) / 60 )) -gt ${BACKUP_TIMELIMIT} ]; then
 			echo "Failed to create a snapshot(${snap}) of a volume(${vol})"
 			echo "Backup killed by timeout(${BACKUP_TIMELIMIT}min)"
 			exit 1					
@@ -133,8 +135,8 @@ cat << EOF
 EOF
 
 # Bring website out of maintenance mode
-#ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush vset --always-set site_offline 0 && drush cc all"
-#if [ $? -ne 0 ]; then
-#	echo "Failed to bring website back"
-#	exit 1
-#fi
+ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd ${SITE_WORKDIR}; drush vset --always-set site_offline 0 && drush cc all"
+if [ $? -ne 0 ]; then
+	echo "Failed to bring website back"
+	exit 1
+fi
