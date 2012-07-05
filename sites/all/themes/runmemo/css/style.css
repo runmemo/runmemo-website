@@ -444,8 +444,8 @@ float:left;
 }
 
 #edit-search{
-float:left;
-margin-top:13px;
+float:right;
+margin-top:15px;
 margin-left:10px;
 }
 #tabs-wrapper{
@@ -707,8 +707,12 @@ display:none;
 
 
 
-/********************HOme Page**********************************************************/
-.front #center .content{
+/******************** Home Page **********************************************************/
+.front .region-content {
+	float:right;
+	}
+	
+.front #center .content {
 	margin-left:20px;
 }
 .front #field-number label, .front #field-event label {
@@ -935,7 +939,7 @@ border: 1px solid #BFBFBF;
 }
 #edit-search:hover
 {
-	background:url(../images/search-hover.png) no-repeat!important;
+	/*background:url(../images/search-hover.png) no-repeat; */
 }
 
 #edit-get-started{
@@ -1317,28 +1321,6 @@ padding-bottom: 10px;
 border-bottom: 1px solid #DEDEDE;
 	
 	}
-
-.node-type-event .region-content{
-	min-width:500px;
-	float:left;
-}
-.node-type-event .region-sidebar-second {
-	width: 300px;
-	}
-.page-node-  .content{
-float:left;
--webkit-box-shadow: none !important; 
-	-moz-box-shadow: none !important; 
-	box-shadow: none !important;
-	min-height:0;
-}
-.page-node- .content .node {
-   /* border: 1px solid #BFBFBF; */
-    margin: 10px auto 0;
-    padding: 10px;
-padding:10px;
-}
-
 @font-face {
 	font-family:'Futura LT Light';
 	src: url('../Futura-LT-Light.ttf');
@@ -1755,7 +1737,7 @@ text-align:justify;
    /*padding:0 0 0px 100px;*/
    height:20px;
 }
-.page-search-result #photo_cost .photo_cost
+.photo_cost, .photo_author
 {
    float:right;
     margin-left:5px;
@@ -1764,19 +1746,12 @@ text-align:justify;
 }
 .page-search-result #photo_author
 {
+   clear:left;
    float:left;
-   margin-right:18px;
    padding:0 0 0px 0;
    height:20px;
 }
-.page-search-result #photo_author .photo_cost
-{
-   float:right;
-    margin-left:5px;
-    color:#ff6600;
-    font-weight:normal;
-    text-align:right;
-}
+
 .page-search-result #search-result-cart
 {
    float:left;
@@ -1871,7 +1846,9 @@ text-align:justify;
 
 
 .page-search-result .summary_selected_photos, .page-search-result .summary_cost {
-  padding-left:10px;
+  float:left;
+  clear:left;
+  padding-left:5px;
   font-weight: normal;
   color: #FF6600;
   font-style: normal!important;
@@ -1921,9 +1898,7 @@ display:none;
 box-shadow: none;
 }
 
-span#photo_cost,span#photo_author{
-font-weight:bold;
-}
+
 #user-register-form div.form-item-field-paypal-id-und-0-value {margin-top:0;}
 ul#edit-file_filelist{
 	*visibility:hidden!important; /* IE 7 (IE6 also uses this, so put it first) */
@@ -2048,7 +2023,7 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
 .cart-block-icon-full, .cart-block-icon-empty {
   float: left;
   height: 18px !important;
-  margin: 2px 6px 0px 0px;
+  margin: 0px 0px 0px 0px;
   width: 29px !important;
 }
 
@@ -2323,7 +2298,7 @@ float: right;
  }
  .page-search-result .cart_summ {
    height: 70px;
-   padding: 10px 0 0 0;
+   padding: 0 0 0 0;
  }
  .page-search-result .cart_summ .shop_cart_title {
    font-weight: bold;
@@ -2338,10 +2313,7 @@ float: right;
    padding-top: 14px;
     width: 203px;
  }
- 
- .page-search-result .cart_summ .summary_item_cost {
-   padding-top: 6px;
- }
+
  /* 28.03.2012 */
  .page-cart-checkout .paymentPane #line-items-div {
    display: none;

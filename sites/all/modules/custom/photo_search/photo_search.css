@@ -47,21 +47,34 @@
     cursor:default;
 }
 
-.page-search-result .content #search-result-cart .proceed_to_cart a
+.proceed_to_cart {
+	float:right;
+	width:  211px;
+		diplay:inline;
+	}
+
+
+.page-search-result .proceed_to_cart a
 {
 	background: transparent url(images/Cart-Summary.png) no-repeat scroll 0px 0px;
 	font-size: 14px;
 	text-align: center;
 	float:right;
+
 	width:211px;
 	height:39px;
-	padding: 0px 0 3px 11px;
+	padding: 0px 0 3px 8px;
 	position: relative;
-	top: -42px;
+	
 }
 .proceed_to_cart a
 {
   color: #34373A;
+}
+
+.summary_item_cost {
+width:150px;
+float:left;
 }
 
 .page-search-result .right-corner

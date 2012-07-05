@@ -1,5 +1,9 @@
 <?php
 
+function sport_event_init() {
+  drupal_add_css(drupal_get_path('module', 'sport_event') . '/sport_event.css');
+}
+
 /**
  *
  * implements hook_block_info()
@@ -59,9 +63,17 @@ function get_recent_event_images_view($nid, $items) {
   $markup ='<div class="recent-event-images">';
   foreach ($products as $product) {
     // get html for the image style
-    $image_file = $product->uc_product_image['und'][0];
-    $img_url = image_style_s3_uri($image_file, $style_name);
-    $markup = $markup . '<img src=' . $img_url . '>';
+    $image= $product->uc_product_image['und'][0];
+    $image_array = array(
+      'style_name' => 'search_thumbnail',
+      'path' => $image['uri'],
+      'width' => '',
+      'height' => '',
+      'alt' => $image['alt'],
+      'title' => $image['title'],
+    );
+   
+    $markup = $markup . theme('image_style',$image_array);
   }
   $markup = $markup . '</div>';
   return $markup;
