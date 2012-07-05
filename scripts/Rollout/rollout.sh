@@ -86,7 +86,7 @@ for vol in $(ec2-describe-instances ${INSTANCE} | grep ^BLOCKDEVICE | cut -f3); 
 	
 # 	Wait until backup complete
 	backup_start_at=$(date +%s) 
-	until [ "$(ec2-describe-snapshots ${snap} | cut -f4)" == "completed" ]; do
+	until [ "$(ec2-describe-snapshots ${snap} | cut -f4)" = "completed" ]; do
 		if [ $(( ( $(date +%s) - $backup_start_at ) / 60 )) -gt ${BACKUP_TIMELIMIT} ]; then
 			echo "Failed to create a snapshot(${snap}) of a volume(${vol})"
 			echo "Backup killed by timeout(${BACKUP_TIMELIMIT}min)"

@@ -47,10 +47,8 @@ margin:0 auto;
 float:left;
 }
 .region-header{
-float:left;
-margin-left:20px;
-/*width:700px;*/
-  margin-top:6px;
+clear:both;
+width:100%
 }
 .region-header .clearfix {
 	clear:right;
@@ -727,8 +725,7 @@ display:none !important;
 }
 .one-sidebar #center .content{
 border:none !important;
-width:415px !important;
-float:left;
+/*width:415px !important; */
 -webkit-box-shadow: none !important; 
 	-moz-box-shadow: none !important; 
 	box-shadow: none !important;
@@ -1306,10 +1303,28 @@ margin-top:20px;
 }
 
 /*************************Events*******************************************/
-.page-node- .region-content{
-float:left;
-width:980px;
+.region-content{
+	float:left;
 }
+
+.region-sidebar-second h2 {
+	color: #444;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 14px;
+text-align: center;
+padding-top: 20px;
+padding-bottom: 10px;
+border-bottom: 1px solid #DEDEDE;
+	
+	}
+
+.node-type-event .region-content{
+	min-width:500px;
+	float:left;
+}
+.node-type-event .region-sidebar-second {
+	width: 300px;
+	}
 .page-node-  .content{
 float:left;
 -webkit-box-shadow: none !important; 
@@ -1480,9 +1495,7 @@ div.messages {
 	border-left:none;
 
 }
-/*.region-header {
-   margin-top:6px;
-}*/
+
 .login-btn-mid span {
    margin-top:1px!important;
 }
@@ -1689,7 +1702,12 @@ text-align:center;
 {
  left: 390px!important;
 }
-.sidebar-second .region-sidebar-second .content
+.region-sidebar-second {
+	float:right;
+	clear:right;
+	}
+
+.region-sidebar-second .content
 {
     box-shadow:none!important;
     -webkit-box-shadow:none!important;
@@ -1712,7 +1730,7 @@ position:relative;
 
 }
 .page-search-result .region-content .content table tr td .views-field-check-box .field-content .node_check{
-float: right;
+	float: right;
     margin-top: -127px;
     position: relative;
     right: 0;
@@ -1862,8 +1880,6 @@ text-align:justify;
 .chzn-container .chzn-results li{
   line-height: 18px;
 }
-
-
 
 
 #select-event-runner-get-photos label {

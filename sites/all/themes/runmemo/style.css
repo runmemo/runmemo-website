@@ -352,6 +352,9 @@ span.form-required {
   min-height: 1em;
   background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;
 }
+.region-header .block {
+  display: block;
+}
 
 .region-header .block {
   display: block;
@@ -364,13 +367,6 @@ span.form-required {
   padding: 0.5em;
   position: relative;
   top: 0.5em;
-}
-
-.region-header * {
-  display: inline;
-  line-height: 1.5em;
-  margin-top: 0;
-  margin-bottom: 0;
 }
 
 /* Prevent the previous directive from showing the content of script elements in Mozilla browsers. */
@@ -545,12 +541,13 @@ body.two-sidebars #squeeze {
   min-height: 400px;
 }
 
-#wrapper #container .region-footer {
+.region-footer {
   float: none;
   clear: both;
-  text-align: center;
-  margin: 4em 0 -3em;
-  color: #898989;
+  /*text-align: center;
+  margin: 4em 0 -3em; */
+  
+  display:block;
 }
 
 #wrapper #container .breadcrumb {
@@ -558,18 +555,6 @@ body.two-sidebars #squeeze {
   top: 15px;
   left: 35px; /* LTR */
   z-index: 3;
-}
-
-body.sidebar-first .region-footer {
-  margin-left: -210px;
-}
-
-body.sidebar-second .region-footer {
-  margin-right: -210px;
-}
-
-body.two-sidebars .region-footer {
-  margin: 0 -210px;
 }
 
 /**
@@ -1253,3 +1238,9 @@ table.system-status-report tr.ok th {
 }
 
 
+/* ************ Event Profile ************** */
+
+#block-views-event-promoted-images-block {
+	diplay:none;
+	
+	}

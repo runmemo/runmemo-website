@@ -349,10 +349,7 @@ span.form-required {
  /* background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;*/
 }
 
-.region-header .block {
-  display: block;
-  margin: 0 1em;
-}
+
 
 .region-header .block-region {
   display: block;
@@ -362,12 +359,6 @@ span.form-required {
   top: 0.5em;
 }
 
-.region-header * {
-  display: inline;
-  line-height: 1.5em;
-  margin-top: 0;
-  margin-bottom: 0;
-}
 
 /* Prevent the previous directive from showing the content of script elements in Mozilla browsers. */
 .region-header script {

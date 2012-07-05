@@ -7,18 +7,17 @@ stylesheets[all][] = styles.css
 stylesheets[print][] = print.css
 settings[garland_width] = fluid
 
-regions[sidebar_first] = Left sidebar
-regions[sidebar_second] = Right sidebar
-regions[content] = Content
 regions[menu] = Main menu
-regions[header] = Header
+regions[header] = Bar above content
+regions[sidebar_first] = Left sidebar
+regions[content] = Content
+regions[sidebar_second] = Right sidebar
 regions[footer] = Footer
 regions[highlighted] = Highlighted
 
 regions[recent_event_left] = Recent Event Left
 regions[recent_event_right] = Recent Event Right
 
-regions[photo_search] = Photo search
 regions[shopping_cart] = Shopping cart
 
 

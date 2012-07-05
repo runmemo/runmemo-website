@@ -6,3 +6,6 @@ core = 7.x
 files[] = sport_event.module
 files[] = sport_event.inc
 files[] = sport_event.field.inc
+files[] = sport_event.install
+
+dependencies[] = user_reference
