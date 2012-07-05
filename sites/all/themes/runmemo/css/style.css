@@ -558,8 +558,8 @@ border: 1px solid #D2D2D2;
     width: 490px;
 margin-bottom:20px;
 }
-#login-links, #login-message,.page-user-register #login-form .description,.page-user .login-forgot{
-display:none !important;
+#login-links, #login-message, #login-form .description,.page-user .login-forgot{
+display:none;
 }
 .page-user #login-form{
 border: 1px solid #D2D2D2;
@@ -664,9 +664,7 @@ padding:0 !important;
 {
     display:none!important;
 }
-#user-register-form #edit-account .description{
-display:none;
-}
+
 #user-register-form .password-strength,#user-register-form .password-confirm{
 display:none;
 }
@@ -1135,9 +1133,17 @@ height:26px;
 background: url("../images/bread.png")repeat-x !important;
 background-position:24px 0!important;
 }
-.page-login .description {
- display:none;
+.page-login #user-register-form .description {
+ font-size:small;
+ float:right; 
+ margin-right:50px;
+ font-style:italic;
+
 }
+
+.page-login  .description {
+display:none;
+}	
 .page-login .content #sign-in-fieldset {
   float:right;
   
@@ -1159,8 +1165,15 @@ border:none !important;
    width:100%;
 }
 .page-login .fieldset-legend {
-   display:none;
+   display:block;
+   color:#94BB17;
+   font-size: 26px;
+   magin-bottom:3px;
 }
+
+#sign-in-fieldset .fieldset-legend {
+	color:#4AB0F8;
+	}
 
 .page-login .login_heading {
   position:relative;
@@ -1195,9 +1208,8 @@ border:none !important;
 margin-right:20px;
 margin-top:0;
 }
-.page-login #user-register-form > div,.page-login #user-login > div{
-margin-top:60px;
-}
+
+
 .page-login #user-register-form #edit-actions--2{
 float:left;
 }
@@ -1230,8 +1242,16 @@ float:right;
 .page-login .option .description {
   display:block!important;
 }
-.page-login #edit-field-term .description {
-  display:block!important;
+
+.page-login #edit-field-paypal-id {
+margin-top:10px;
+margin-bottom:10px;
+}
+
+.page-login #edit-field-term .description, 
+.page-login #edit-field-paypal-id .description	
+{
+  display:block;
 }
 
 .page-login #register-fieldset #edit-actions #edit-submit {
