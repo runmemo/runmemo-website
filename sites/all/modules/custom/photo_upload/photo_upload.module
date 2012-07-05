@@ -1,5 +1,7 @@
 <?php 
 
+module_load_include('inc', 'sport_event', 'sport_event');
+
 /**
  * Init function for adding the external file
  */
@@ -85,11 +87,10 @@ function select_event_function() {
   $form['events_select']['#options'] = array('select_event' => "Select Event");
 
 
-  //select event options from content type 'event'
-  $event_helper_object = new event_helper();
+  
 
   //get the event name from content type 'event'
-  $event_name = $event_helper_object->get_events();
+  $event_name = get_events();
   foreach ($event_name as $event_name_value) {
     $event_title = $event_name_value->title;
     $event_title_nid = $event_name_value->nid;

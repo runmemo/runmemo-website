@@ -318,24 +318,24 @@ function search_result_cart($form, &$form_state) {
   $url = url('cart/checkout');
   // @todo move this html block from here to theme
   $form['cart_summary'] = array('#markup' => 
-   t("<div class='cart_summ'>
+    "<div class='cart_summ'>
   		<div class='summary_item_cost'>
   			<span class='cart-block-icon-full' title='View your shopping cart.'></span>
-			<span class='shop_cart_title'>Shopping Cart</span>
-		</div>
-		<div>
-			<span class='summary_selected_photos'>
-				<span class='placeholder'></span>
-				Items
-				</span>
-				<span class='summary_cost'>Total:&nbsp; " . variable_get('uc_currency_sign') . 
-					"<span class='placeholder'></span>
-				</span>
+			<span class='shop_cart_title'>" . t('Shopping Cart') . "</span>
 		</div>
 		<div class='proceed_to_cart'>
 			<a href='$url'></a>
 		</div>
-	</div>"));
+		<div>
+			<span class='summary_selected_photos'>
+				<span class='placeholder'></span>" 
+				. t('Items') .
+				"</span>
+				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
+					"<span class='placeholder'></span>
+				</span>
+		</div>
+	</div>");
   $form['prev_img_det'] = array('#markup' =>
    t('<div class="cost_auth_det">
   		<span id="photo_cost">Price:<label class="photo_cost">' . variable_get('uc_currency_sign') . '</label>

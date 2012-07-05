@@ -143,10 +143,9 @@ jQuery(document).ready(function() {
 			}
 			
 			function set_cart($cart_json) {
-				var cart = jQuery.parseJSON($cart_json);
-				console.debug(cart);
-				var no_of_items = cart.items.length;
-				var total_cost = cart.total;
+				window.cart = jQuery.parseJSON($cart_json);
+				var no_of_items = window.cart.items.length;
+				var total_cost = window.cart.total;
 
 				set_total_items(no_of_items);
 				$(".summary_cost .placeholder").html(total_cost);
@@ -164,8 +163,8 @@ jQuery(document).ready(function() {
 					set_to_unchecked(nid);						
 				});
 				var nid = 0;
-				for (var i in cart.items) {
-					nid = cart.items[i].nid;
+				for (var i in window.cart.items) {
+					nid = window.cart.items[i].nid;
 					items.push(nid);
 					set_to_checked(nid);
 				}				
@@ -230,7 +229,7 @@ jQuery(document).ready(function() {
 
 				var count_items = items.length;
 				for ( var i = 0; i < items.length; i++) {
-					price = price_of_item(items[i]);
+					price = parseFloat(window.cart.items[i].price);
 					total_price = total_price + price;
 				}
 				set_total_items(items.length);
@@ -261,6 +260,20 @@ jQuery(document).ready(function() {
 			function set_to_checked(nid) {
 				$('#check_' + nid).addClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', true);
+				
+				var match = false;
+				for (var i in window.cart.items) {
+					if (window.cart.items[i].nid == nid) {
+						match = true;
+					}
+				}
+				if (!match) {
+					item = new Object();
+					item.nid = nid;
+					item.price = price_of_item(nid);
+					item.qty = 1;
+					window.cart.items.push(item);
+				}
 				$('#cart_hidden_nids').children('ul').append('<li id="item-' + nid + '">' + nid + '</li>');
 	
 			}
@@ -268,6 +281,13 @@ jQuery(document).ready(function() {
 			function set_to_unchecked(nid) {
 				$('#check_' + nid).removeClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', false);
+				for (var i in window.cart.items) {
+					if (window.cart.items[i].nid == nid) {
+						// remove item from cart;
+						window.cart.items.slice(i,1);
+						console.debug('removing item from local cart');
+					}
+				}
 				$('#cart_hidden_nids ul li#item-' + nid).remove();
 			}
 		
@@ -305,6 +325,16 @@ jQuery(document).ready(function() {
 
 			}
 			
+			
+			
+			function clear_cart() {
+				
+			}
+			
+			/**
+			 * Removes item from cart
+			 * @param nid id of the item
+			 */
 			function remove_from_cart(nid) {
 				set_to_unchecked(nid);
 				if (size_of_the_cart() == 0) {
