@@ -70,14 +70,20 @@ function ocr_enable() {
 
   // Create fields on Product node for.
   foreach (_node_product_ocr_fields() as $field) {
-    field_create_field($field);
+    $field_info = field_info_field($field['field_name']);
+    if(!isset($field_info)) {
+      field_create_field($field);   
+    }
   }
    
   // Create all the instances for our fields on Product node.
   foreach (_node_product_ocr_fields() as $instance) {
-    $instance['entity_type'] = 'node';
-    $instance['bundle'] = 'product';
-    field_create_instance($instance);
+    $field_info = field_info_instance('node', $instance['field_name'], 'product');
+    if(!isset($field_info)) {
+      $instance['entity_type'] = 'node';
+      $instance['bundle'] = 'product';
+      field_create_instance($instance);
+    }
   }
 
 }
