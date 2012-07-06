@@ -1,0 +1,31 @@
+
+.node-type-event .region-content{
+	min-width:500px;
+	float:left;
+}
+.node-type-event .region-sidebar-second {
+	width: 300px;
+	}
+
+.googlemaps {
+	background-image:url(images/googlemaps.png);
+	background-repeat:no-repeat;
+	padding-top: 100px;
+	padding-left: 150px;
+	width:350px;
+	display:block;
+	height:200px;
+	
+	}
+.coming-soon {
+	padding:20px;
+	background-color:#0452A9;
+	font-size:large;
+	width:300px;
+	}
+	
+.coming-soon span {
+	margin-top:10px;
+	color:#eee;
+	font-family:"Comic Sans MS", cursive, sans-serif;
+	}
