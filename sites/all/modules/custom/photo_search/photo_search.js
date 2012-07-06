@@ -64,7 +64,7 @@ jQuery(document).ready(function() {
 			}
 
 			else {
-				$(".page-search-result #sidebar-second .content").hide();
+				$(".region-sidebar-second .content").hide();
 			}
 
 			
