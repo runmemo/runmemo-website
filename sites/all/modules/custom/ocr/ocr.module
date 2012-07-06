@@ -146,8 +146,13 @@ function _add_ocr_pending_nodes_to_queue() {
     // we have to check whether field is null this way
     if (!isset($node->ocr_success[LANGUAGE_NONE]) || is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
       $file = $node->uc_product_image[LANGUAGE_NONE][0];
-      $q = DrupalQueue::get('send_images_to_S3');
-      $q->createItem($file);
+      $file->nid = $nid;
+      if(strpos($file->uri, 's3://') === 0) {
+        _ocr_send_request($file);
+      } else {
+        $q = DrupalQueue::get('send_images_to_S3');
+        $q->createItem($file);
+      }
     }
   }
 }
@@ -175,5 +180,5 @@ function ocr_cron() {
   }
   watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
   // put files that were not processed to the S3 queue ?
-   //_add_ocr_pending_nodes_to_queue();
+   _add_ocr_pending_nodes_to_queue();
 }

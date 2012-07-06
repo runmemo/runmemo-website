@@ -63,7 +63,7 @@ jQuery(document).ready(function() {
 				}
 			}
 
-			else {
+			else { // hide cart details block
 				$(".region-sidebar-second .content").hide();
 			}
 
