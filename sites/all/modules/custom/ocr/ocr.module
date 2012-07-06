@@ -92,9 +92,9 @@ function select_ocrqueue() {
  */
 function select_ocrqueue_submit($form, &$form_state) {
   drupal_set_message(t('Message Queues set Successfully'));
-  $request_queue  = $form_state['values']['requestqueue'];
+  $SqsQueue  = $form_state['values']['requestqueue'];
   $results_queue = $form_state['values']['resultsqueue'];
-  variable_set('ocr-requests-queue', $request_queue);
+  variable_set('ocr-requests-queue', $SqsQueue);
   variable_set('ocr-results-queue', $results_queue);
 }
 
@@ -102,14 +102,18 @@ function select_ocrqueue_submit($form, &$form_state) {
  *
  * Sends message to the requests queue with details specified in $file object.
  * @param object $file - contains details of the image file.
+ * @param iRequestQueue $queue
  */
-function _ocr_send_request ($file) {
+function _ocr_send_request ($file, $queue = NULL) {
   // sending message to OCR for an uploaded image
-  $requestsQueueURL  = variable_get('ocr_requests_queue_url');
+  if(!$queue) {
+    $requestsQueueURL  = variable_get('ocr_requests_queue_url');
+    $queue = new SqsQueue($requestsQueueURL);
+  } 
+  
   $resultsQueueURL = variable_get('ocr_results_queue_url');
   $bucket = variable_get('image-store-bucket');
 
-  $queue = new request_queue($requestsQueueURL);
 
   //create message
   $message_arr = array(
@@ -126,9 +130,9 @@ function _ocr_send_request ($file) {
 
 /**
  * 
- * Adds nodes pending OCR to the queue for S3
+ * Adds nodes pending OCR to the queue.
  */
-function _add_ocr_pending_nodes_to_queue() {
+function _queue_nodes_pending_ocr($queue = NULL) {
   $query = new EntityFieldQuery();
 
   $query->entityCondition('entity_type', 'node', '=')
@@ -145,14 +149,15 @@ function _add_ocr_pending_nodes_to_queue() {
     // because fieldCondition does not allow to check for NULL values
     // we have to check whether field is null this way
     if (!isset($node->ocr_success[LANGUAGE_NONE]) || is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
+      
       $file = $node->uc_product_image[LANGUAGE_NONE][0];
-      $file->nid = $nid;
-      if(strpos($file->uri, 's3://') === 0) {
-        _ocr_send_request($file);
-      } else {
-        $q = DrupalQueue::get('send_images_to_S3');
-        $q->createItem($file);
+      $file['nid'] = $nid;
+      $file_obj = (object) $file;
+      if(strpos($file['uri'], 's3://') !== 0) {
+        // file is not in s3 so need to send it there
+         _send_file_to_s3($file_obj);
       }
+      _ocr_send_request($file_obj, $queue);
     }
   }
 }
@@ -163,7 +168,7 @@ function _add_ocr_pending_nodes_to_queue() {
  */
 function ocr_cron() {
   $queueURL= variable_get('ocr_results_queue_url');
-  $queue = new response_queue($queueURL);
+  $queue = new SqsQueue($queueURL);
   $message_counter = 0;
   while ($message = $queue->getMessage()) {
     $message_counter++;
@@ -180,5 +185,5 @@ function ocr_cron() {
   }
   watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
   // put files that were not processed to the S3 queue ?
-   _add_ocr_pending_nodes_to_queue();
+  _queue_nodes_pending_ocr();
 }
