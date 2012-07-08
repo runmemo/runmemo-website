@@ -53,7 +53,6 @@ function photo_search_permission() {
       'search photos' => array(
       'title' => t('Search photos'),
       'description' => t('Search photos'),
-      'restrict access' => TRUE
   ),
 
   );
