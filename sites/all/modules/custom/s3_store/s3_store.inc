@@ -6,6 +6,8 @@
 
 module_load_include('inc', 'amazon_s3', 's3');
 
+// @todo Need to write a fake class that can be injected in tests.
+
 /**
  * Represents a class that moves file from local folder to S3 bucket
  */

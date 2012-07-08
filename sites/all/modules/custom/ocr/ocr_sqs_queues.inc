@@ -67,7 +67,7 @@ class SqsQueue implements SqsQueueInterface {
       $this->getMessages();
     }
     if (count($this->messages) == 0) { // SQS queue is empty
-      return NULL;
+      return FALSE;
     }
     // get message from array
     $message = array_shift($this->messages);
@@ -135,26 +135,36 @@ class FakeSqsQueueMessage {
     return $this->id;
   }
 }
-
+/**
+ * 
+ * Class fakes SQS Queue by wrapping MemoryQueue to store and retrieve messages
+ * @author Bulat Yapparov
+ *
+ */
 class FakeSqsQueue implements SqsQueueInterface {
   private $queue;
   public function __construct($queueName) {
-    $queue = new MemoryQueue($queueName);   
+    $this->queue = new MemoryQueue($queueName);   
   }
   public function getMessage()
   {
     $item = $this->queue->claimItem(10);
-    $message = new FakeSqsQueueMessage($message,$item->$item_id);
+    debug($item,'got item from the FakeSqsQueue');
+    if(!$item) {
+      return FALSE;
+    }
+    $message = new FakeSqsQueueMessage($item->data ,$item->item_id);
     return $message;
   }
   public function sendMessage($message) {
-    $queue->createItem($message);
+    debug($message, 'Putting message to FakeSqsQueue');
+    $this->queue->createItem($message);
   }
   public function deleteMessage($message) {
    
     $item = new stdClass();
     $item->item_id = $message->GetID();
-    $queue->deleteItem($item);
+    $this->queue->deleteItem($item);
   }
 }
 

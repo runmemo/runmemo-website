@@ -62,16 +62,33 @@ function ocr_schema() {
                 'primary key' => array('nid', 'number'),
   );
 }
+/** 
+ * 
+ * Implements hook_install		
+ */
+function ocr_install() {
+  _add_ocr_fields();
+}
 
+/**
+ * 
+ * Implements hook_enable
+ */
 function ocr_enable() {
   // Set variables for response queues
   variable_set('ocr_responsequeue', variable_get('ocr-results-queue'));
   variable_set('ocr_requestqueue' , variable_get('ocr-requests-queue'));
 
-  // Create fields on Product node for.
+   _add_ocr_fields();
+ 
+}
+
+function _add_ocr_fields() {
+   // Create fields on Product node for.
   foreach (_node_product_ocr_fields() as $field) {
     $field_info = field_info_field($field['field_name']);
     if(!isset($field_info)) {
+     // debug($field, 'creating field');
       field_create_field($field);   
     }
   }
@@ -82,10 +99,10 @@ function ocr_enable() {
     if(!isset($field_info)) {
       $instance['entity_type'] = 'node';
       $instance['bundle'] = 'product';
+      // debug($instance, 'creating instance');
       field_create_instance($instance);
     }
   }
-
 }
 
 /**
@@ -97,11 +114,11 @@ function _node_product_ocr_fields() {
   $t = get_t();
   return array(
     'node_product_numbers' => array(
-    'field_name' => 'ocr_numbers',
-    'cardinality' => 10,
-    'type' => 'number_integer',
-    'size' => 'normal',
-  ),
+      'field_name' => 'ocr_numbers',
+      'cardinality' => 10,
+      'type' => 'number_integer',
+      'size' => 'normal',
+    ),
     'node_product_ocr_status' => array(
   //'active' => '1',
       'field_name'  => 'ocr_success',

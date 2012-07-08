@@ -104,9 +104,9 @@ function select_ocrqueue_submit($form, &$form_state) {
  * @param object $file - contains details of the image file.
  * @param iRequestQueue $queue
  */
-function _ocr_send_request ($file, $queue = NULL) {
+function _ocr_send_request ($file, SqsQueueInterface $queue = NULL) {
   // sending message to OCR for an uploaded image
-  if(!$queue) {
+  if(is_null($queue)) {
     $requestsQueueURL  = variable_get('ocr_requests_queue_url');
     $queue = new SqsQueue($requestsQueueURL);
   } 
@@ -132,9 +132,9 @@ function _ocr_send_request ($file, $queue = NULL) {
  * 
  * Adds nodes pending OCR to the queue.
  */
-function _queue_nodes_pending_ocr($queue = NULL) {
+function _queue_nodes_pending_ocr(SqsQueueInterface $queue = NULL, $dummy = FALSE) {
+  
   $query = new EntityFieldQuery();
-
   $query->entityCondition('entity_type', 'node', '=')
   ->entityCondition('bundle', 'product')
   ->propertyCondition('status', 1, '=');
@@ -149,15 +149,23 @@ function _queue_nodes_pending_ocr($queue = NULL) {
     // because fieldCondition does not allow to check for NULL values
     // we have to check whether field is null this way
     if (!isset($node->ocr_success[LANGUAGE_NONE]) || is_null($node->ocr_success[LANGUAGE_NONE][0]['value'])) {
+     
+      $image_field = field_get_items('node', $node, 'uc_product_image', LANGUAGE_NONE);
+      if(!$image_field) {
+        watchdog('OCR Info', 'Product node does not have an image, nid =' . $node->nid . '.', array(), WATCHDOG_NOTICE);
+        return 0;
+      }
       
-      $file = $node->uc_product_image[LANGUAGE_NONE][0];
+      // Make $file object with nid
+      $file = $image_field[0];
       $file['nid'] = $nid;
       $file_obj = (object) $file;
+    
       if(strpos($file['uri'], 's3://') !== 0) {
         // file is not in s3 so need to send it there
-         _send_file_to_s3($file_obj);
-      }
-      _ocr_send_request($file_obj, $queue);
+        _send_file_to_s3($file_obj, $dummy);
+      }   
+      _ocr_send_request($file_obj, $queue);  
     }
   }
 }
@@ -185,5 +193,5 @@ function ocr_cron() {
   }
   watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
   // put files that were not processed to the S3 queue ?
-  _queue_nodes_pending_ocr();
+  // _queue_nodes_pending_ocr();
 }

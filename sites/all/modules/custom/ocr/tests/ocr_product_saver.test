@@ -29,34 +29,22 @@ class OcrProductSaverTest extends DrupalWebTestCase {
     $this->testNode = product_node_creator::getNewProductNode();
 
   }
-
+  
   /**
-   *
-   * Test that OCR Success status is saved correctly by the ProductNodeSaver.
+   * 
+   * Dummy function added to get test going.
    */
-  function testSuccessStatusSavedOnTheNode() {
-
-    $productSaver = new ProductNodeSaver($this->testNode->nid);
-    $ocr_status = 1;
-
-    // Set the status to TRUE and save the changes
-    $productSaver->SetOcrStatus(TRUE);
-    $productSaver->Save();
-
-    $node = node_load($this->testNode->nid);
-    // get the value of the field
-    $saved_ocr_status = field_get_items('node', $node, 'ocr_success', $node->language);
-    // $saved_ocr_status = $productSave->GetOcrStatus();
-
-    $this->assertEqual($saved_ocr_status[0]['value'], $ocr_status, 'OCR Success=True is saved to the database.');
-
-
+  function testOcrModuleCreatedFields() {
+    
+    $field_info = field_info_instance('node', 'ocr_success', 'product');
+    $this->assertNotNull($field_info, 'Field instance was created - ocr_success.');
   }
-
-  /**
+  
+ /**
    * Function to test that numbers are saved to the node correctly by ProductNodeSaver.
    */
   function testNumbersAddedToTheProductNode() {
+    
     $productSaver = new ProductNodeSaver($this->testNode->nid);
     // array of test nunbers that we will try to add to the node.
     $numbers = array(10, 15, 20, 1000, 34000, 100000);
@@ -85,5 +73,31 @@ class OcrProductSaverTest extends DrupalWebTestCase {
     $this->assertEqual($count_matches, count($numbers), 'OCR numbers are saved correctly to Product node by ProductNodeSaver. Matches = ' . $count_matches . ' out of ' . count($numbers));
      
   }
+
+  /**
+   *
+   * Test that OCR Success status is saved correctly by the ProductNodeSaver.
+   */
+  function testSuccessStatusSavedOnTheNode() {
+    
+    $productSaver = new ProductNodeSaver($this->testNode->nid);
+    $ocr_status = 1;
+
+    // Set the status to TRUE and save the changes
+    $productSaver->SetOcrStatus(TRUE);
+    $productSaver->Save();
+
+    $node = node_load($this->testNode->nid);
+   // debug($node, 'node');
+    // get the value of the field
+    $saved_ocr_status = field_get_items('node', $node, 'ocr_success', $node->language);
+    // $saved_ocr_status = $productSave->GetOcrStatus();
+    debug($saved_ocr_status[0]['value']);
+    $this->assertEqual($saved_ocr_status[0]['value'], $ocr_status, 'OCR Success=True is saved to the database.');
+
+
+  }
+
+ 
 
 }
