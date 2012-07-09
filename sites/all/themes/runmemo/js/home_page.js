@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-	$('#runner_number').val('My Number');
+	$('.front #runner_number').val('My Number');
 	$('.recent-event .form-text').val('My Number');
 });
 
@@ -7,22 +7,22 @@ jQuery(document).ready(function($) {
  * jQuery Behaviors for home page elements
  */
 (function($) {
-	Drupal.behaviors.runmemo = {
+	Drupal.behaviors.runmemoHomePage = {
 		attach : function(context, settings) {
 			
 			// runner number in the find section for front page
-			$('#runner_number').focus( function() {
+			$('.front #runner_number').focus( function() {
 				if ($(this).val() == 'My Number') {
 					$(this).val("");
 				}
 			});
-			$('#runner_number').blur( function() {
+			$('.front #runner_number').blur( function() {
 				if ($(this).val() == '') {
 					$(this).val('My Number');
 				}
 			});
 
-			$('#runner_number').change( function() {
+			$('.front #runner_number').change( function() {
 				if ($(this).val() == '') {
 					$(this).val('My Number');
 				}
