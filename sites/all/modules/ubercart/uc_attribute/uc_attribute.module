@@ -248,9 +248,11 @@ function uc_attribute_theme() {
   return array(
     'uc_attribute_option' => array(
       'variables' => array('option' => '', 'price' => ''),
+      'file' => 'uc_attribute.theme.inc',
     ),
     'uc_attribute_add_to_cart' => array(
       'render element' => 'form',
+      'file' => 'uc_attribute.theme.inc',
     ),
     'uc_object_attributes_form' => array(
       'render element' => 'form',
@@ -317,7 +319,7 @@ function uc_attribute_module_implements_alter(&$implementations, $hook) {
 function uc_attribute_uc_form_alter(&$form, &$form_state, $form_id) {
   if (strpos($form_id, 'add_to_cart_form') || $form_id == 'uc_order_add_product_form') {
     $node =& $form['node']['#value'];
-    // If the node has a product list, add attributes to them
+    // If the node has a product list, add attributes to them.
     if (isset($form['products']) || isset($form['sub_products'])) {
       if (isset($form['products'])) {
         $element = &$form['products'];
@@ -475,13 +477,16 @@ function uc_attribute_uc_order_product_alter(&$product, $order) {
   // Convert the attribute and option ids to their current names. This
   // preserves the important data in case the attributes or options are
   // changed later.
-  if (!empty($product->data['attributes']) && is_numeric(array_shift(array_keys($product->data['attributes'])))) {
-    $attributes = array();
-    $options = _uc_cart_product_get_options($product);
-    foreach ($options as $aid => $option) {
-      $attributes[$option['attribute']][$option['oid']] = $option['name'];
+  if (!empty($product->data['attributes'])) {
+    $attributes_keys = array_keys($product->data['attributes']);
+    if (is_numeric(array_shift($attributes_keys))) {
+      $attributes = array();
+      $options = _uc_cart_product_get_options($product);
+      foreach ($options as $aid => $option) {
+        $attributes[$option['attribute']][$option['oid']] = $option['name'];
+      }
+      $product->data['attributes'] = $attributes;
     }
-    $product->data['attributes'] = $attributes;
   }
 }
 
@@ -552,7 +557,7 @@ function uc_attribute_uc_product_description($product) {
   $desc =& $description['attributes'];
 
   // Cart version of the product has numeric attribute => option values so we
-  // need to retrieve the right ones
+  // need to retrieve the right ones.
   $weight = 0;
   if (empty($product->order_id)) {
     foreach (_uc_cart_product_get_options($product) as $option) {
@@ -823,7 +828,7 @@ function uc_attribute_option_delete($oid) {
   // Delete the class attribute options.
   uc_attribute_subject_option_delete($oid, 'class');
 
-  // Delete the product attribute options. (and the adjustments!)
+  // Delete the product attribute options (and the adjustments!).
   uc_attribute_subject_option_delete($oid, 'product');
 
   // Delete base attributes and their options.
@@ -1228,7 +1233,8 @@ function _uc_cart_product_get_options($item) {
  * @see theme_uc_attribute_add_to_cart()
  */
 function _uc_attribute_alter_form($product) {
-  // Prevent infinite recursion because we call node_view() below to get the display prices.
+  // Prevent infinite recursion because we call node_view() below to get the
+  // display prices.
   $skip_flag = array('display_only' => TRUE);
 
   // If the product doesn't have attributes, return the form as it is.
@@ -1254,7 +1260,7 @@ function _uc_attribute_alter_form($product) {
     foreach ($attribute->options as $option) {
       $display_price = '';
       if (in_array($attribute->aid, $priced_attributes)) {
-        $variant = node_view(uc_product_load_variant($product->nid, $skip_flag + array('attributes' => array($attribute->aid => $option->oid))));
+        $variant = node_view(uc_product_load_variant($product->nid, $skip_flag + array('attributes' => array($attribute->aid => $option->oid))), 'teaser');
         switch (variable_get('uc_attribute_option_price_format', 'adjustment')) {
           case 'total':
             if (count($priced_attributes) == 1 && $attribute->display != 3) {
@@ -1262,7 +1268,7 @@ function _uc_attribute_alter_form($product) {
               break;
             }
           case 'adjustment':
-            $base = node_view(uc_product_load_variant($product->nid, $skip_flag));
+            $base = node_view(uc_product_load_variant($product->nid, $skip_flag), 'teaser');
             $adjustment = $variant['display_price']['#value'] - $base['display_price']['#value'];
             if ($adjustment != 0) {
               $display_price = $adjustment > 0 ? '+' : '-';
@@ -1286,6 +1292,7 @@ function _uc_attribute_alter_form($product) {
         }
         $attribute->default_option = '';
       }
+      $attr_type = '';
       switch ($attribute->display) {
         case 1:
           $attr_type = 'select';
@@ -1358,54 +1365,6 @@ function uc_attribute_priced_attributes($nid) {
   $aids = db_query("SELECT DISTINCT (pa.aid) FROM {uc_product_attributes} AS pa INNER JOIN {uc_attribute_options} AS ao ON ao.aid = pa.aid INNER JOIN {uc_product_options} AS po ON (po.oid = ao.oid AND po.nid = pa.nid) WHERE pa.nid = :nid AND po.price <> :price AND pa.display <> :display", array(':nid' => $nid, ':price' => 0, ':display' => 0))->fetchCol();
 
   return $aids;
-}
-
-/**
- * Displays an attribute option with an optional total or adjustment price.
- *
- * @param $variables
- *   An associative array containing:
- *   - option: The option name.
- *   - price: The price total or adjustment, if any.
- *
- * @see _uc_attribute_alter_form()
- * @ingroup themeable
- */
-function theme_uc_attribute_option($variables) {
-  $output = $variables['option'];
-  if ($variables['price']) {
-    $output .= ', ' . $variables['price'];
-  }
-  return $output;
-}
-
-/**
- * Displays the attribute selection form elements.
- *
- * @param $variables
- *   An associative array containing:
- *   - form: A render element representing the form.
- *
- * @see _uc_attribute_alter_form()
- * @ingroup themeable
- */
-function theme_uc_attribute_add_to_cart($variables) {
-  $form = $variables['form'];
-
-  $output = '<div class="attributes">';
-  $stripes = array('even' => 'odd', 'odd' => 'even');
-  $parity = 'even';
-  foreach (element_children($form) as $aid) {
-    $parity = $stripes[$parity];
-    $classes = array('attribute', 'attribute-' . $aid, $parity);
-    $output .= '<div class="' . implode(' ', $classes) . '">';
-    $output .= drupal_render($form[$aid]);
-    $output .= '</div>';
-  }
-
-  $output .= drupal_render_children($form) . '</div>';
-
-  return $output;
 }
 
 /**

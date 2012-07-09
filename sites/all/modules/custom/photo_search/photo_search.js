@@ -6,7 +6,7 @@ jQuery(document).ready(function() {
  * Function to generate preview in search results
  */
 (function($) {
-	Drupal.behaviors.runmemo = {
+	Drupal.behaviors.runmemoSearchPage = {
 
 		attach : function(context, settings) {
 

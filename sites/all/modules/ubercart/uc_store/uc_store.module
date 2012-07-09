@@ -10,8 +10,7 @@
  */
 
 /**
- * Unit conversion constants, used by the unit conversion functions
- * uc_weight_conversion() and uc_length_conversion().
+ * Weight unit conversion constants, used by uc_weight_conversion().
  */
 
 /** Converts kilograms to kilograms. */
@@ -49,6 +48,11 @@ define('OZ_TO_LB', 0.0625);
 define('OZ_TO_KG', 0.028349523);
 /** Converts ounces to grams. */
 define('OZ_TO_G',  28.349523125);
+
+
+/**
+ * Length unit conversion constants, used by uc_length_conversion().
+ */
 
 /** Converts inches to inches. */
 define('IN_TO_IN', 1);
@@ -326,7 +330,8 @@ function uc_store_process_address_field($element, $form_state) {
 
   // Force the selected country to a valid one, so the zone dropdown matches.
   if (isset($value[$prefix . 'country']) && !isset($countries[$value[$prefix . 'country']])) {
-    $value[$prefix . 'country'] = reset(array_keys($countries));
+    $country_keys = array_keys($countries);
+    $value[$prefix . 'country'] = $country_keys[0];
   }
 
   // Iterating on the UcAddress object excludes non-public properties, which
@@ -502,6 +507,7 @@ function uc_store_theme() {
   return array(
     'uc_store_footer' => array(
       'variables' => array('message' => ''),
+      'file' => 'uc_store.theme.inc',
     ),
     'uc_store_address_fields_form' => array(
       'render element' => 'form',
@@ -509,21 +515,26 @@ function uc_store_theme() {
     ),
     'uc_pane_sort_table' => array(
       'render element' => 'form',
+      'file' => 'uc_store.theme.inc',
     ),
     'tapir_table' => array(
       'render element' => 'element',
     ),
     'uc_price' => array(
       'variables' => array('price' => 0, 'suffixes' => array()),
+      'file' => 'uc_store.theme.inc',
     ),
     'uc_qty_label' => array(
       'variables' => array(),
+      'file' => 'uc_store.theme.inc',
     ),
     'uc_qty' => array(
       'variables' => array('qty' => 1),
+      'file' => 'uc_store.theme.inc',
     ),
     'uc_uid' => array(
       'variables' => array('uid' => 0),
+      'file' => 'uc_store.theme.inc',
     ),
   );
 }
@@ -624,7 +635,7 @@ function uc_store_page_alter(&$page) {
   switch ($parts[0]) {
     case 'admin':
       // No footer on /admin or /admin/*.
-      // But add a footer on /admin/store and /admin/store/*
+      // But add a footer on /admin/store and /admin/store/*.
       if (!isset($parts[1]) || $parts[1] != 'store') {
         return;
       }
@@ -666,6 +677,7 @@ function uc_store_page_alter(&$page) {
     '#message' => $messages[$id],
   );
 }
+
 /**
  * Implements hook_reviews().
  *
@@ -691,64 +703,6 @@ function uc_store_reviews() {
 }
 
 /**
- * Displays a price in the standard format and with consistent markup.
- *
- * @param $variables
- *   An associative array containing:
- *   - price: A numerical price value.
- *   - suffixes: An array of suffixes to be attached to this price.
- *
- * @ingroup themeable
- */
-function theme_uc_price($variables) {
-  $output = '<span class="uc-price">' . uc_currency_format($variables['price']) . '</span>';
-  if (!empty($variables['suffixes'])) {
-    $output .= '<span class="price-suffixes">' . implode(' ', $variables['suffixes']) . '</span>';
-  }
-  return $output;
-}
-
-/**
- * Displays "Quantity" abbreviated as "Qty".
- *
- * @ingroup themeable
- */
-function theme_uc_qty_label() {
-  return '<abbr title="' . t('Quantity') . '">' . t('Qty') . '</abbr>';
-}
-
-/**
- * Displays a quantity.
- *
- * @param $variables
- *   An associative array containing:
- *   - qty: The quantity to display.
- *
- * @ingroup themeable
- */
-function theme_uc_qty($variables) {
-  return $variables['qty'] . ' ×';
-}
-
-/**
- * Displays a username in the standard format and with consistent markup.
- *
- * @param $variables
- *   An associative array containing:
- *   - uid: A user ID value.
- *
- * @ingroup themeable
- */
-function theme_uc_uid($variables) {
-  if ($variables['uid']) {
-    return theme('username', array('account' => user_load($variables['uid'])));
-  }
-  else {
-    return '-';
-  }
-}
-
-/**
  * Returns the default store footer options.
  */
 function _uc_store_footer_options() {
@@ -759,19 +713,6 @@ function _uc_store_footer_options() {
     3 => t('Supported by Ubercart, an <a href="!url">open source e-commerce suite</a>.', $url),
     4 => t('Powered by Ubercart, the <a href="!url">free shopping cart software</a>.', $url),
   );
-}
-
-/**
- * Wraps the footer in a div so it can be re-styled.
- *
- * @param $variables
- *   An associative array containing:
- *   - message: String containing footer text.
- *
- * @ingroup themeable
- */
-function theme_uc_store_footer($variables) {
-  return '<div id="store-footer">' . $variables['message'] . '</div>';
 }
 
 /**
@@ -895,12 +836,11 @@ function uc_store_get_icon($path, $small = FALSE, $class = 'uc-store-icon', $alt
     $file .= '_small';
   }
 
-  $alt = ' alt="' . (string) $alt . '"';
-
-  $output = '<img src="' . base_path() . drupal_get_path('module', 'uc_store')
-           . '/images/' . $file . '.gif" class="' . $class . '"' . $alt . ' />';
-
-  return $output;
+  return theme('image', array(
+    'path' => drupal_get_path('module', 'uc_store') . '/images/' . $file . '.gif',
+    'alt' => $alt,
+    'attributes' => array('class' => array($class)),
+  ));
 }
 
 /**
@@ -1466,7 +1406,8 @@ function uc_select_address($uid, $type = 'billing', $onchange = '', $title = NUL
   $options = array('0' => t('Select one...'));
   foreach ($addresses as $key => $address) {
     $option = $address['street1'];
-    // Check if the address is a duplicate (i.e. same address, but sent to different person)
+    // Check if the address is a duplicate (i.e. same address, but sent to
+    // different person).
     if ((isset($addresses[$key - 1]) && $option == $addresses[$key - 1]['street1']) ||
         (isset($addresses[$key + 1]) && $option == $addresses[$key + 1]['street1'])) {
       $option .= ' - ' . $address['first_name'] . ' ' . $address['last_name'];
@@ -1503,7 +1444,8 @@ function uc_select_addresses($uid, $type = 'billing') {
   $options = array(-1 => t('Select one...'));
   foreach ($addresses as $key => $address) {
     $option = $address['street1'];
-    // Check if the address is a duplicate (i.e. same address, but sent to different person)
+    // Check if the address is a duplicate (i.e. same address, but sent to
+    // different person).
     if ((isset($addresses[$key - 1]) && $option == $addresses[$key - 1]['street1']) ||
         (isset($addresses[$key + 1]) && $option == $addresses[$key + 1]['street1'])) {
       $option .= ' - ' . $address['first_name'] . ' ' . $address['last_name'];
@@ -1628,40 +1570,6 @@ function uc_get_message($message_id) {
 }
 
 /**
- * Themes a pane sorting form into a table.
- *
- * @param $variables
- *   An associative array containing:
- *   - form: A render element representing the form.
- *
- * @ingroup themeable
- */
-function theme_uc_pane_sort_table($variables) {
-  $form = $variables['form'];
-  $prefix = $form['#pane_prefix'];
-
-  $attributes = array();
-  if (isset($form['#draggable'])) {
-    $attributes['id'] = $form['#draggable'] . '-table';
-    drupal_add_tabledrag($form['#draggable'] . '-table', 'order', 'sibling', $form['#draggable']);
-  }
-
-  $header = array(t('Pane'), t('List position'));
-
-  foreach (element_children($form) as $pane_id) {
-    $rows[] = array(
-      'data' => array(
-        drupal_render($form[$pane_id][$prefix . '_' . $pane_id . '_enabled']),
-        drupal_render($form[$pane_id][$prefix . '_' . $pane_id . '_weight']),
-      ),
-      'class' => array('draggable'),
-    );
-  }
-
-  return theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => $attributes)) . '<br />';
-}
-
-/**
  * Returns the store name if set, or the site name otherwise.
  */
 function uc_store_name() {
@@ -1726,11 +1634,11 @@ function uc_store_email_from() {
  *   The text string to convert to a RFC 2822 quoted string.
  */
 function uc_store_rfc2822_display_name($name) {
-  // Base64 encode $name string if it contains non-ASCII characters
+  // Base64 encode $name string if it contains non-ASCII characters.
   $name = mime_header_encode($name);
-  // From RFC2822, section 3.4.2, define valid characters for an atom
+  // From RFC2822, section 3.4.2, define valid characters for an atom.
   $valid_chars = "[a-zA-Z0-9\!\#\$\%\&\'\*\+\-\/\=\?\^\_\`\{\|\}\~]";
-  // Display name is composed of 0 or more atoms separated by white space
+  // Display name is composed of 0 or more atoms separated by white space.
   if (!preg_match("/^(${valid_chars}*[ \t]*)*$/", $name)) {
     return '"' . addcslashes($name, '"') . '"';
   }

@@ -78,9 +78,11 @@ function uc_quote_theme() {
     ),
     'uc_cart_pane_quotes' => array(
       'render element' => 'form',
+      'file' => 'uc_quote.theme.inc',
     ),
     'uc_quote_returned_rates' => array(
       'render element' => 'form',
+      'file' => 'uc_quote.theme.inc',
     ),
   );
 }
@@ -224,7 +226,7 @@ function uc_quote_form_alter(&$form, &$form_state, $form_id) {
     $form['shipping']['shipping_address'] = array(
       '#type' => 'fieldset',
       '#title' => t('Default product pickup address'),
-      '#description' => t('When delivering products to customers, the original location of the product must be known in order to accurately quote the shipping cost and set up a delivery. If this pickup address is left blank, this product will default to the <a href="!url">store pickup address</a>.', array('!url' => url('admin/store/settings/quotes'))),
+      '#description' => t('When delivering products to customers, the original location of the product must be known in order to accurately quote the shipping cost and set up a delivery. If this pickup address is left blank, this product will default to the <a href="!url">store pickup address</a>.', array('!url' => url('admin/store/settings/quotes/settings'))),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#weight' => -6,
@@ -250,7 +252,7 @@ function uc_quote_form_uc_cart_checkout_form_alter(&$form, &$form_state) {
   if (isset($form['panes']['delivery']['select_address'])) {
     $form['panes']['delivery']['select_address']['#ajax']['callback'] = 'uc_quote_select_address';
   }
-  // @todo: Figure out what needs to be done when the copy-address box is checked.
+  // @todo: Figure out what needs to be done when copy-address box is checked.
 
   if (isset($form['panes']['payment']['line_items'])) {
     $form['panes']['quotes']['quotes']['quote_option']['#ajax'] = array(
@@ -297,8 +299,9 @@ function uc_quote_process_checkout_address($element, $form_state) {
   if (isset($element['delivery_postal_code'])) {
     $element['delivery_postal_code']['#ajax'] = $ajax;
   }
-  // The following replaces "uc_store_process_address_field" from uc_store, with a wrapper that will
-  // update the available quotes when the country is changed.
+  // The following replaces "uc_store_process_address_field" from uc_store
+  // with a wrapper that will update the available quotes when the country
+  // is changed.
   if (isset($element['delivery_country'])) {
     $element['delivery_country']['#ajax']['callback'] = 'uc_quote_country_change_wrapper';
   }
@@ -528,8 +531,7 @@ function uc_quote_get_default_shipping_address($nid) {
 function uc_cart_pane_quotes($form, &$form_state, $items) {
   global $user;
 
-  $order = new UcOrder();
-  $order->uid = $user->uid;
+  $order = new UcOrder($user->uid);
   $order->delivery_country = isset($form_state['values']['delivery_country']) ? $form_state['values']['delivery_country'] : uc_store_default_country();
   $order->delivery_zone = isset($form_state['values']['delivery_zone']) ? $form_state['values']['delivery_zone'] : '';
   $order->delivery_postal_code = isset($form_state['values']['delivery_postal_code']) ? $form_state['values']['delivery_postal_code'] : '';
@@ -585,24 +587,6 @@ function uc_cart_pane_quotes($form, &$form_state, $items) {
   );
 
   return $form;
-}
-
-/**
- * Displays the formatted quote cart pane.
- *
- * @param $variables
- *   An associative array containing:
- *   - form: A render element representing the form.
- *
- * @ingroup themeable
- */
-function theme_uc_cart_pane_quotes($variables) {
-  $form = $variables['form'];
-
-  $output = '<p class="quote-title">' . t('Estimated shipping cost:') . '</p>';
-  $output .= drupal_render_children($form);
-
-  return $output;
 }
 
 /**
@@ -665,13 +649,25 @@ function uc_checkout_pane_quotes($op, &$order, $form = NULL, &$form_state = NULL
 
     case 'prepare':
     case 'process':
-      if (isset($form_state['values']['panes']['quotes']['quotes']['quote_option'])) {
+      // If a quote was explicitly selected, add it to the order.
+      if (isset($form['panes']['quotes']['quotes']['quote_option']['#value']) && isset($form['panes']['quotes']['quotes']['quote_option']['#default_value'])
+          && $form['panes']['quotes']['quotes']['quote_option']['#value'] !== $form['panes']['quotes']['quotes']['quote_option']['#default_value']) {
         $quote_option = explode('---', $form_state['values']['panes']['quotes']['quotes']['quote_option']);
         $order->quote['method'] = $quote_option[0];
         $order->quote['accessorials'] = $quote_option[1];
-        // Ensure that the form builder uses the default value to decide which radio button should be selected.
-        unset($form_state['input']['panes']['quotes']['quotes']['quote_option']);
+        $order->data['uc_quote_selected'] = TRUE;
       }
+
+      // If the current quote was never explicitly selected, discard it and
+      // use the default.
+      if (empty($order->data['uc_quote_selected'])) {
+        unset($order->quote);
+      }
+
+      // Ensure that the form builder uses the default value to decide which
+      // radio button should be selected.
+      unset($form_state['input']['panes']['quotes']['quotes']['quote_option']);
+
       $order->quote_form = uc_quote_build_quote_form($order, !empty($form_state['quote_requested']));
 
       $default_option = _uc_quote_extract_default_option($order->quote_form);
@@ -970,40 +966,6 @@ function uc_quote_order_returned_rates($form, $form_state) {
   $commands[] = ajax_command_prepend('#quote', theme('status_messages'));
 
   return array('#type' => 'ajax', '#commands' => $commands);
-}
-
-/**
- * Displays the returned shipping rates.
- *
- * @param $variables
- *   An associative array containing:
- *   - form: A render element representing the form.
- *
- * @ingroup themeable
- */
-function theme_uc_quote_returned_rates($variables) {
-  $form = $variables['form'];
-  $output = '';
-
-  $keys = element_children($form);
-
-  // Render notes and error messages after each radio button.
-  if (count($keys) > 1) {
-    foreach ($keys as $key) {
-      if ($key == 'quote_option') {
-        continue;
-      }
-
-      if (isset($form['quote_option'][$key])) {
-        $output .= drupal_render($form['quote_option'][$key]);
-      }
-      $output .= drupal_render($form[$key]);
-    }
-  }
-
-  $output .= drupal_render_children($form);
-
-  return $output;
 }
 
 /**

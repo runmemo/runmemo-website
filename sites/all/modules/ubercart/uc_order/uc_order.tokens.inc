@@ -149,9 +149,7 @@ function uc_order_tokens($type, $tokens, $data = array(), $options = array()) {
           break;
 
         case 'new-password':
-          if (isset($order->data['new_user']['pass'])) {
-            $replacements[$original] = $sanitize ? check_plain($order->data['new_user']['pass']) : $order->data['new_user']['pass'];
-          }
+          $replacements[$original] = isset($order->password) ? $order->password : t('Your password');
           break;
 
         case 'order-number':
@@ -238,14 +236,20 @@ function uc_order_tokens($type, $tokens, $data = array(), $options = array()) {
           break;
 
         case 'first-name':
-        case 'last-name':
           if (variable_get('uc_customer_list_address', 'billing') == 'shipping') {
-            $replacements[$tokens['first-name']] = $sanitize ? check_plain($order->delivery_first_name) : $order->delivery_first_name;
-            $replacements[$tokens['last-name']] = $sanitize ? check_plain($order->delivery_last_name) : $order->delivery_last_name;
+            $replacements[$original] = $sanitize ? check_plain($order->delivery_first_name) : $order->delivery_first_name;
           }
           else {
-            $replacements[$tokens['first-name']] = $sanitize ? check_plain($order->billing_first_name) : $order->billing_first_name;
-            $replacements[$tokens['last-name']] = $sanitize ? check_plain($order->billing_last_name) : $order->billing_last_name;
+            $replacements[$original] = $sanitize ? check_plain($order->billing_first_name) : $order->billing_first_name;
+          }
+          break;
+
+        case 'last-name':
+          if (variable_get('uc_customer_list_address', 'billing') == 'shipping') {
+            $replacements[$original] = $sanitize ? check_plain($order->delivery_last_name) : $order->delivery_last_name;
+          }
+          else {
+            $replacements[$original] = $sanitize ? check_plain($order->billing_last_name) : $order->billing_last_name;
           }
           break;
 

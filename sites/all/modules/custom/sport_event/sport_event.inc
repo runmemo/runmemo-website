@@ -44,3 +44,19 @@ function get_recent_event_id($start, $end) {
 
   return $event_id;
 }
+
+/**
+ * 
+ * Add photographer to the event's photographers field
+ * @param integer $nid
+ * @param integer $uid
+ */
+function sport_event_register_photographer($nid, $uid) {
+    $node = node_load($nid);  
+    $node->field_photographers[$node->language][]['value'] = $uid;
+    node_save($node);
+}
+
+function sport_event_unregister_photographer($nid, $uid) {
+  
+}

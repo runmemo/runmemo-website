@@ -79,6 +79,7 @@ function theme_uc_payment_method_table($variables) {
 
   $header = array(t('Payment method'), t('List position'), t('Operations'));
 
+  $rows = array();
   foreach (element_children($form) as $method) {
     $row = array(
       drupal_render($form[$method]['uc_payment_method_' . $method . '_checkout']),
@@ -96,7 +97,7 @@ function theme_uc_payment_method_table($variables) {
     'header' => $header,
     'rows' => $rows,
     'attributes' => array('id' => 'uc-payment-methods'),
-    'empty' => t('No payment methods are available.'),
+    'empty' => t('No payment methods are available. Modules providing payment methods must first be enabled on the !modules administration page under the "Ubercart - payment" fieldset.', array('!modules' => l(t('Modules'), 'admin/modules'))),
   ));
 }
 
@@ -113,14 +114,26 @@ function uc_payment_method_settings_form($form, &$form_state, $method_id) {
  * Selects a specific gateway when multiple gateways are available.
  */
 function uc_payment_gateway_select() {
+
+  // Find the available gateways.
   $gateways = _uc_payment_gateway_list($_SESSION['uc_payment_method'], TRUE);
   foreach ($gateways as $id => $gateway) {
     $options[$id] = $gateway['title'];
   }
 
-  $build['instructions'] = array('#markup' => t('Please choose a payment gateway to use for that payment.'));
+  // Construct form for selection of a gateway.
+  $build['instructions'] = array(
+    '#markup' => t('Please choose a payment gateway to use for that payment.'),
+  );
 
-  $build['form'] = drupal_get_form('uc_payment_gateway_select_form', $options, $_SESSION['uc_payment_method'], $_SESSION['uc_payment_order_id'], $_SESSION['uc_payment_amount'], $_SESSION['uc_payment_data']);
+  $build['form'] = drupal_get_form(
+    'uc_payment_gateway_select_form',
+    $options,
+    $_SESSION['uc_payment_method'],
+    $_SESSION['uc_payment_order_id'],
+    $_SESSION['uc_payment_amount'],
+    $_SESSION['uc_payment_data']
+  );
 
   return $build;
 }
@@ -186,15 +199,22 @@ function uc_payment_gateway_select_form_submit($form, &$form_state) {
  *
  * @see uc_payment_by_order_form_validate()
  * @see uc_payment_by_order_form_submit()
- * @see theme_uc_payment_by_order_form()
  * @ingroup forms
  */
 function uc_payment_by_order_form($form, &$form_state, $order) {
+  $form['#attached']['css'][] = drupal_get_path('module', 'uc_payment') . '/uc_payment.css';
+
   $total = $order->order_total;
   $payments = uc_payment_load_payments($order->order_id);
 
-  $form['order_total'] = array('#theme' => 'uc_price', '#price' => $total);
+  $form['order_total'] = array(
+    '#type' => 'item',
+    '#title' => t('Order total'),
+    '#theme' => 'uc_price',
+    '#price' => $total,
+  );
   $form['payments'] = tapir_get_table('uc_payments_table');
+  $form['payments']['#weight'] = 10;
 
   if ($payments !== FALSE) {
     foreach ($payments as $payment) {
@@ -233,7 +253,12 @@ function uc_payment_by_order_form($form, &$form_state, $order) {
     }
   }
 
-  $form['balance'] = array('#theme' => 'uc_price', '#price' => $total);
+  $form['balance'] = array(
+    '#type' => 'item',
+    '#title' => t('Current balance'),
+    '#theme' => 'uc_price',
+    '#price' => $total,
+  );
   $form['order_id'] = array(
     '#type' => 'hidden',
     '#value' => $order->order_id,
@@ -242,7 +267,12 @@ function uc_payment_by_order_form($form, &$form_state, $order) {
   if (user_access('manual payments')) {
     $form['payments']['new']['#attributes'] = array('valign' => 'top');
     $form['payments']['new']['received'] = array(
-      '#markup' => '-',
+      '#type' => 'date',
+      '#default_value' => array(
+        'month' => format_date(REQUEST_TIME, 'custom', 'n'),
+        'day' => format_date(REQUEST_TIME, 'custom', 'j'),
+        'year' => format_date(REQUEST_TIME, 'custom', 'Y'),
+      ),
     );
     $form['payments']['new']['user'] = array(
       '#markup' => '-',
@@ -284,24 +314,6 @@ function uc_payment_by_order_form($form, &$form_state, $order) {
 }
 
 /**
- * Themes uc_payment_by_order_form().
- *
- * @see uc_payment_by_order_form()
- * @ingroup themeable
- */
-function theme_uc_payment_by_order_form($variables) {
-  $form = $variables['form'];
-
-  $output = '<p><strong>' . t('Order total:') . '</strong> ' . drupal_render($form['order_total'])
-           . '<br /><strong>' . t('Current balance:') . '</strong> '
-          . drupal_render($form['balance']) . '</p>';
-  $output .= '<p>' . drupal_render($form['payments']) . '</p>'
-           . '<p>' . drupal_render($form['form_id'])
-           . drupal_render($form['form_token']) . '</p>';
-  return $output;
-}
-
-/**
  * Form validation for uc_payment_by_order_form().
  *
  * @see uc_payment_by_order_form()
@@ -324,7 +336,16 @@ function uc_payment_by_order_form_submit($form, &$form_state) {
   global $user;
 
   $payment = $form_state['values']['payments']['new'];
-  uc_payment_enter($form_state['values']['order_id'], $payment['method'], $payment['amount'], $user->uid, '', $payment['comment']);
+  $received = strtotime($payment['received']['year'] . '-' . $payment['received']['month'] . '-' . $payment['received']['day'] . ' 00:00:00');
+
+  // If the value entered is today, use the exact timestamp instead
+  $startofday = mktime(0, 0, 0);
+
+  if ($received == $startofday) {
+    $received = REQUEST_TIME;
+  }
+
+  uc_payment_enter($form_state['values']['order_id'], $payment['method'], $payment['amount'], $user->uid, '', $payment['comment'], $received);
 
   drupal_set_message(t('Payment entered.'));
 }
