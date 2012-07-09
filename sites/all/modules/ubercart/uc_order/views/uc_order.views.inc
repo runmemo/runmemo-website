@@ -194,8 +194,14 @@ function uc_order_views_data() {
 
   // Use the sleeker Date module views handler if available.
   if (module_exists('date_views')) {
-    $data['uc_orders']['created']['filter']['handler'] = 'date_views_filter_handler_simple';
-    $data['uc_orders']['modified']['filter']['handler'] = 'date_views_filter_handler_simple';
+    $data['uc_orders']['created']['filter'] = array(
+      'handler' => 'date_views_filter_handler_simple',
+      'is date' => TRUE,
+    );
+    $data['uc_orders']['modified']['filter'] = array(
+      'handler' => 'date_views_filter_handler_simple',
+      'is date' => TRUE,
+    );
   }
 
   $data['uc_orders']['actions'] = array(
@@ -579,4 +585,18 @@ function uc_order_views_data() {
   }
 
   return $data;
+}
+
+/**
+ * Implements hook_views_plugins().
+ */
+function uc_order_views_plugins() {
+  return array(
+    'argument validator' => array(
+      'user_or_permission' => array(
+        'title' => t('Current user or user has permission'),
+        'handler' => 'uc_order_plugin_argument_validate_user_perm',
+      ),
+    ),
+  );
 }

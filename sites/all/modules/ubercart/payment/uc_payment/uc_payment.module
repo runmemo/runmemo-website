@@ -5,15 +5,13 @@
  * Defines the payment API that lets payment modules interact with Ubercart.
  *
  * The payment system in Ubercart relies on hooks to let the main program know
- * what payment modules are installed and what their current settings are.  The
+ * what payment modules are installed and what their current settings are. The
  * customer can choose a payment type at checkout, and the proper information
  * will be collected to complete the purchase.
- *
- * Development sponsored by the Ubercart project.  http://www.ubercart.org
  */
 
-require_once('uc_payment_checkout_pane.inc');
-require_once('uc_payment_order_pane.inc');
+require_once dirname(__FILE__) . '/uc_payment_checkout_pane.inc';
+require_once dirname(__FILE__) . '/uc_payment_order_pane.inc';
 
 
 /**
@@ -101,12 +99,9 @@ function uc_payment_theme() {
   return array(
     'uc_payment_totals' => array(
       'variables' => array('order' => NULL),
+      'file' => 'uc_payment.theme.inc',
     ),
     'uc_payment_method_table' => array(
-      'render element' => 'form',
-      'file' => 'uc_payment.admin.inc',
-    ),
-    'uc_payment_by_order_form' => array(
       'render element' => 'form',
       'file' => 'uc_payment.admin.inc',
     ),
@@ -183,7 +178,8 @@ function uc_payment_uc_order($op, $order) {
         ->condition('order_id', $order->order_id)
         ->execute();
 
-      // Call each payment method to delete method specific data from the database.
+      // Call each payment method to delete method-specific data from the
+      // database.
       $methods = _uc_payment_method_list();
       foreach ($methods as $method) {
         $func = $method['callback'];
@@ -253,28 +249,6 @@ function uc_payment_uc_order_state() {
  */
 function uc_payment_get_totals($form, $form_state) {
   return $form['panes']['payment']['line_items'];
-}
-
-/**
- * Generates markup for payment totals.
- *
- * @ingroup themeable
- */
-function theme_uc_payment_totals($variables) {
-  $order = $variables['order'];
-
-  $output = '<table>';
-
-  foreach ($order->line_items as $line) {
-    if (!empty($line['title'])) {
-      $output .= '<tr><td class="title">' . filter_xss($line['title']) . ':</td>'
-        . '<td class="price">' . theme('uc_price', array('price' => $line['amount'])) . '</td></tr>';
-    }
-  }
-
-  $output .= '</table>';
-
-  return $output;
 }
 
 /**
@@ -401,7 +375,7 @@ function uc_payment_process_payment($method, $order_id, $amount, $data = NULL, $
   else {
     // Otherwise display an error message to administrators.
     $result['success'] = FALSE;
-    $result['message'] = t('An error has occurred with your payment gateway.  The charge function could not be found.');
+    $result['message'] = t('An error has occurred with your payment gateway. The charge function could not be found.');
     if (user_access('administer store')) {
       drupal_set_message($result['message']);
     }
@@ -450,8 +424,10 @@ function uc_payment_process_payment($method, $order_id, $amount, $data = NULL, $
  *   payment.
  * @param $comment
  *   (optional) The comment to enter in the payment log.
+ * @param $received
+ *   (optional) The timestamp at which the payment was received.
  */
-function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $comment = '') {
+function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $comment = '', $received = REQUEST_TIME) {
   $method_name = _uc_payment_method_data($method, 'review');
   if (empty($method_name)) {
     $method_name = _uc_payment_method_data($method, 'name');
@@ -474,7 +450,7 @@ function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $
       'uid' => $uid,
       'data' => $data,
       'comment' => $comment,
-      'received' => REQUEST_TIME,
+      'received' => $received,
     ))
     ->execute();
 

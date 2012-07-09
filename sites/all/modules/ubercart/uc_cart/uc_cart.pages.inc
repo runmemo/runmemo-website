@@ -85,23 +85,32 @@ function uc_cart_checkout() {
   }
 
   // Load an order from the session, if available.
-  if (isset($_SESSION['cart_order']) && $order = uc_order_load($_SESSION['cart_order'])) {
-    // Don't use an existing order if itr has changed status or owner, or if there has been no
-    // activity for 10 minutes (to prevent identity theft).
-    if (uc_order_status_data($order->order_status, 'state') != 'in_checkout' ||
-        ($user->uid > 0 && $user->uid != $order->uid) ||
-        $order->modified < REQUEST_TIME - 600) {
-      if (uc_order_status_data($order->order_status, 'state') == 'in_checkout' && $order->modified < REQUEST_TIME - 600) {
-        // Mark expired orders as abandoned.
-        uc_order_update_status($order->order_id, 'abandoned');
+  if (isset($_SESSION['cart_order'])) {
+    $order = uc_order_load($_SESSION['cart_order']);
+    if ($order) {
+      // Don't use an existing order if it has changed status or owner, or if
+      // there has been no activity for 10 minutes (to prevent identity theft).
+      if (uc_order_status_data($order->order_status, 'state') != 'in_checkout' ||
+          ($user->uid > 0 && $user->uid != $order->uid) ||
+          $order->modified < REQUEST_TIME - 600) {
+        if (uc_order_status_data($order->order_status, 'state') == 'in_checkout' && $order->modified < REQUEST_TIME - 600) {
+          // Mark expired orders as abandoned.
+          uc_order_update_status($order->order_id, 'abandoned');
+        }
+        unset($order);
       }
-      unset($order);
+    }
+    else {
+      // Ghost session.
+      unset($_SESSION['cart_order']);
+      drupal_set_message(t('Your session has expired or is no longer valid.  Please review your order and try again.'));
+      drupal_goto('cart');
     }
   }
 
   // Determine whether the form is being submitted or built for the first time.
   if (isset($_POST['form_id']) && $_POST['form_id'] == 'uc_cart_checkout_form') {
-    // If this is a form submission, make sure that the cart order is still valid.
+    // If this is a form submission, make sure the cart order is still valid.
     if (!isset($order)) {
       drupal_set_message(t('Your session has expired or is no longer valid.  Please review your order and try again.'));
       drupal_goto('cart');
@@ -156,7 +165,6 @@ function uc_cart_checkout() {
  * @ingroup forms
  */
 function uc_cart_checkout_form($form, &$form_state, $order) {
-  global $user;
 
   if ($processed = isset($form_state['storage']['order'])) {
     $order = $form_state['storage']['order'];
@@ -186,8 +194,8 @@ function uc_cart_checkout_form($form, &$form_state, $order) {
     $panes = uc_cart_filter_checkout_panes($panes, array('shippable' => TRUE));
   }
 
-  // Invoke the 'prepare' op of enabled panes, but only if their 'process' ops have not been invoked
-  // on this request (i.e. when rebuilding after AJAX).
+  // Invoke the 'prepare' op of enabled panes, but only if their 'process' ops
+  // have not been invoked on this request (i.e. when rebuilding after AJAX).
   foreach ($panes as $id => $pane) {
     if ($pane['enabled'] && empty($form_state['storage']['panes'][$id]['prepared']) && isset($pane['callback']) && function_exists($pane['callback'])) {
       $pane['callback']('prepare', $order, $form, $form_state);
@@ -196,8 +204,9 @@ function uc_cart_checkout_form($form, &$form_state, $order) {
     }
   }
 
-  // Load the line items and save the order.  We do this after the 'prepare' callbacks of
-  // enabled panes have been invoked, because these may have altered the order.
+  // Load the line items and save the order. We do this after the 'prepare'
+  // callbacks of enabled panes have been invoked, because these may have
+  // altered the order.
   if (!$processed) {
     $order->line_items = uc_order_load_line_items($order);
     uc_order_save($order);
@@ -260,7 +269,8 @@ function uc_cart_checkout_form($form, &$form_state, $order) {
   $form['actions']['cancel'] = array(
     '#type' => 'submit',
     '#value' => t('Cancel'),
-    '#validate' => array(), // Disable validation to prevent a new order from being created.
+    '#validate' => array(), // Disable validation to prevent a new order
+                            // from being created.
     '#limit_validation_errors' => array(),
     '#submit' => array('uc_cart_checkout_form_cancel'),
   );
@@ -295,8 +305,6 @@ function theme_uc_cart_checkout_form($variables) {
  * @see uc_cart_checkout_form_submit()
  */
 function uc_cart_checkout_form_validate($form, &$form_state) {
-  global $user;
-
   $order = $form_state['storage']['order'];
 
   // Update the order "modified" time to prevent timeout on ajax requests.
@@ -374,7 +382,7 @@ function uc_cart_checkout_review() {
     unset($_SESSION['uc_checkout'][$order->order_id]['do_review']);
     drupal_goto('cart/checkout');
   }
-  elseif(!uc_order_product_revive($order->products)) {
+  elseif (!uc_order_product_revive($order->products)) {
     drupal_set_message(t('Some of the products in this order are no longer available.'), 'error');
     drupal_goto('cart');
   }
@@ -435,8 +443,9 @@ function theme_uc_cart_checkout_review($variables) {
   $output .= '<table class="order-review-table">';
 
   foreach ($panes as $title => $data) {
-    $output .= '<tr class="pane-title-row"><td colspan="2">' . $title
-              . '</td></tr>';
+    $output .= '<tr class="pane-title-row">';
+    $output .= '<td colspan="2">' . $title . '</td>';
+    $output .= '</tr>';
     if (is_array($data)) {
       foreach ($data as $row) {
         if (is_array($row)) {
@@ -461,8 +470,11 @@ function theme_uc_cart_checkout_review($variables) {
     }
   }
 
-  $output .= '<tr class="review-button-row"><td colspan="2">' . drupal_render($form)
-            . '</td></tr></table>';
+  $output .= '<tr class="review-button-row">';
+  $output .= '<td colspan="2">' . drupal_render($form) . '</td>';
+  $output .= '</tr>';
+
+  $output .= '</table>';
 
   return $output;
 }

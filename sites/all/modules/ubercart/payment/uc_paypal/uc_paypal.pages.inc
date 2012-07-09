@@ -89,8 +89,8 @@ function uc_paypal_ipn() {
   if (strcmp($response->data, 'VERIFIED') == 0) {
     watchdog('uc_paypal', 'IPN transaction verified.');
 
-    $duplicate = db_query("SELECT COUNT(*) FROM {uc_payment_paypal_ipn} WHERE txn_id = :id AND status <> :status", array(':id' => $txn_id, ':status' => 'Pending'))->fetchField();
-    if ($duplicate > 0) {
+    $duplicate = (bool) db_query_range('SELECT 1 FROM {uc_payment_paypal_ipn} WHERE txn_id = :id AND status <> :status', 0, 1, array(':id' => $txn_id, ':status' => 'Pending'))->fetchField();
+    if ($duplicate) {
       if ($order->payment_method != 'credit') {
         watchdog('uc_paypal', 'IPN transaction ID has been processed before.', array(), WATCHDOG_NOTICE);
       }
@@ -266,6 +266,10 @@ function uc_paypal_ec_review() {
  */
 function uc_paypal_ec_review_form($form, &$form_state, $order) {
   if (module_exists('uc_quote') && variable_get('uc_paypal_ec_review_shipping', TRUE) && uc_order_is_shippable($order)) {
+    uc_checkout_pane_quotes('prepare', $order, NULL);
+    $order->line_items = uc_order_load_line_items($order);
+    uc_order_save($order);
+
     $result = uc_checkout_pane_quotes('view', $order, NULL);
     $form['panes']['quotes'] = array(
       '#type' => 'fieldset',
@@ -432,8 +436,7 @@ function uc_paypal_complete($order) {
   }
 
   // This lets us know it's a legitimate access of the complete page.
-  $_SESSION['do_complete'] = TRUE;
-
+  $_SESSION['uc_checkout'][$_SESSION['cart_order']]['do_complete'] = TRUE;
   drupal_goto('cart/checkout/complete');
 }
 

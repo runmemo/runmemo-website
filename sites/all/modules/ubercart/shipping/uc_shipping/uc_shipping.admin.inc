@@ -30,6 +30,13 @@ function uc_shipping_order_packages($order) {
     $row[] = isset($package->sid) ? l($package->sid, 'admin/store/orders/' . $order->order_id . '/shipments/' . $package->sid . '/view') : '';
     $row[] = isset($package->tracking_number) ? check_plain($package->tracking_number) : '';
 
+    if ($package->label_image && $image = file_load($package->label_image)) {
+      $package->label_image = $image;
+    }
+    else {
+      unset($package->label_image);
+    }
+
     if ($package->sid && $package->label_image) {
       $method = db_query("SELECT shipping_method FROM {uc_shipments} WHERE sid = :sid", array(':sid' => $package->sid))->fetchField();
     }
@@ -64,11 +71,15 @@ function uc_shipping_order_packages($order) {
     $rows[] = $row;
   }
 
+  if (empty($rows)) {
+    drupal_set_message(t("This order's products have not been organized into packages."));
+    drupal_goto('admin/store/orders/' . $order->order_id . '/packages/new');
+  }
+
   $build['packages'] = array(
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
-    '#empty' => t("This order's products have not been organized into packages."),
   );
 
   return $build;
@@ -107,7 +118,7 @@ function uc_shipping_new_package($form, &$form_state, $order) {
                         ucwords(str_replace('_', ' ', $shipping_type)),
       '#collapsible' => TRUE,
       '#collapsed'   => FALSE,
-      '#weight'      => $shipping_type_weights[$shipping_type],
+      '#weight'      => isset($shipping_type_weights[$shipping_type]) ? $shipping_type_weights[$shipping_type] : 0,
     );
 
     foreach ($products as $product) {
@@ -508,11 +519,21 @@ function uc_shipping_order_shipments($order) {
     $rows[] = $row;
   }
 
+  if (empty($rows)) {
+    if (!db_query("SELECT COUNT(*) FROM {uc_packages} WHERE order_id = :id", array(':id' => $order->order_id))->fetchField()) {
+      drupal_set_message(t("This order's products have not been organized into packages."));
+      drupal_goto('admin/store/orders/' . $order->order_id . '/packages/new');
+    }
+    else {
+      drupal_set_message(t('No shipments have been made for this order.'));
+      drupal_goto('admin/store/orders/' . $order->order_id . '/shipments/new');
+    }
+  }
+
   $build['shipments'] = array(
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
-    '#empty' => t('No shipments have been made for this order.'),
   );
 
   return $build;
@@ -874,19 +895,29 @@ function uc_shipping_shipment_edit($form, &$form_state, $order, $shipment) {
     '#collapsible' => TRUE,
   );
 
-  // Determine shipping option chosen by the customer
-  $method  = $order->quote['method'];
-  $methods = module_invoke_all('uc_shipping_method');
-  if (isset($methods[$method])) {
-    $services = $methods[$method]['quote']['accessorials'];
-    $method   = $services[$order->quote['accessorials']];
+  // Determine shipping option chosen by the customer.
+  $message = '';
+  if (isset($order->quote['method'])) {
+    // Order has a quote attached.
+    $method  = $order->quote['method'];
+    $methods = module_invoke_all('uc_shipping_method');
+    if (isset($methods[$method])) {
+      // Quote is from a currently-active shipping method.
+      $services = $methods[$method]['quote']['accessorials'];
+      $method   = $services[$order->quote['accessorials']];
+    }
+    $message = t('Customer selected "@method" as the shipping method and paid @rate', array('@method' => $method, '@rate' => uc_currency_format($order->quote['rate'])));
+  }
+  else {
+    // No quotes for this order.
+    $message = t('There are no shipping quotes attached to this order. Customer was not charged for shipping.');
   }
 
-  // Inform user of customer's shipping choice
+  // Inform administrator of customer's shipping choice.
   $form['shipment']['shipping_choice'] = array(
     '#type'   => 'markup',
     '#prefix' => '<div>',
-    '#markup' => t('Customer selected "@method" as the shipping method and paid @rate', array('@method' => $method, '@rate' => uc_currency_format($order->quote['rate']))),
+    '#markup' => $message,
     '#suffix' => '</div>',
   );
 
