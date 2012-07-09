@@ -30,14 +30,11 @@ class OcrProductSaverTest extends DrupalWebTestCase {
 
   }
   
-  /**
-   * 
-   * Dummy function added to get test going.
-   */
-  function testOcrModuleCreatedFields() {
-    
-    $field_info = field_info_instance('node', 'ocr_success', 'product');
-    $this->assertNotNull($field_info, 'Field instance was created - ocr_success.');
+ /**
+ * 
+ * Dummy function - workaround to get tests going.
+ */
+  function testOcrModuleCreateFields() {
   }
   
  /**
@@ -79,6 +76,9 @@ class OcrProductSaverTest extends DrupalWebTestCase {
    * Test that OCR Success status is saved correctly by the ProductNodeSaver.
    */
   function testSuccessStatusSavedOnTheNode() {
+    
+    $field_info = field_info_instance('node', 'ocr_success', 'product');
+    $this->assertNotNull($field_info, 'Field instance was created - ocr_success.');
     
     $productSaver = new ProductNodeSaver($this->testNode->nid);
     $ocr_status = 1;

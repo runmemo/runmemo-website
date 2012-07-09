@@ -185,9 +185,6 @@
 
 	<!--Page Footer-->
 	<div class="footer">
-		<div id="link-display" style="display: none;">
-		<?php print url("feedback", array('absolute'=> TRUE));?>
-		</div>
 		<div class="footer-inner">
 			<div class="social-icon float-L">
 				<a href="mailto:info@runmemo.com" target="_blank"><img
