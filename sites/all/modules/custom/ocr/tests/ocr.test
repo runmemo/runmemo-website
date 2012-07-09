@@ -27,7 +27,7 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('list', 'ocr'); // 'uc_store', 'rules', 'uc_order', 'uc_product', 'uc_cart');
+    parent::setUp('s3_store', 'ocr'); // 'uc_store', 'rules', 'uc_order', 'uc_product', 'uc_cart');
 
     // instead of setting up 'uc_product' and all projects it depends on we just create
     // product content type
@@ -66,20 +66,19 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
 
   /**
    * 
-   * Checks that nodes that have OCR success status are not added to the queue
+   * Checks that node that have OCR success status is not added to the queue
    */
   function testNodesWithOcrSuccessNotAddedToTheQueue() {
    // debug($this->testNode->ocr_success[LANGUAGE_NONE][0]['value']);
     $this->testNode->ocr_success[LANGUAGE_NONE][0]['value'] = 0;
     node_save($this->testNode);
 
-    _add_ocr_pending_nodes_to_queue();
+    $queue = new FakeSqsQueue('ocr_responses');
+    _queue_nodes_pending_ocr();
 
-    $q = DrupalQueue::get('send_images_to_S3');
-    $number_of_messages = $q->numberOfItems();
-
-    $this->assertEqual(0, $number_of_messages, 'No files are waiting OCR processing - S3 queue is empty.');
-
+    $item = $queue->getMessage();
+     
+    $this->assertFalse($item, 'No files are waiting OCR processing - S3 queue is empty.');
 
   }
 
@@ -91,16 +90,21 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
     $file= file_copy($this->testFile, 'public://');
     $this->testNode->uc_product_image[LANGUAGE_NONE][0] = (array)$file;
     node_save($this->testNode);
+
+    debug($this->testNode->uc_product_image[LANGUAGE_NONE][0]);
+   
+    
+    $queue = new FakeSqsQueue('ocr_responses');
+    _queue_nodes_pending_ocr($queue, TRUE);
+    
+    $item = $queue->getMessage();
+    $this->assertNotEqual(FALSE, $item, 'Item was added to the queue for file awaiting OCR.');
+    if($item) {
+      $json_message  = $item->getBody();
+      $message_obj = json_decode($json_message);    
+      $this->assertEqual($message_obj->ExternalReference, $this->testNode->nid, 'ExternalReference of file matches node id of Product node.');  
+    }
      
-    _add_ocr_pending_nodes_to_queue();
-
-    $q = DrupalQueue::get('send_images_to_S3');
-    $number_of_messages = $q->numberOfItems();
-
-    debug('Got messages in S3 queue: ' . $number_of_messages);
-    $this->assertEqual(1, $number_of_messages, 'File pending OCR processing was added to the queue.');
-     
-
   }
 
 }
@@ -130,14 +134,25 @@ class OcrIntegrationTestCase extends DrupalWebTestCase {
   }
 
   /**
+   * 
+   * Dummy function - workaround to get tests going.
+   */
+  function testOcrModuleAddedFields() {
+    
+  }
+  
+  /**
    *
    * Test that product node is updated correclty with data from fake response message
    */
   function testResponceToUpdateProductNode() {
+    // test that OCR success field was created.
+    $field_info = field_info_instance('node', 'ocr_success', 'product');
+    $this->assertNotNull($field_info, 'Field instance was created - ocr_success.');
     // get message with OCR Results
     $fake = new sqs_fake($this->testNode->nid);
     $MessageOcrResponse = $fake->getFakeMessage('response_message_fake.json');
-     
+    
     $results_saver = new OcrResultsSaver($MessageOcrResponse);
     $results_saver->Save();
 
@@ -148,7 +163,7 @@ class OcrIntegrationTestCase extends DrupalWebTestCase {
     $ocr_success_on_node = field_get_items('node', $node, 'ocr_success', $node->language);
     $ocr_success_val = $ocr_success_on_node[0]['value'];
 
-    $this->assertEqual(1, $ocr_success_val, 'Ocr Success filed is successfully updated with True value.');
+    $this->assertEqual(1, $ocr_success_val, 'Ocr Success field is correctly updated with True value.');
 
     // check numbers field
     // numbers matching numbers in the file with fake message.

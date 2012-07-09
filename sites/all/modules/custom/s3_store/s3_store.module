@@ -37,8 +37,14 @@ function s3_store_cron() {
  *
  * Sends file to S3 backet with image cache
  * @param object $file contains properties of the file
+ * 
  */
-function _send_file_to_s3($file) {
+function _send_file_to_s3($file, $dummy = FALSE) {
+  
+  if($dummy) {
+    return;
+  }
+  
   // Check whether file exists
   if (!file_exists($file->uri)) {
     throw new InvalidArgumentException('Sending file to S3 failed as image does not exist: ' . $file->uri);
