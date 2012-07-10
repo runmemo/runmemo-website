@@ -1,0 +1,75 @@
+<?php
+
+/**
+ * 
+ * @file sport_event.test
+ * @author Bulat Yapparov
+ *
+ */
+
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'sport_event') . '/tests/' . 'sport_event.test.inc');
+require_once drupal_get_path('module', 'user_custom') . '/user_custom.inc';
+
+class SportEventTestCase extends DrupalWebTestCase {
+
+  protected $testEvent;
+  protected $testUser;
+  
+  public static function getInfo() {
+    return array(
+      'name' => 'Sport Event Module Test Case',
+      'description' => 'Test for sport events functionality.',
+      'group' => 'Sport Event',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('user_custom', 'sport_event');
+
+    $this->testEvent = sport_event_node_creator::getNewEventNode();
+    $this->testUser = $this->drupalCreateUser(array());
+    
+    $rid = user_custom_helper::get_photographer_rid();
+    $this->testUser->roles = array($rid);
+    user_save($this->testUser);
+  }
+  
+  /**
+   * 
+   * Dummy function to create fields
+   */
+  function testCreateFields() {
+    
+  }
+
+  function testEventPhotographerRegistration() {
+    // add test photographer to the event
+    sport_event_register_photographer($this->testEvent->nid, $this->testUser->uid);
+    
+    // check that photographer was addded
+    $node = node_load($this->testEvent->nid);
+    
+    $saved_uid = $node->field_photographers[$node->language][0]['uid'];
+    
+    $this->assertEqual($saved_uid, $this->testUser->uid, 'User was successfully added to the list of registered photographers.');
+    
+    // unregister photographer
+    $result = sport_event_unregister_photographer($this->testEvent->nid, $this->testUser->uid);
+    $this->assertTrue($result, 'First time unregister returned TRUE');
+    $node = node_load($this->testEvent->nid);
+
+    $photographers = field_get_items('node', $node, 'field_photographers');
+    // check that $photographers = False which means that field was unset
+    $this->assertFalse($photographers, 'User was unregistered from the event.');
+    
+    // unregister photographer second time
+    $result = sport_event_unregister_photographer($this->testEvent->nid, $this->testUser->uid);
+    $this->assertFalse($result, 'Second time unregister returned FALSE');
+    
+     // try to unregister user who is not registered
+    sport_event_register_photographer($this->testEvent->nid, 1);
+    $result = sport_event_unregister_photographer($this->testEvent->nid, 1);
+    $this->assertFalse($result, 'Unregistered user unregister returned FALSE');
+    
+  }
+}

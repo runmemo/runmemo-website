@@ -444,7 +444,6 @@ float:left;
 }
 
 #edit-search{
-float:right;
 margin-top:15px;
 margin-left:10px;
 }
@@ -470,13 +469,14 @@ margin:0 !important;
 	position:relative;
 	
 }
-#great_photos, #taken_picture{
+#great_photos, #taken_picture {
 font-family: 'Futura LT Light',sans-serif;
     font-size: 18px;
     font-weight: normal;
     margin: 10px 0 10px 0;
     padding: 0;
 }
+
 #trade{
 color:#4AB0F8;
 }
@@ -706,6 +706,10 @@ display:none;
 
 
 /******************** Home Page **********************************************************/
+.front fieldset {
+	margin:0;
+	padding:0;
+	}
 .front .region-content {
 	float:right;
 	}
@@ -718,9 +722,6 @@ display:none;
 }
 .front #field-number, .front #field-event {
 	margin-left:20px;
-	}
-.front #edit-get-started {
-	float-right;
 	}
 .one-sidebar .content span table{
 display:none !important;
@@ -939,18 +940,25 @@ border: 1px solid #BFBFBF;
 {
 	/*background:url(../images/search-hover.png) no-repeat; */
 }
-
-#edit-get-started{
+.front #edit-get-started {
 	background: url("../images/get-started.png") no-repeat scroll 0 0 !important;
-    border:0 none!important;
-    cursor: pointer!important;
-    height:37px!important;
-    width: 109px!important;
+    border:0 none;
+    cursor: pointer;
+    height:37px;
+    width: 109px;
+    margin-left:215px;
+    display:block;
+   
 }
 #edit-get-started:hover
 {
 	background:url(../images/get-started-hover.png) no-repeat!important;
 }
+
+#front-search-photos {
+	width:450px;
+	}
+
 .page-search-result .chzn-container-single .chzn-single,
 .page-photographer .chzn-container-single .chzn-single{
 width:450px!important;
@@ -961,10 +969,10 @@ height:39px!important;
 .page-photographer .chzn-drop {
 /*width:307px!important; */
 padding:0 10px;
-width:388px!important;
+width:400px!important;
 }
 .chzn-container-single .chzn-single{
-width:299px!important;
+width:350px!important;
 height:39px!important; 
 background-image: none!important;
 border: 2px solid #EEF1F2!important;
@@ -974,7 +982,7 @@ border: 2px solid #EEF1F2!important;
 .chzn-drop {
 /*width:307px!important; */
 padding:0 10px;
-width:287px!important;
+width:310px!important;
 }
 .chzn-search input{
 width:250px!important; 
@@ -1630,6 +1638,12 @@ text-align:center;
   height:176px;
 }
 
+.recent-event-image {
+	float:left;
+	diplay:block;
+	margin-right:10px;
+	}
+	
 .region-recent-events .title {
 	color:#444;
 	font-family:Arial, Helvetica, sans-serif;

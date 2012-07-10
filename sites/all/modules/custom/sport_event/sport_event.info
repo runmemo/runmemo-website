@@ -8,5 +8,6 @@ files[] = sport_event.inc
 files[] = sport_event.field.inc
 files[] = sport_event.install
 files[] = sport_event.css
+files[] = tests/sport_event.test
 
 dependencies[] = user_reference

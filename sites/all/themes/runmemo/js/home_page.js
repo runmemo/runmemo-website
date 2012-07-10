@@ -1,6 +1,15 @@
 jQuery(document).ready(function($) {
 	$('.front #runner_number').val('My Number');
 	$('.recent-event .form-text').val('My Number');
+	
+	// for remove the set message when adding items in the cart
+	if ($('.messages a').length > 0) {
+
+		if ($('.messages a').html() == 'your shopping cart') {
+			$('.messages').attr('style', 'display:none');
+		}
+	}
+	
 });
 
 /**

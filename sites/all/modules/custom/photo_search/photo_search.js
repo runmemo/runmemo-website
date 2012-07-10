@@ -95,14 +95,6 @@ jQuery(document).ready(function() {
 			// $(".page-search-result #center").prepend('<div class="cart_msg"
 			// style="display:none"></div>');
 
-			// for remove the set message when adding items in the cart
-			if ($('.messages a').length > 0) {
-
-				if ($('.messages a').html() == 'your shopping cart') {
-					$('.messages').attr('style', 'display:none');
-				}
-			}
-
 			if ($('.page-search-result #search-result-cart .summary_selected_photos .placeholder').length > 0) {
 				if ($(
 						'.page-search-result #search-result-cart .summary_selected_photos .placeholder')

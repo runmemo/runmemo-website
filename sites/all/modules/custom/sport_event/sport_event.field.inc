@@ -4,12 +4,14 @@
  * sport_event.field.inc
  */
 
+require_once drupal_get_path('module', 'user_custom') . '/user_custom.inc';
 /**
  * Gents definitions of custom fieds and instances for Event node.
  */
 function _sport_event_field_default_fields() {
   $fields = array();
 
+  $photographer_rid = user_custom_helper::get_photographer_rid();
   // Field for photographers registered at the event
   $fields['node-event-field-registered-photographers'] = array(
     'field_config' => array(
@@ -37,7 +39,7 @@ function _sport_event_field_default_fields() {
           2 => 0,
           3 => 0,
           4 => 0,
-          5 => '5',
+          $photographer_rid => (string)$photographer_rid,
         ),
         'referenceable_status' => array(
           0 => 0,
