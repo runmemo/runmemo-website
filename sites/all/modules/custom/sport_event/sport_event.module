@@ -206,19 +206,7 @@ function registration_button_form($form, &$form_state) {
     ),
   );
   
-  //$form['registration-complete'] = 
-  //array(
-  //'#type' => 'markup', 
  
-  //'#markup' => '');
-  
- // watchdog('submit', $form_state['values']['submit']);
-  
-  if ($form['nid']) {
-    $form['registration-complete']['#description'] = 'Thank you for letting us know! We will promote Runmemo.com at the event if we get at least 5 photographers for this event';
-    $form['submit']['#disabled'] = TRUE;
-  }
-
   $form['nid'] =
     array(
     '#type' => 'hidden',
@@ -228,16 +216,20 @@ function registration_button_form($form, &$form_state) {
 }
 
 function event_registration_form_submit($form, &$form_state) {
-  
+ // @todo put code here for graceful degradation if needed (when JavaScript is off on client side)  
 }
 
+/**
+ *
+ * Callback function for event registration button
+ * @param array $form
+ * @param array $form_state
+ */
 function registration_button_js($form, $form_state) {
-  watchdog('callback', 'got call back function call.');
   global $user;
-  
   $nid = $form['nid']['#value'];
-  watchdog('callback', 'User->uid: ' . $user->uid);
-//  sport_event_register_photographer($nid, $user->uid);
+ 
+  sport_event_register_photographer($nid, $user->uid);
   $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
   return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see you there.') . '</div>';
   
