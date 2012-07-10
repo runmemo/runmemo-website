@@ -13,7 +13,10 @@ class user_custom_helper {
   public static function get_photographer_rid() {
 
     $result = db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
-    return $result->rid;
+    if($result) {
+      return $result->rid;
+    }
+    return NULL;
   }
 
   /**

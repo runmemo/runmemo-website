@@ -56,9 +56,9 @@ function sport_event_is_registered_photographer($nid, $uid) {
   $node = node_load($nid);
   $photographers = field_get_items('node', $node, 'field_photographers');
 
-  if($photographers) {
+  if ($photographers) {
     foreach($photographers as $index => $photographer) {
-      if ($photographer['uid'] === $uid) {
+      if ($photographer['uid'] == $uid) {
         return TRUE;
       }
     }

@@ -191,7 +191,8 @@ function registration_button_form($form, &$form_state) {
     return;
   }
   
-  // check whether photographer is already registered.    
+  // check whether photographer is already registered. 
+  global $user;   
   $is_registered = sport_event_is_registered_photographer($nid, $user->uid);
   if ($is_registered) { 
     return; // no need to show the button for registered photographer
