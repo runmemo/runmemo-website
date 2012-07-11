@@ -20,6 +20,7 @@ cd /var/www/html/runmemo/runmemo-website
 
 alias drush="drush -l http://$(hostname)"
 drush status
+drush updatedb --yes
 drush cache-clear all
 for testname in `cat ./scripts/Jenkins/tests_list`; do
 	drush test-run --jenkins=/tmp/tests/ ${testname}

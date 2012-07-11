@@ -9,11 +9,11 @@ function user_custom_install() {
     // Built-in roles.
  
   $rid_authenticated = db_insert('role')
-  ->fields(array('name' => 'runner', 'weight' => 3))
+  ->fields(array('name' => 'Runner', 'weight' => 3))
   ->execute();
   
   $rid_anonymous = db_insert('role')
-    ->fields(array('name' => 'photographer', 'weight' => 4))
+    ->fields(array('name' => 'Photographer', 'weight' => 4))
     ->execute();
     
   

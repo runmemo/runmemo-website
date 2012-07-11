@@ -11,10 +11,21 @@ class user_custom_helper {
    * this function return the role id of the photographer
    */
   public static function get_photographer_rid() {
-
-    $result = db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
-    if($result) {
-      return $result->rid;
+     return user_custom_helper::get_rid('Photographer');
+  }
+  
+  /**
+   * Get the role id for set the user role as photographer to access the photgrapher page
+   * this function return the role id of the photographer
+   */
+  public static function get_runner_rid() {
+     return user_custom_helper::get_rid('Runner');
+  }
+  
+  public static function get_rid($role_name) { 
+    $role = user_role_load_by_name($role_name);
+    if($role) {
+      return $role->rid;
     }
     return NULL;
   }

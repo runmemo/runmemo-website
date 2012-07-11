@@ -93,14 +93,13 @@ margin:0;
 	height:28px;
 }
 .login-btn-lft {
-	background:url(../images/login-btn-lft.png) no-repeat;
+	/* background:url(../images/login-btn-lft.png) no-repeat; */
 	width:12px;
 	height:29px;
 }
 .login-btn-mid {
-	background:url(../images/login-btn-mid.png) repeat-x;
+	/* background:url(../images/login-btn-mid.png) repeat-x; */
 	height:29px;
-        padding-right: 6px;
 }
 
 .login-btn-mid img{
@@ -124,12 +123,17 @@ it
 	margin-left: 15px;
 }
 .login-btn-rig {
-	background:url(../images/login-btn-rig.png) no-repeat;
+	/* background:url(../images/login-btn-rig.png) no-repeat; */
 	width:12px;
 	height:29px;
 }
+.user-menu-username {
+	font-weight:bold;
+	text-decoration:underline;
+}
+
 .login-logo {
-	background:url(../images/login-logo.png) no-repeat;
+	background:url(../images/login-logo.png) no-repeat; 
 	width:25px;
 	height:25px;
 	margin-left:10px;

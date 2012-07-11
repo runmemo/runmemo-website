@@ -6,6 +6,22 @@
 .node-type-event .region-sidebar-second {
 	width: 300px;
 	}
+.node-event {
+	margin:0;
+	border-top: 		1px solid rgba(100,100,150,0.8);
+	border-bottom: 		1px solid rgba(0,0,0,0.1);
+	border-left: 		1px solid rgba(100,100,150,0.8);
+	border-right: 		1px solid rgba(0,0,0,0.1);
+	}
+.field {
+	margin-bottom: 5px;
+	}
+/* Event Title */
+.node-event h2 {
+	margin-bottom:10px;
+	padding-bottom:10px;
+	border-bottom: 		1px solid rgba(0,0,0,0.1);
+	}
 
 .googlemaps {
 	background:transparent url(images/googlemaps.png);
@@ -30,8 +46,34 @@
 	color:#eee;
 	font-family:"Comic Sans MS", cursive, sans-serif;
 	}
-	
+
+/* Blocks */
+.region .title {
+	background-color: rgb(26,37,60);
+	color: #FFF;
+	font-weight:bold;
+	height:20px;
+	padding-top:10px;
+	padding-bottom:10px;
+	}
+
+/* Block Registered Photographers */
+.view-event-registered-photographers {
+	border-top: 		1px solid rgba(100,100,150,0.8);
+	border-bottom: 		1px solid rgba(0,0,0,0.1);
+	border-left: 		1px solid rgba(100,100,150,0.8);
+	border-right: 		1px solid rgba(0,0,0,0.1);
+	}
+.view-event-registered-photographers .views-row {
+	padding-top: 5px;
+	padding-bottom:5px;
+	margin-left:10px;
+	}
+
 /* Registration Button */
+.node-type-event #center form {
+  margin-bottom: 0;
+}
 
 #block-sport-event-registration-button h2.title {
 	display:none;
@@ -44,13 +86,19 @@
 	
 		
 }
+
+#block-sport-event-registration-button {
+	padding:1px 10px 10px 10px;
+	}
+
 #registration-button {
 	margin-top:10px;
 }
 #registration-button input {
-	background-color: #AAAAAA;	/*#FF6600; */
-	color:			#000000;	/*#FFFFFF;*/
-	float:left;
+	background-color: #BBCCEE;	/*#FF6600; */
+	color:			rgb(26,37,60);	/*#FFFFFF;*/
+	float:right;
+	margin-top:0.5em;
 	margin-left:0px;
 }
 /* -------------- THE button -------------- */

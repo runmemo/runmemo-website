@@ -10,6 +10,17 @@ function sport_event_menu() {
 }
 
 /**
+ * Implements hook_views_api().
+ */
+function sport_event_views_api() {
+  return array(
+  	'version' => '3.0', 
+  	'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
+  );
+}
+
+
+/**
  *
  * implements hook_block_info()
  */
@@ -241,7 +252,7 @@ function registration_button_js($form, $form_state) {
   // replace button with disabled version
   $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
   // post registration message
-  return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see you there.') . '</div>';
+  return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see your photos!') . '</div>';
 
 }
 
@@ -296,6 +307,3 @@ function image_style_s3_uri($file, $styleName) {
   }
    
 }
-
-
-

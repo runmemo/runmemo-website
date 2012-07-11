@@ -45,7 +45,7 @@
 				else {?>
 					<div class="login-btn-mid float-L">
 						<a href="<?php echo base_path();?>user">
-						<span class="float-L"><?php echo "$user->name" ?></span> </a> <img
+						<span class="float-L user-menu-username"><?php echo "$user->name"; ?></span> </a> <img
 							src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
 							width="1" height="23" alt="separator" /> <a
 							href="<?php echo base_path();?>user/logout"><span
