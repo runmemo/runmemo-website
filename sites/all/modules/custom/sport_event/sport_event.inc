@@ -37,12 +37,21 @@ function get_event($nid) {
  */
 function get_recent_event_id($start, $end) {
 
-  $event_id = db_query_range(
-  	"SELECT nid FROM {node}
-  	 WHERE type = :type 
-	 ORDER BY nid DESC", $start, $end, array(':type' => 'event'))->fetchField();
-
-  return $event_id;
+  $query = new EntityFieldQuery();
+  
+  $results = $query->entityCondition('entity_type', 'node', '=')
+  ->entityCondition('bundle', 'event')
+  ->propertyCondition('status', 1, '=')
+  ->fieldCondition('field_date', 'value', date('Y-m-d'), '<')
+  ->fieldOrderBy('field_date', 'value', 'ASC')
+  ->range($start, $end)
+  ->execute();
+  
+  $nodes = node_load_multiple(array_keys($results['node']));
+  
+  foreach ($nodes as $node) {
+    return $node->nid;
+  }
 }
 
 /**
