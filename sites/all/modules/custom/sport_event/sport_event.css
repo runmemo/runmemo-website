@@ -48,7 +48,7 @@
 	}
 
 /* Blocks */
-.region .title {
+.node-event .region .title {
 	background-color: rgb(26,37,60);
 	color: #FFF;
 	font-weight:bold;
@@ -149,10 +149,6 @@
 }
 
 /* -------------- button (tag) -------------- */
-	
-}
-
-
 
 .button:hover {
 	background-color: 	hsl(0, 0%, 83%);
