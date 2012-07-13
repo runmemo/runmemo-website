@@ -5,3 +5,4 @@ core = 7.x
 files[] = photo_upload.module
 files[] = photo_upload.inc
 files[] = photo_upload.views_default.inc
+files[] = photo_upload.css
