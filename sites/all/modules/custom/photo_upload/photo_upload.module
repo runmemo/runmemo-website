@@ -71,6 +71,8 @@ function photo_upload_permission() {
   );
 }
 
+
+
 /**
  * Photographer page
  * where the photographer can upload the photos by selecting the event
@@ -80,21 +82,27 @@ function select_event_function() {
 
   $form = array();
 
-  $form['event_title'] = array('#markup' => '<div class="select_event_title" >' . t('Upload to event:') .'</div>');
+  $form['event_title'] = array(
+  		'#markup' => '<div class="select_event_title" >' . t('Upload to event:') .'</div>'
+  );
 
-  $form['events_select'] = array('#type' => 'select', '#title' => '', '#id' => 'event_select', '#attributes' => array('onchange' => 'return select_event_upload();'), '#prefix' => '<div id="event_drop">', '#suffix' => '</div>');
+  $form['events_select'] = array(
+  		'#type' => 'select', 
+  		'#title' => '', 
+  		'#id' => 'event_select', 
+  		'#attributes' => array(
+  			'onchange' => 'return select_event_upload();'), 
+  		'#prefix' => '<div id="event_drop">', 
+  		'#suffix' => '</div>');
 
-  $form['events_select']['#options'] = array('select_event' => "Select Event");
-
-
-  
+  $form['events_select']['#options'] = array('All' => "Select Event");
 
   //get the event name from content type 'event'
-  $event_name = get_events();
-  foreach ($event_name as $event_name_value) {
-    $event_title = $event_name_value->title;
-    $event_title_nid = $event_name_value->nid;
-    $form['events_select']['#options'][$event_title_nid] = $event_title;
+  $events = get_events();
+  foreach ($events as $event_item) {
+    $event_title = $event_item->title;
+    $nid = $event_item->nid;
+    $form['events_select']['#options'][$nid] = $event_title;
   }
 
   if ((is_numeric(arg(1))) && (arg(1) != '')) {
@@ -179,9 +187,14 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       form_set_error('pud', "Upload of {$uploaded_file['name']} failed");
     }
   }
-  drupal_set_message(t("Files uploaded successfully"));
-  
-  $form_state['redirect'] = "myphotos";
+  $count_files = count($saved_files);
+  if ($count_files > 0) {
+  // drupal_set_message(t("Files uploaded successfully"));
+    $form_state['redirect'] = "myphotos";   
+  } else {
+    // @todo add message may be.
+  }
+ 
 }
 
 

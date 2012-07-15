@@ -462,6 +462,6 @@ function _plupload_fix_temporary_filename($filename) {
 function _plupload_default_upload_validators() {
   return array(
     // See file_save_upload() for details.
-    'file_validate_extensions' => array('jpg jpeg gif png txt doc xls pdf ppt pps odt ods odp'),
+    'file_validate_extensions' => array('jpg jpeg'),
   );
 }
