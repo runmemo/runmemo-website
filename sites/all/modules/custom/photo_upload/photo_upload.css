@@ -23,7 +23,7 @@ font-family:'Walkway Bold',sans-serif;
 {
 margin-top:20px;
 		 float:left;
-diplay:block;
+display:block;
         }
         
 .page-photographer #event_drop {
@@ -36,49 +36,68 @@ diplay:block;
    /*position:relative;
    top:-30px;*/
    float:left;
-   diplay:block;
+   display:block;
    clear:both;
    position:relative;
+   margin-left:0px;
+	padding-left:0px;
+	margin-right:0px;
+	padding-right:0px;
+	width:100%;
 }
+
 
 .page-photographer #edit-upload {
    background:url(images/start-upload.png) no-repeat;
    width:151px;
    height:39px;
-   text-indent:999;
-   border:none;
-   float:left;
+   float:right;
    border:0 none;
    cursor:pointer;
    outline:none;
-   position:relative;
-   top:0px;
-   left:791px;
+   display:block;
+   margin:0px;
 
 }
+.form-type-plupload .description {
+	
+    color:#898989;
+    float:left; 
+    right:16px;
+        
+}
 
+.page-photographer-upload .plupload_droptext {
+	height:70%;
+	margin:25px auto;
 
- .plupload_scroll .plupload_filelist {
+	background-color:#FFFFFF;
+	border: 1px dashed;
+	border-radius: 5px;
+	width:80%;
+	border-color:rgb(255,102,0);
+	}
+
+.plupload_scroll .plupload_filelist {
   height:250px;
   overflow-y:scroll;
   border:1px solid #ccc;
   background-color:#f3f3f3;
-  width:940px;
+  width:970px;
  }
 
-.page-photographer #photographer-drag-and-drop-form .description 
-{
-    color: #898989;
-    float: right;
-    right:16px;
-        
-}
 .page-photographer .file_list {
    padding:0px 0 8px 7px;
    font-weight:bold;
    position: relative;
   /* left: -18px;*/
 }
+
+.plupload_filelist li {
+	margin:0px;
+}
+
+
 .page-photographer .ind_prog {
   display:none;
   border:1px solid #ccc;
@@ -116,6 +135,7 @@ diplay:block;
 #upload_section {
 	float:left;
 	clear:both;
+	width:100%;
 	}
 
 
@@ -124,7 +144,7 @@ diplay:block;
 .plupload_file_progress {
 	background-color:#94BB1F;
 	float:left;
-	diplay:block;
+	display:block;
 	height:16px;
 	margin-top:2px;
 	  border-radius: 5px;
@@ -134,7 +154,7 @@ diplay:block;
 	
 .plupload_file_progress_background {
 	float:left;
-	diplay:block;
+	display:block;
 	background-color:#FFF;
 	width:450px;
 	margin-left:50px;
@@ -143,7 +163,23 @@ diplay:block;
  	 -webkit-border-radius: 5px;
  	 -moz-border-radius: 5px;
 	}
-
+	
+.drag_drop_text {
+	margin-top:40px;
+	font-size:18pt;
+	line-height:0px;
+	display:block;
+	color:#4AB0F8;
+	}
+.start_upload_text {
+	margin-top:40px;
+	line-height:0px;
+	display:block;
+	clear:both;
+	}
+.plupload_start {
+	display:none;
+	}
 /*
  .plupload_filelist li {
    border-bottom:1px solid #DDD;

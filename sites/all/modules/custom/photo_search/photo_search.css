@@ -121,6 +121,7 @@ margin-left:-10px;
 #field-number label,
 #field-event label {
 	margin-bottom:3px;	
+	margin-left:0px;
 }
 
 #field-event span.form-required,
@@ -188,10 +189,6 @@ width:420px;
   float:left;
   padding:20px;
 }
-/*.page-search-result .number_search
-{ 
-padding:20px;
-}*/
 
 .view-search-results {
 	float: left;

@@ -151,6 +151,9 @@
 
       						<?php $path=explode('/',request_uri()); //bprint_r($parts);print_r($_REQUEST);?>
       						<?php print render($page['header']); ?>
+      						 <?php if ($title): ?>
+                              <h1 class ="page-title"><?php print $title ?></h1>
+                            <?php endif; ?>
       						<?php print render($page['content']); ?>
       						<?php print render($page['sidebar_second']); ?>
     					

@@ -12,7 +12,7 @@ function photo_upload_init() {
 }
 
 function photo_upload_preprocess_page(&$variables) {
-  if('photographer' === arg(0)) {
+  if('upload' === arg(1)) {
     drupal_add_js(drupal_get_path("module", "photo_upload") . "/js/photo_upload.js");
     drupal_add_css(drupal_get_path('module', 'photo_upload') . '/photo_upload.css');
   }
@@ -34,7 +34,7 @@ function photo_upload_views_api() {
  */
 function photo_upload_menu() {
   //url for photographer
-  $items['photographer'] = array(
+  $items['photographer/upload'] = array(
       'title' => 'Upload Photos',
       'description' => 'View the objects in a bucket on your Amazon S3 account.',
       'page callback' => 'photographer_upload_photos',
@@ -224,9 +224,19 @@ function photo_upload_form_alter(&$form, &$form_state, $form_id) {
  */
 function photograher_share()
 {
-  $form['share']  = array('#type' => 'textfield', '#title' => 'Runmemo Share', '#size' => '20', '#required' => 'true', '#default_value' => variable_get('photographer_share'), '#prefix' => '<div class="pshare">', '#suffix' => '<span class="sharePer"></span></div>', '#description' => 'Share of runmemo', );
+  $form['share']  = array('#type' => 'textfield', 
+  			'#title' => 'Runmemo Share', 
+  			'#size' => '20', 
+  			'#required' => 'true', 
+  			'#default_value' => variable_get('photographer_share'), 
+  			'#prefix' => '<div class="pshare">', 
+  			'#suffix' => '<span class="sharePer"></span></div>',
+         	'#description' => 'Share of runmemo', );
 
-  $form['submit']  = array('#type' => 'submit', '#title' => 'Submit', '#value' => 'Submit');
+  $form['submit']  = array(
+  		'#type' => 'submit', 
+  		'#title' => 'Submit', 
+  		'#value' => 'Submit');
   return $form;
 }
 

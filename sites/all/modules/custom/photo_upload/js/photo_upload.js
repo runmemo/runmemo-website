@@ -55,19 +55,21 @@ function drag_drop_upload_validation() {
 (function($) {
 	Drupal.behaviors.runmemoUploadPage = {
 		attach : function(context, settings) {
+		
+			$('.plupload_droptext').html('<div class="drag_drop_text">Drag and drop your photos here</div><div class="start_upload_text">and click on Start Upload button below</div>');
 			
-			 var uploader = $("#edit-file").pluploadQueue();
-			    uploader.bind('UploadProgress', function(up, file) {
-			    	if($('#' + file.id + ' .plupload_file_progress').length>0) {
-			    		$('#' + file.id + ' .plupload_file_progress').css("width", file.percent + '%');
-			    	}
-			    	else {
-			    		$('#' + file.id +' .plupload_file_name').after(
-			    				'<div class="plupload_file_progress_background"><div class="plupload_file_progress"></div></div>');
-			    	}
-					up.refresh(); // Reposition Flash/Silverlight
-				});
-			
+			var uploader = $("#edit-file").pluploadQueue();
+		    uploader.bind('UploadProgress', function(up, file) {
+		    	if($('#' + file.id + ' .plupload_file_progress').length>0) {
+		    		$('#' + file.id + ' .plupload_file_progress').css("width", file.percent + '%');
+		    	}
+		    	else {
+		    		$('#' + file.id +' .plupload_file_name').after(
+		    				'<div class="plupload_file_progress_background"><div class="plupload_file_progress"></div></div>');
+		    	}
+				up.refresh(); // Reposition Flash/Silverlight
+			});
+		
 		}
 
 	};

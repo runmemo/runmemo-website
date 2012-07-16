@@ -138,6 +138,17 @@ it
 	height:25px;
 	margin-left:10px;
 }
+
+.node-type-page .page-title {
+	display:block;
+	float:left;
+	clear:both;
+	}
+
+.page-title {
+	display:none
+}
+
 .facebook-logo {
 	background:url(../images/facebook-login.png) no-repeat;
 	width:25px;
