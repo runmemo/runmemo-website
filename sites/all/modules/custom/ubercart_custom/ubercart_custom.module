@@ -369,6 +369,12 @@ function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_stat
     return;
   }
   
+  //check permission
+  global $user;
+  if ($user->uid != 1 && $user->uid != $node->uid) {
+    return;
+  }
+  
   //Save nid for ajax callback
   $form['product_id'] = array(
     '#type' => 'hidden',
@@ -445,6 +451,12 @@ function set_price_callback($form, $form_state) {
   
   $nid = $form['product_id']['#value'];
   $node = node_load($nid);
+  
+  //check permission
+  global $user;
+  if ($user->uid != 1 && $user->uid != $node->uid) {
+    return;
+  }
   
   $node->sell_price = $form_state['values']['product_price']; //$form['product_price']['#value'];
   node_save($node);
