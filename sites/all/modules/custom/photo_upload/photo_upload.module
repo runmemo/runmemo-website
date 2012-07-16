@@ -292,16 +292,18 @@ function create_photo_node($file, $event_nid) {
   $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
 
  
-   $selected_event = node_load($event_nid);
+  $selected_event = node_load($event_nid);
   $price = $selected_event->field_pricing['und']['0']['value'];
   $node->field_event_reference['und']['0']['nid'] = $event_nid;
   if ($price != '') {
     $node->sell_price = $price;
+    $node->list_price = $price;
   }
 
   
-  //node_object_prepare($node);
-  $node = node_submit($node); // Prepare node for a submit
+  
+  node_object_prepare($node); // set default values
+  $node = node_submit($node); // set author and creation date
   node_save($node); // After this call we'll get a nid
   $file->nid = $node->nid;
   
