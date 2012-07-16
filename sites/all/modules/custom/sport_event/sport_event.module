@@ -178,7 +178,7 @@ function registration_button_block() {
   $block['subject'] = 'Event Registration Button';
   // add form to search products from same event
 
-  $block['content'][] = drupal_get_form('registration_button_form'); ;
+  $block['content'][] = drupal_get_form('registration_button_form');
 
   return $block;
 

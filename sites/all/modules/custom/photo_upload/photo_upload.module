@@ -152,7 +152,7 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   $form['box']['selected_event'] = array(
   		'#type' => 'textfield', 
   		'#title' => '', 
-  		'#id' => 'selected_event_drag');
+  		'#id' => 'selected_event_nid');
   return $form;
 }
 

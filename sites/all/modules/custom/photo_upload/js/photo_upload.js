@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
-    if(document.getElementById('selected_event_drag') != undefined && document.getElementById('selected_event_drag') != null && document.getElementById('selected_event_drag')!='')
+    if(document.getElementById('selected_event_nid') != undefined && document.getElementById('selected_event_nid') != null && document.getElementById('selected_event_nid')!='')
     {
-        document.getElementById('selected_event_drag').style.display='none';
+        document.getElementById('selected_event_nid').style.display='none';
         if(document.getElementById('event_select').value != 'All'){
             document.getElementById('upload_section').style.display= 'block';
         }
@@ -17,7 +17,7 @@ function select_event_upload(){
     var selected_event = events.options[events.selectedIndex].value;
     //for get the selected  value from select box to the other zip file upload form hidded text field.because of two form in the single page.so we want to 		pass the selected event name from drag and drop upload form to zip file upload form
     if (selected_event != 'All') {
-            document.getElementById('selected_event_drag').value= selected_event;
+            document.getElementById('selected_event_nid').value= selected_event;
             document.getElementById('upload_section').style.display= 'block';
     }
     else {
