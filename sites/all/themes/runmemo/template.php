@@ -285,3 +285,11 @@ function runmemo_preprocess_uc_cart_complete_sale(&$variables) {
   return $variables;
 }
  
+/**
+ * 
+ * implements hook_alter for exposed view filters
+ */
+function runmemo_form_views_exposed_form_alter(&$form, &$form_state) {
+  $form['submit']['#value'] = t('Search');
+  $form['submit']['#attributes']['class'][] = 'button';
+}

@@ -85,23 +85,49 @@
 ?>
 <article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-  <h2<?php print $title_attributes; ?>><?php print $title; ?></h2>	
+  <?php 
+    $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
+    $ev_month = format_date($timestamp, 'custom', 'F');
+    $ev_day = format_date($timestamp, 'custom', 'd');
+  ?>
+  <div class="date">
+		<p><?php print $ev_day; ?><span><?php print $ev_month; ?></span></p>
+	</div>
+  <h2<?php print $title_attributes; ?>><a href=<?php print url('node/' . $node->nid); ?>>
+    <?php print $title; ?></a>
+   </h2>	
+  
   <?php
     // We hide the comments and links now so that we can render them later.
+    hide($content['field_photographers']);
     hide($content['comments']);
     hide($content['links']);
    // hide($content['field_profile_image']);
-    //print_r($node->field_profile_image['und']['0']);
     //print theme('image_style', array('path' => $node->field_profile_image['und']['0']['uri'], 'style_name' => 'search_preview'));
-    
+   // print_r($node);
+   ?>
+   
+   <?php 
     print render($content);
    
   ?>
+  <?php if ($teaser): ?>
+  	<div class="field field-label-inline">
+  	<div class="field-label">Photographers:&nbsp;</div>
+  	<div class="field-items">
+  	 <div class="field-item ">
+  	  <?php print count($node->field_photographers[LANGUAGE_NONE]); ?>
+  	 </div>
+  	</div>
+  	</div>
+ <?php else: ?>
  	<div class='googlemaps'>
  		<div class='coming-soon'>
  			<span>Event Route - Coming Soon!</span>
  		</div>
  	</div>
+ <?php endif; ?>
+ 
   <?php //print render($content['links']); ?>
 
   <?php //print render($content['comments']); ?>

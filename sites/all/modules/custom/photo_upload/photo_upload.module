@@ -299,8 +299,6 @@ function create_photo_node($file, $event_nid) {
     $node->sell_price = $price;
     $node->list_price = $price;
   }
-
-  
   
   node_object_prepare($node); // set default values
   $node = node_submit($node); // set author and creation date
