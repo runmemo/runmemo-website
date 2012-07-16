@@ -352,7 +352,7 @@ function search_result_cart($form, &$form_state) {
 
 /**
  * Implements hook_form_FORM_ID_alter() for the node form.
- *
+ * @todo change comments to appropriate
  * Adds two fields to the node form, second only appears after first is enabled.
  */
 function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_state, $form_id) {
@@ -370,6 +370,10 @@ function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_stat
   }
   
   //check permission
+  // @todo leonid it is possible for other users to have admin permissions and it is possible that default admin user is removed completely.
+  // I think it will be better to write 2 new functions if they don't exist already.
+  // have a look at http://api.drupal.org/api/drupal/modules%21node%21node.module/function/node_access/7
+  // it seems like a more generic solution. combined with permissions set up, it will do the job. 
   global $user;
   if ($user->uid != 1 && $user->uid != $node->uid) {
     return;
@@ -453,6 +457,7 @@ function set_price_callback($form, $form_state) {
   $node = node_load($nid);
   
   //check permission
+  // @todo see previous todo about node_access function as better alternative
   global $user;
   if ($user->uid != 1 && $user->uid != $node->uid) {
     return;
