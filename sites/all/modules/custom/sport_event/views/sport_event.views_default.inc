@@ -10,7 +10,7 @@
  */
 function sport_event_views_default_views() {
   $views = array();
-  
+
   //Events view
   $view = new view;
   $view->name = 'events';
@@ -24,7 +24,7 @@ function sport_event_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Future Events';
+  $handler->display->display_options['title'] = 'Events';
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -32,47 +32,12 @@ function sport_event_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '10';
-  $handler->display->display_options['style_plugin'] = 'table';
-  $handler->display->display_options['style_options']['columns'] = array(
-  'title' => 'title',
-  'field_event_address1' => 'field_event_address1',
-  'field_date' => 'field_date',
-  'field_no_of_participant' => 'field_no_of_participant',
-  );
-  $handler->display->display_options['style_options']['default'] = '-1';
-  $handler->display->display_options['style_options']['info'] = array(
-  'title' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => 'views-align-left',
-      'separator' => '',
-      'empty_column' => 0,
-  ),
-  'field_event_address1' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => 'views-align-left',
-      'separator' => '',
-      'empty_column' => 0,
-  ),
-  'field_date' => array(
-      'sortable' => 1,
-      'default_sort_order' => 'asc',
-      'align' => 'views-align-left',
-      'separator' => '',
-      'empty_column' => 0,
-  ),
-  'field_no_of_participant' => array(
-      'sortable' => 0,
-      'default_sort_order' => 'asc',
-      'align' => 'views-align-left',
-      'separator' => '',
-      'empty_column' => 0,
-  ),
-  );
-  $handler->display->display_options['style_options']['override'] = 1;
-  $handler->display->display_options['style_options']['sticky'] = 1;
-  $handler->display->display_options['style_options']['empty_table'] = 0;
+  $handler->display->display_options['style_plugin'] = 'grid';
+  $handler->display->display_options['style_options']['columns'] = '1';
+  $handler->display->display_options['style_options']['fill_single_line'] = 1;
+  $handler->display->display_options['row_plugin'] = 'node';
+  $handler->display->display_options['row_options']['links'] = 1;
+  $handler->display->display_options['row_options']['comments'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
@@ -152,11 +117,10 @@ function sport_event_views_default_views() {
   $handler->display->display_options['fields']['field_event_address1']['empty_zero'] = 0;
   $handler->display->display_options['fields']['field_event_address1']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['field_event_address1']['field_api_classes'] = 0;
-  /* Field: Content: Number of Participant */
+  /* Field: Content: Participants */
   $handler->display->display_options['fields']['field_no_of_participant']['id'] = 'field_no_of_participant';
   $handler->display->display_options['fields']['field_no_of_participant']['table'] = 'field_data_field_no_of_participant';
   $handler->display->display_options['fields']['field_no_of_participant']['field'] = 'field_no_of_participant';
-  $handler->display->display_options['fields']['field_no_of_participant']['label'] = 'Participants';
   $handler->display->display_options['fields']['field_no_of_participant']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['field_no_of_participant']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['field_no_of_participant']['alter']['absolute'] = 0;
@@ -176,10 +140,10 @@ function sport_event_views_default_views() {
   $handler->display->display_options['fields']['field_no_of_participant']['empty_zero'] = 0;
   $handler->display->display_options['fields']['field_no_of_participant']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['field_no_of_participant']['field_api_classes'] = 0;
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
+  /* Sort criterion: Content: Date (field_date) */
+  $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['sorts']['field_date_value']['field'] = 'field_date_value';
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -194,27 +158,36 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
   'event' => 'event',
   );
+  /* Filter criterion: Content: Distance (field_distance) */
+  $handler->display->display_options['filters']['field_distance_tid']['id'] = 'field_distance_tid';
+  $handler->display->display_options['filters']['field_distance_tid']['table'] = 'field_data_field_distance';
+  $handler->display->display_options['filters']['field_distance_tid']['field'] = 'field_distance_tid';
+  $handler->display->display_options['filters']['field_distance_tid']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['field_distance_tid']['expose']['operator_id'] = 'field_distance_tid_op';
+  $handler->display->display_options['filters']['field_distance_tid']['expose']['label'] = 'Distance:';
+  $handler->display->display_options['filters']['field_distance_tid']['expose']['operator'] = 'field_distance_tid_op';
+  $handler->display->display_options['filters']['field_distance_tid']['expose']['identifier'] = 'distance';
+  $handler->display->display_options['filters']['field_distance_tid']['expose']['reduce'] = 0;
+  $handler->display->display_options['filters']['field_distance_tid']['reduce_duplicates'] = 0;
+  $handler->display->display_options['filters']['field_distance_tid']['type'] = 'select';
+  $handler->display->display_options['filters']['field_distance_tid']['vocabulary'] = 'distance';
+  $handler->display->display_options['filters']['field_distance_tid']['error_message'] = 1;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page');
-  $handler->display->display_options['path'] = 'events';
+  $handler->display->display_options['path'] = 'events/search';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Events';
   $handler->display->display_options['menu']['weight'] = '0';
   $handler->display->display_options['menu']['name'] = 'main-menu';
   $handler->display->display_options['menu']['context'] = 0;
 
-  
- // (Export ends here.)
 
   // Add view to list of views to provide.
-  
+
   $views[$view->name] = $view;
 
-  // ...Repeat all of the above for each view the module should provide.
-
-  // At the end, return array of default views.
- 
+  // VIEW Registreded Photographers
   $view = new view;
   $view->name = 'event_registered_photographers';
   $view->description = 'To be used on Events profile page to show photographers who signed up for event';
@@ -307,7 +280,7 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['rid']['field'] = 'rid';
   $rid = user_custom_helper::get_photographer_rid();
   $handler->display->display_options['filters']['rid']['value'] = array(
-    $rid => (string)$rid,
+  $rid => (string)$rid,
   );
   $handler->display->display_options['filters']['rid']['reduce_duplicates'] = 0;
   /* Filter criterion: Content: Event Name (field_event_reference) */
@@ -355,12 +328,12 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['rid']['table'] = 'users_roles';
   $handler->display->display_options['filters']['rid']['field'] = 'rid';
   $handler->display->display_options['filters']['rid']['value'] = array(
-   $rid => (string)$rid,
+  $rid => (string)$rid,
   );
   $handler->display->display_options['filters']['rid']['reduce_duplicates'] = 0;
   $handler->display->display_options['block_description'] = 'Registered Photographers';
 
   $views['registered_photographers'] = $view;
-  
+
   return $views;
 }

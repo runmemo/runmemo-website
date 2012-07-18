@@ -19,8 +19,16 @@ require_once drupal_get_path('module', 'sport_event') . '/sport_event.taxonomy.i
 function sport_event_enable() {
   
   // Create default taxomomy terms
-  foreach (sport_event_taxonomy_default_vocabularies() as $term) {
-    taxonomy_save_term($term);
+  foreach (sport_event_taxonomy_default_vocabularies() as $vocabulary) {
+    $vocabulary_info = taxonomy_vocabulary_machine_name_load($vocabulary['machine_name']);
+    if (!isset($vocabulary_info)) {
+      taxonomy_vocabulary_save($vocabulary);  
+    } 
+    else {
+        watchdog('Sport Event', 
+     	'No need to create taxonomy as it already exists ' . $vocabulary['machine_name'] . '.',
+       array(), WATCHDOG_NOTICE);
+    }
   }
   
   // add all fields that are defined in sport_event.field.inc file
