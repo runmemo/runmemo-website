@@ -27,7 +27,7 @@
  * the key performance statistics associated with their cache and can receive alarms if a part of
  * their cache runs hot.
  *
- * @version 2012.01.16
+ * @version 2012.05.31
  * @license See the included NOTICE.md file for complete information.
  * @copyright See the included NOTICE.md file for complete information.
  * @link http://aws.amazon.com/elasticache/ AWS ElastiCache
@@ -57,6 +57,16 @@ class AmazonElastiCache extends CFRuntime
 	 * Specify the queue URL for the United States West (Northern California) Region.
 	 */
 	const REGION_CALIFORNIA = self::REGION_US_W1;
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_US_W2 = 'elasticache.us-west-2.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the United States West (Oregon) Region.
+	 */
+	const REGION_OREGON = self::REGION_US_W2;
 
 	/**
 	 * Specify the queue URL for the Europe West (Ireland) Region.
@@ -89,6 +99,16 @@ class AmazonElastiCache extends CFRuntime
 	const REGION_TOKYO = self::REGION_APAC_NE1;
 
 	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Region.
+	 */
+	const REGION_SA_E1 = 'elasticache.sa-east-1.amazonaws.com';
+
+	/**
+	 * Specify the queue URL for the South America (Sao Paulo) Region.
+	 */
+	const REGION_SAO_PAULO = self::REGION_SA_E1;
+
+	/**
 	 * Default service endpoint.
 	 */
 	const DEFAULT_URL = self::REGION_US_E1;
@@ -111,7 +131,7 @@ class AmazonElastiCache extends CFRuntime
 	 */
 	public function __construct(array $options = array())
 	{
-		$this->api_version = '2011-07-15';
+		$this->api_version = '2012-03-09';
 		$this->hostname = self::DEFAULT_URL;
 		$this->auth_class = 'AuthV2Query';
 
@@ -125,7 +145,7 @@ class AmazonElastiCache extends CFRuntime
 	/**
 	 * This allows you to explicitly sets the region for the service to use.
 	 *
-	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>.
+	 * @param string $region (Required) The region to explicitly set. Available options are <REGION_US_E1>, <REGION_US_W1>, <REGION_US_W2>, <REGION_EU_W1>, <REGION_APAC_SE1>, <REGION_APAC_NE1>, <REGION_SA_E1>.
 	 * @return $this A reference to the current instance.
 	 */
 	public function set_region($region)
@@ -458,6 +478,52 @@ class AmazonElastiCache extends CFRuntime
 	}
 
 	/**
+	 * Returns information about reserved Cache Nodes for this account, or about a specified reserved
+	 * Cache Node.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ReservedCacheNodeId</code> - <code>string</code> - Optional - The reserved Cache Node identifier filter value. Specify this parameter to show only the reservation that matches the specified reservation ID.</li>
+	 * 	<li><code>ReservedCacheNodesOfferingId</code> - <code>string</code> - Optional - The offering identifier filter value. Specify this parameter to show only purchased reservations matching the specified offering identifier.</li>
+	 * 	<li><code>CacheNodeType</code> - <code>string</code> - Optional - The Cache Node type filter value. Specify this parameter to show only those reservations matching the specified Cache Nodes type.</li>
+	 * 	<li><code>Duration</code> - <code>string</code> - Optional - The duration filter value, specified in years or seconds. Specify this parameter to show only reservations for this duration. Valid Values: <code>1 | 3 | 31536000 | 94608000</code></li>
+	 * 	<li><code>ProductDescription</code> - <code>string</code> - Optional - The product description filter value. Specify this parameter to show only those reservations matching the specified product description.</li>
+	 * 	<li><code>OfferingType</code> - <code>string</code> - Optional - The offering type filter value. Specify this parameter to show only the available offerings matching the specified offering type. Valid Values: <code>"Light Utilization" | "Medium Utilization" | "Heavy Utilization"</code></li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a marker is included in the response so that the following results can be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - The marker provided in the previous request. If this parameter is specified, the response includes records beyond the marker only, up to <code>MaxRecords</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_reserved_cache_nodes($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DescribeReservedCacheNodes', $opt);
+	}
+
+	/**
+	 * Lists available reserved Cache Node offerings.
+	 *
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ReservedCacheNodesOfferingId</code> - <code>string</code> - Optional - The offering identifier filter value. Specify this parameter to show only the available offering that matches the specified reservation identifier. Example: <code>438012d3-4052-4cc7-b2e3-8d3372e0e706</code></li>
+	 * 	<li><code>CacheNodeType</code> - <code>string</code> - Optional - The Cache Node type filter value. Specify this parameter to show only the available offerings matching the specified Cache Node type.</li>
+	 * 	<li><code>Duration</code> - <code>string</code> - Optional - Duration filter value, specified in years or seconds. Specify this parameter to show only reservations for this duration. Valid Values: <code>1 | 3 | 31536000 | 94608000</code></li>
+	 * 	<li><code>ProductDescription</code> - <code>string</code> - Optional - Product description filter value. Specify this parameter to show only the available offerings matching the specified product description.</li>
+	 * 	<li><code>OfferingType</code> - <code>string</code> - Optional - The offering type filter value. Specify this parameter to show only the available offerings matching the specified offering type. Valid Values: <code>"Light Utilization" | "Medium Utilization" | "Heavy Utilization"</code></li>
+	 * 	<li><code>MaxRecords</code> - <code>integer</code> - Optional - The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a marker is included in the response so that the following results can be retrieved. Default: 100 Constraints: minimum 20, maximum 100</li>
+	 * 	<li><code>Marker</code> - <code>string</code> - Optional - The marker provided in the previous request. If this parameter is specified, the response includes records beyond the marker only, up to <code>MaxRecords</code>.</li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function describe_reserved_cache_nodes_offerings($opt = null)
+	{
+		if (!$opt) $opt = array();
+				
+		return $this->authenticate('DescribeReservedCacheNodesOfferings', $opt);
+	}
+
+	/**
 	 * Modifies the Cache Cluster settings. You can change one or more Cache Cluster configuration
 	 * parameters by specifying the parameters and the new values in the request.
 	 *
@@ -531,6 +597,25 @@ class AmazonElastiCache extends CFRuntime
 		), 'member'));
 
 		return $this->authenticate('ModifyCacheParameterGroup', $opt);
+	}
+
+	/**
+	 * Purchases a reserved Cache Node offering.
+	 *
+	 * @param string $reserved_cache_nodes_offering_id (Required) The ID of the Reserved Cache Node offering to purchase. Example: 438012d3-4052-4cc7-b2e3-8d3372e0e706
+	 * @param array $opt (Optional) An associative array of parameters that can have the following keys: <ul>
+	 * 	<li><code>ReservedCacheNodeId</code> - <code>string</code> - Optional - Customer-specified identifier to track this reservation. Example: myreservationID</li>
+	 * 	<li><code>CacheNodeCount</code> - <code>integer</code> - Optional - The number of instances to reserve. Default: <code>1</code></li>
+	 * 	<li><code>curlopts</code> - <code>array</code> - Optional - A set of values to pass directly into <code>curl_setopt()</code>, where the key is a pre-defined <code>CURLOPT_*</code> constant.</li>
+	 * 	<li><code>returnCurlHandle</code> - <code>boolean</code> - Optional - A private toggle specifying that the cURL handle be returned rather than actually completing the request. This toggle is useful for manually managed batch requests.</li></ul>
+	 * @return CFResponse A <CFResponse> object containing a parsed HTTP response.
+	 */
+	public function purchase_reserved_cache_nodes_offering($reserved_cache_nodes_offering_id, $opt = null)
+	{
+		if (!$opt) $opt = array();
+		$opt['ReservedCacheNodesOfferingId'] = $reserved_cache_nodes_offering_id;
+		
+		return $this->authenticate('PurchaseReservedCacheNodesOffering', $opt);
 	}
 
 	/**

@@ -1,3 +1,329 @@
+# Changelog: 1.5.10 "Killer Rabbit"
+Code name for AppleShare 3.0. <http://en.wikipedia.org/wiki/AppleShare>
+
+Launched Tuesday, July 17th, 2012.
+
+## Bug fixes and enhancements
+
+## Services
+### AmazonSES
+* **New:** Support for Easy DKIM has been added to the SDK.
+
+## Runtime
+* The `list_sets()` method has been added to the `CFCredentials` class.
+
+
+----
+
+# Changelog: 1.5.9 "Jaguar"
+Code name for Mac OS X 10.2. <http://en.wikipedia.org/wiki/Mac_OS_X_v10.2>
+
+Launched Thursday, July 12th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in `AmazonS3` where Content-Type and other headers weren't being preserved when updating an object. This affects `update_object()`, `change_content_type()` and `change_storage_redundancy()`.
+
+## Services
+### AmazonDynamoDB
+* **New:** Requests to this service are now signed with Signature V4 and no longer require STS credentials.
+
+### AmazonElasticBeanstalk
+* **New:** Support for the US West (Northern California), US West (Oregon), EU West (Ireland) endpoints have been added to the SDK.
+
+### AmazonELB
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonSTS
+* **New:** Support for MFA-protected access through AWS Identity and Access Management has been added to the SDK.
+
+
+----
+
+# Changelog: 1.5.8.2 "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Tuesday, July 10th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in which requests to Amazon DynamoDB larger than 1 KB had extra latency.
+
+----
+
+# Changelog: 1.5.8.1 "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Friday, June 29th, 2012.
+
+## Bug fixes and enhancements
+* Resolved an issue in which our implementation of SignatureV4 produced an invalid signature for regions other than us-east-1.
+
+----
+
+# Changelog: 1.5.8 "I Tripoli"
+Code name for Macintosh System 7.1. <http://en.wikipedia.org/wiki/System_7>
+
+Launched Tuesday, June 26th, 2012.
+
+## Runtime
+* Updates to documentation and exception messages related to IAM Instance Profile credentials.
+
+## Services
+### AmazonAS
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonCloudWatch
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonELB
+* **New:** Support for internal load balancers in VPC has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for `x-amz-grant-*` headers have been added to the SDK.
+
+### AmazonSES
+* **New:** Support for feedback notifications has been added to the SDK.
+
+## Samples
+* **New:** A sample demonstrating how to use Amazon Simple Workflow Service to coordinate workers started by cron jobs has been added to the SDK. The samples are located in `_samples/AmazonSimpleWorkflow/cron`.
+
+----
+
+# Changelog: 1.5.7 "HyperCard"
+One of the first successful hypermedia systems before the World Wide Web, developed by Apple. <http://en.wikipedia.org/wiki/HyperCard>
+
+Launched Monday, June 11th, 2012.
+
+## Bug fixes and enhancements
+* [Handling of NULL bytes](https://forums.aws.amazon.com/thread.jspa?threadID=94935)
+* [Bug with setting credentials](https://forums.aws.amazon.com/thread.jspa?messageID=337661)
+* [Add a composer.json configuration](https://github.com/amazonwebservices/aws-sdk-for-php/pull/29)
+* [Change auto home detection for windows](https://github.com/amazonwebservices/aws-sdk-for-php/pull/28)
+* [Encode ampersands in keys passed to delete_objects](https://github.com/amazonwebservices/aws-sdk-for-php/pull/27)
+* Bug with S3 object copy
+* Bug with JSON encoding happening too early
+
+## Runtime
+* **New:** Support for retrieving credentials using IAM Instance Profiles has been added to the SDK.
+* **Fixed:** Resolved an issue where default credentials must be provided in the case of multiple credential sets.
+
+## Services
+### AmazonAS
+* **New:** Support for specifying spot instances in Auto Scaling has been added to the SDK.
+* **New:** Support for IAM Instance Profiles has been added to the SDK.
+
+### AmazonDynamoDB
+* **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
+* **Fixed:** Resolved an issue where providing token-based credentials caused errors.
+* **Fixed:** Resolved an issue where null-bytes were causing data to be truncated.
+
+### AmazonEC2
+* **New:** Support for IAM Instance Profiles has been added to the SDK.
+* **New:** Support for VM export tasks has been added to the SDK.
+* **New:** Support for AWS Marketplace product codes has been added to the SDK.
+* **New:** Support for an enhanced `describe_instance_status()` has been added to the SDK.
+
+### AmazonElastiCache
+* **New:** Support for reserved cache nodes has been added to the SDK.
+
+### AmazonIAM
+* **New:** Support for IAM Instance Profiles has been added to the SDK.
+
+### AmazonS3
+* **Fixed:** Resolved an issue where ampersands were not being encoded correctly in `delete_objects` calls.
+* **Fixed:** Resolved an issue where content-types were being incorrectly set in `copy_object` calls.
+
+### AmazonStorageGateway
+* **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
+
+### AmazonSWF
+* **Fixed:** Resolved an issue where JSON encoding was happening too early in the request process.
+
+----
+
+# Changelog: 1.5.6.2 "Gershwin"
+Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
+
+Launched Tuesday, May 30th, 2012.
+
+## Services
+### AmazonDynamoDB
+* **Fixed:** STS credentials were not always being cached correctly.
+
+----
+
+# Changelog: 1.5.6.1 "Gershwin"
+Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
+
+Launched Tuesday, May 24th, 2012.
+
+## Services
+### AmazonDynamoDB
+* **Fixed:** STS credentials were not always being cached correctly.
+
+----
+
+# Changelog: 1.5.6 "Gershwin"
+Code name for Apple's never-released successor to the never-released Copeland. <http://en.wikipedia.org/wiki/Gershwin_operating_system>
+
+Launched Tuesday, May 15th, 2012.
+
+## Services
+### AmazonSES
+* **New:** Support for domain verification has been added to the SDK, which enables customers to verify an entire email domain.
+* **New:** Requests to this service are now signed with Signature V4.
+
+----
+
+# Changelog: 1.5.5 "Fishhead"
+Code name for the Apple II File Mangement Utility. <http://applemuseum.bott.org/sections/codenames.html>
+
+Launched Wednesday, May 9, 2012.
+
+## Services
+### AmazonCloudFormation
+* **New:** Requests to this service are now signed with Signature V4.
+
+### AmazonCloudFront
+* **New:** Updated the supported API version to `2012-03-15`.
+
+### AmazonDynamoDB
+* **New:** Support for the US West (Northern California), US West (Oregon), Asia Pacific "Southeast" (Signapore) endpoints have been added.
+
+### AmazonElasticBeanstalk
+* **New:** Support for the new Asia Pacific "Northeast" (Japan) endpoint has been added.
+
+### AmazonStorageGateway
+* **New:** Support for the AWS Storage Gateway service has been added to the SDK.
+
+---
+
+# Changelog: 1.5.4 "Enterprise"
+Code name for Mac OS X Server 1.0 (Rhapsody CR1). <http://en.wikipedia.org/wiki/Rhapsody_(operating_system)>
+
+Launched Thursday, April 19, 2012.
+
+## Bug fixes and enhancements
+* [PHP SDK Bug - Memory leak](https://forums.aws.amazon.com/thread.jspa?threadID=72310)
+* [Does update_object work in 1.5.3?](https://forums.aws.amazon.com/thread.jspa?threadID=89297)
+* [The value of CURLOPT_SSL_VERIFYHOST](https://forums.aws.amazon.com/thread.jspa?threadID=86186)
+* [PHP SDK BUG: s3.class.php Line 2396 on 1.5.2](https://forums.aws.amazon.com/thread.jspa?threadID=86779)
+* [first create_bucket(), then get_bucket_list()](https://forums.aws.amazon.com/thread.jspa?messageID=318885)
+* [Issue with AmazonS3::get_object_list() max-keys](https://forums.aws.amazon.com/thread.jspa?threadID=85878)
+* [Correct the "Bottom line" minimum requirements check](https://github.com/amazonwebservices/aws-sdk-for-php/pull/23)
+* [S3 PHP SDK: copy_object() fails to update the header](http://stackoverflow.com/questions/7677837/s3-php-sdk-copy-object-fails-to-update-the-header)
+* [Adds the following utility methods to simplexml.class.php](https://github.com/amazonwebservices/aws-sdk-for-php/pull/22)
+* [Adding the ability to name a 'rule' for Object Expiration (suggested tweak)](https://forums.aws.amazon.com/thread.jspa?messageID=328023)
+
+## Runtime
+* **New:** Support for Signature Version 4 has been added to the SDK. Signature Version 4 is now the default authentication method for AWS Identity and Access Management, AWS Security Token Service and Amazon CloudSearch.
+
+## Services
+### AmazonCloudFront
+* **New:** Support for a Minimum TTL of zero has been added to the SDK.
+
+### AmazonCloudSearch
+* **New:** Support for Amazon CloudSearch has been added to the SDK. This includes only the Configuration API.
+
+### AmazonDynamoDB
+* **New:** Support for BatchWriteItem API has been added to the SDK.
+* **New:** Support for the European (Ireland) endpoint has been added.
+* **New:** Support for the Asia Pacific "Northeast" (Tokyo) endpoint has been added.
+* **New:** Amazon DynamoDB Session Handler has been added to the SDK.
+* **New:** A simplified interface for adding attributes has been added to the SDK.
+
+### AmazonEC2
+* **New:** The new "m1.medium" instance type is now supported.
+* **New:** Amazon EBS support for Volume Status and Volume Attributes have been added to the SDK.
+* **New:** Amazon EBS support for Conversion Tasks has been added to the SDK.
+* **New:** Amazon EC2 support for the Report Instance Status feature has been added to the SDK.
+* **New:** Amazon VPC support for Network Interfaces has been added to the SDK.
+* **Fixed:** Various parameter fixes have been applied.
+
+### AmazonIAM
+* **New:** Support for Password Policies and the ability to change passwords has been added to the SDK.
+
+### AmazonS3
+* **New:** Support for pre-signed URLs using temporary credentials has been added to the SDK.
+* **New:** Support for setting a custom name to Lifecycle (i.e., Object Expiration) rules has been added to the SDK.
+* **New:** Support for pre-signed URLs with https has been added to the SDK.
+* **Fixed:** Resolved an issue where setting a custom XML parsing class was not being respected.
+* **Fixed:** Resolved an issue where the `get_object_list()` method would return an incorrect number of entries.
+* **Fixed:** Resolved an issue where `update_object()` was attempting to COPY instead of REPLACE.
+* **Fixed:** Resolved an issue stemming from using path-style URLs, `create_bucket()` + `list_bucket()` and the EU-West region.
+* **Fixed:** Resolved an issue where XML responses were not being parsed consistently.
+* **Fixed:** Resolved an issue where Private Streaming URLs contained a double-encoded signature.
+* **Fixed:** The `Expect: 100-continue` HTTP header is now only sent during `create_object()` and `upload_part()` requests.
+
+## Utilities
+### CFRuntime
+* **Fixed:** Resolved an issue where `CURLOPT_SSL_VERIFYHOST` was not set strictly enough.
+* **Fixed:** The `Expect: 100-continue` HTTP header is no longer set on every request.
+
+### CFSimpleXML
+* **New:** Support for `matches()`, `starts_with()` and `ends_with()` methods have been added to the SDK. (Thanks [Wil Moore III](https://github.com/wilmoore)!)
+
+## Compatibility Test
+* **New:** SDK Compatibility Test pages are marked up as to not be indexed by search engines. (Thanks [Eric Caron](http://www.ericcaron.com)!)
+* **Fixed:** Duplicate code between the CLI and web versions of the SDK has been refactored. (Thanks [Jimmy Berry](https://github.com/boombatower)!)
+
+---
+
+# Changelog: 1.5.3 "Darwin"
+UNIX foundation upon which Mac OS X, Apple TV, and iOS are based. <http://en.wikipedia.org/wiki/Darwin_operating_system>
+
+Launched Wednesday, Tuesday, February 21, 2012.
+
+## Bug fixes and enhancements
+* [Fixing Issue with set_distribution_config](https://github.com/amazonwebservices/aws-sdk-for-php/pull/20)
+
+## Services
+### AmazonCloudFront
+* **Fixed:** Resolved an issue where the `set_distribution_config()` method could fail to satisfy an API constraint when using a custom origin server. (Thanks [zoxa](https://github.com/zoxa)!)
+
+### AmazonSWF
+* **New:** Support for the new Amazon Simple Workflow Service has been added to the SDK.
+
+----
+
+# Changelog: 1.5.2 "Copland"
+Code name for Apple's never-released successor to System 7. <http://en.wikipedia.org/wiki/Copland_(operating_system)>
+
+Launched Wednesday, Febraury 1, 2012.
+
+## Bug fixes and enhancements
+* [SSL Cert on PHP SDK 1.5.0.1 ](https://forums.aws.amazon.com/thread.jspa?threadID=84947)
+* [Stream Wrapper need a buffer !](https://forums.aws.amazon.com/thread.jspa?threadID=85436)
+* [Fixing Issue with set_distribution_config](https://github.com/amazonwebservices/aws-sdk-for-php/pull/20)
+* [[Bug] SDK Autoloader Interferes with PHPExcel Autoloader](https://forums.aws.amazon.com/thread.jspa?threadID=85239)
+* [get_object query does not always return the same content type](https://forums.aws.amazon.com/thread.jspa?threadID=84148)
+* [AWSSDKforPHP/authentication/swift_transport_esmtp_signature_handler.class.p ](https://forums.aws.amazon.com/thread.jspa?threadID=85087)
+
+## Runtime
+* **New:** Updated the CA Root Certificates file to version 1.81.
+* **Fixed:** Resolved an issue in the autoloader where the matching logic was too aggressive in certain cases, causing subsequent autoloaders to never trigger.
+
+## Services
+### AmazonAS
+* **New:** Support for Auto Scaling Resource Tagging has been added to the SDK.
+
+### AmazonS3
+* **Fixed:** Resolved an issue where `delete_all_objects()` and `delete_all_object_versions()` was being limited to 1000 items.
+* **Fixed:** Resolved an issue where `delete_bucket()` would fail to delete a bucket with the "force" option enabled if the bucket contained more than 1000 items.
+* **Fixed:** Resolved an issue where JSON documents stored in Amazon S3 would be parsed into a native PHP object when retrieved.
+
+## Utilities
+### S3StreamWrapper
+* **New:** Support for multiple stream wrappers (e.g., one per region) has been added to the SDK.
+* **Fixed:** Writes to Amazon S3 are now buffered, resolving issues with pushing more than 8k of data at a time.
+
+### CFJSON
+* **Fixed:** The JSON-to-XML conversion code is now substantially more robust and better handles encoded characters.
+
+### CacheCore
+* **Changed:** Formerly, attempting to cache to a file system location that didn't exist or was not writable by the PHP process would fail silently. This behavior has been changed to throw a `CacheFile_Exception`.
+
+----
+
 # Changelog: 1.5.1 "Blue"
 Code name for Macintosh System 7. <http://en.wikipedia.org/wiki/System_7>
 
