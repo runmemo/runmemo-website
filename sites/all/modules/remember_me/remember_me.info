@@ -6,9 +6,9 @@ files[] = remember_me.module
 files[] = includes/remember_me.admin.inc
 files[] = includes/remember_me.inc
 
-; Information added by drupal.org packaging script on 2012-02-17
-version = "7.x-1.0-rc3"
+; Information added by drupal.org packaging script on 2012-04-05
+version = "7.x-1.0"
 core = "7.x"
 project = "remember_me"
-datestamp = "1329521439"
+datestamp = "1333644074"
 

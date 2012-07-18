@@ -4,6 +4,22 @@ function sport_event_init() {
   drupal_add_css(drupal_get_path('module', 'sport_event') . '/sport_event.css');
 }
 
+
+function sport_event_menu() {
+
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function sport_event_views_api() {
+  return array(
+  	'version' => '3.0', 
+  	'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
+  );
+}
+
+
 /**
  *
  * implements hook_block_info()
@@ -12,7 +28,7 @@ function sport_event_block_info() {
 
   $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'), );
   $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'), );
-   
+  $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   return $blocks;
 }
 
@@ -29,7 +45,9 @@ function sport_event_block_view($delta = '') {
       return recent_events_block($nid);
     case 'recent_event_right':
       $nid = get_recent_event_id(1, 1);
-      return recent_events_block($nid);;
+      return recent_events_block($nid);
+    case 'registration_button':
+      return registration_button_block();
       break;
   }
 
@@ -72,8 +90,10 @@ function get_recent_event_images_view($nid, $items) {
       'alt' => $image['alt'],
       'title' => $image['title'],
     );
-   
+     
+    $markup = $markup . '<div class="recent-event-image" id="thumb-'. $product->nid .'"->';
     $markup = $markup . theme('image_style',$image_array);
+    $markup = $markup . '</div>';
   }
   $markup = $markup . '</div>';
   return $markup;
@@ -86,7 +106,7 @@ function get_recent_event_images_view($nid, $items) {
  * @param integer $nid nid of Event
  */
 function recent_events_block($nid) {
-  
+
   $event = node_load($nid);
   $block = array();
   $block['subject'] = check_plain($event->title);
@@ -151,6 +171,90 @@ function recent_event_search_validate($form, &$form_state) {
   }
 }
 
+function registration_button_block() {
+
+
+  $block = array();
+  $block['subject'] = 'Event Registration Button';
+  // add form to search products from same event
+
+  $block['content'][] = drupal_get_form('registration_button_form');
+
+  return $block;
+
+}
+
+/**
+ *
+ * Ajax button implementation for photographer registration at an event
+ * @param array $form
+ * @param array $form_state
+ */
+function registration_button_form($form, &$form_state) {
+  $nid = -1;
+
+  // get node id for the event
+  if(arg(0) == 'node' && is_numeric(arg(1))) {
+    $nid = arg(1);
+  }
+  else { // it is not a node profile page, so don't show the button
+    watchdog ('Callback', 'Registration button is visible in a wrong place.', array($form), WATCHDOG_ERROR);
+    return;
+  }
+  
+  // check whether photographer is already registered. 
+  global $user;   
+  $is_registered = sport_event_is_registered_photographer($nid, $user->uid);
+  if ($is_registered) { 
+    return; // no need to show the button for registered photographer
+  }
+  
+  // define the button with AJAX callback
+  $form['submit'] =
+  array( // search button
+  	'#type' => 'submit', 
+  	'#value' => 'I will be there!', 
+    '#prefix' => '<div id="registration-button">',
+  	'#suffix' => '</div>',
+    '#attributes' => array('class' => array('button')),
+  	'#submit' => array('event_registration_form_submit'), 
+    '#ajax' => array(
+      'callback' => 'registration_button_js',
+      'wrapper' => 'registration-button',
+      'effect' => 'fade',
+  ),
+  );
+
+  // cache nid in the form as it will not be available in the callback overwise
+  $form['nid'] =
+  array(
+    '#type' => 'hidden',
+    '#value' =>  $nid,   
+  );
+  return $form;
+}
+
+function event_registration_form_submit($form, &$form_state) {
+  // @todo put code here for graceful degradation if needed (when JavaScript is off on client side)
+}
+
+/**
+ *
+ * Callback function for event registration button
+ * @param array $form
+ * @param array $form_state
+ */
+function registration_button_js($form, $form_state) {
+  global $user;
+  $nid = $form['nid']['#value'];
+  // register photographer to the event
+  sport_event_register_photographer($nid, $user->uid);
+  // replace button with disabled version
+  $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
+  // post registration message
+  return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see your photos!') . '</div>';
+
+}
 
 /**
  * For testing purpose
@@ -163,11 +267,11 @@ function recent_event_search_submit($form, &$form_state) {
   $number = $form['runner_number']['#value'];
   // build path to the search page
   $path = 'search-result/' . $eid . '/' . $number;
-  $form_state['redirect'] = 
+  $form_state['redirect'] =
   array(
-    $path,
-    array(),    // $options
-    302,  // $http_response_code
+  $path,
+  array(),    // $options
+  302,  // $http_response_code
   );
 }
 
@@ -201,8 +305,4 @@ function image_style_s3_uri($file, $styleName) {
   else {
     return image_style_url($style_name, $file['uri']);
   }
-   
 }
-
-
-

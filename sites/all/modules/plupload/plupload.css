@@ -1,3 +1,4 @@
+
 .plupload_button {
   display:inline-block;
   font:normal 12px sans-serif;
@@ -50,29 +51,21 @@
 }
 
 .plupload_filelist {
-  list-style:none;
+list-style:none;
   margin:0;
   padding:0;
 }
 
 .plupload_scroll .plupload_filelist {
-  height:270px;
+  height:135px;
   overflow-y:scroll;
   background:none;
-  border:1px solid #ccc;
-  background-color:#f3f3f3;
-  float:left;
-  width:937px;
-  position:relative;
-  top:-24px;
 }
+
 .plupload_filelist li {
-  /*background:#F5F5F5 url('images/backgrounds.gif') repeat-x 0 -156px;*/
+  background:#F5F5F5 url('images/backgrounds.gif') repeat-x 0 -156px;
   border-bottom:1px solid #DDD;
   padding:10px 8px;
-  border:1px solid #d8d8d8; 
-  background:#FFF;
-  width:878px;
 }
 
 .plupload_filelist_header,.plupload_filelist_footer {
@@ -84,46 +77,20 @@
 .plupload_filelist_header {
   border-top:1px solid #EEE;
   border-bottom:1px solid #CDCDCD;
-  display:none;
 }
 
-.page-photographer .plupload_filelist_footer {
+.plupload_filelist_footer {
+  border-top:1px solid #FFF;
   height:22px;
   line-height:20px;
   vertical-align:middle;
-  position:relative; 
-  top:-22px;
-  left:5px;
-  background:none!important;
-  color:#90B5D1;
-  text-decoration:underline;
-  padding:0!important;
-  float:left;
-}
-
-.plupload_filelist_footer a:hover {
-  text-decoration:none;
-}
-.plupload_content {
-   position:relative;
-   top:289px;
-}
-.plupload_content1 {
-   position:relative;
-   top:-183px;
-   
 }
 
 .plupload_file_name {
   float:left;
-/*  overflow:hidden;*/
+  overflow:hidden;
 }
-.plupload_upload_status {
-   left: 340px;
-    position: relative;
-    top: -20px;
-	display:block;
-}
+
 .plupload_file_status {
   color:#777;
 }
@@ -133,30 +100,29 @@
 }
 
 .plupload_file_size,.plupload_file_status,.plupload_progress {
-  float:left;
-  padding:0 10px;
+  float:right;
+  width:80px;
 }
 
 .plupload_file_size,.plupload_file_status,.plupload_file_action {
-  text-align:left;
+  text-align:right;
 }
 
 .plupload_filelist .plupload_file_name {
-  width:auto;
-  padding:0 10px;
+  width:205px;
 }
 
 .plupload_file_action {
   float:right;
-  width:25px;
-  height:25px;
+  width:16px;
+  height:16px;
   margin-left:15px;
 }
 
 .plupload_file_action * {
   display:none;
-  width:24px;
-  height:25px;
+  width:16px;
+  height:16px;
 }
 
   li.plupload_uploading {
@@ -190,7 +156,6 @@
   border:1px solid #CCC;
   background:#FFF;
   padding:1px;
-  width:100px;
 }
 
 .plupload_progress_bar {
@@ -218,16 +183,12 @@ li.plupload_droptext {
   text-align:center;
   vertical-align:middle;
   border:0;
- line-height:20px; 
+  line-height:115px;
   list-style-type:none;
- padding-top: 85px;
- list-style: none;
 }
 
-.page-photographer .plupload {
- /* border:solid 1px #ccc;*/
-  width:956px;
-  float:left;
+.plupload {
+  border:solid 1px #ccc;
 }
 
 .plupload_header {
@@ -243,38 +204,4 @@ li.plupload_droptext {
 .plupload_start,a.plupload_start:hover {
   background:transparent url(images/up_arrow.png) no-repeat 0 center;
   z-index:100000;
-}
-.select_event_title {
-  font-family:'Walkway Bold',sans-serif;
-  font-size:36px;
-  color:#94BB1F;
-  width:300px;
-}
-.page-photographer .upload_title {
-font-family:'Walkway Bold',sans-serif;
-  font-size:36px;
-  color:#94BB1F;
-  width:260px;
-  float:left;
-  padding:15px 0 15px 0;
-}
-.page-photographer .guide-line {
-  float:left;
-  height:30px;
-  position:relative;
-  top:18px;
-  z-index:1;
-}
-.page-photographer .plupload_filelist1 {
-  height:200px;
-  overflow:hidden;
-  background:none;
-  border:1px dashed #333;
-  float:left;
-  width:937px;
-  position:relative;
-  top:-97px;
-  border-radius: 5px;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
 }

@@ -29,8 +29,19 @@ function password_policy_constraint_delay_error($constraint) {
  * Password validation.
  */
 function password_policy_constraint_delay_validate($password, $constraint, $uid) {
-  $last_change = db_result(db_query_range("SELECT MAX(created) FROM {password_policy_history} WHERE uid = %d", $uid, 0, 1));
-  if (!empty($last_change)) {
+  $account = user_load($uid);
+  // bypass delay constraint, if account is marked "Force password change on next login."
+  if ($account == FALSE || $account->force_password_change) {
+    return TRUE;
+  }
+
+  $query = db_select('password_policy_history');
+  $query->addExpression('MAX(created)');
+  $last_change = $query->condition('uid', $uid)
+    ->execute()
+    ->fetchField();
+
+  if ($last_change) {
     // Constraint is set in hours, so it gets converted to seconds with *60*60.
     return time() - ($constraint*60*60) > $last_change;
   }
@@ -40,3 +51,4 @@ function password_policy_constraint_delay_validate($password, $constraint, $uid)
 function password_policy_constraint_delay_js() {
   return '';
 }
+

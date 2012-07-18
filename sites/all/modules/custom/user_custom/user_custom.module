@@ -23,7 +23,7 @@ function user_custom_form_alter(&$form, $form_state, $form_id) {
       			'#markup' => "<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'>
       						 <img src='$base_path' alt='paypal-id'></img></span></p>", '#weight' => '5');
       //add the form submit function for insert the user role in the user table
-      $form['#submit']['']= 'user_role_insertion'; 
+      $form['#submit'][''] = 'user_role_insertion'; 
    
   
     }
@@ -46,17 +46,16 @@ function user_custom_form_alter(&$form, $form_state, $form_id) {
 function user_role_insertion($form, &$from_state) {
  
     //call class function
-    $user_custom_object=new user_custom_model();
-    $user_role=$user_custom_object->get_role_id();
-    $role_id=$user_role->rid;
+ 
+    $rid = user_custom_helper::get_photographer_rid();
 
-    $uid=$form['#user']->uid;
+    $uid = $form['#user']->uid;
 
     //call the class function for update the user role in the user table
-    $user_custom_object->user_role_update($role_id, $uid);
+    user_custom_helper::user_role_update($rid, $uid);
 
     //call the class function for insert the user role in the user roles table
-    $user_custom_object->user_role_id_insert($role_id, $uid);
+    user_custom_helper::user_role_id_insert($rid, $uid);
 
 }
 

@@ -6,7 +6,9 @@ core = 7.x
 files[] = sport_event.module
 files[] = sport_event.inc
 files[] = sport_event.field.inc
+files[] = views/sport_event.views_default.inc
 files[] = sport_event.install
 files[] = sport_event.css
+files[] = tests/sport_event.test
 
 dependencies[] = user_reference

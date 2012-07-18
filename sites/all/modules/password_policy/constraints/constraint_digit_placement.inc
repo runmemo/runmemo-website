@@ -15,7 +15,7 @@
  * Description of the constraint.
  */
 function password_policy_constraint_digit_placement_description() {
-  return array('name' => t('Digit Placement'), 'description' => t('Minimum number of digits in the password to allow a digit in the first or last position in the password (e.g. 2abcdefg and abcdefg4 are unacceptable passwords, while 2qpcxrm3 and 99qpcxrm are allowed passwords when 2 is set here).'));
+  return array('name' => t('Digit Placement'), 'description' => t('Minimum number of digits necessary in the password overall, to allow digits as the first or last characters in the password. For example, set to 2, the passwords 2abcdefg and abcdefg4 are unacceptable, while 2qpcxrm3 and 9qpcx9rm are allowed. This is intended to prevent changing passwords by incrementing a single digit, such as password1, password2, password3.'));
 }
 
 /**
@@ -31,11 +31,14 @@ function password_policy_constraint_digit_placement_error($constraint) {
  * Password validation.
  */
 function password_policy_constraint_digit_placement_validate($password, $constraint, $uid) {
-  $number_of_digits = 0;
-  for ($i=0; $i<10; $i++) {
-    $number_of_digits += substr_count($password, "$i"); // help string count by sending it a string instead of an int
+  $chars = drupal_strlen($password);
+  $num = 0;
+  for ($i = 0; $i < $chars; ++$i) {
+    if (ctype_digit(drupal_substr($password, $i, 1))) {
+      $num++;
+    }
   }
-  if ($number_of_digits < (int)$constraint) {
+  if ($num < (int) $constraint) {
     return preg_match("/^(\d+)|(\d+)$/", $password) != 1;
   }
   return TRUE;

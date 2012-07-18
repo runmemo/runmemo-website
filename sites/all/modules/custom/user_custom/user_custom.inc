@@ -4,17 +4,30 @@
  * user database query management 
  */
 
-class user_custom_model{
+class user_custom_helper {
 
   /**
    * Get the role id for set the user role as photographer to access the photgrapher page
    * this function return the role id of the photographer
    */
-  public function get_role_id() {
-
-    $rid = db_query("SELECT rid FROM {role} WHERE name='Photographer'")->fetchObject();
-
-    return $rid;
+  public static function get_photographer_rid() {
+     return user_custom_helper::get_rid('Photographer');
+  }
+  
+  /**
+   * Get the role id for set the user role as photographer to access the photgrapher page
+   * this function return the role id of the photographer
+   */
+  public static function get_runner_rid() {
+     return user_custom_helper::get_rid('Runner');
+  }
+  
+  public static function get_rid($role_name) { 
+    $role = user_role_load_by_name($role_name);
+    if($role) {
+      return $role->rid;
+    }
+    return NULL;
   }
 
   /**
@@ -25,7 +38,7 @@ class user_custom_model{
    *  By using this function we can set the user role as photographer when user creating the account 
    */
 
-  public function user_role_update($role_id, $uid) {
+  public static function user_role_update($role_id, $uid) {
     db_update('users')
                     ->fields(array(
                     'role' => $role_id,
@@ -39,7 +52,7 @@ class user_custom_model{
    * @param $role_id
    * $role_id is user role id.It is used to set the role for user
    */
-  public function user_role_id_insert($role_id, $uid) {
+  public static function user_role_id_insert($role_id, $uid) {
     db_insert('users_roles')
                     ->fields(array(
                     'uid' => $uid,

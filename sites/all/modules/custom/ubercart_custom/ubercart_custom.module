@@ -49,8 +49,8 @@
  */
 function ubercart_custom_views_api() {
   return array(
-  	'version' => '3.0', 
-  	'path' => drupal_get_path('module', 'ubercart_custom') . '/views');
+        'version' => '3.0', 
+        'path' => drupal_get_path('module', 'ubercart_custom') . '/views');
 }
 
 /**
@@ -65,7 +65,9 @@ function ubercart_custom_menu_alter(&$items) {
  * Init function for adding the external file
  */
 function ubercart_custom_init() {
-   
+
+  drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
+
   //for redirect the cart page
   //when no products in the shopping cart
   if (arg(0) == 'cart' && arg(1) == '') {
@@ -125,7 +127,7 @@ function cart_add_item() {
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
-      echo cart_action_message(FALSE, 'Did not add item. Item ' . $nid .  ' is already in the cart.');
+      echo cart_action_message(FALSE, 'Did not add item. Item ' . $nid . ' is already in the cart.');
       return;
     }
   }
@@ -157,7 +159,7 @@ function cart_remove_item() {
     }
   }
   
-  echo cart_action_message(FALSE,'Item was not found in the cart.');
+  echo cart_action_message(FALSE, 'Item was not found in the cart.');
 }
 
 /**
@@ -168,7 +170,7 @@ function cart_remove_item() {
  * 	Message attribute will be ignored if not provided or NULL.
  */
 function cart_action_message($success, $message = NULL) {
-  if(!isset($message)) {
+  if (!isset($message)) {
     $result = array('success' => $success);
   }
   else {
@@ -329,10 +331,10 @@ function search_result_cart($form, &$form_state) {
 		<div>
 			<span class='summary_selected_photos'>
 				<span class='placeholder'></span>" 
-				. t('Items') .
-				"</span>
+                                . t('Items') .
+                                "</span>
 				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
-					"<span class='placeholder'></span>
+                                      "<span class='placeholder'></span>
 				</span>
 		</div>
 	</div>");
@@ -346,3 +348,133 @@ function search_result_cart($form, &$form_state) {
 
   return $form;
 }
+
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the node form.
+ * Adds additional fields and "Save" button on node-product page.
+ * @param type $form
+ * @param type $form_state
+ * @param type $form_id
+ * @return renderable array
+ */
+function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_state, $form_id) {
+  
+  if ( $from_id != 'product_node_custom_form') {
+    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
+ 
+  }
+    
+  
+  $node = menu_get_object();
+  if ($node == FALSE) {
+    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
+    return;
+  }
+  
+  //check permission
+  if (!node_access("update", $node)) {
+    return;
+  }
+  
+  //Save nid for ajax callback
+  $form['product_id'] = array(
+    '#type' => 'hidden',
+    '#value' => $node->nid,
+  );   
+   
+  //Price field
+  $form['product_price'] = array(
+      '#type' => 'textfield',
+      '#size' => 10,
+      '#title' => t('Price'),       
+      //'#description' => t('Set the price'),
+      '#default_value' => number_format($node->price, 2),
+//      '#ajax' => array(
+//        'callback' => 'set_price_callback',
+//        'wrapper' => 'product-edit-price-container',
+//        'effect' => 'fade',
+//      )
+  );
+  
+  
+   $form['save_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Save'),
+    '#weight' => 15,      
+    '#attributes' => array('class' => array('button')),
+//   '#submit' => array('set_price_callback'),
+    '#ajax' => array(
+      'callback' => 'set_price_callback',
+      'wrapper' => 'product-edit-price-container',
+      'effect' => 'fade',
+    )      
+  );
+   
+//    $form['product_runners_numbers'] = array(
+//      '#type' => 'textfield',
+//      '#size' => 10,
+//      '#title' => t('Runn'),
+//      '#description' => t('Set price'),
+//      '#default_value' => $node->price,
+//      '#ajax' => array(
+//        'callback' => 'set_price_callback',
+//        'wrapper' => 'product-edit-price-container',
+//        'effect' => 'fade',
+//      )
+//    ); 
+
+   
+  //Placeholder for "Changes was saved" message
+  $form['container'] = array(
+    '#prefix' => '<div id="product-edit-price-container" style="height:20px">',
+    '#suffix' => '</div>',
+  );
+    
+  return $form;
+  
+}
+
+/**
+ * Implements AJAX callback for "Save" button on node-product page.
+ * @param type $form
+ * @param type $form_state
+ * @return renderable array
+ */
+function set_price_callback($form, $form_state) {
+  
+  $nid = $form['product_id']['#value'];
+  $node = node_load($nid);
+  
+  //check permission
+  if (!node_access("update", $node)) {
+    return;
+  }
+  
+  //check input value
+  $price = $form_state['values']['product_price'];
+  if (!is_numeric($price) || $price < 2 || $price > 100) {
+    $markup = '<div id="product-edit-price-container" style="color: red;">' . t('Price must be between 2.00 and 100.00!') . '</div>';
+    return $markup;
+  }
+  
+  //change sell_price
+  $node->sell_price = $price;
+  node_save($node);
+    
+  $markup = '<div id="product-edit-price-container" style="color: green;">' . t('Price was updated!') . '</div>';
+  return $markup;
+ 
+}
+
+/**
+ * Validates product sell price.
+ * @param type $form
+ * @param type $form_state
+ */
+//function product_price_validate($form, &$form_state) {
+//  $price = $form_state['values']['product_price'];
+//  if (!is_numeric($price) || $price < 2 || $price > 100) {
+//    form_set_error('product_price', t('Price must be between 2.00 and 100.00'));
+//  }
+//}

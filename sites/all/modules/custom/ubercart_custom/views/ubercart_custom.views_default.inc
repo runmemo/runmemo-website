@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file 
+ * Sales Summary by Photographer view 
+ */
 
 /**
  * Implements hook_views_default_views().

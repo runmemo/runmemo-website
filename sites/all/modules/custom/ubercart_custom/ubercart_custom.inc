@@ -18,15 +18,15 @@ class ubercart_custom_model{
   /**
    * Get details for ocr numbers.
    */
-   public function getxyvalues($nid){
+  public function getxyvalues($nid) {
     $query = db_select('ocr_numbers', 'on');
     $query->addField('on', 'number');
     $query->addField('on', 'position_left');
     $query->addField('on', 'position_top');
-	$query->addField('on', 'probability');
+    $query->addField('on', 'probability');
     $query->condition('on.nid', $nid);
     $results = $query->execute();
     return $results;
-   }
+  }
 }
 

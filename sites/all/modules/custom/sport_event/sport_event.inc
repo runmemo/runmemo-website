@@ -15,8 +15,8 @@ function get_events() {
   return $events;
 }
 
-/** 
- * 
+/**
+ *
  * Gets title fo the event by node id.
  * @param integer $nid - node id of event
  */
@@ -37,26 +37,91 @@ function get_event($nid) {
  */
 function get_recent_event_id($start, $end) {
 
-  $event_id = db_query_range(
-  	"SELECT nid FROM {node}
-  	 WHERE type = :type 
-	 ORDER BY nid DESC", $start, $end, array(':type' => 'event'))->fetchField();
-
-  return $event_id;
+  $query = new EntityFieldQuery();
+  
+  $results = $query->entityCondition('entity_type', 'node', '=')
+  ->entityCondition('bundle', 'event')
+  ->propertyCondition('status', 1, '=')
+  ->fieldCondition('field_date', 'value', date('Y-m-d'), '<')
+  ->fieldOrderBy('field_date', 'value', 'ASC')
+  ->range($start, $end)
+  ->execute();
+  
+  $nodes = node_load_multiple(array_keys($results['node']));
+  
+  foreach ($nodes as $node) {
+    return $node->nid;
+  }
 }
 
 /**
  * 
+ * Shows whether photographer is already registered for an event
+ * @param integer $nid
+ * @param integer $uid
+ */
+function sport_event_is_registered_photographer($nid, $uid) {
+
+  $node = node_load($nid);
+  $photographers = field_get_items('node', $node, 'field_photographers');
+
+  if ($photographers) {
+    foreach($photographers as $index => $photographer) {
+      if ($photographer['uid'] == $uid) {
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
+}
+
+/**
+ *
  * Add photographer to the event's photographers field
  * @param integer $nid
  * @param integer $uid
  */
 function sport_event_register_photographer($nid, $uid) {
-    $node = node_load($nid);  
-    $node->field_photographers[$node->language][]['value'] = $uid;
-    node_save($node);
+  $is_registered = sport_event_is_registered_photographer($nid, $uid);
+  if ($is_registered) {
+    return FALSE;
+  }
+  
+  $node = node_load($nid);
+  if ($node == FALSE) {
+    return FALSE;
+  }
+  $node->field_photographers[$node->language][]['uid'] = $uid;
+  node_save($node);
+  return TRUE;
 }
 
+/**
+ *
+ * Removes photographer from field_photographer on event node
+ * @param integer $nid - event node id
+ * @param integer $uid - user id
+ * @return
+ * 	TRUE if photogrpaher was removed, FALSE 
+ */
 function sport_event_unregister_photographer($nid, $uid) {
+  $node = node_load($nid);
+  $photographers = field_get_items('node', $node, 'field_photographers');
+
+  $removed = FALSE;
+  if($photographers) {
+    foreach($photographers as $index => $photographer) {
+      if ($photographer['uid'] === $uid) {
+        unset($node->field_photographers[$node->language][$index]);
+        $removed = TRUE;
+      }
+    }
+  } 
   
+  if(!$removed) {
+    return FALSE; // user was not in the list of registered photogrpahers
+  }
+  
+  node_save($node);
+  return TRUE;
 }

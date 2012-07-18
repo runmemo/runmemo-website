@@ -23,7 +23,7 @@ function feedback_custom_form_alter(&$form, $form_state, $form_id) {
     				  </div>', '#weight' => '-5');
     $form['help']['#weight'] = '-1'; 
     $form['url_hidden'] = array('#type' => 'textfield', '#default_value' => '');
-    $form['#validate'][] = 'feedback_form_validate';
+    //$form['#validate'][] = 'feedback_form_validate';
     $form['#submit'] = array('custom_feedback_submit'); 
 
   }

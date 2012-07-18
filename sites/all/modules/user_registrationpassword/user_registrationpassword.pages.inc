@@ -1,5 +1,4 @@
 <?php
-// $Id: user_registrationpassword.pages.inc,v 1.1 2011/02/04 11:54:40 jide Exp $
 
 /**
  * @file
@@ -25,7 +24,8 @@ function user_registrationpassword_confirm_account($form, &$form_state, $uid, $t
       if (!empty($reset_link_account)) {
         drupal_set_message(t('Another user (%other_user) is already logged into the site on this computer, but you tried to use a one-time link for user %resetting_user. Please <a href="!logout">logout</a> and try using the link again.',
           array('%other_user' => $user->name, '%resetting_user' => $reset_link_account->name, '!logout' => url('user/logout'))));
-      } else {
+      }
+      else {
         // Invalid one-time link specifies an unknown user.
         drupal_set_message(t('The one-time login link you clicked is invalid.'));
       }
@@ -54,7 +54,7 @@ function user_registrationpassword_confirm_account($form, &$form_state, $uid, $t
         // user, which invalidates further use of the one-time login link.
         user_login_finalize();
         drupal_set_message(t('You have just used your one-time login link. Your account is now active.'));
-      	drupal_goto('user');
+        drupal_goto('user');
       }
       else {
         drupal_set_message(t('You have tried to use a one-time login link that has either been used or is no longer valid. Please request a new one using the form below.'));

@@ -25,7 +25,7 @@
 			<?php if ($secondary_nav): print $secondary_nav; endif; ?>
 
 			<?php print render($page['menu']); ?>
-
+			
 			<div class="float-R">
 				<div class="login-btn-lft float-L"></div>
 				<div class="login-btn float-L">
@@ -44,8 +44,8 @@
 				}
 				else {?>
 					<div class="login-btn-mid float-L">
-						<a href="<?php echo base_path();?>user"><span class="float-L">My
-								Account </span> </a> <img
+						<a href="<?php echo base_path();?>user">
+						<span class="float-L user-menu-username"><?php echo "$user->name"; ?></span> </a> <img
 							src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
 							width="1" height="23" alt="separator" /> <a
 							href="<?php echo base_path();?>user/logout"><span
@@ -151,6 +151,9 @@
 
       						<?php $path=explode('/',request_uri()); //bprint_r($parts);print_r($_REQUEST);?>
       						<?php print render($page['header']); ?>
+      						 <?php if ($title): ?>
+                              <h1 class ="page-title"><?php print $title ?></h1>
+                            <?php endif; ?>
       						<?php print render($page['content']); ?>
       						<?php print render($page['sidebar_second']); ?>
     					

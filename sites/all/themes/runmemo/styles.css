@@ -702,9 +702,8 @@ ul.secondary li.active a {
  * Nodes & comments
  */
 .node {
-  border-bottom: 1px solid #e9eff3;
-  margin: 0 -16px 1.5em;
-  padding: 1.5em 16px;
+  /*border-bottom: 1px solid #e9eff3; */
+  padding: 1.5em;
 }
 
 ul.links li,
@@ -1089,9 +1088,6 @@ tr.taxonomy-term-divider-bottom {
 .theme-selector .operations li {
   list-style-image: none;
 }
-.element-invisible {
-	diplay:none;
-	}
 
 /**
  * CSS support

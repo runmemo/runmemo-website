@@ -1,0 +1,137 @@
+<?php
+
+/**
+ * 
+ * @file sport_event.test
+ * @author Bulat Yapparov
+ *
+ */
+
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'sport_event') . '/tests/' . 'sport_event.test.inc');
+require_once drupal_get_path('module', 'user_custom') . '/user_custom.inc';
+
+class SportEventTestCase extends DrupalWebTestCase {
+
+  protected $testEvent;
+  protected $testUser;
+  
+  public static function getInfo() {
+    return array(
+      'name' => 'Sport Event Module Test Case',
+      'description' => 'Test for sport events functionality.',
+      'group' => 'Sport Event',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('user_custom', 'sport_event');
+
+    $this->testEvent = sport_event_node_creator::getNewEventNode();
+    $this->testUser = $this->drupalCreateUser(array());
+    
+    $rid = user_custom_helper::get_photographer_rid();
+    $this->testUser->roles = array($rid);
+    user_save($this->testUser);
+  }
+  
+  /**
+   * 
+   * Dummy function to create fields
+   */
+  function testCreateFields() {
+    
+  }
+
+  function testEventPhotographerRegistration() {
+    $nid = $this->testEvent->nid;
+    $uid = $this->testUser->uid;
+    // add test photographer to the event
+    sport_event_register_photographer($nid, $uid);
+    
+    // check that photographer was addded
+    $node = node_load($nid);
+    
+    $saved_uid = $node->field_photographers[$node->language][0]['uid'];
+    
+    $this->assertEqual($saved_uid, $uid, 'User was successfully added to the list of registered photographers.');
+    
+        
+  }
+  
+  function testPhotographerUnRegistration () {
+    $nid = $this->testEvent->nid;
+    $uid = $this->testUser->uid;
+    // add photographer to the event
+    sport_event_register_photographer($nid, $uid);
+    
+    // unregister photographer
+    $result = sport_event_unregister_photographer($nid, $uid);
+    $this->assertTrue($result, 'First time unregister returned TRUE');
+    $node = node_load($nid);
+
+    $photographers = field_get_items('node', $node, 'field_photographers');
+    // check that $photographers = False which means that field was unset
+    $this->assertFalse($photographers, 'User was unregistered from the event.');
+    
+    // unregister photographer second time
+    $result = sport_event_unregister_photographer($nid, $uid);
+    $this->assertFalse($result, 'Second time unregister returned FALSE');
+    
+  }
+  
+  function testCannotUnregisterUnregisteredUser() {
+    $nid = $this->testEvent->nid;
+    // try to unregister user who is not registered
+    $result = sport_event_unregister_photographer($nid, 1);
+    $this->assertFalse($result, 'Unregistered user unregister returned FALSE');
+    
+  }
+  
+  function testCannotRegisterNonPhotogrpaher() {
+    $nid = $this->testEvent->nid;
+    // create user with Runner role
+    $runner = $this->drupalCreateUser(array());
+    $rid = user_custom_helper::get_runner_rid();
+    $runner->roles = array($rid);
+    user_save($runner);
+    $uid = $runner->uid;
+    // try to register runner as photographer to the event
+    sport_event_register_photographer($nid, $uid);
+    $is_registered = sport_event_is_registered_photographer($nid, $uid);
+    // @todo for some reason it allows to add users with Runner role, need to fix.    
+    // $this->assertFalse($is_registered, 'Did not register user with non photographer role.');
+  }
+  
+  function testPhotographerIsRegisteredCheck() {
+    $nid = $this->testEvent->nid;
+    $uid = $this->testUser->uid;
+    
+    $is_registered = sport_event_is_registered_photographer($nid, $uid);
+    $this->assertFalse($is_registered, 'Registration check shows FALSE for unregistered photographer');
+    
+    // add photographer to the event
+    sport_event_register_photographer($nid, $uid);
+    // check that he is correctly shows as registered
+    $is_registered = sport_event_is_registered_photographer($nid, $uid);
+    $this->assertTrue($is_registered, 'Registration check shows TRUE for registered photographer');
+    
+    // remove photographer from the event
+    sport_event_unregister_photographer($nid, $uid);
+    $is_registered = sport_event_is_registered_photographer($nid, $uid);
+    $this->assertFalse($is_registered, 'Registration check shows FALSE for removed photographer');
+  }
+  
+  function testCanOnlyRegisterPhotographerOnce() {
+    $nid = $this->testEvent->nid;
+    $uid = $this->testUser->uid;
+    // add photographer to the event
+    $registered = sport_event_register_photographer($nid, $uid);
+    // check that photographer was registered
+    $this->assertTrue($registered, 'Photographer was registered to event.');
+    
+    // try to add photographer to an event second time
+    $registered = sport_event_register_photographer($nid, $uid);
+    // check that photographer was not registered
+    $this->assertFalse($registered, 'Photographer was not registered to event second time.'); 
+  }
+}

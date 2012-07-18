@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file 
+ * Tests for Ubercart Custom module
+ */
 
 module_load_include('inc', 'ocr', 'tests/ocr_test');
 
@@ -80,7 +84,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
   private function HttpRequest($url, $nid) {
 
     global $base_url;
-    $url = $base_url . '/' . $url .'?nid=' . $nid;
+    $url = $base_url . '/' . $url . '?nid=' . $nid;
     debug($url);
 
     //open connection
@@ -90,7 +94,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_POST, 1);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS,'nid=' . $nid);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, 'nid=' . $nid);
 
     //execute post
     $result = curl_exec($ch);
