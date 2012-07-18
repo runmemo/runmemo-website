@@ -202,7 +202,7 @@ function feedback_form($form, &$form_state) {
 
   // Store the path on which this form is displayed.
   $form['location'] = array('#type' => 'value', '#value' => $_GET['q']);
-  //$form['close'] = array('#markup' => '<div id="fb_close"><a id="fb_close_link" style="cursor:pointer">Close</a></div>','#weight'=> '-5');
+
   $form['help'] = array(
     '#prefix' => '<div class="feedback-help">',
     '#markup' => t('If you experience a bug or would like to see an addition on the current page, feel free to leave us a message.'),
@@ -222,7 +222,7 @@ function feedback_form($form, &$form_state) {
       );
       foreach ($feedbacks as $fid => $feedback) {
         $form['messages'][$fid]['#feedback'] = $feedback;
-        $form['messages'][$fid]['submitted'] = array('#markup' => t('!feedback-author !feedback-date:', array('!feedback-author' => format_username($feedback), '!feedback-date' => format_date($feedback->timestamp, 'small'))));
+        $form['messages'][$fid]['submitted'] = array('#markup' => t('@feedback-author !feedback-date:', array('@feedback-author' => format_username($feedback), '!feedback-date' => format_date($feedback->timestamp, 'small'))));
         $form['messages'][$fid]['submitted']['#prefix'] = '<div class="feedback-submitted">';
         $form['messages'][$fid]['submitted']['#suffix'] = '</div>';
         $form['messages'][$fid]['body'] = feedback_format_message($feedback);
@@ -287,7 +287,7 @@ function feedback_form_ajax_callback($form, &$form_state) {
   if (!$form_state['executed']) {
     return $form;
   }
-  
+
   // Otherwise, return a fresh copy of the form, so the user may post additional
   // feedback.
   // Reset the static cache of drupal_html_id().

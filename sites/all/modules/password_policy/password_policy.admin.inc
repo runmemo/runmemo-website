@@ -241,7 +241,8 @@ function theme_password_policy_admin_list($variables) {
     'header' => $header, 
     'rows' => $rows, 
     'attributes' => array('id' => 'password-policy-order'),
-    'empty' => t('No policies have been created.'),
+    'empty' => t('There are currently no policies. <a href="!url">Add a new one</a>.',
+      array('!url' => url('admin/config/people/password_policy/add'))),
   ));
   $output .= drupal_render_children($form);
 

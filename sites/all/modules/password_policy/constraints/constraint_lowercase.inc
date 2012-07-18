@@ -25,11 +25,12 @@ function password_policy_constraint_lowercase_error($constraint) {
  * Password validation.
  */
 function password_policy_constraint_lowercase_validate($password, $constraint, $uid) {
-  $length = drupal_strlen($password);
+  $chars = drupal_strlen($password);
   $num = 0;
-  for ($i = 0; $i < $length; $i++) {
-    if (ctype_lower($password[$i]))
+  for ($i = 0; $i < $chars; ++$i) {
+    if (ctype_lower(drupal_substr($password, $i, 1))) {
       $num++;
+    }
   }
   return $num >= $constraint;
 }

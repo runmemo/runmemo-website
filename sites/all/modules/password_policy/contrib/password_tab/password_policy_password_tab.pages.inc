@@ -8,7 +8,7 @@
 /**
  * Password change form.
  */
-function password_policy_password_tab(&$form_state, $account) {
+function password_policy_password_tab($form, &$form_state, $account) {
   $form['account']['pass'] = array(
     '#type' => 'password_confirm',
     '#description' => t('To change the current user password, enter the new password in both fields.'),

@@ -56,13 +56,18 @@ function feedback_admin_view_form($form, &$form_state) {
         );
         $form['feedback-messages'][$status][$fid]['location'] = array('#markup' => l(truncate_utf8($entry->location, 32, FALSE, TRUE), $entry->url));
         $form['feedback-messages'][$status][$fid]['date'] = array('#markup' => format_date($entry->timestamp, 'small'));
-        $form['feedback-messages'][$status][$fid]['user'] = array('#markup' => format_username($entry));
+        $form['feedback-messages'][$status][$fid]['user'] = array('#markup' => check_plain(format_username($entry)));
         $form['feedback-messages'][$status][$fid]['message'] = feedback_format_message($entry);
         $form['feedback-messages'][$status][$fid]['delete'] = array('#type' => 'link', '#title' => t('delete'), '#href' => "admin/reports/feedback/$fid/delete");
       }
     }
   }
-  $form['submit'] = array('#type' => 'submit', '#value' => t('Submit'));
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Update'),
+    // Hide the submit button, if there are no entries at all.
+    '#access' => !empty($entries),
+  );
   return $form;
 }
 
@@ -228,7 +233,7 @@ function template_preprocess_feedback_entry(&$variables) {
 
   $variables['location'] = l($entry->location, $entry->url);
   $variables['date'] = format_date($entry->timestamp, 'small');
-  $variables['account'] = format_username($entry);
+  $variables['account'] = check_plain(format_username($entry));
   $variables['message'] = feedback_format_message($entry);
 }
 

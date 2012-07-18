@@ -112,5 +112,10 @@ function awssdk_ui_settings_form($form, &$form_state) {
  * Clear config cache to new settings take effect.
  */
 function awssdk_ui_settings_form_submit($form, &$form_state) {
+  // Set aws_certificate_authority to bool TRUE the aws sdk is testing === TRUE.
+  if ($form_state['values']['aws_certificate_authority']) {
+    $form_state['values']['aws_certificate_authority'] = TRUE;
+  }
+
   cache_clear_all('awssdk_config_load', 'cache');
 }

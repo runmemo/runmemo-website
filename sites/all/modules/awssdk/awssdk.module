@@ -9,7 +9,7 @@
 /**
  * Denotes "AWS SDK for PHP" minimum version number.
  */
-define('AWSSDK_MINIMUM_VERSION', '1.5');
+define('AWSSDK_MINIMUM_VERSION', '1.5.4');
 
 /**
  * Implements hook_libraries_info()
@@ -76,36 +76,20 @@ function awssdk_requirements($phase) {
       'value' => $info['version'] . ' [' . l(t('compatibility test'), 'admin/reports/awssdk') . ']',
     );
 
-    // Instead of calling the CLI script in a separate process to check for
-    // compatibility load the capatiblity test in the same process to ensure it
-    // uses the same configuration as Drupal. Ensure that ob_start() is
-    // available, otherwise skip the requirements check and list requirement as
-    // info since we cannot reliably mark it as ok.
-    if (function_exists('ob_start')) {
-      ob_start();
-      include $info['library path'] . '/_compatibility_test/sdk_compatibility_test_cli.php';
-      $compatible = strpos(ob_get_clean(), 'Bottom Line: Yes, you can!') !== FALSE;
-
-      if (!$compatible) {
-        $requirements['awssdk']['severity'] = REQUIREMENT_ERROR;
-        $requirements['awssdk']['description'] = $t('Your PHP environment does not support the minimum requirements for the AWS SDK for PHP.');
-      }
+    // Check for SDK compatibility.
+    include $info['library path'] . '/_compatibility_test/sdk_compatibility.inc.php';
+    if ($compatiblity == REQUIREMENTS_NOT_MET) {
+      $requirements['awssdk']['severity'] = REQUIREMENT_ERROR;
+      $requirements['awssdk']['description'] = $t('Your PHP environment does not support the minimum requirements for the AWS SDK for PHP.');
     }
-    else {
-      $requirements['awssdk']['severity'] = REQUIREMENT_INFO;
-    }
+    // Ensure that the two required credentials have been set.
+    elseif (!CFCredentials::get()->key || !CFCredentials::get()->secret) {
+      $requirements['awssdk']['severity'] = REQUIREMENT_ERROR;
+      $requirements['awssdk']['description'] = $t('The required AWSSDK credentials key and secret have not been set.');
 
-    // Only proceed if unable to check compatibility or compatible.
-    if (!isset($compatible) || $compatible) {
-      // Ensure that the two required credentials have been set.
-      if (!CFCredentials::get()->key || !CFCredentials::get()->secret) {
-        $requirements['awssdk']['severity'] = REQUIREMENT_ERROR;
-        $requirements['awssdk']['description'] = $t('The required AWSSDK credentials key and secret have not been set.');
-
-        // Add link to configuration form if ui is enabled.
-        if (module_exists('awssdk_ui')) {
-          $requirements['awssdk']['description'] .= ' [' . l(t('configuration'), 'admin/config/media/awssdk') . ']';
-        }
+      // Add link to configuration form if ui is enabled.
+      if (module_exists('awssdk_ui')) {
+        $requirements['awssdk']['description'] .= ' [' . l(t('configuration'), 'admin/config/media/awssdk') . ']';
       }
     }
   }

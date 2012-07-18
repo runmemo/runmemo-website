@@ -5,9 +5,9 @@ package = Testing
 hidden = TRUE
 dependencies[] = feedback
 
-; Information added by drupal.org packaging script on 2011-09-26
+; Information added by drupal.org packaging script on 2012-05-17
 version = "7.x-2.x-dev"
 core = "7.x"
 project = "feedback"
-datestamp = "1316996260"
+datestamp = "1337213862"
 

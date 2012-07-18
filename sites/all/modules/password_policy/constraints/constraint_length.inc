@@ -11,7 +11,7 @@
  * Description of the constraint.
  */
 function password_policy_constraint_length_description() {
-  return array('name' => t('Length'), 'description' => t('Password must be longer than the specified minimum length.'));
+  return array('name' => t('Length'), 'description' => t('Password must be equal to or longer than the specified minimum length.'));
 }
 
 /**
