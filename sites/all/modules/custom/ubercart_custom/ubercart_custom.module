@@ -49,8 +49,8 @@
  */
 function ubercart_custom_views_api() {
   return array(
-  	'version' => '3.0', 
-  	'path' => drupal_get_path('module', 'ubercart_custom') . '/views');
+        'version' => '3.0', 
+        'path' => drupal_get_path('module', 'ubercart_custom') . '/views');
 }
 
 /**
@@ -127,7 +127,7 @@ function cart_add_item() {
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
-      echo cart_action_message(FALSE, 'Did not add item. Item ' . $nid .  ' is already in the cart.');
+      echo cart_action_message(FALSE, 'Did not add item. Item ' . $nid . ' is already in the cart.');
       return;
     }
   }
@@ -159,7 +159,7 @@ function cart_remove_item() {
     }
   }
   
-  echo cart_action_message(FALSE,'Item was not found in the cart.');
+  echo cart_action_message(FALSE, 'Item was not found in the cart.');
 }
 
 /**
@@ -170,7 +170,7 @@ function cart_remove_item() {
  * 	Message attribute will be ignored if not provided or NULL.
  */
 function cart_action_message($success, $message = NULL) {
-  if(!isset($message)) {
+  if (!isset($message)) {
     $result = array('success' => $success);
   }
   else {
@@ -331,10 +331,10 @@ function search_result_cart($form, &$form_state) {
 		<div>
 			<span class='summary_selected_photos'>
 				<span class='placeholder'></span>" 
-				. t('Items') .
-				"</span>
+                                . t('Items') .
+                                "</span>
 				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
-					"<span class='placeholder'></span>
+                                      "<span class='placeholder'></span>
 				</span>
 		</div>
 	</div>");
@@ -360,15 +360,15 @@ function search_result_cart($form, &$form_state) {
  */
 function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_state, $form_id) {
   
-  if( $from_id != 'product_node_custom_form') {
-    watchdog ('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
+  if ( $from_id != 'product_node_custom_form') {
+    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
  
   }
     
   
   $node = menu_get_object();
   if ($node == FALSE) {
-    watchdog ('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
+    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
     return;
   }
   
@@ -454,7 +454,7 @@ function set_price_callback($form, $form_state) {
   //check input value
   $price = $form_state['values']['product_price'];
   if (!is_numeric($price) || $price < 2 || $price > 100) {
-    $markup = '<div id="product-edit-price-container" style="color: red;">'. t('Price must be between 2.00 and 100.00!') . '</div>';
+    $markup = '<div id="product-edit-price-container" style="color: red;">' . t('Price must be between 2.00 and 100.00!') . '</div>';
     return $markup;
   }
   
@@ -462,7 +462,7 @@ function set_price_callback($form, $form_state) {
   $node->sell_price = $price;
   node_save($node);
     
-  $markup = '<div id="product-edit-price-container" style="color: green;">'. t('Price was updated!') . '</div>';
+  $markup = '<div id="product-edit-price-container" style="color: green;">' . t('Price was updated!') . '</div>';
   return $markup;
  
 }
