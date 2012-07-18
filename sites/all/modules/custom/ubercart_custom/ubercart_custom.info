@@ -1,5 +1,6 @@
-name = ubercart_custom
+name = Ubercart Custom
 description = A block module that is used to alter the ubercart core module
+package = Runmemo Custom Modules
 core = 7.x
 
 files[] = ubercart_custom.module
