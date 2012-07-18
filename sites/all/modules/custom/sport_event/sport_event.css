@@ -87,6 +87,11 @@
 	margin-left:10px;
 	}
 
+.node-type-event .view-empty {
+	padding-left:10px;
+	padding-right:10px;
+}
+
 /* Registration Button */
 .node-type-event #center form {
   margin-bottom: 0;
