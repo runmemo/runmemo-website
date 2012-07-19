@@ -359,12 +359,7 @@ function search_result_cart($form, &$form_state) {
  * @return renderable array
  */
 function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_state, $form_id) {
-  
-  if ( $from_id != 'product_node_custom_form') {
-    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
- 
-  }
-    
+
   
   $node = menu_get_object();
   if ($node == FALSE) {
