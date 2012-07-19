@@ -83,7 +83,7 @@
  * @see template_process()
  */
 ?>
-<article class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+<div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
   <?php 
     $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
@@ -117,7 +117,13 @@
   	<div class="field-items">
   	 <div class="field-item ">
   	  <?php 
-  	       print count($node->field_photographers[LANGUAGE_NONE]);     	  
+  	      $photographers = field_get_items('node', $node, 'field_photographers');  
+  	      if ($photographers) {
+  	        print count($photographers);   	  
+  	      } 
+  	      else {
+  	        print 0;
+  	      }
   	  ?>
   	 </div>
   	</div>
@@ -134,4 +140,4 @@
 
   <?php //print render($content['comments']); ?>
 
-</article><!-- /.node -->
+</div><!-- /.node -->
