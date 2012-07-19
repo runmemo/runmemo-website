@@ -210,7 +210,10 @@ function select_event_runner_sell_photos($form, &$form_state) {
     $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => '');
   }
   else {
-    $form['sellfield']['events_select_runner'] = array('#type' => 'select', '#title' => '', '#id' => 'event_runner_sell');
+    $form['sellfield']['events_select_runner'] = array(
+    		'#type' => 'select',
+      		'#title' => '', 
+      		'#id' => 'event_runner_sell');
 
     $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
     //select event options from content type 'event'
