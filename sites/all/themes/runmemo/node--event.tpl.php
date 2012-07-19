@@ -87,7 +87,7 @@
 
   <?php 
     $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
-    $ev_month = format_date($timestamp, 'custom', 'F');
+    $ev_month = format_date($timestamp, 'custom', 'M');
     $ev_day = format_date($timestamp, 'custom', 'd');
   ?>
   <div class="date">
@@ -111,12 +111,14 @@
     print render($content);
    
   ?>
-  <?php if ($teaser): ?>
+  <?php if ($teaser && isset($node->field_photographers)): ?>
   	<div class="field field-label-inline">
   	<div class="field-label">Photographers:&nbsp;</div>
   	<div class="field-items">
   	 <div class="field-item ">
-  	  <?php print count($node->field_photographers[LANGUAGE_NONE]); ?>
+  	  <?php 
+  	       print count($node->field_photographers[LANGUAGE_NONE]);     	  
+  	  ?>
   	 </div>
   	</div>
   	</div>

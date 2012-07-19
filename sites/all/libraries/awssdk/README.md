@@ -119,13 +119,49 @@ your project with:
 
 	require_once 'AWSSDKforPHP/sdk.class.php';
 
-### Configuration
+### Via Composer
+
+[Composer](http://getcomposer.org) is a newer dependency manager for PHP, and is now supported by the SDK.
+
+In order to use the AWS SDK for PHP via Composer, you must do the following:
+
+1. Add ``amazonwebservices/aws-sdk-for-php`` as a dependency in your project's ``composer.json`` file:
+
+        {
+            "require": {
+                "amazonwebservices/aws-sdk-for-php": "*"
+            }
+        }
+
+    Consider tightening your dependencies to a known version when deploying mission critical applications (e.g. ``1.5.*``).
+
+2. Download and install Composer:
+
+    curl -s http://getcomposer.org/installer | php
+
+3. Install your dependencies:
+
+    php composer.phar install
+
+4. Require Composer's autoloader
+
+    Composer also prepares an autoload file that's capable of autoloading all of the classes in any of the libraries that it downloads. To use it, just add the following line to your code's bootstrap process:
+
+    require 'vendor/autoload.php';
+
+You can find out more on how to install Composer, configure autoloading, and other best-practices for defining dependencies at [getcomposer.org](http://getcomposer.org).
+
+## Configuration
 
 1. Copy the contents of [config-sample.inc.php](https://github.com/amazonwebservices/aws-sdk-for-php/raw/master/config-sample.inc.php)
    and add your credentials as instructed in the file.
 2. Move your file to `~/.aws/sdk/config.inc.php`.
 3. Make sure that `getenv('HOME')` points to your user directory. If not you'll need to set
    `putenv('HOME=<your-user-directory>')`.
+
+This is because PHP will attempt to load the file from your user directory (e.g., `~/.aws/sdk/config.inc.php`).
+If PHP doesn't happen to know where your user directory is, you'll need to tell PHP where it is with the `putenv()`
+function.
 
 
 ## Additional Information

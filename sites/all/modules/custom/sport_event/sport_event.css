@@ -1,6 +1,6 @@
 
 .node-type-event .region-content{
-	min-width:600px;
+	width:600px;
 	float:left;
 }
 .node-type-event .region-sidebar-second {
@@ -86,6 +86,11 @@
 	padding-bottom:5px;
 	margin-left:10px;
 	}
+
+.node-type-event .view-empty {
+	padding-left:10px;
+	padding-right:10px;
+}
 
 /* Registration Button */
 .node-type-event #center form {

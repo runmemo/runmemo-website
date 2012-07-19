@@ -293,3 +293,12 @@ function runmemo_form_views_exposed_form_alter(&$form, &$form_state) {
   $form['submit']['#value'] = t('Search');
   $form['submit']['#attributes']['class'][] = 'button';
 }
+
+/**
+ * 
+ * Implements hook_html_head_alter
+ */
+function runmemo_html_head_alter(&$head_elements) {
+  // remove a generator tag from the head for Drupal 7
+  unset($head_elements['system_meta_generator']);
+}

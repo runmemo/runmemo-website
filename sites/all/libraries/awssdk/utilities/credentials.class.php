@@ -21,7 +21,7 @@
 /**
  * The <CFCredentials> class enables developers to easily switch between multiple sets of credentials.
  *
- * @version 2011.11.15
+ * @version 2012.07.13
  * @license See the included NOTICE.md file for more information.
  * @copyright See the included NOTICE.md file for more information.
  * @link http://aws.amazon.com/php/ PHP Developer Center
@@ -61,10 +61,6 @@ class CFCredentials
 		{
 			$credential_sets[self::DEFAULT_KEY] = reset($credential_sets);
 		}
-		elseif (!isset($credential_sets[self::DEFAULT_KEY]))
-		{
-			throw new CFCredentials_Exception('If more than one credential set is provided, a default credential set (identified by the key "' . self::DEFAULT_KEY . '") must be specified.');
-		}
 
 		// Resolve any @inherit tags
 		foreach ($credential_sets as $credential_name => &$credential_set)
@@ -88,15 +84,18 @@ class CFCredentials
 		}
 
 		// Normalize the value of the @default credential set
-		$default = $credential_sets[self::DEFAULT_KEY];
-		if (is_string($default))
+		if (isset($credential_sets[self::DEFAULT_KEY]))
 		{
-			if (!isset($credential_sets[$default]))
+			$default = $credential_sets[self::DEFAULT_KEY];
+			if (is_string($default))
 			{
-				throw new CFCredentials_Exception('The credential set, "' . $default . '", does not exist and cannot be used as the default credential set.');
-			}
+				if (!isset($credential_sets[$default]))
+				{
+					throw new CFCredentials_Exception('The credential set, "' . $default . '", does not exist and cannot be used as the default credential set.');
+				}
 
-			$credential_sets[self::DEFAULT_KEY] = $credential_sets[$default];
+				$credential_sets[self::DEFAULT_KEY] = $credential_sets[$default];
+			}
 		}
 
 		// Store the credentials
@@ -119,6 +118,16 @@ class CFCredentials
 
 		// Return the credential set as an object
 		return new CFCredential(self::$credentials[$credential_name]);
+	}
+
+	/**
+	 * Retrieves a list of all available credential set names.
+	 *
+	 * @return CFArray A list of all available credential set names.
+	 */
+	public static function list_sets()
+	{
+		return new CFArray(array_keys(self::$credentials));
 	}
 }
 

@@ -1241,7 +1241,12 @@ table.system-status-report tr.ok th {
 /* ************ Event Profile ************** */
 
 #block-views-event-promoted-images-block {
-	diplay:none;
-	
+	display:none;
+}
+
+
+/* Messages */
+.element-invisible {
+	display:none;
 	}
 	
