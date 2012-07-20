@@ -194,7 +194,7 @@
             range: "min",
             value: sell_price,
             min: 2,
-            max: 100,
+            max: 99,
             step: 0.5,
             slide: onSlide,
             change: onPriceChange
@@ -219,12 +219,13 @@
 </div>
 
 <div class="product_content">
+  <div class="product-info display-price">
+    <input type="text" id="amount" style="border: 0; width: 60px;" /> 
+  </div>  
+  
   <?php print render($content); ?>
   
   <label for="amount" class="field-label">Sell price:</label>
-  <div styles="opacity:0;">
-    <input type="text" id="amount" disabled="disabled" styles="border:0; font:bold; opacity:0;" /> 
-  </div>
   <div id="sell_price"></div>
 
   
