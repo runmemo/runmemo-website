@@ -5,5 +5,6 @@ core = 7.x
 
 files[] = ubercart_custom.module
 files[] = ubercart_custom.inc
+files[] = jquery.tagsinput.js
 files[] = views/ubercart_custom.views_default.ini
 files[] = tests/ubercart_custom.test
