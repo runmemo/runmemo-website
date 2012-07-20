@@ -17,23 +17,10 @@ function user_custom_form_alter(&$form, $form_state, $form_id) {
     //registration page
     if ($form['#form_id']=='user_register_form') {
       // array_unshift($form, array('form_title' => array('#markup' => '<h3 class="registration-form-title">Photographer registration</h3>') )); 
-           
-      $base_path=base_path() . 'sites/default/help_icon.gif';
-      $form['photo_paypal_icon'] = array(
-      			'#markup' => "<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'>
-      						 <img src='$base_path' alt='paypal-id'></img></span></p>", '#weight' => '5');
-      //add the form submit function for insert the user role in the user table
-      $form['#submit'][''] = 'user_role_insertion'; 
-   
-  
+       $form['#submit'][''] = 'user_set_photographer_role'; 
     }
     //profile edit page
     if ($form['#form_id']=='user_profile_form') {
-      global $user;
-      $uid=$user->uid;
-      $base_path=base_path() . 'sites/default/help_icon.gif';
-      $form['photo_paypal_icon'] = array('#markup' => "<p><span title='Your Paypal account ID' id='paypal_icon' style='float:right;padding-right:102px;padding-top:18px;color:red;'><img src='$base_path'></img></span></p>", '#weight' => '5');
-      $form['field_term'] = '';
 
     }
 }
@@ -43,19 +30,13 @@ function user_custom_form_alter(&$form, $form_state, $form_id) {
  * @param $form
  * $form gives form values from the user registration page
  */
-function user_role_insertion($form, &$from_state) {
- 
-    //call class function
- 
-    $rid = user_custom_helper::get_photographer_rid();
+function user_set_photographer_role($form, &$from_state) {
 
     $uid = $form['#user']->uid;
+    $rid = user_custom_helper::get_photographer_rid();
 
-    //call the class function for update the user role in the user table
-    user_custom_helper::user_role_update($rid, $uid);
-
-    //call the class function for insert the user role in the user roles table
-    user_custom_helper::user_role_id_insert($rid, $uid);
+    $new_user = user_load($uid);
+    user_save($new_user, array ('roles'=>array($rid => 'Photographer')));
 
 }
 

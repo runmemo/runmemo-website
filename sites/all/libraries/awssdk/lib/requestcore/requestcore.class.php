@@ -622,7 +622,7 @@ class RequestCore
 		if ($this->ssl_verification)
 		{
 			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYPEER, true);
-			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, true);
+			curl_setopt($curl_handle, CURLOPT_SSL_VERIFYHOST, 2);
 		}
 		else
 		{
@@ -684,6 +684,11 @@ class RequestCore
 		if (isset($this->request_headers) && count($this->request_headers))
 		{
 			$temp_headers = array();
+
+			if (!array_key_exists('Expect', $this->request_headers))
+			{
+				$this->request_headers['Expect'] = '';
+			}
 
 			foreach ($this->request_headers as $k => $v)
 			{
