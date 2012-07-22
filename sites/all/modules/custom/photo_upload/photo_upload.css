@@ -46,19 +46,6 @@ display:block;
 	width:100%;
 }
 
-
-.page-photographer #edit-upload {
-   background:url(images/start-upload.png) no-repeat;
-   width:151px;
-   height:39px;
-   float:right;
-   border:0 none;
-   cursor:pointer;
-   outline:none;
-   display:block;
-   margin:0px;
-
-}
 .form-type-plupload .description {
 	
     color:#898989;

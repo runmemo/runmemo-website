@@ -10,9 +10,12 @@
 function user_custom_form_alter(&$form, $form_state, $form_id) {
    if ($form['#form_id'] == 'user_login') {
     //  array_unshift($form, array('form_title' => array('#markup' => '<h3 class="login-form-title">I have an account</h3>') )); 
-      $form['new_pwd'] = array('#markup' => l('Forgot password?', 'user/password', array('attributes' => array('id' => 'forgot_pwd'))));
+      $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member? ') . '</span>', );
+      $form['join-link'] = array('#markup' => l(t('Join us!'), 'login', array('attributes' => array('id' => 'user-login-register'))));
       $form['actions']['submit']['#value'] = 'Login';
+
       $form['#validate'][] = 'cookie_check_validate';
+      dvm($form);
    }
     //registration page
     if ($form['#form_id']=='user_register_form') {

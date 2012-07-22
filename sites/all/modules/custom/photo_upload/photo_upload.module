@@ -144,7 +144,7 @@ function photographer_drag_and_drop_form($form, &$form_state) {
 
   $form['box']['upload'] = array(
   	'#type' => 'submit', 
-  	'#value' => '', 
+  	'#value' => 'Start Uplaod', 
     '#validators' => array(),
   	'#attributes' => array(
   						'onclick' => 'return drag_drop_upload_validation();')

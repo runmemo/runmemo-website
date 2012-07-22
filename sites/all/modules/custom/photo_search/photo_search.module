@@ -96,10 +96,10 @@ function select_event_runner_get_photos($form, &$form_state) {
   );
 
   if (arg('0') != 'search-result') {
-    $form['search_filter']['find'] = 
+    $form['search_filter']['find'] =
     array(
-    '#markup' => "<div id='find'>Find</div>
-    <div id='great_photos'>great photos of you...</div>");
+    '#markup' => "<div id='find'>Runners</div>
+    <div id='great_photos'>Find great photos of you</div>");
   }
   $form['search_filter']['events_select_runner'] = array(
     '#type' => 'select', 
@@ -148,7 +148,7 @@ function select_event_runner_get_photos($form, &$form_state) {
   }
 
   //submit get my photo in the runner side
-  $form['search_filter']['search'] = array('#type' => 'submit', '#value' => '');
+  $form['search_filter']['search'] = array('#type' => 'submit', '#value' => 'Search');
 
   return $form;
 
@@ -194,68 +194,43 @@ function select_event_runner_get_photos_submit($form, &$form_state) {
 function select_event_runner_sell_photos($form, &$form_state) {
 
   global $user;
+
+  if(!$user->uid) {
+    return drupal_get_form('user_login');
+  }
   //for sell the photos in the runner side
   $form['sellfield'] = array(
       '#type' => 'fieldset',
       '#title' => '',
       '#collapsible' => FALSE,
       '#collapsed' => FALSE,
-      '#attached' => array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),
-
+      '#attached' => array('css' => array(drupal_get_path('module', 'amazon_s3') . '/amazon_s3.css')),  
+  // '#attributes' => array('class'=>'photo-search-fields'),
   );
 
-  $form['sellfield']['trade'] = array('#markup' => '<div id="trade">Trade</div>  <div id="taken_picture">pictures you have taken...</div>');
 
-  if (isset($user->roles['1'])) {
-    $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => '');
-  }
-  else {
-    $form['sellfield']['events_select_runner'] = array(
+
+  $form['sellfield']['events_select_runner'] = array(
     		'#type' => 'select',
       		'#title' => '', 
       		'#id' => 'event_runner_sell');
 
-    $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
-    //select event options from content type 'event'
+  $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
+  //select event options from content type 'event'
 
-    //get the event name from content type 'event'
-    $events = get_events();
-    foreach ($events as $event) {
-      $event_title = $event->title;
-      $event_nid   = $event->nid;
-      $form['sellfield']['events_select_runner']['#options'][$event_nid] = $event_title;
-    }
-    $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => '');
+  //get the event name from content type 'event'
+  $events = get_events();
+  foreach ($events as $event) {
+    $event_title = $event->title;
+    $event_nid   = $event->nid;
+    $form['sellfield']['events_select_runner']['#options'][$event_nid] = $event_title;
   }
+  $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => 'Uploader');
 
 
   return $form;
 }
 
-/**
- * Function for get started submit button in the home
- *
- */
-
-function select_event_runner_sell_photos_submit($form, &$form_state) {
-
-  global $user;
-  $uid = $user->uid;
-
-
-  if (isset($user->roles['1'])) {
-    $form_state['redirect'] = "login";
-  }
-  else {
-    $selected_event_id = $form['sellfield']['events_select_runner']['#value'];
-    if ($selected_event_id != 'select_event') {
-      $form_state['redirect'] = "photographer/" . $selected_event_id;
-    }
-    else {
-      $form_state['redirect'] = "photographer";
-    }
-  }
-}
 
 /**
  * Function for search the images by runner
@@ -270,9 +245,38 @@ function find_trade_section() {
 
   $style = "<div id='front-search-photos'>
   				<div>$find_photos</div>
-  				<div id='front-trade-photos'>$trade_photos </div></div>";
+  				<div id='block-photographers'>
+    				<div id='trade'>Photographers</div>  
+    				<div id='taken_picture'>Sell your photos</div>
+    				<div id='front-trade-photos'>$trade_photos </div>
+    			</div>	
+  			</div>";
 
   return $style;
+}
+
+/**
+ * Function for get started submit button in the home
+ *
+ */
+function select_event_runner_sell_photos_submit($form, &$form_state) {
+
+  global $user;
+  $uid = $user->uid;
+
+
+  if (isset($user->roles['1'])) {
+    $form_state['redirect'] = "login";
+  }
+  else {
+    $selected_event_id = $form['sellfield']['events_select_runner']['#value'];
+    if ($selected_event_id != 'select_event') {
+      $form_state['redirect'] = "photographer/upload/" . $selected_event_id;
+    }
+    else {
+      $form_state['redirect'] = "photographer";
+    }
+  }
 }
 
 

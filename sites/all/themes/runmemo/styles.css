@@ -293,11 +293,8 @@ span.form-required {
   margin-bottom: 2em;
 }
 
-.form-actions {
-  margin: 2em 0 1em;
-}
 .form-button,
-.form-submit {
+{
   margin: 0 0.5em 0 0; /* LTR */
 }
 
