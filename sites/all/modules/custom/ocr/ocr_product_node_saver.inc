@@ -61,4 +61,53 @@ class ProductNodeSaver {
       $this->changed = FALSE;
     }
   }
+  
+  /**
+   * Get runner numbser as string (exml "1120,3123,11")
+   */
+  public function GetNumbersStr() {
+    $runner_numbers = "";
+    $numbers = field_get_items('node', $this->node, 'field_runner_number');
+//    $runner_numbers = implode($numbers[]['value'], ",");
+    foreach ($numbers as $number) {
+      if (empty($runner_numbers)) {
+        $runner_numbers = (string)$number['value'];
+      } else {
+        $runner_numbers = $runner_numbers . ',' . (string)$number['value'];
+      }
+    }
+    
+    return $runner_numbers;
+  }
+  
+  /**
+   * Add runner's number
+   */
+  public function AddRunnerNumber($number) {
+    $this->node->field_runner_number[$this->node->language][]['value'] = $number;
+    $this->changed = TRUE;
+  }
+  
+  /**
+   * Remvoe runner's number
+   */
+  public function RemoveRunnerNumber($number) {
+    $count_numbers = count($this->node->field_runner_number[$this->node->language]);
+    for ($i = 0; $i < $count_numbers; $i++) {
+      if ($this->node->field_runner_number[$this->node->language][$i]['value'] === $number) {
+        unset($this->node->field_runner_number[$this->node->language][$i]['value']);
+        $this->changed = TRUE;
+      }
+    }
+ 
+  }
+  
+  /**
+   * Set sell price
+   */
+  public function SetSellPrice($sell_price) {
+    $this->node->sell_price = $sell_price;
+    $this->changed = TRUE;    
+  }
+
 }
