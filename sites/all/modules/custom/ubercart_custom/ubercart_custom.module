@@ -68,9 +68,9 @@ function ubercart_custom_init() {
   require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr_product_node_saver.inc');
 
   drupal_add_css( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/start/jquery-ui.css', 'external');
-  drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
-  drupal_add_js('https://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.min.js', 'external');
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
+  
+  drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/jquery.tagsinput.js');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
 
