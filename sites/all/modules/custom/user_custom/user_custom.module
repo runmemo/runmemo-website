@@ -8,19 +8,28 @@
  * $form_id is the form id
  */
 function user_custom_form_user_login_alter(&$form, $form_state) {
-
-      $form['fake-password'] = array (
-       '#id' => 'edit-pass-fake', 
-       '#type' => 'textfield',
-       '#default_value' => 'Password',     
-      ); 
+      
+        $form['fake-password'] = array (
+         '#id' => 'edit-pass-fake', 
+         '#type' => 'textfield',
+         '#default_value' => 'Password',    
+         '#title' => t('Password'),
+         '#maxlength' => 60,
+         '#size' => 15,
+         '#required' => FALSE ,
+        ); 
+       
       $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member? ') . '</span>', );
-      $form['join-link'] = array('#markup' => l(t('Join us!'), 'login', array('attributes' => array('id' => 'user-login-register'))));
-      $form['actions']['submit']['#value'] = 'Login';
-  
-      $form['#validate'][] = 'cookie_check_validate';
-   
+      
+      $form['join-link'] = array(
+      	'#markup' => l(t('Join us!'), 'login', 
+        array('attributes' => array('id' => 'user-login-register'))));
+    
+       //  $form['#validate'][] = 'cookie_check_validate';
+         
 }
+
+
 /**
  * implements hook_form_alter for user_register_form 
  */  

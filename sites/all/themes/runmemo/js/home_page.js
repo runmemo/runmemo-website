@@ -3,10 +3,11 @@ jQuery(document).ready(function($) {
 	$('.recent-event .form-text').val('My Number');
 	
 	
-	$('#user-login #edit-name').val('Username');
+	$('.front #user-login #edit-name').val('Username');
 	
-	$('#edit-pass').hide();
-	
+	$('.front .form-item-pass').hide();
+	$('.form-item-fake-password').hide();
+	$('.front .form-item-fake-password').show();
 	
 	// for remove the set message when adding items in the cart
 	if ($('.messages a').length > 0) {
@@ -44,30 +45,30 @@ jQuery(document).ready(function($) {
 				}
 			});
 			
-			$('#user-login #edit-name').focus( function() {
+			$('.front #user-login #edit-name').focus( function() {
 				if ($(this).val() == 'Username') {
 					$(this).val("");
 				}
 			});
 		
-			$('#user-login #edit-name').blur( function() {
+			$('.front #user-login #edit-name').blur( function() {
 				if ($(this).val() == '') {
 					$(this).val('Username');
 				}
 			});
 		
-			$('#edit-pass').blur( function() {
+			$('.front #edit-pass').blur( function() {
 			    if ($(this).attr('value') == '') {
-			        $(this).hide();
-			        $('#edit-pass-fake').show();
+			        $('.front .form-item-pass').hide();
+			        $('.front .form-item-fake-password').show();
 			    }
 				
 			});
 			
-			$('#edit-pass-fake').focus( function() {
-				 $(this).hide();
-				 $('#edit-pass').show();
-				 $('#edit-pass').focus();
+			$('.front #edit-pass-fake').focus( function() {
+				 $('.front .form-item-fake-password').hide();
+				 $('.front .form-item-pass').show();
+				 $('.front .form-item-pass').focus();
 			});
 		
 			

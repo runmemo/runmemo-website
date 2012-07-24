@@ -192,12 +192,6 @@ function select_event_runner_get_photos_submit($form, &$form_state) {
  *   return form values
  */
 function select_event_runner_sell_photos($form, &$form_state) {
-
-  global $user;
-
-  if(!$user->uid) {
-    return drupal_get_form('user_login');
-  }
   //for sell the photos in the runner side
   $form['sellfield'] = array(
       '#type' => 'fieldset',
@@ -241,14 +235,23 @@ function find_trade_section() {
 
   $find_photos = drupal_render(drupal_get_form('select_event_runner_get_photos'));
 
-  $trade_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
+  
+  global $user;
 
+  if(!$user->uid) {
+    $trade_photos = drupal_render(drupal_get_form('user_login'));
+  } else 
+  {
+    $trade_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
+  }
   $style = "<div id='front-search-photos'>
   				<div>$find_photos</div>
   				<div id='block-photographers'>
     				<div id='trade'>Photographers</div>  
     				<div id='taken_picture'>Sell your photos</div>
-    				<div id='front-trade-photos'>$trade_photos </div>
+    				<div id='front-trade-photos'>
+                      $trade_photos
+    				</div>
     			</div>	
   			</div>";
 
