@@ -15,7 +15,6 @@ function user_custom_form_alter(&$form, $form_state, $form_id) {
       $form['actions']['submit']['#value'] = 'Login';
 
       $form['#validate'][] = 'cookie_check_validate';
-      dvm($form);
    }
     //registration page
     if ($form['#form_id']=='user_register_form') {

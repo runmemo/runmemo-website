@@ -37,7 +37,26 @@ class ProductNodeSaver {
     $this->node->ocr_numbers[$this->node->language][]['value'] = $number;
     $this->changed = TRUE;
   }
-
+  
+  /**
+   * Remvoe runner's number
+   */
+  public function RemoveNumber($number) {
+    $count_numbers = count($this->node->ocr_numbers[$this->node->language]);
+    print_r($this->node->ocr_numbers[$this->node->language]);
+    for ($i = 0; $i < $count_numbers; $i++) {
+      if (!isset($this->node->ocr_numbers[$this->node->language][$i])) {
+        $count_numbers++;
+        continue;
+      }
+      if ($this->node->ocr_numbers[$this->node->language][$i]['value'] === $number) {
+        unset($this->node->ocr_numbers[$this->node->language][$i]);
+        $this->changed = TRUE;
+      }
+    }
+     print_r($this->node->ocr_numbers[$this->node->language]);
+  }
+  
   /**
    * Update Product node with the OCR response status.
    */
@@ -67,7 +86,7 @@ class ProductNodeSaver {
    */
   public function GetNumbersStr() {
     $runner_numbers = "";
-    $numbers = field_get_items('node', $this->node, 'field_runner_number');
+    $numbers = field_get_items('node', $this->node, 'ocr_numbers');
 //    $runner_numbers = implode($numbers[]['value'], ",");
     foreach ($numbers as $number) {
       if (empty($runner_numbers)) {
@@ -78,28 +97,6 @@ class ProductNodeSaver {
     }
     
     return $runner_numbers;
-  }
-  
-  /**
-   * Add runner's number
-   */
-  public function AddRunnerNumber($number) {
-    $this->node->field_runner_number[$this->node->language][]['value'] = $number;
-    $this->changed = TRUE;
-  }
-  
-  /**
-   * Remvoe runner's number
-   */
-  public function RemoveRunnerNumber($number) {
-    $count_numbers = count($this->node->field_runner_number[$this->node->language]);
-    for ($i = 0; $i < $count_numbers; $i++) {
-      if ($this->node->field_runner_number[$this->node->language][$i]['value'] === $number) {
-        unset($this->node->field_runner_number[$this->node->language][$i]['value']);
-        $this->changed = TRUE;
-      }
-    }
- 
   }
   
   /**
