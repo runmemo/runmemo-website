@@ -26,7 +26,12 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
         array('attributes' => array('id' => 'user-login-register'))));
     
        //  $form['#validate'][] = 'cookie_check_validate';
-         
+      //  $form['new-password-text'] = array('#markup' => '<span id="new-password-text">' . t('Forgot your password? ') . '</span>', );
+        $form['new-password-link'] = array(
+        '#markup' => l(t('Request new password.'), 'user/password', 
+         array('attributes' =>array('id' => 'new-password-link'))));
+      
+  
 }
 
 

@@ -340,6 +340,15 @@ float:left;
         margin-bottom: 10px;
   
 }
+
+.front #user-login #edit-submit {
+	margin-top: 0px;
+}
+
+.front  #user-login #edit-actions {
+	margin-top:-10px;
+	}
+	
 .cont-header-bg h1 {
 	color:#63676b;
 	font-family:'Walkway Bold', sans-serif;
@@ -719,6 +728,17 @@ display:none;
 	padding:0px;
 	}	
 
+#user-login-register, #new-password-link {
+	float:left;
+
+}
+#new-password-link {
+	clear:left;
+	}
+#edit-actions {
+	float:right;
+	width:152;
+	}
 .one-sidebar .content span table{
 display:none !important;
 }
@@ -1204,7 +1224,8 @@ float:left;
 float:right;
 }
 .page-user-password #user-pass {
-width:545px;
+
+float:left;
 border:1px solid #D2D2D2;
 margin: 20px auto 0 auto;
 }
@@ -2192,9 +2213,6 @@ border-bottom: 1px solid #e9e9e9!important;
   line-height: 27px;
   padding: 2px;
   width: 300px;
-}
-.page-user-password #user-pass #edit-submit {
-  line-height: 23px!important;
 }
 
 /*Review Order*/
