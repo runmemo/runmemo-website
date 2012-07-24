@@ -43,7 +43,6 @@ class ProductNodeSaver {
    */
   public function RemoveNumber($number) {
     $count_numbers = count($this->node->ocr_numbers[$this->node->language]);
-    print_r($this->node->ocr_numbers[$this->node->language]);
     for ($i = 0; $i < $count_numbers; $i++) {
       if (!isset($this->node->ocr_numbers[$this->node->language][$i])) {
         $count_numbers++;
@@ -54,7 +53,6 @@ class ProductNodeSaver {
         $this->changed = TRUE;
       }
     }
-     print_r($this->node->ocr_numbers[$this->node->language]);
   }
   
   /**
