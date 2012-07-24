@@ -550,6 +550,10 @@ body.two-sidebars #squeeze {
   display:block;
 }
 
+.region-content {
+  float: left;
+}
+
 #wrapper #container .breadcrumb {
   position: absolute;
   top: 15px;
