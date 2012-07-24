@@ -341,11 +341,11 @@ float:left;
   
 }
 
-.front #user-login #edit-submit {
+#user-login #edit-submit {
 	margin-top: 0px;
 }
 
-.front  #user-login #edit-actions {
+#user-login #edit-actions {
 	margin-top:-10px;
 	}
 	
@@ -887,6 +887,8 @@ width:400px!important;
 height:39px!important; 
 background-image: none!important;
 border: 2px solid #EEF1F2!important;
+
+
 
 /* padding:0 10px; */
 }
@@ -1535,6 +1537,12 @@ text-align:center;
  .node_check_id,.node_cost,.authour_first_name{
 display:none!important;
 }
+
+.page-search-result #edit-search-filter .form-submit {
+	float:left;
+	margin-left:20px;
+	}
+
 .page-search-result .region-content .content table tr td{
 position:relative;
 
