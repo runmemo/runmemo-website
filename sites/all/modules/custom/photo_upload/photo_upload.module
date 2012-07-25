@@ -105,8 +105,8 @@ function select_event_function() {
     $form['events_select']['#options'][$nid] = $event_title;
   }
 
-  if ((is_numeric(arg(1))) && (arg(1) != '')) {
-    $default = arg(1);
+  if (is_numeric(arg(2)) && arg(2) != '') {
+    $default = arg(2);
     $form['events_select']['#default_value'] = $default;
   }
 

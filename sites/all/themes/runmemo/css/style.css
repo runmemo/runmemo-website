@@ -341,11 +341,11 @@ float:left;
   
 }
 
-.front #user-login #edit-submit {
+#user-login #edit-submit {
 	margin-top: 0px;
 }
 
-.front  #user-login #edit-actions {
+#user-login #edit-actions {
 	margin-top:-10px;
 	}
 	
@@ -887,6 +887,8 @@ width:400px!important;
 height:39px!important; 
 background-image: none!important;
 border: 2px solid #EEF1F2!important;
+
+
 
 /* padding:0 10px; */
 }
@@ -1535,6 +1537,12 @@ text-align:center;
  .node_check_id,.node_cost,.authour_first_name{
 display:none!important;
 }
+
+.page-search-result #edit-search-filter .form-submit {
+	float:left;
+	margin-left:20px;
+	}
+
 .page-search-result .region-content .content table tr td{
 position:relative;
 
@@ -1599,6 +1607,9 @@ text-align:justify;
    top: -22px;
    right: 0px;
    float: right;
+   margin-top:0px;
+   margin-right:10px;
+   -webkit-transition: none;
 }
 .page-search-result #search-result-cart .add_cart{
  background: url("../images/Add-Cart.png") no-repeat scroll 0 0 transparent !important;
@@ -1634,11 +1645,7 @@ text-align:justify;
 {
     width:100%;
 }
-.page-search-result .content #search-result-cart #add_to_cart
-{
-    /*float:left;*/
-    
-}
+
 .page-search-result .content #search-result-cart .cart_summary
 {
     float:right;
@@ -2020,6 +2027,7 @@ float: right;
 .uc-cart-checkout-form .form-item input {
   padding: 10px 0 10px 0;
   width: 273px;
+  height:22px;
   border: 2px solid #EEF1F2;
   border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
@@ -2032,7 +2040,7 @@ float: right;
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
   float: right;
   padding: 11px 109px 0 0;
-  /*width: 136px;*/
+  width: 136px;
 }
 .uc-cart-checkout-form .form-submit {
   float: right;

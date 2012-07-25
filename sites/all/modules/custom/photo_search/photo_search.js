@@ -318,7 +318,7 @@ jQuery(document).ready(function() {
 			
 			
 			function clear_cart() {
-				
+				// @todo
 			}
 			
 			/**
@@ -382,18 +382,14 @@ jQuery(document).ready(function() {
 			 * Shows Add to Cart button
 			 */
 			function show_add_button() {
-				$('.page-search-result #search-result-cart .form-submit').removeClass('remove_cart');
-				$('.page-search-result #search-result-cart .form-submit').addClass('add_cart');
+				$('#add_to_cart').removeClass('remove_cart').addClass('add_cart');				
 			}
 
 			/**
 			 * Shows Remove from Cart button
 			 */
 			function show_remove_button() {
-				$('.page-search-result #search-result-cart .form-submit')
-						.removeClass('add_cart');
-				$('.page-search-result #search-result-cart .form-submit')
-						.addClass('remove_cart');
+				$('#add_to_cart').removeClass('add_cart').addClass('remove_cart');
 			}
 
 			/**
