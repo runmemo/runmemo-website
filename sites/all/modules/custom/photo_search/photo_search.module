@@ -277,7 +277,7 @@ function select_event_runner_sell_photos_submit($form, &$form_state) {
       $form_state['redirect'] = "photographer/upload/" . $selected_event_id;
     }
     else {
-      $form_state['redirect'] = "photographer";
+      $form_state['redirect'] = "photographer/upload";
     }
   }
 }
