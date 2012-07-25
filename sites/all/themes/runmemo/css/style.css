@@ -2027,6 +2027,7 @@ float: right;
 .uc-cart-checkout-form .form-item input {
   padding: 10px 0 10px 0;
   width: 273px;
+  height:22px;
   border: 2px solid #EEF1F2;
   border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
@@ -2039,7 +2040,7 @@ float: right;
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
   float: right;
   padding: 11px 109px 0 0;
-  /*width: 136px;*/
+  width: 136px;
 }
 .uc-cart-checkout-form .form-submit {
   float: right;
