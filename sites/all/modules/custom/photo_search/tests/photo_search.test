@@ -1,0 +1,164 @@
+<?php
+
+/**
+ *  @file contains test cases for Photo Search module.
+ */
+
+/**
+ *
+ * @author leonid@runmemo.com
+ *
+ */
+class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
+  public static function getInfo() {
+    return array(
+      'name' => 'Photo Search request test',
+      'description' => 'Test that user can write photo request',
+      'group' => 'PhotoSearch',
+    );
+  }
+
+  function setUp() {
+    parent::setUp('photo_search');
+    $schema['photo_requests'] = drupal_get_schema('photo_requests');
+    $this->installTables($schema);
+
+    $this->addSampleData();
+  }
+
+  function installTables($schema) {
+  // This ends up being a test for table drop and create, too, which is nice.
+    foreach ($schema as $name => $data) {
+      if (db_table_exists($name)) {
+        db_drop_table($name);
+      }
+      db_create_table($name, $data);
+    }
+
+    foreach ($schema as $name => $data) {
+      $this->assertTrue(db_table_exists($name), t('Table @name created successfully.', array('@name' => $name)));
+    }
+  }
+
+  function addSampleData() {
+    $initial_requests = array(
+          array(
+            'email' => 'testPhotoSearchInsertRequestQ@runmemo.com',
+            'eventid' => '111',
+            'number' => '123',
+            'created' => REQUEST_TIME,
+            'performed' => REQUEST_TIME,
+          ),
+          array(
+            'email' => 'testPhotoSearchInsertRequestW@runmemo.com',
+            'eventid' => '222',
+            'number' => '12345',
+            'created' => REQUEST_TIME,
+            'performed' => 0,
+          ),
+    );  
+    
+    foreach ($initial_requests as $request) {
+      db_insert(PhotoRequest::DBTABLE)->fields(
+          array( 
+              'email'   => $request['email'],
+              'eventid' => $request['eventid'],
+              'number'  => $request['number'],
+              'created' => $request['created'],
+              'performed' => $request['performed'],
+          ))
+        ->execute();
+    }    
+  }
+  
+  /**
+   * 
+   * Checks that new request inserted into table
+   */
+  function testPhotoSearchInsertRequest() {
+    $request = array(
+      'email' => 'testPhotoSearchInsertRequest@runmemo.com',
+      'eventid' => '111',
+      'number' => '12345',        
+    );
+    
+    $num_records_before = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
+    PhotoRequest::AddRequest($request['email'], $request['eventid'], $request['number']);
+    $num_records_after = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
+    $this->assertIdentical($num_records_before + 1, (int) $num_records_after, t('Request was inserted.'));
+    
+  }
+
+  /**
+   * 
+   * Checks that new request cannot be inserted twice
+   */
+  function testPhotoSearchInsertRequestTwice() {
+    $result = db_select(PhotoRequest::DBTABLE, 'r')
+      ->fields('r')
+      ->execute();
+    $requsts = $result->fetchAll();
+    
+    foreach ($requsts as $req) {
+      $num_records_before = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
+      PhotoRequest::AddRequest($req->email, $req->eventid, $req->number);
+      $num_records_after = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
+      if($req->performed == 0) {
+        $this->assertIdentical($num_records_before , $num_records_after, 
+          t('The same request cannot be inserted twice.'));
+      } else {
+        $this->assertIdentical($num_records_before + 1 , (int) $num_records_after, 
+          t('After request was performed, user can add new request with the same params'));
+      }
+    }
+
+  }
+  
+  
+  /**
+   * 
+   * Checks that request can be marked as performed
+   */
+  function testPhotoSearchMarkRequest() {
+    $result = db_select(PhotoRequest::DBTABLE, 'r')
+      ->fields('r')            
+      ->condition('r.performed', 0, '=')
+      ->execute();
+    $requsts = $result->fetchAll();
+    
+    foreach ($requsts as $req) {
+      PhotoRequest::RequestPerformed($req->id);
+      $query = db_select(PhotoRequest::DBTABLE, 'r')
+        ->fields('r')              
+        ->condition('r.id', $req->id, '=')
+        ->condition('r.performed', 0, '>');     
+      $num_rows = $query->countQuery()->execute()->fetchField();
+      $this->assertEqual($num_rows , 1, t('Request was marked as performed.'));
+    }
+  }
+  
+  /**
+   * 
+   * Checks for GetRequests() function
+   */
+  function testPhotoSearchGetRequest() {
+    $result = db_select(PhotoRequest::DBTABLE, 'r')
+      ->fields('r')
+      ->condition('r.performed', 0, '=')
+      ->execute();
+    $requsts = $result->fetchAll();
+    
+    $undone_reqs = PhotoRequest::GetRequests(0);
+    
+    $num1 = 1;
+    $num2 = 2;
+    $num1 = count($requsts);
+    $num2 = count($undone_reqs);
+    
+    $this->assertIdentical($num1 , $num2, t('GetRequests done.'));
+    
+  }
+  
+
+}
+
