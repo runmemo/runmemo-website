@@ -124,11 +124,7 @@
 
 .disabled {
 	background-color: #BBCCEE;	/*#FF6600; */
-	color:			rgb(26,37,60);	/*#FFFFFF;*/
-	float:right;
-	margin-top:0.5em;
-	margin-left:0px;
-	line-height:20px;
+	color:			rgb(26,37,60);	/*#FFFFFF;*/	
 }
 
 
