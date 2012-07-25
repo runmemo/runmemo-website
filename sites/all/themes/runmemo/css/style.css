@@ -1607,6 +1607,9 @@ text-align:justify;
    top: -22px;
    right: 0px;
    float: right;
+   margin-top:0px;
+   margin-right:10px;
+   -webkit-transition: none;
 }
 .page-search-result #search-result-cart .add_cart{
  background: url("../images/Add-Cart.png") no-repeat scroll 0 0 transparent !important;
@@ -1642,11 +1645,7 @@ text-align:justify;
 {
     width:100%;
 }
-.page-search-result .content #search-result-cart #add_to_cart
-{
-    /*float:left;*/
-    
-}
+
 .page-search-result .content #search-result-cart .cart_summary
 {
     float:right;
