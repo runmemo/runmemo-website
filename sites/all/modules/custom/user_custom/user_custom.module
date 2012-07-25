@@ -7,22 +7,43 @@
  * $form give the form value
  * $form_id is the form id
  */
-function user_custom_form_alter(&$form, $form_state, $form_id) {
-   if ($form['#form_id'] == 'user_login') {
-    //  array_unshift($form, array('form_title' => array('#markup' => '<h3 class="login-form-title">I have an account</h3>') )); 
-      $form['new_pwd'] = array('#markup' => l('Forgot password?', 'user/password', array('attributes' => array('id' => 'forgot_pwd'))));
-      $form['actions']['submit']['#value'] = 'Login';
-      $form['#validate'][] = 'cookie_check_validate';
-   }
-    //registration page
-    if ($form['#form_id']=='user_register_form') {
-      // array_unshift($form, array('form_title' => array('#markup' => '<h3 class="registration-form-title">Photographer registration</h3>') )); 
-       $form['#submit'][''] = 'user_set_photographer_role'; 
-    }
-    //profile edit page
-    if ($form['#form_id']=='user_profile_form') {
+function user_custom_form_user_login_alter(&$form, $form_state) {
+      
+        $form['fake-password'] = array (
+         '#id' => 'edit-pass-fake', 
+         '#type' => 'textfield',
+         '#default_value' => 'Password',    
+         '#title' => t('Password'),
+         '#maxlength' => 60,
+         '#size' => 15,
+         '#required' => FALSE ,
+        ); 
+       
+      $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member? ') . '</span>', );
+      
+      $form['join-link'] = array(
+      	'#markup' => l(t('Join us!'), 'login', 
+        array('attributes' => array('id' => 'user-login-register'))));
+    
+       //  $form['#validate'][] = 'cookie_check_validate';
+      //  $form['new-password-text'] = array('#markup' => '<span id="new-password-text">' . t('Forgot your password? ') . '</span>', );
+        $form['new-password-link'] = array(
+        '#markup' => l(t('Request new password.'), 'user/password', 
+         array('attributes' =>array('id' => 'new-password-link'))));
+      
+  
+}
 
-    }
+
+/**
+ * implements hook_form_alter for user_register_form 
+ */  
+function user_custom_form_user_register_form_alter(&$form, $form_state) {
+   $form['#submit'][''] = 'user_set_photographer_role'; 
+}
+
+function user_custom_form_user_profile_form_alter(&$form, $form_state) {
+  
 }
 
 /**

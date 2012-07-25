@@ -37,7 +37,24 @@ class ProductNodeSaver {
     $this->node->ocr_numbers[$this->node->language][]['value'] = $number;
     $this->changed = TRUE;
   }
-
+  
+  /**
+   * Remvoe runner's number
+   */
+  public function RemoveNumber($number) {
+    $count_numbers = count($this->node->ocr_numbers[$this->node->language]);
+    for ($i = 0; $i < $count_numbers; $i++) {
+      if (!isset($this->node->ocr_numbers[$this->node->language][$i])) {
+        $count_numbers++;
+        continue;
+      }
+      if ($this->node->ocr_numbers[$this->node->language][$i]['value'] === $number) {
+        unset($this->node->ocr_numbers[$this->node->language][$i]);
+        $this->changed = TRUE;
+      }
+    }
+  }
+  
   /**
    * Update Product node with the OCR response status.
    */
@@ -61,4 +78,31 @@ class ProductNodeSaver {
       $this->changed = FALSE;
     }
   }
+  
+  /**
+   * Get runner numbser as string (exml "1120,3123,11")
+   */
+  public function GetNumbersStr() {
+    $runner_numbers = "";
+    $numbers = field_get_items('node', $this->node, 'ocr_numbers');
+//    $runner_numbers = implode($numbers[]['value'], ",");
+    foreach ($numbers as $number) {
+      if (empty($runner_numbers)) {
+        $runner_numbers = (string)$number['value'];
+      } else {
+        $runner_numbers = $runner_numbers . ',' . (string)$number['value'];
+      }
+    }
+    
+    return $runner_numbers;
+  }
+  
+  /**
+   * Set sell price
+   */
+  public function SetSellPrice($sell_price) {
+    $this->node->sell_price = $sell_price;
+    $this->changed = TRUE;    
+  }
+
 }

@@ -65,8 +65,14 @@ function ubercart_custom_menu_alter(&$items) {
  * Init function for adding the external file
  */
 function ubercart_custom_init() {
+  require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr_product_node_saver.inc');
 
+  drupal_add_css( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/start/jquery-ui.css', 'external');
+  drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
+  
   drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
+  drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/jquery.tagsinput.js');
+  drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
 
   //for redirect the cart page
   //when no products in the shopping cart
@@ -109,6 +115,21 @@ function ubercart_custom_menu() {
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
+  $items['ajax/save_numbers'] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'save_numbers',
+    'access arguments' => array('search photos'),
+    'type' => MENU_CALLBACK
+  );
+  $items['ajax/change_price'] = array(
+    'title' => '',
+    'description' => '',
+    'page callback' => 'change_price',
+    'access arguments' => array('search photos'),
+    'type' => MENU_CALLBACK
+  );
+    
   return $items;
 }
 
@@ -359,12 +380,7 @@ function search_result_cart($form, &$form_state) {
  * @return renderable array
  */
 function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_state, $form_id) {
-  
-  if ( $from_id != 'product_node_custom_form') {
-    watchdog('Callback', 'Form called from a wrong place: ubercart_custom_form_product_node_form_alter()', array($form), WATCHDOG_ERROR);
- 
-  }
-    
+
   
   $node = menu_get_object();
   if ($node == FALSE) {
@@ -379,102 +395,79 @@ function ubercart_custom_form_product_node_custom_form_alter(&$form, &$form_stat
   
   //Save nid for ajax callback
   $form['product_id'] = array(
+    '#id' => 'product_id',
     '#type' => 'hidden',
+    '#attributes' => array('id' => 'product_id'),
     '#value' => $node->nid,
   );   
-   
-  //Price field
-  $form['product_price'] = array(
-      '#type' => 'textfield',
-      '#size' => 10,
-      '#title' => t('Price'),       
-      //'#description' => t('Set the price'),
-      '#default_value' => number_format($node->price, 2),
-//      '#ajax' => array(
-//        'callback' => 'set_price_callback',
-//        'wrapper' => 'product-edit-price-container',
-//        'effect' => 'fade',
-//      )
-  );
   
-  
-   $form['save_button'] = array(
-    '#type' => 'submit',
-    '#value' => t('Save'),
-    '#weight' => 15,      
-    '#attributes' => array('class' => array('button')),
-//   '#submit' => array('set_price_callback'),
-    '#ajax' => array(
-      'callback' => 'set_price_callback',
-      'wrapper' => 'product-edit-price-container',
-      'effect' => 'fade',
-    )      
-  );
+  $form['sell_price_value'] = array(
+    '#id' => 'sell_price_value',
+    '#type' => 'hidden',
+    '#attributes' => array('id' => 'sell_price_value'),
+    '#value' => $node->price,
+  );   
    
-//    $form['product_runners_numbers'] = array(
-//      '#type' => 'textfield',
-//      '#size' => 10,
-//      '#title' => t('Runn'),
-//      '#description' => t('Set price'),
-//      '#default_value' => $node->price,
-//      '#ajax' => array(
-//        'callback' => 'set_price_callback',
-//        'wrapper' => 'product-edit-price-container',
-//        'effect' => 'fade',
-//      )
-//    ); 
-
-   
-  //Placeholder for "Changes was saved" message
-  $form['container'] = array(
-    '#prefix' => '<div id="product-edit-price-container" style="height:20px">',
-    '#suffix' => '</div>',
-  );
-    
-  return $form;
   
 }
 
+
 /**
- * Implements AJAX callback for "Save" button on node-product page.
- * @param type $form
- * @param type $form_state
- * @return renderable array
+ * AJAX call
+ * Function that adds/removes runners' numbers from product node  
+ * @return
+ * JSON message that can be returned for AJAX call
  */
-function set_price_callback($form, $form_state) {
+function save_numbers() {
+  $nid = $_POST['nid'];
+  $number = $_POST['number'];
+  $option = $_POST['option'];
   
-  $nid = $form['product_id']['#value'];
-  $node = node_load($nid);
-  
-  //check permission
-  if (!node_access("update", $node)) {
+  if (empty($nid) || empty($number) || empty($option)) {
+    echo cart_action_message(FALSE, 'Required parametr is not set');
     return;
   }
   
-  //check input value
-  $price = $form_state['values']['product_price'];
-  if (!is_numeric($price) || $price < 2 || $price > 100) {
-    $markup = '<div id="product-edit-price-container" style="color: red;">' . t('Price must be between 2.00 and 100.00!') . '</div>';
-    return $markup;
+  $productSaver = new ProductNodeSaver($nid);
+  
+  switch ($option) {
+    case "add":
+      $productSaver->AddNumber($number);
+      break;
+    
+    case "remove":
+      $productSaver->RemoveNumber($number);
+      break;
+
+    default:
+      echo cart_action_message(FALSE, 'Parametr option=' . $option . ' is not supported');
+      return;
   }
   
-  //change sell_price
-  $node->sell_price = $price;
-  node_save($node);
-    
-  $markup = '<div id="product-edit-price-container" style="color: green;">' . t('Price was updated!') . '</div>';
-  return $markup;
- 
+  $productSaver->Save();
+  
+  echo cart_action_message(TRUE, 'node=' . $nid . ',number=' . $number . ',option=' . $option);
+  return;
 }
 
 /**
- * Validates product sell price.
- * @param type $form
- * @param type $form_state
+ * AJAX call
+ * Function that changes sell price from product node  
+ * @return
+ * JSON message that can be returned for AJAX call
  */
-//function product_price_validate($form, &$form_state) {
-//  $price = $form_state['values']['product_price'];
-//  if (!is_numeric($price) || $price < 2 || $price > 100) {
-//    form_set_error('product_price', t('Price must be between 2.00 and 100.00'));
-//  }
-//}
+function change_price() {
+  $nid = $_POST['nid'];
+  $sell_price  = $_POST['sell_price'];
+  if (empty($nid) || empty($sell_price)) {
+    echo cart_action_message(FALSE, 'Required parametr is not set');
+    return;
+  }
+
+  $productSaver = new ProductNodeSaver($nid);
+  $productSaver->SetSellPrice($sell_price);
+  $productSaver->Save();
+
+  echo cart_action_message(TRUE, 'node=' . $nid . ',new_price=' . $sell_price);
+  return;
+}

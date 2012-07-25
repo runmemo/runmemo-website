@@ -295,7 +295,7 @@ jQuery(document).ready(function() {
 					// type : "POST",
 					url : base_path + "cart_add_item?nid=" + nid,
 					success : function(msg) {
-						console.debug(msg);
+					//	console.debug(msg);
 					}
 				});
 
@@ -309,9 +309,7 @@ jQuery(document).ready(function() {
 					// type : "POST",
 					url : base_path + "cart_list_items",
 					success : function(msg) {
-
 						set_cart(msg);
-
 					}
 				});
 

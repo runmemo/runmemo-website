@@ -105,8 +105,8 @@ function select_event_function() {
     $form['events_select']['#options'][$nid] = $event_title;
   }
 
-  if ((is_numeric(arg(1))) && (arg(1) != '')) {
-    $default = arg(1);
+  if (is_numeric(arg(2)) && arg(2) != '') {
+    $default = arg(2);
     $form['events_select']['#default_value'] = $default;
   }
 
@@ -144,7 +144,7 @@ function photographer_drag_and_drop_form($form, &$form_state) {
 
   $form['box']['upload'] = array(
   	'#type' => 'submit', 
-  	'#value' => '', 
+  	'#value' => 'Start Uplaod', 
     '#validators' => array(),
   	'#attributes' => array(
   						'onclick' => 'return drag_drop_upload_validation();')

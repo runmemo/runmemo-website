@@ -2,6 +2,13 @@ jQuery(document).ready(function($) {
 	$('.front #runner_number').val('My Number');
 	$('.recent-event .form-text').val('My Number');
 	
+	
+	$('.front #user-login #edit-name').val('Username');
+	
+	$('.front .form-item-pass').hide();
+	$('.form-item-fake-password').hide();
+	$('.front .form-item-fake-password').show();
+	
 	// for remove the set message when adding items in the cart
 	if ($('.messages a').length > 0) {
 
@@ -12,13 +19,14 @@ jQuery(document).ready(function($) {
 	
 });
 
+
 /**
  * jQuery Behaviors for home page elements
  */
 (function($) {
 	Drupal.behaviors.runmemoHomePage = {
 		attach : function(context, settings) {
-			
+		
 			// runner number in the find section for front page
 			$('.front #runner_number').focus( function() {
 				if ($(this).val() == 'My Number') {
@@ -30,12 +38,40 @@ jQuery(document).ready(function($) {
 					$(this).val('My Number');
 				}
 			});
-
+	
 			$('.front #runner_number').change( function() {
 				if ($(this).val() == '') {
 					$(this).val('My Number');
 				}
 			});
+			
+			$('.front #user-login #edit-name').focus( function() {
+				if ($(this).val() == 'Username') {
+					$(this).val("");
+				}
+			});
+		
+			$('.front #user-login #edit-name').blur( function() {
+				if ($(this).val() == '') {
+					$(this).val('Username');
+				}
+			});
+		
+			$('.front #edit-pass').blur( function() {
+			    if ($(this).attr('value') == '') {
+			        $('.front .form-item-pass').hide();
+			        $('.front .form-item-fake-password').show();
+			    }
+				
+			});
+			
+			$('.front #edit-pass-fake').focus( function() {
+				 $('.front .form-item-fake-password').hide();
+				 $('.front .form-item-pass').show();
+				 $('.front .form-item-pass').focus();
+			});
+		
+			
 			// recent event 'My Number' text
 			$('.recent-event .form-text').focus( function() {
 
@@ -43,6 +79,7 @@ jQuery(document).ready(function($) {
 					$(this).val("");
 				}
 			});
+			// on recent event blur
 			$('.recent-event .form-text').blur( function() {
 
 				if ($(this).val() == '') {

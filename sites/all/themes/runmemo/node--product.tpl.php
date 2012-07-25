@@ -83,24 +83,46 @@
  * @see template_process()
  */
 ?>
-
-<h2> <?php print "Photo profile"; ?> </h2>
   
-<?php
-    // We hide the comments and links now so that we can render them later.
-    hide($content['comments']);
-    hide($content['links']);
-?>
+<div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-<div class="product_preview">
-  <?php print render($content['uc_product_image']) ?>
-</div>
+  <h2> <?php print "Photo profile"; ?> </h2>
 
-<div class="product_content">
-  <?php 
-    print render($content);
-    print render( drupal_get_form('product_node_custom_form') );
- 
+  <?php
+      // We hide the comments and links now so that we can render them later.
+      hide($content['comments']);
+      hide($content['links']);
   ?>
-</div>
 
+  <div class="product_preview">
+    <?php print render($content['uc_product_image']) ?>
+  </div>
+
+  <div class="product_content">
+    <?php 
+      print render($content); 
+      print render( drupal_get_form('product_node_custom_form') );
+    ?>
+   
+    
+    <div id="sell-price-container" style="width: 150px; margin-bottom: 10px; margin-top: 10px;">
+      <div style="margin-bottom: 3px; margin-top: 3px;">
+      <label for="amount" class="field-label" style="float: left">Sell price:</label>
+      <span id="amount" style="margin-left: 10px"></span>    
+      </div>
+      <div id="sell_price"></div> 
+    </div>
+    <label for="product-node-runner-number" class="field-label">Runner numbers:</label>
+    <input name="product-node-runner-number" id="product-node-runner-number" value="
+      <?php 
+        require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr_product_node_saver.inc');
+        $productSaver = new ProductNodeSaver($node->nid);
+        echo $productSaver->GetNumbersStr(); 
+      ?>" 
+    />
+
+    <div id="product-nice-message-container" class="message" ></div>
+
+  </div>
+
+</div>

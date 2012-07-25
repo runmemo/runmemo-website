@@ -550,6 +550,10 @@ body.two-sidebars #squeeze {
   display:block;
 }
 
+.region-content {
+  float: left;
+}
+
 #wrapper #container .breadcrumb {
   position: absolute;
   top: 15px;
@@ -1249,4 +1253,3 @@ table.system-status-report tr.ok th {
 .element-invisible {
 	display:none;
 	}
-	
