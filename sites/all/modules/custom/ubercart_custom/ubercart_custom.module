@@ -119,14 +119,14 @@ function ubercart_custom_menu() {
     'title' => '',
     'description' => '',
     'page callback' => 'save_numbers',
-    'access arguments' => array('search photos'),
+    'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
   $items['ajax/change_price'] = array(
     'title' => '',
     'description' => '',
     'page callback' => 'change_price',
-    'access arguments' => array('search photos'),
+    'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
     
@@ -428,6 +428,13 @@ function save_numbers() {
     return;
   }
   
+//check permission
+  $node = node_load($nid);
+  if(!node_access("update", $node)) {
+    echo cart_action_message(FALSE, 'Has no permissions');
+    return;
+  }  
+  
   $productSaver = new ProductNodeSaver($nid);
   
   switch ($option) {
@@ -463,7 +470,14 @@ function change_price() {
     echo cart_action_message(FALSE, 'Required parametr is not set');
     return;
   }
-
+  
+//check permission
+  $node = node_load($nid);
+  if(!node_access("update", $node)) {
+    echo cart_action_message(FALSE, 'Has no permissions');
+    return;
+  }  
+  
   $productSaver = new ProductNodeSaver($nid);
   $productSaver->SetSellPrice($sell_price);
   $productSaver->Save();
