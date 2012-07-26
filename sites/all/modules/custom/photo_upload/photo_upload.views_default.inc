@@ -15,7 +15,7 @@ $view->name = 'myphotos';
 $view->description = '';
 $view->tag = 'default';
 $view->base_table = 'node';
-$view->human_name = 'myphotos';
+$view->human_name = 'My Photos';
 $view->core = 7;
 $view->api_version = '3.0';
 $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
@@ -131,16 +131,16 @@ $handler->display->display_options['filters']['field_event_reference_nid']['expo
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['identifier'] = 'field_event_reference_nid';
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['remember'] = 1;
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['reduce'] = 0;
-//$handler->display->display_options['filters']['field_event_reference_nid']['#options']['All'] = t('Select Event');
 
 /* Display: Page */
 $handler = $view->new_display('page', 'Page', 'page');
 $handler->display->display_options['defaults']['use_ajax'] = FALSE;
-$handler->display->display_options['use_ajax'] = FALSE;
+$handler->display->display_options['use_ajax'] = TRUE;
 $handler->display->display_options['defaults']['exposed_form'] = FALSE;
 $handler->display->display_options['exposed_form']['type'] = 'basic';
-$handler->display->display_options['exposed_form']['options']['autosubmit'] = 1;
-$handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = 1;
+$handler->display->display_options['exposed_form']['options']['submit_button'] = 'Apply';
+$handler->display->display_options['exposed_form']['options']['autosubmit'] = 0;
+$handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = 0;
 $handler->display->display_options['defaults']['pager'] = FALSE;
 $handler->display->display_options['pager']['type'] = 'full';
 $handler->display->display_options['pager']['options']['items_per_page'] = '15';
@@ -248,13 +248,13 @@ $handler->display->display_options['filters']['field_event_reference_nid']['expo
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['identifier'] = 'field_event_reference_nid';
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['remember'] = 1;
 $handler->display->display_options['filters']['field_event_reference_nid']['expose']['reduce'] = 0;
-$handler->display->display_options['path'] = 'myphotos';
-$handler->display->display_options['menu']['type'] = 'normal';
-$handler->display->display_options['menu']['title'] = 'My Photos';
-$handler->display->display_options['menu']['description'] = 'Links to photos uploaded by photographer';
-$handler->display->display_options['menu']['weight'] = '0';
-$handler->display->display_options['menu']['name'] = 'main-menu';
-  
+$handler->display->display_options['path'] = 'photographer/myphotos';
+//$handler->display->display_options['menu']['type'] = 'normal';
+//$handler->display->display_options['menu']['title'] = 'My Photos';
+//$handler->display->display_options['menu']['description'] = 'Links to photos uploaded by photographer';
+//$handler->display->display_options['menu']['weight'] = '0';
+//$handler->display->display_options['menu']['name'] = 'main-menu';
+//  
     
   
  // (Export ends here.)
