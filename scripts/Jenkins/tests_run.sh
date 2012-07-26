@@ -23,6 +23,10 @@ drush status
 drush updatedb --yes
 drush cache-clear all
 for testname in `cat ./scripts/Jenkins/tests_list`; do
-	drush test-run --jenkins=/tmp/tests/ ${testname}
+  drush test-run --jenkins=/tmp/tests/ ${testname}
+  if [ $? -ne 0 ]; then   
+    echo "Failed to run test ${testname}"
+    exit 1
+  fi
 done
   
