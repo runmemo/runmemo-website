@@ -1737,7 +1737,6 @@ box-shadow: none;
 ul#edit-file_filelist{
 	*visibility:hidden!important; /* IE 7 (IE6 also uses this, so put it first) */
 	_visibility:hidden!important; /* IE 6 */
-	visibility:hidden!important; 
 	
  }
 
