@@ -26,8 +26,8 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
     $this->addSampleData();
   }
 
-  function installTables($schema) {
-  // This ends up being a test for table drop and create, too, which is nice.
+  private function installTables($schema) {
+    // This ends up being a test for table drop and create, too, which is nice.
     foreach ($schema as $name => $data) {
       if (db_table_exists($name)) {
         db_drop_table($name);
@@ -40,39 +40,39 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
     }
   }
 
-  function addSampleData() {
+  private function addSampleData() {
     $initial_requests = array(
-          array(
-            'email' => 'testPhotoSearchInsertRequestQ@runmemo.com',
+    array( // performed is set
+            'email' => 'testQ@runmemo.com',
             'eventid' => '111',
             'number' => '123',
             'created' => REQUEST_TIME,
             'performed' => REQUEST_TIME,
-          ),
-          array(
-            'email' => 'testPhotoSearchInsertRequestW@runmemo.com',
+        ),
+    array( // not performed
+            'email' => 'testW@runmemo.com',
             'eventid' => '222',
             'number' => '12345',
             'created' => REQUEST_TIME,
             'performed' => 0,
-          ),
-    );  
-    
+        ),
+    );
+
     foreach ($initial_requests as $request) {
       db_insert(PhotoRequest::DBTABLE)->fields(
-          array( 
+      array(
               'email'   => $request['email'],
               'eventid' => $request['eventid'],
               'number'  => $request['number'],
               'created' => $request['created'],
               'performed' => $request['performed'],
-          ))
-        ->execute();
-    }    
+      ))
+      ->execute();
+    }
   }
-  
+
   /**
-   * 
+   *
    * Checks that new request inserted into table
    */
   function testPhotoSearchInsertRequest() {
@@ -81,84 +81,170 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
       'eventid' => '111',
       'number' => '12345',        
     );
-    
+
     $num_records_before = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
     PhotoRequest::AddRequest($request['email'], $request['eventid'], $request['number']);
     $num_records_after = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
     $this->assertIdentical($num_records_before + 1, (int) $num_records_after, t('Request was inserted.'));
-    
+
   }
 
   /**
-   * 
+   *
    * Checks that new request cannot be inserted twice
    */
   function testPhotoSearchInsertRequestTwice() {
     $result = db_select(PhotoRequest::DBTABLE, 'r')
-      ->fields('r')
-      ->execute();
+    ->fields('r')
+    ->execute();
     $requsts = $result->fetchAll();
-    
+
     foreach ($requsts as $req) {
       $num_records_before = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
       PhotoRequest::AddRequest($req->email, $req->eventid, $req->number);
       $num_records_after = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
       if($req->performed == 0) {
-        $this->assertIdentical($num_records_before , $num_records_after, 
-          t('The same request cannot be inserted twice.'));
+        $this->assertIdentical($num_records_before , $num_records_after,
+        t('The same request cannot be inserted twice.'));
       } else {
-        $this->assertIdentical($num_records_before + 1 , (int) $num_records_after, 
-          t('After request was performed, user can add new request with the same params'));
+        $this->assertIdentical($num_records_before + 1 , (int) $num_records_after,
+        t('After request was performed, user can add new request with the same params'));
       }
     }
 
   }
-  
-  
+
+
   /**
-   * 
+   *
    * Checks that request can be marked as performed
    */
   function testPhotoSearchMarkRequest() {
+    // take requests - non performed
     $result = db_select(PhotoRequest::DBTABLE, 'r')
-      ->fields('r')            
-      ->condition('r.performed', 0, '=')
-      ->execute();
+    ->fields('r')
+    ->condition('r.performed', 0, '=')
+    ->execute();
     $requsts = $result->fetchAll();
-    
+
     foreach ($requsts as $req) {
       PhotoRequest::RequestPerformed($req->id);
       $query = db_select(PhotoRequest::DBTABLE, 'r')
-        ->fields('r')              
-        ->condition('r.id', $req->id, '=')
-        ->condition('r.performed', 0, '>');     
+      ->fields('r')
+      ->condition('r.id', $req->id, '=')
+      ->condition('r.performed', 0, '>');
       $num_rows = $query->countQuery()->execute()->fetchField();
       $this->assertEqual($num_rows , 1, t('Request was marked as performed.'));
     }
   }
-  
+
   /**
-   * 
+   *
    * Checks for GetRequests() function
    */
   function testPhotoSearchGetRequest() {
     $result = db_select(PhotoRequest::DBTABLE, 'r')
-      ->fields('r')
-      ->condition('r.performed', 0, '=')
-      ->execute();
+    ->fields('r')
+    ->condition('r.performed', 0, '=')
+    ->execute();
     $requsts = $result->fetchAll();
-    
+
     $undone_reqs = PhotoRequest::GetRequests(0);
-    
+
     $num1 = 1;
     $num2 = 2;
     $num1 = count($requsts);
     $num2 = count($undone_reqs);
-    
+
     $this->assertIdentical($num1 , $num2, t('GetRequests done.'));
+
+  }
+}
+
+class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
+  private $NewProduct;
+  private $eventid;
+  private $number;
+  
+  public static function getInfo() {
+    return array(
+      'name' => 'Product search for request test',
+      'description' => 'Test that products are found for requests',
+      'group' => 'ProductSearch',
+    );
+  }
+
+  function setUp() { //'field_sql_storage', 'field', 'options', 'references'
+    parent::setUp('ubercart_custom', 'ocr');
+      
+    $this->number = 1501;
+  }
+
+  /**
+   * 
+   * Dummy function - workaround to get tests going.
+   */
+  function testProductAddedFields() {
     
   }
   
+  function testProductExistsWhenExistsAllTime() {
+
+    $this->NewProduct =  product_node_creator::getNewProductNode();
+    $lang = $this->NewProduct->language;
+    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
+    
+    $ps = new ProductNodeSaver($this->NewProduct->nid);
+    $ps->AddNumber($this->number);
+
+    $result = product_exists($this->eventid, $this->number);
+
+    $this->assertTrue($result, 'New product was found for request.');
+
+  }
+  
+function testProductExistsWhenExistsWithNonExpire() {
+
+    $this->NewProduct =  product_node_creator::getNewProductNode();
+    $lang = $this->NewProduct->language;
+    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
+    
+    $ps = new ProductNodeSaver($this->NewProduct->nid);
+    $ps->AddNumber($this->number);
+
+    $expire = REQUEST_TIME - 3600*24;
+    
+    $result = product_exists($this->eventid, $this->number, $expire);
+
+    $this->assertTrue($result, 'New product was found for request.');
+
+  }
+  
+function testProductExistsWhenExistsWithExpire() {
+
+    $this->NewProduct =  product_node_creator::getNewProductNode();
+    $lang = $this->NewProduct->language;
+     
+    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
+    
+    $ps = new ProductNodeSaver($this->NewProduct->nid);
+    $ps->AddNumber($this->number);
+
+    $expire = REQUEST_TIME+1;
+    
+    $result = product_exists($this->eventid, $this->number, $expire);
+
+    $this->assertFalse($result, 'New product was found for request.');
+
+  }
+
+  function testProductExistsWhenAbsent() {
+    $this->NewProduct =  product_node_creator::getNewProductNode();
+    $lang = $this->NewProduct->language;
+    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
+    
+    $result = product_exists($this->eventid, $this->number);
+    $this->assertFalse($result, 'New product was found for request.');
+  }
 
 }
-

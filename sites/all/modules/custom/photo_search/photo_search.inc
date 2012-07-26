@@ -13,17 +13,12 @@
  */
 class PhotoRequest {
   const DBTABLE = 'photo_requests';
-//  public function __construct($nid, $number) {
-//    if(!db_table_exists('photo_requests')) {
-//      throw new Exception('DB table photo_requests does not exist.');
-//    }
-//  }
 
   /**
    * Adds request to table
-   * @param type $email
-   * @param type $eventid
-   * @param type $number
+   * @param string $email
+   * @param integer $eventid
+   * @param integer $number
    * @throws Exception 
    */
   public static function AddRequest($email, $eventid, $number) {
@@ -54,8 +49,8 @@ class PhotoRequest {
   
   /**
    * Returns requests that don't performed
-   * @param type $expires
-   * @return type 
+   * @param timestamp $expires
+   * @return array - rows
    */
   public static function GetRequests($expires) {
     $result = db_select(self::DBTABLE, 'r')
@@ -69,7 +64,7 @@ class PhotoRequest {
   
   /**
    * Mark request as performed
-   * @param type $id
+   * @param integer $id
    */
   public static function RequestPerformed($id) {
 

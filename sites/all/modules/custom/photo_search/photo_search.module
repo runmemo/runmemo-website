@@ -322,25 +322,47 @@ function photo_search_cron() {
 
   // get all items from requests after last execution
 
-  $results = photoRequests::getRequests($expires);
+  $requests = PhotoRequest::getRequests($expires);
 
   $counter = 0;
-  foreach ($results as $item) {
+  foreach ($requests as $item) {
+    if (product_exists($eventid, $number)) {
 
-    // send email to user
-    $to =  $item->email;
+      // send email to user
+      $to =  $item->email;
 
-    $values = array();
-    $values['number'] = $item->number;
-    $values['nid'] = $item->eventid;
+      $values = array();
+      $values['number'] = $item->number;
+      $values['nid'] = $item->eventid;
 
-    drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
+      drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
 
-    // mark result as complete
-    $counter++;
+      // mark result as complete
+      $counter++;
+    }
   }
 
   watchdog('email', 'Notifications were sent to ' . $counter . ' emails.');
 
 }
 
+/**
+ * 
+ * Checks whether new photos with specified number were added to the system.
+ * @param integer $nid
+ * @param integer $number
+ */
+function product_exists($nid, $number, $expire = 0) {
+  $query = new EntityFieldQuery();
+  
+  $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'product')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('created', $expire, '>=')
+      ->fieldCondition('ocr_numbers', 'value', $number)
+      ->fieldCondition('field_event_reference', 'nid', $nid);
+     
+   $count = $query->count()->execute();
+      
+   return ($count > 0) ? TRUE : FALSE;
+}
