@@ -314,19 +314,26 @@ function photo_search_request_notification_mail ($key, &$message, $params) {
   };
 }
 
-
+/**
+ * 
+ * Implements hook_cron
+ */
 function photo_search_cron() {
 
   // get time of last cron execution
-  $expires = variable_get('photo_search_cron_last_run', REQUEST_TIME);
+  $expire = variable_get('photo_search_cron_last_run', REQUEST_TIME);
+  send_notifications($expire);
+  
+}
 
+function send_notifications($expire) {
   // get all items from requests after last execution
 
-  $requests = PhotoRequest::getRequests($expires);
+  $requests = PhotoRequest::getRequests(0);
 
   $counter = 0;
   foreach ($requests as $item) {
-    if (product_exists($eventid, $number)) {
+    if (product_exists($eventid, $number, $expire)) {
 
       // send email to user
       $to =  $item->email;
@@ -334,16 +341,19 @@ function photo_search_cron() {
       $values = array();
       $values['number'] = $item->number;
       $values['nid'] = $item->eventid;
-
       drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
-
-      // mark result as complete
       $counter++;
+       
+      // mark result as complete
+      $updated = PhotoRequest::RequestPerformed($item->id);      
+      if(!$updated) {
+        watchdog('search notifications', 'Did not update request with id =' . $item->id);
+      }    
     }
   }
 
-  watchdog('email', 'Notifications were sent to ' . $counter . ' emails.');
-
+  watchdog('search notifications', 'Notifications were sent to ' . $counter . ' emails.');
+  return $counter; 
 }
 
 /**
@@ -353,16 +363,16 @@ function photo_search_cron() {
  * @param integer $number
  */
 function product_exists($nid, $number, $expire = 0) {
-  $query = new EntityFieldQuery();
   
+  $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
       ->entityCondition('bundle', 'product')
       ->propertyCondition('status', 1)
       ->propertyCondition('created', $expire, '>=')
-      ->fieldCondition('ocr_numbers', 'value', $number)
-      ->fieldCondition('field_event_reference', 'nid', $nid);
-     
+      ->fieldCondition('field_event_reference', 'nid', $nid, '=')
+      ->fieldCondition('ocr_numbers', 'value', $number, '=');
+
    $count = $query->count()->execute();
-      
+   debug('count = ' . $count);      
    return ($count > 0) ? TRUE : FALSE;
 }

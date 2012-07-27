@@ -65,6 +65,7 @@ class PhotoRequest {
   /**
    * Mark request as performed
    * @param integer $id
+   * @return TRUE if row of request was updated.
    */
   public static function RequestPerformed($id) {
 
@@ -72,5 +73,7 @@ class PhotoRequest {
       ->fields(array('performed' => REQUEST_TIME))
       ->condition('id', $id, '=')
       ->execute();
+    
+    return ($count>0) ? TRUE : FALSE;
   }
 }
