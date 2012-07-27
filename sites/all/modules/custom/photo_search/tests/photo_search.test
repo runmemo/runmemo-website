@@ -161,6 +161,13 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
   }
 }
 
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
+/**
+ * 
+ * Test case for function: product_exists($nid, $number, $expire = 0)
+ * @author Bulat Yapparov
+ *
+ */
 class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
   private $NewProduct;
   private $eventid;
@@ -188,7 +195,13 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
     
   }
   
-  function testProductExistsWhenExistsAllTime() {
+  /**
+   * 
+   * Test that product exists 
+   *  - product is created 
+   *  - $expire is not provided.
+   */
+  function testProductExistsWithoutExpire() {
 
     $this->NewProduct =  product_node_creator::getNewProductNode();
     $lang = $this->NewProduct->language;
@@ -196,31 +209,44 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
-
+    $ps->Save();
+    
     $result = product_exists($this->eventid, $this->number);
-
     $this->assertTrue($result, 'New product was found for request.');
 
   }
   
-function testProductExistsWhenExistsWithNonExpire() {
+ /**
+  * 
+  * Test that product exists
+  * - product is created
+  * - @expire is set to 1 day before creation
+  */
+function testProductExistsWithExpire() {
 
     $this->NewProduct =  product_node_creator::getNewProductNode();
+   
     $lang = $this->NewProduct->language;
     $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
-
-    $expire = REQUEST_TIME - 3600*24;
+    $ps->Save();
+    
+    $expire = REQUEST_TIME - 3600*24; // 1 day before creation
     
     $result = product_exists($this->eventid, $this->number, $expire);
 
     $this->assertTrue($result, 'New product was found for request.');
 
   }
-  
-function testProductExistsWhenExistsWithExpire() {
+/**
+ * 
+ * Product is absent
+ * - product is created
+ * - expire is to 1 second after creation.
+ */ 
+function testProductIsAbsentWithExpire() {
 
     $this->NewProduct =  product_node_creator::getNewProductNode();
     $lang = $this->NewProduct->language;
@@ -229,16 +255,20 @@ function testProductExistsWhenExistsWithExpire() {
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
-
-    $expire = REQUEST_TIME+1;
+    $ps->Save();
+    
+    $expire = REQUEST_TIME+1; // 1+ second after creation
     
     $result = product_exists($this->eventid, $this->number, $expire);
 
     $this->assertFalse($result, 'New product was found for request.');
 
   }
-
-  function testProductExistsWhenAbsent() {
+/**
+ * 
+ * Test product does not exists when product is not created.
+ */
+  function testProductIsAbsent() {
     $this->NewProduct =  product_node_creator::getNewProductNode();
     $lang = $this->NewProduct->language;
     $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
