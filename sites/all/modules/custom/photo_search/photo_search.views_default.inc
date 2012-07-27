@@ -59,18 +59,13 @@ $cart_items = \'\';
 <div id="cart_hidden_nids" style="display:none"><input type="text" name="cart_text"  value="<?php if($cart_items != \'\'){
 echo $cart_items;}?>" />
 </div>';
-  /* No results behavior: Global: Text area */
-  $handler->display->display_options['empty']['area']['id'] = 'area';
-  $handler->display->display_options['empty']['area']['table'] = 'views';
-  $handler->display->display_options['empty']['area']['field'] = 'area';
-  $handler->display->display_options['empty']['area']['empty'] = FALSE;
-  $handler->display->display_options['empty']['area']['content'] =
-    '<div class="no-result-found">
-      It looks like not all photos have been uploaded to the website.
-      Come back in a few days, or email us at info@runmemo.com with your number in the subject line and we will keep you updated.
-	</div>';
-  $handler->display->display_options['empty']['area']['format'] = 'full_html';
-  $handler->display->display_options['empty']['area']['tokenize'] = 0;
+  /* No results behavior: Global: PHP */
+  $handler->display->display_options['empty']['php']['id'] = 'php';
+  $handler->display->display_options['empty']['php']['table'] = 'views';
+  $handler->display->display_options['empty']['php']['field'] = 'php';
+  $handler->display->display_options['empty']['php']['empty'] = FALSE;
+  $handler->display->display_options['empty']['php']['php_output'] =
+  '<?php print render(drupal_get_form("photo_request_form")); ?>';
   /* Relationship: Content: Author */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
