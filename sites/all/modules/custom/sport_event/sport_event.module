@@ -212,17 +212,16 @@ function registration_button_form($form, &$form_state) {
   // define the button with AJAX callback
   $form['submit'] =
   array( // search button
-  	'#type' => 'submit', 
-  	'#value' => 'I will be there!', 
-    '#prefix' => '<div id="registration-button">',
-  	'#suffix' => '</div>',
-    '#attributes' => array('class' => array('button')),
-  	'#submit' => array('event_registration_form_submit'), 
-    '#ajax' => array(
-      'callback' => 'registration_button_js',
-      'wrapper' => 'registration-button',
-      'effect' => 'fade',
-  ),
+      '#type' => 'submit', 
+      '#value' => t('I will be there!'), 
+      '#prefix' => '<div id="registration-button">',
+      '#suffix' => '</div>',
+      '#submit' => array('event_registration_form_submit'), 
+      '#ajax' => array(
+        'callback' => 'registration_button_js',
+        'wrapper' => 'registration-button',
+        'effect' => 'fade',
+      ),
   );
 
   // cache nid in the form as it will not be available in the callback overwise
