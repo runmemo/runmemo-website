@@ -322,18 +322,21 @@ function photo_search_cron() {
 
   // get time of last cron execution
   $expire = variable_get('photo_search_cron_last_run', REQUEST_TIME);
-  send_notifications($expire);
+  //send_notifications($expire);
   
 }
 
 function send_notifications($expire) {
   // get all items from requests after last execution
 
+  debug('getting requests');
   $requests = PhotoRequest::getRequests(0);
-
+  debug('got requrests');
   $counter = 0;
   foreach ($requests as $item) {
-    if (product_exists($eventid, $number, $expire)) {
+    debug('got request, see bellow.');
+    debug($item);
+    if (product_exists($item->eventid, $item->number, $expire)) {
 
       // send email to user
       $to =  $item->email;
@@ -341,7 +344,7 @@ function send_notifications($expire) {
       $values = array();
       $values['number'] = $item->number;
       $values['nid'] = $item->eventid;
-      drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
+     // drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
       $counter++;
        
       // mark result as complete
@@ -351,7 +354,7 @@ function send_notifications($expire) {
       }    
     }
   }
-
+  
   watchdog('search notifications', 'Notifications were sent to ' . $counter . ' emails.');
   return $counter; 
 }

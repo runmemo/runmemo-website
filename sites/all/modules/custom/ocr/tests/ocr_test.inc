@@ -65,16 +65,22 @@ class product_node_creator {
   /**
    * Creates and saves instance of Product node.
    */
-  public static function getNewProductNode() {
+  public static function getNewProductNode($eventid = NULL) {
     // Create new event node to use for product node
-    $event = new stdClass();
-    $event->language = LANGUAGE_NONE;
-    $event->field_pricing[$event->language]['0']['value'] = 5;
-    $event->title = 'OCR Test Event';
-    $event->type = 'event';
-    $event->status = 1;
-    $event = node_submit($event); // Prepare node for a submit
-    node_save($event); // After this call we'll get a nid
+    if(is_null($eventid)) {
+
+      $event = new stdClass();
+      $event->language = LANGUAGE_NONE;
+      $event->field_pricing[$event->language]['0']['value'] = 5;
+      $event->title = 'OCR Test Event';
+      $event->type = 'event';
+      $event->status = 1;
+      node_object_prepare($node);
+      $event = node_submit($event); // Prepare node for a submit
+      node_save($event); // After this call we'll get a nid
+      $eventid = $event->nid;
+    }
+   
 
     // We create a new Product Node
     $node = new stdClass();
@@ -90,7 +96,7 @@ class product_node_creator {
      
     // Create node that we want to update with numbers and OCR status.
     // $price = $event->field_pricing['und']['0']['value'];
-    $node->field_event_reference[$node->language][]['nid'] = $event->nid;
+    $node->field_event_reference[$node->language][]['nid'] = $eventid;
     $node->field_event_reference[$node->language][]['target_type'] = "node";
 
     $node = node_submit($node); // Prepare node for a submit

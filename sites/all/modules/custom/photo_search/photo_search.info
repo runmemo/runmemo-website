@@ -4,10 +4,10 @@ package = Runmemo Custom Modules
 core = 7.x
 version = 7.1
 
+dependencies[] = sport_event
+
 files[] = photo_search.inc
 files[] = photo_search.module
 files[] = photo_search.views_default.inc
 files[] = photo_search.js
 files[] = tests/photo_search.test
-
-dependencies[] = sport_event

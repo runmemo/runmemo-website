@@ -3,7 +3,7 @@
 
 class sport_event_node_creator {
   
-  public static function getNewEventNode () {
+  public static function getNewEventNode() {
       // Create new event node to use for product node
     $event = new stdClass();
     $event->language = LANGUAGE_NONE;
