@@ -378,8 +378,13 @@ function product_exists($nid, $number, $expire = 0) {
 }
 
 /**
- *
- * 
+ * Implements hook_form_FORM_ID_alter().
+ * Form(photo_request_form) to be shown on the search result page if no results were found,
+ * asks user for an email address and a number
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ * @return renderable array
  */
 function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_id) {
     if (arg(0) == 'search-result') {
@@ -444,6 +449,11 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
   return $form;
 }
 
+/**
+ * Implements validations for photo_request_form
+ * @param array $form
+ * @param array $form_state 
+ */
  function photo_request_form_validate($form, &$form_state) {
   if ($form_state['values']['email'] == '') {
     form_set_error('email', t('Please enter a valid email address'));
@@ -456,7 +466,12 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
 
 } 
 
-
+/**
+ * AJAX callback for submit button on photo_request_form
+ * Adds photo request and sends a confirmation email
+ * @param array $form
+ * @param array $form_state 
+ */
 function photo_request_form_js($form, &$form_state) {
   $eventid = $form_state['values']['eventid'];
   $email = $form_state['values']['email'];
