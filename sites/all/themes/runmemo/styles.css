@@ -293,10 +293,6 @@ span.form-required {
   margin-bottom: 2em;
 }
 
-.form-button,
-{
-  margin: 0 0.5em 0 0; /* LTR */
-}
 
 /**
  * Skip link
@@ -379,9 +375,6 @@ span.form-required {
   background: none;
 }
 
-#branding img {
-     clip: rect(10px 254px 176px 7px);
-	}
 
 #wrapper {
   background: #edf5fa url(images/body.png) repeat-x 50% 0;

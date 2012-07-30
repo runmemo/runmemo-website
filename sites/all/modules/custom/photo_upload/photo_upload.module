@@ -36,11 +36,20 @@ function photo_upload_menu() {
   //url for photographer
   $items['photographer/upload'] = array(
       'title' => 'Upload Photos',
+      'menu_name' => 'navigation',
       'description' => 'View the objects in a bucket on your Amazon S3 account.',
       'page callback' => 'photographer_upload_photos',
       'access arguments' => array('access_photographer'),
-      'type' => MENU_CALLBACK,
+      'type' => MENU_NORMAL_ITEM,
   );
+//  $items['photographer/myphotos'] = array(
+//      'title' => 'My Photos',
+//      'menu_name' => 'navigation',
+//      'description' => '',
+//      //'page callback' => 'photographer_upload_photos',
+//      'access arguments' => array('access_photographer'),
+//      'type' => MENU_NORMAL_ITEM,
+//  );  
   $items['admin/photographer/share'] = array(
       'title' => 'Managing share for Photographers',
       'description' => 'Managing share for Photographers ',
