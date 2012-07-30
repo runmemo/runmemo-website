@@ -469,6 +469,12 @@ function photo_request_form_js($form, &$form_state) {
 
   PhotoRequest::AddRequest($email, $eventid, $number);
   
+  $node = node_load($eventid);
+  $from = 'no-reply@runmemo.com';
+  $values['number'] = $number;
+  $values['event'] = $node->title;
+  drupal_mail('photo_search', 'number_request_response', $email, language_default(), $values, $from);
+  
   $markup = '<div id="photo-request-form" class="message">'
     . '<p>Thank you for your request!</p>'
     . '<p>We will let you know once we get any photos of you via email '
