@@ -1,5 +1,8 @@
 <?php
 
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'sport_event') . '/tests/' . 'sport_event.test.inc');
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr')         . '/tests/' . 'ocr_test.inc');
+
 /**
  *  @file contains test cases for Photo Search module.
  */
@@ -14,7 +17,7 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
     return array(
       'name' => 'Photo Search request test',
       'description' => 'Test that user can write photo request',
-      'group' => 'PhotoSearch',
+      'group' => 'Photo Search',
     );
   }
 
@@ -161,7 +164,7 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
   }
 }
 
-require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
+
 /**
  * 
  * Test case for function: product_exists($nid, $number, $expire = 0)
@@ -177,7 +180,7 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
     return array(
       'name' => 'Product search for request test',
       'description' => 'Test that products are found for requests',
-      'group' => 'ProductSearch',
+      'group' => 'Photo Search',
     );
   }
 
@@ -277,4 +280,73 @@ function testProductIsAbsentWithExpire() {
     $this->assertFalse($result, 'New product was found for request.');
   }
 
+}
+
+
+/**
+ * 
+ * Test case for function: product_exists($nid, $number, $expire = 0)
+ * @author Bulat Yapparov
+ *
+ */
+class PhotoSearchCronTestCase extends DrupalWebTestCase {
+    
+  public static function getInfo() {
+    return array(
+      'name' => 'Requests notifications',
+      'description' => 'Integration test case for cron that sends email notifications for requests',
+      'group' => 'Photo Search',
+    );
+  }
+
+  function setUp() { //'field_sql_storage', 'field', 'options', 'references'
+    parent::setUp('user_reference',  'ubercart_custom', 'photo_search');
+  }
+  
+ /**
+   * 
+   * Dummy function - workaround to get tests going.
+  
+  function testProductAddedFields() {
+
+  }
+
+  function testEmailsSentForRequests() {
+    // create eventsl
+    debug('creating events');
+    $event1 = sport_event_node_creator::getNewEventNode();
+    $event2 = sport_event_node_creator::getNewEventNode();
+    debug('created events');
+    // Create few requrests
+    PhotoRequest::AddRequest('email1@test.test', $event1->nid, 100);
+    PhotoRequest::AddRequest('email2@test.test', $event1->nid, 200);
+    PhotoRequest::AddRequest('email3@test.test', $event2->nid, 300);
+    PhotoRequest::AddRequest('email4@test.test', $event2->nid, 400);
+    debug('created requests');
+    // run cron - check that emails were not sent
+    debug('sending notifications');
+    $notifications = send_notifications(0);
+    debug('notifications sent');
+    $this->assertEqual($notifications, 0, 'Notifications were not sent as product does not exist.');
+
+    // Create products tha match requests
+    // 1st product
+    $product1 = product_node_creator::getNewProductNode($event1->nid);
+    $ps = new ProductNodeSaver($product1->nid);
+    $ps->AddNumber(200);
+    $ps->Save();
+    // 2nd product
+    $product2 = product_node_creator::getNewProductNode($event2->nid);
+    $ps = new ProductNodeSaver($product2->nid);
+    $ps->AddNumber(300);
+    $ps->Save();
+
+    // run cron - check that M emails were sent
+    $notifications = send_notifications(0);
+    $this->assertEqual($notifications, 2, 'Right number of notifications were sent.');
+    $notifications = send_notifications(0);
+    $this->assertEqual($notifications, 0, 'Notifications were not sent on second run.');
+
+  }
+   */
 }

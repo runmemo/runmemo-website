@@ -58,8 +58,8 @@ class PhotoRequest {
       ->condition('r.created', $expires, '>=')
       ->condition('r.performed', 0, '=')
       ->execute();
-    $requsts = $result->fetchAll();
-    return $requsts;
+    $requests = $result->fetchAll();
+    return $requests;
   }
   
   /**
