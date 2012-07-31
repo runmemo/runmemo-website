@@ -188,6 +188,11 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
     parent::setUp('ubercart_custom', 'ocr');
       
     $this->number = 1501;
+    
+    $this->NewProduct =  product_node_creator::getNewProductNode();
+    $lang = $this->NewProduct->language;
+    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
+    
   }
 
   /**
@@ -206,9 +211,6 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
    */
   function testProductExistsWithoutExpire() {
 
-    $this->NewProduct =  product_node_creator::getNewProductNode();
-    $lang = $this->NewProduct->language;
-    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
@@ -227,11 +229,6 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
   */
 function testProductExistsWithExpire() {
 
-    $this->NewProduct =  product_node_creator::getNewProductNode();
-   
-    $lang = $this->NewProduct->language;
-    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
-    
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
     $ps->Save();
@@ -250,20 +247,13 @@ function testProductExistsWithExpire() {
  * - expire is to 1 second after creation.
  */ 
 function testProductIsAbsentWithExpire() {
-
-    $this->NewProduct =  product_node_creator::getNewProductNode();
-    $lang = $this->NewProduct->language;
-     
-    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
     $ps->AddNumber($this->number);
     $ps->Save();
     
     $expire = REQUEST_TIME+1; // 1+ second after creation
-    
     $result = product_exists($this->eventid, $this->number, $expire);
-
     $this->assertFalse($result, 'New product was found for request.');
 
   }
@@ -272,12 +262,9 @@ function testProductIsAbsentWithExpire() {
  * Test product does not exists when product is not created.
  */
   function testProductIsAbsent() {
-    $this->NewProduct =  product_node_creator::getNewProductNode();
-    $lang = $this->NewProduct->language;
-    $this->eventid = $this->NewProduct->field_event_reference[$lang][0]['nid'];
-    
+   
     $result = product_exists($this->eventid, $this->number);
-    $this->assertFalse($result, 'New product was found for request.');
+    $this->assertFalse($result, 'New product was not found for request.');
   }
 
 }
