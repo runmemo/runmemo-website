@@ -75,7 +75,7 @@ class product_node_creator {
       $event->title = 'OCR Test Event';
       $event->type = 'event';
       $event->status = 1;
-      node_object_prepare($node);
+      node_object_prepare($event);
       $event = node_submit($event); // Prepare node for a submit
       node_save($event); // After this call we'll get a nid
       $eventid = $event->nid;
@@ -99,6 +99,7 @@ class product_node_creator {
     $node->field_event_reference[$node->language][]['nid'] = $eventid;
     $node->field_event_reference[$node->language][]['target_type'] = "node";
 
+    node_object_prepare($node);
     $node = node_submit($node); // Prepare node for a submit
     node_save($node); // After this call we'll get a nid
 

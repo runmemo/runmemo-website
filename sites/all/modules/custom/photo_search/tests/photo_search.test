@@ -300,13 +300,13 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
   }
 
   function setUp() { //'field_sql_storage', 'field', 'options', 'references'
-    parent::setUp('ubercart_custom', 'ocr', 'photo_search');
+    parent::setUp('user_reference',  'ubercart_custom', 'photo_search');
   }
   
  /**
    * 
    * Dummy function - workaround to get tests going.
-   */
+  
   function testProductAddedFields() {
 
   }
@@ -348,5 +348,5 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
     $this->assertEqual($notifications, 0, 'Notifications were not sent on second run.');
 
   }
-  
+   */
 }
