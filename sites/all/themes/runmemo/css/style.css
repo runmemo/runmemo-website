@@ -40,7 +40,8 @@ background:none !important;
 	margin:0 auto;
 }
 .header {
-	width:980px;
+    height: 35px;
+    width:980px;
 }
 #logo-floater{
 margin:0 auto;
@@ -939,6 +940,11 @@ border-left: 1px solid #EEF1F2;
   float:left;
   z-index:-1;
   margin:15px 0px 15px 0px;
+}
+
+
+.region-sidebar-first {
+  float: left;
 }
 
 
@@ -2515,6 +2521,7 @@ border-bottom: 1px solid #e9e9e9!important;
     text-indent: 7px;
     width:400px;
     padding:0px;
+    vertical-align: middle;
 	}
 	
 #runner_number {
@@ -2650,7 +2657,7 @@ border-bottom: 1px solid #e9e9e9!important;
 /* VIEWS */
 
 .view-filters {
-	float:left;
+	/* float:left; @todo removed as it breakes the page */
 	clear:both;
 	width:100%;
 }
@@ -2661,4 +2668,28 @@ border-bottom: 1px solid #e9e9e9!important;
         
 #edit-distance {
 	width:400px;
-	}      
+}      
+
+
+#block-system-navigation {
+  display: block;
+  height: 30px;
+  background-color: #384551;
+  margin-top: 5px; 
+  margin-bottom: 15px;
+}
+
+#block-system-navigation ul li {
+  padding: 5px;
+  display: inline;
+  float: left;
+  
+}
+
+#block-system-navigation a {
+  color: #dddddd;
+}
+
+#block-system-navigation .active-trail a {
+  color: #48C2FF;
+}

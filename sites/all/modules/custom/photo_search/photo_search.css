@@ -236,3 +236,27 @@ form#select-event-runner-get-photos {
 	text-align:center;
  	border: 0 none;
 }
+
+.page-search-result #photo-request-form {
+  border:1px solid #cccccc;
+  padding: 20px;
+/*  height: 280px;*/
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+
+.page-search-result #photo-request-submit-button {
+  display: block;
+  height: 50px;
+  float: none;
+}
+
+.page-search-result #photo-request-submit-button .ajax-progress {
+ float: right;
+ height: 5px;	
+}
+
+.page-search-result #photo-request-submit-button .form-submit {
+ float: right;
+}

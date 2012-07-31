@@ -379,3 +379,129 @@ function product_exists($nid, $number, $expire = 0) {
    debug('count = ' . $count);      
    return ($count > 0) ? TRUE : FALSE;
 }
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * Form(photo_request_form) to be shown on the search result page if no results were found,
+ * asks user for an email address and a number
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ * @return renderable array
+ */
+function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_id) {
+    if (arg(0) == 'search-result') {
+      if (is_numeric(arg(1)) && (arg(1) != '')) {
+        $eventid = arg(1);
+      }
+      if (is_numeric(arg(2)) && (arg(2) != '')) {
+        $number = arg(2);
+      }
+      
+        
+    }
+//  $form['prefix'] = array(
+//    '#type' => 'markup', 
+//    '#value' => '<div class="photo-request">',      
+//  );
+  
+  $form['message'] = array(
+      '#type' => 'markup',
+      '#markup' => '<p>Let me know when event photos are ready</p>',
+  );
+  
+  $form['eventid'] = array(
+    '#id' => 'eventid',
+    '#type' => 'hidden',
+    '#value' => $eventid,
+  );   
+  
+  $form['email'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Email address'),
+      '#size' => 30,
+      '#maxlength' => 255,
+      '#description' => t('Enter your email address'),
+  );
+  
+  $form['number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Bib number '),
+      '#size' => 30,
+      '#maxlength' => 6,
+      '#description' => t('Enter your bib number'),
+      '#default_value' => $number
+  );
+  $form['submit'] = array(
+      '#type' => 'submit', 
+      '#prefix' => '<div id="photo-request-submit-button">',
+      '#suffix' => '</div>',
+      '#value' => t('Submit'), 
+      '#submit' => array('event_registration_form_submit'), 
+      '#ajax' => array(
+          'callback' => 'photo_request_form_js',
+          'wrapper' => 'photo-request-form',
+          'effect' => 'fade',
+      ),
+  );
+  
+//  $form['suffix'] = array(
+//    '#type' => 'markup', 
+//    '#value' => '</div>',      
+//  );
+  return $form;
+}
+
+/**
+ * Implements validations for photo_request_form
+ * @param array $form
+ * @param array $form_state 
+ */
+ function photo_request_form_validate($form, &$form_state) {
+  if ($form_state['values']['email'] == '') {
+    form_set_error('email', t('Please enter a valid email address'));
+  }
+  
+  $number = $form_state['values']['number'];
+  if ($number == '' || !is_numeric($number)) {
+    form_set_error('number', t('Please enter a bib number'));
+  }
+
+} 
+
+/**
+ * AJAX callback for submit button on photo_request_form
+ * Adds photo request and sends a confirmation email
+ * @param array $form
+ * @param array $form_state 
+ */
+function photo_request_form_js($form, &$form_state) {
+  $eventid = $form_state['values']['eventid'];
+  $email = $form_state['values']['email'];
+  $number = $form_state['values']['number'];
+  
+  if ($eventid == '' || $email == '' || $number == ''
+      || !is_numeric($eventid) || !is_numeric($number)) {
+    return $form;
+  }
+
+  PhotoRequest::AddRequest($email, $eventid, $number);
+  
+  $node = node_load($eventid);
+  $from = 'no-reply@runmemo.com';
+  $values['number'] = $number;
+  $values['event'] = $node->title;
+  drupal_mail('photo_search', 'number_request_response', $email, language_default(), $values, $from);
+  
+  $markup = '<div id="photo-request-form" class="message">'
+    . '<p>Thank you for your request!</p>'
+    . '<p>We will let you know once we get any photos of you via email '
+    . $email
+    . '</div>';
+  
+  // post registration message
+  return $markup;
+  
+}
+
+

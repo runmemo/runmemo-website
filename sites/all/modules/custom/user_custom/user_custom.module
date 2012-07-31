@@ -75,3 +75,34 @@ function cookie_check_validate($form, &$form_state) {
 }
 
 
+/**
+ * Implements hook_block_info().
+ *
+ * This hook declares what blocks are provided by the module.
+ */
+function user_custom_block_info() {
+  
+  $blocks['grey_line'] = array(
+    'info' => t('Grey line'),
+    'status' => TRUE,
+    'region' => 'header', 
+    'visibility' => BLOCK_VISIBILITY_LISTED,  
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * This hook generates the contents of the blocks themselves.
+ */
+function user_custom_block_view($delta = '') {
+  //The $delta parameter tells us which block is being requested.
+  switch ($delta) {
+    case 'grey_line':
+       $block['subject'] = '<none>';
+      $block['content'] = array('#markup' => '<div class="gray-bdr"></div>');
+    break;
+  }
+  return $block;
+}
