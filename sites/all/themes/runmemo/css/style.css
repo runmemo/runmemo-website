@@ -1291,9 +1291,7 @@ div.error, table tr.error {
 }
 
 div.messages {
-   
-    position: relative;
-    top: 28px;
+  display:block; 
 }
 
 /*newly added*/
