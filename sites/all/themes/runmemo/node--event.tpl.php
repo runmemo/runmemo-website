@@ -99,7 +99,7 @@
   
   <?php
     // We hide the comments and links now so that we can render them later.
-    hide($content['field_photographers']);
+   // hide($content['field_photographers']);
     hide($content['comments']);
     hide($content['links']);
    // hide($content['field_profile_image']);
@@ -112,23 +112,7 @@
    
   ?>
   <?php if ($teaser && isset($node->field_photographers)): ?>
-  	<div class="field field-label-inline">
-  	<div class="field-label">Photographers:&nbsp;</div>
-  	<div class="field-items">
-  	 <div class="field-item ">
-  	  <?php 
-  	      $photographers = field_get_items('node', $node, 'field_photographers');  
-  	      if ($photographers) {
-  	        print count($photographers);   	  
-  	      } 
-  	      else {
-  	        print 0;
-  	      }
-  	  ?>
-  	 </div>
-  	</div>
-  	</div>
- <?php else: ?>
+  <?php else: ?>
  	<div class='googlemaps'>
  		<div class='coming-soon'>
  			<span>Event Route - Coming Soon!</span>
