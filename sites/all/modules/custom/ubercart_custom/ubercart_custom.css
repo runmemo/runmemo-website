@@ -30,6 +30,13 @@
         border-radius: 5px 5px 5px 5px;  
 }
 
+.node-type-product #product-nice-message-container {
+  float: right;
+  color: #BBB;
+  font-family: helvetica;  
+  font-size:13px;  
+}
+
 /*jquery.tagsinput.css*/
 div.tagsinput { 
   border:1px solid #CCC; 

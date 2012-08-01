@@ -139,7 +139,7 @@ function ubercart_custom_menu() {
  */
 function cart_add_item() {
   if (!isset($_GET['nid'])) {
-    echo cart_action_message(FALSE, 'Required parameter nid is not set.');
+    echo json_message(FALSE, 'Required parameter nid is not set.');
     return;
   }
   $nid = $_GET['nid'];
@@ -148,13 +148,13 @@ function cart_add_item() {
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
-      echo cart_action_message(FALSE, 'Did not add item. Item ' . $nid . ' is already in the cart.');
+      echo json_message(FALSE, 'Did not add item. Item ' . $nid . ' is already in the cart.');
       return;
     }
   }
   // add item to cart
   $url = uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid);
-  echo cart_action_message(TRUE, 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid);
+  echo json_message(TRUE, 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid);
    
 }
 
@@ -164,7 +164,7 @@ function cart_add_item() {
  */
 function cart_remove_item() {
   if (!isset($_GET['nid'])) {
-    echo cart_action_message(FALSE, 'Required parameter nid is not set.');
+    echo json_message(FALSE, 'Required parameter nid is not set.');
     return;
   }
  
@@ -175,12 +175,12 @@ function cart_remove_item() {
     if ($nid == $item->nid) {
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product')); //, $cid = $uid, $data = array('module' => 'uc_product'));
   
-      echo cart_action_message(TRUE, 'Removed item from the cart:' . $nid);
+      echo json_message(TRUE, 'Removed item from the cart:' . $nid);
       return;
     }
   }
   
-  echo cart_action_message(FALSE, 'Item was not found in the cart.');
+  echo json_message(FALSE, 'Item was not found in the cart.');
 }
 
 /**
@@ -190,7 +190,7 @@ function cart_remove_item() {
  * @param string $message message that will be added to the response. 
  * 	Message attribute will be ignored if not provided or NULL.
  */
-function cart_action_message($success, $message = NULL) {
+function json_message($success, $message = NULL) {
   if (!isset($message)) {
     $result = array('success' => $success);
   }
@@ -424,14 +424,21 @@ function save_numbers() {
   $option = $_POST['option'];
   
   if (empty($nid) || empty($number) || empty($option)) {
-    echo cart_action_message(FALSE, 'Required parametr is not set');
+    echo json_message(FALSE, 'Required parametr is not set');
     return;
+  }
+  
+  $number_int = (int) $number;
+  
+  if ((string)$number_int != $number) {
+    echo json_message(FALSE, 'Number is not int');
+    return;    
   }
   
 //check permission
   $node = node_load($nid);
   if(!node_access("update", $node)) {
-    echo cart_action_message(FALSE, 'Has no permissions');
+    echo json_message(FALSE, 'Has no permissions');
     return;
   }  
   
@@ -447,13 +454,13 @@ function save_numbers() {
       break;
 
     default:
-      echo cart_action_message(FALSE, 'Parametr option=' . $option . ' is not supported');
+      echo json_message(FALSE, 'Parametr option=' . $option . ' is not supported');
       return;
   }
   
   $productSaver->Save();
   
-  echo cart_action_message(TRUE, 'node=' . $nid . ',number=' . $number . ',option=' . $option);
+  echo json_message(TRUE, 'node=' . $nid . ',number=' . $number . ',option=' . $option);
   return;
 }
 
@@ -467,14 +474,14 @@ function change_price() {
   $nid = $_POST['nid'];
   $sell_price  = $_POST['sell_price'];
   if (empty($nid) || empty($sell_price)) {
-    echo cart_action_message(FALSE, 'Required parametr is not set');
+    echo json_message(FALSE, 'Required parametr is not set');
     return;
   }
   
 //check permission
   $node = node_load($nid);
   if(!node_access("update", $node)) {
-    echo cart_action_message(FALSE, 'Has no permissions');
+    echo json_message(FALSE, 'Has no permissions');
     return;
   }  
   
@@ -482,6 +489,6 @@ function change_price() {
   $productSaver->SetSellPrice($sell_price);
   $productSaver->Save();
 
-  echo cart_action_message(TRUE, 'node=' . $nid . ',new_price=' . $sell_price);
+  echo json_message(TRUE, 'node=' . $nid . ',new_price=' . $sell_price);
   return;
 }
