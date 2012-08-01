@@ -7,3 +7,5 @@ S3MoverClassTestCase
 Ubercart_Custom_API_TestCase
 SportEventTestCase
 PhotoSearchRequestsTestCase
+SearchProductsForRequestsTestCase
+PhotoSearchCronTestCase

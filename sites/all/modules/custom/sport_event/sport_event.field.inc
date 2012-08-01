@@ -36,7 +36,7 @@ function _sport_event_field_default_fields() {
       'module' => 'user_reference',
       'settings' => array(
         'referenceable_roles' => array(
-          $photographer_rid => (string)$photographer_rid,
+          'Photographer' => (string)$photographer_rid,
         ),
         'referenceable_status' => array(
           0 => 0,
