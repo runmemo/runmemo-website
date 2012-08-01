@@ -85,7 +85,11 @@ class ProductNodeSaver {
   public function GetNumbersStr() {
     $runner_numbers = "";
     $numbers = field_get_items('node', $this->node, 'ocr_numbers');
-//    $runner_numbers = implode($numbers[]['value'], ",");
+    
+    if(!$numbers) {
+      return "";
+    }
+    
     foreach ($numbers as $number) {
       if (empty($runner_numbers)) {
         $runner_numbers = (string)$number['value'];

@@ -315,6 +315,7 @@ function photo_search_mail($key, &$message, $params) {
   };
 }
 
+define('PHOTO_SEARCH_CRON_LAST_RUN', variable_get('photo_search_cron_last_run', 0));
 /**
  * 
  * Implements hook_cron
@@ -322,7 +323,10 @@ function photo_search_mail($key, &$message, $params) {
 function photo_search_cron() {
 
   // get time of last cron execution
-  $expire = variable_get('photo_search_cron_last_run', REQUEST_TIME);
+  $expire = PHOTO_SEARCH_CRON_LAST_RUN;
+  // set time of last cron execution to now
+  variable_set('photo_search_cron_last_run', REQUEST_TIME);
+  // send notifications to runners
   send_notifications($expire);
   
 }
@@ -377,7 +381,7 @@ function product_exists($nid, $number, $expire = 0) {
       ->fieldCondition('ocr_numbers', 'value', $number, '=');
 
    $count = $query->count()->execute();
-   watchdog('product exists', 'Products with number ' .  $number . ' for eventid ' . $nid . ' : ' . $count);
+
    return ($count > 0) ? TRUE : FALSE;
 }
 
