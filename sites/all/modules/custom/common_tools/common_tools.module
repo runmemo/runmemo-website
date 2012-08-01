@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Common tools for Runmemo.com
+ * 
+ * This module provides common functions that can be reused in other
+ * custom modules.
+ */
+
+/**
+ *
+ * @return rendered array
+ */
+function get_rendered_slider() {
+  $slider =  
+  '<div id="sell-price-container" class="sell-price-slider">
+      <div style="margin-bottom: 3px; margin-top: 3px;">
+      <label for="amount" class="field-label" style="float: left">Sell price:</label>
+      <span id="amount" style="margin-left: 10px"></span>    
+      </div>
+      <div id="sell_price"></div> 
+    </div>';
+  return $slider;
+}

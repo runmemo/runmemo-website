@@ -105,13 +105,7 @@
     ?>
    
     
-    <div id="sell-price-container" style="width: 150px; margin-bottom: 10px; margin-top: 10px;">
-      <div style="margin-bottom: 3px; margin-top: 3px;">
-      <label for="amount" class="field-label" style="float: left">Sell price:</label>
-      <span id="amount" style="margin-left: 10px"></span>    
-      </div>
-      <div id="sell_price"></div> 
-    </div>
+    <?php print get_rendered_slider()?>
     <label for="product-node-runner-number" class="field-label">Runner numbers:</label>
     <input name="product-node-runner-number" id="product-node-runner-number" value="
       <?php 

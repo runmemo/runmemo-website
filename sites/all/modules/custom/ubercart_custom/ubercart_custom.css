@@ -30,6 +30,12 @@
         border-radius: 5px 5px 5px 5px;  
 }
 
+.node-type-product  .sell-price-slider {
+    width: 150px; 
+    margin-bottom: 10px; 
+    margin-top: 10px;
+}
+
 .node-type-product #product-nice-message-container {
   float: right;
   color: #BBB;

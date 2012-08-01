@@ -3,6 +3,7 @@ description = A block module that is used to alter the ubercart core module
 package = Runmemo Custom Modules
 core = 7.x
 
+dependencies[] = common_tools
 dependencies[] = uc_product
 dependencies[] = node_reference
 
