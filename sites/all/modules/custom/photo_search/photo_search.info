@@ -5,6 +5,7 @@ core = 7.x
 version = 7.1
 
 dependencies[] = sport_event
+dependencies[] = ubercart_custom
 
 files[] = photo_search.inc
 files[] = photo_search.module
