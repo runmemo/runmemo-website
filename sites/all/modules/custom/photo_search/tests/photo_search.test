@@ -328,7 +328,6 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
     $this->assertEqual($notifications, 2, 'Right number of notifications were sent.');
     $notifications = send_notifications(0);
     $this->assertEqual($notifications, 0, 'Notifications were not sent on second run.');
-
   }
  
 }
