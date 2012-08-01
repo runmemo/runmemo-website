@@ -377,7 +377,7 @@ function product_exists($nid, $number, $expire = 0) {
       ->fieldCondition('ocr_numbers', 'value', $number, '=');
 
    $count = $query->count()->execute();
-     
+   watchdog('product exists', 'Products with number ' .  $number . ' for eventid ' . $nid . ' : ' . $count);
    return ($count > 0) ? TRUE : FALSE;
 }
 
