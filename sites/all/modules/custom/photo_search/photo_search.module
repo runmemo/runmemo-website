@@ -301,6 +301,7 @@ function photo_search_mail($key, &$message, $params) {
                                 	'@event' => $params['event'], 
                                 	'@number' => $params['number'])
       , $options);
+      break;
     case 'number_found_notification':
       $message['subject'] = t('Check you photo at @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
 

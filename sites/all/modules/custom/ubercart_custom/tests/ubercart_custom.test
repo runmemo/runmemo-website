@@ -18,12 +18,14 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('photo_search');
+    parent::setUp('user_custom', 'photo_search');
+
     // create product node
     $this->product = product_node_creator::getNewProductNode();
-     
-    
+         
   }
+  
+  
   function testAddCartItem_Call_Success_New_Item() {
     
     $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
