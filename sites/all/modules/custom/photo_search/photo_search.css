@@ -246,6 +246,10 @@ form#select-event-runner-get-photos {
   -moz-border-radius: 5px;
 }
 
+.page-search-result p {
+  width: 400px;
+}
+
 .page-search-result #photo-request-submit-button {
   display: block;
   height: 50px;

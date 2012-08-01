@@ -404,10 +404,14 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
 //    '#type' => 'markup', 
 //    '#value' => '<div class="photo-request">',      
 //  );
+  $event = node_load($eventid);
   
   $form['message'] = array(
       '#type' => 'markup',
-      '#markup' => '<p>Let me know when event photos are ready</p>',
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#id' => 'let-me-know-message',
+      '#markup' => t('Let me know when my photos from ') . $event->title . t(' are ready'),
   );
   
   $form['eventid'] = array(
