@@ -301,15 +301,15 @@ function photo_search_mail($key, &$message, $params) {
       , $options);
       break;
     case 'number_found_notification':
-      $message['subject'] = t('Check you photo at @site-name', array('@site-name' => variable_get('site_name', 'Drupal')), $options);
+      $message['subject'] = t('Check you photo at @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
 
-      $message['body'][] = t('It looks like we found your photo from @event. Please follow the link bellow to get it.',
+      $message['body'][] = t('It looks like we found your photo from @event.',
       array('@event' => $params['event'])
       , $options);
        
       $search_url = 'search-results/'. $params['nid'] . '/' . $params['number'];
 
-      $message['body'][] = l(t('Get photo.'), $search_url);
+      $message['body'][] = t('Please follow the link to see photo(s) with bib @number: ', array('@number' => $params['number'])) . $search_url;
        
       break;
   };
