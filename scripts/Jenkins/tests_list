@@ -8,3 +8,4 @@ Ubercart_Custom_API_TestCase
 SportEventTestCase
 PhotoSearchRequestsTestCase
 SearchProductsForRequestsTestCase
+PhotoSearchCronTestCase
