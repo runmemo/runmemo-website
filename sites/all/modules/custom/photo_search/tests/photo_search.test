@@ -269,7 +269,6 @@ function testProductIsAbsentWithExpire() {
 
 }
 
-
 /**
  * 
  * Test case for function: product_exists($nid, $number, $expire = 0)
@@ -300,20 +299,16 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
 
   function testEmailsSentForRequests() {
     // create eventsl
-    debug('creating events');
     $event1 = sport_event_node_creator::getNewEventNode();
     $event2 = sport_event_node_creator::getNewEventNode();
-    debug('created events');
     // Create few requrests
     PhotoRequest::AddRequest('email1@test.test', $event1->nid, 100);
     PhotoRequest::AddRequest('email2@test.test', $event1->nid, 200);
     PhotoRequest::AddRequest('email3@test.test', $event2->nid, 300);
     PhotoRequest::AddRequest('email4@test.test', $event2->nid, 400);
-    debug('created requests');
+
     // run cron - check that emails were not sent
-    debug('sending notifications');
     $notifications = send_notifications(0);
-    debug('notifications sent');
     $this->assertEqual($notifications, 0, 'Notifications were not sent as product does not exist.');
 
     // Create products tha match requests
