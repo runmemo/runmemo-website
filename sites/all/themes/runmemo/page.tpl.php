@@ -140,20 +140,15 @@
     						</ul>
 						<?php endif; ?>
                                                 
-                                                <?php print render($page['header']); ?>
-                                                
-
-
-
-                                                <?php print render($page['sidebar_first']); ?>
-
-                                                  <?php if ($title): ?>
-                                                      <h1 class ="page-title"><?php print $title ?></h1>
-                                                  <?php endif; ?>
-                                                    
-                                                  <?php print render($page['content']); ?>
-                                                
-                                                  <?php print render($page['sidebar_second']); ?>
+                       <?php print render($page['header']); ?>
+                       <?php print render($page['sidebar_first']); ?>
+                            <?php if ($title): ?>
+                                <h1 class ="page-title"><?php print $title ?></h1>
+                            <?php endif; ?>
+                              
+                            <?php print render($page['content']); ?>
+                          
+                            <?php print render($page['sidebar_second']); ?>
     					
 
 						<?php print render($page['footer']); ?>
