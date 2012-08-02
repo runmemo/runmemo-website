@@ -50,8 +50,6 @@ jQuery(document).ready(function() {
 				var cart_contents = new Array();
 				var cart_str = $('.view-footer #cart_hidden_nids input').val();
 
-				$('#cart_hidden_nids').append('<ul id="cart-items"></ul>');
-
 				// var temp = new Array();
 				cart_contents = cart_str.split(",");
 
@@ -126,61 +124,47 @@ jQuery(document).ready(function() {
 			 * tags on the page
 			 */
 			function is_product_in_cart(nid) {
-				var items = $('#cart_hidden_nids li#item-' + nid).size();
-				if (items >= 1) {
-					return true;
-				} else {
-					return false;
+				if (window.cart) {
+					for (var i in window.cart.items) {
+						if(nid == window.cart.items[i].nid)
+						{
+							return true;
+						};
+					}
 				}
+				return false;
 			}
 			
 			function set_cart($cart_json) {
 				window.cart = jQuery.parseJSON($cart_json);
-				var no_of_items = window.cart.items.length;
-				var total_cost = window.cart.total;
-
-				set_total_items(no_of_items);
-				$(".summary_cost .placeholder").html(total_cost);
-				if (no_of_items > 0) {
-					show_proceed_to_checkout();
-				} else {
-					hide_proceed_to_checkout();
-				}
-
-				var items = new Array();
-
+				console.debug(window.cart);
 				// uncheck all checks on the page
 				$('span.node_check input').each(function() {
 					var nid = $(this).val();
-					set_to_unchecked(nid);						
+					set_to_unchecked(nid);	
+					console.debug('Unchecking nid = ' + nid);
 				});
 				var nid = 0;
 				for (var i in window.cart.items) {
 					nid = window.cart.items[i].nid;
-					items.push(nid);
 					set_to_checked(nid);
+					console.debug('Checking nid = ' + nid);
 				}				
-			}
 
-			/**
-			 * Gets items in the cart from HTML tags on the page
-			 * 
-			 * @returns {Array} List of nid for products in the cart
-			 */
-			function cart_items() {
-				var items = new Array();
-				$('#cart_hidden_nids ul#cart-items li').each(function() {
-					items.push($(this).html());
-				})
-				return items;
+				set_cart_summary();
 			}
 
 			/**
 			 * Gets Size of the cart from HTML tags on the page
 			 */
 			function size_of_the_cart() {
-				var items = $('#cart_hidden_nids ul#cart-items li').size();
-				return items;
+				if(window.cart.items) {
+					return window.cart.items.length;
+				}
+				else {
+					return 0;
+				}
+				
 			}
 
 			// Action check event
@@ -215,17 +199,22 @@ jQuery(document).ready(function() {
 			 * Sets the total price in curt summary section
 			 */
 			function set_cart_summary() {
-				var items = cart_items();
 				var total_price = 0;
 				var price = 0;
 
-				var count_items = items.length;
-				for ( var i = 0; i < items.length; i++) {
+				for (var i in window.cart.items) {
 					price = parseFloat(window.cart.items[i].price);
 					total_price = total_price + price;
-				}
-				set_total_items(items.length);
+				}		
+	
+				set_total_items(size_of_the_cart());
 				set_total_price(total_price);
+				
+				if (size_of_the_cart() > 0) {
+					show_proceed_to_checkout();
+				} else {
+					hide_proceed_to_checkout();
+				}
 
 			}
 
@@ -253,40 +242,34 @@ jQuery(document).ready(function() {
 				$('#check_' + nid).addClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', true);
 				
-				var match = false;
-				for (var i in window.cart.items) {
-					if (window.cart.items[i].nid == nid) {
-						match = true;
-					}
-				}
+				var match = is_product_in_cart(nid);
+				
 				if (!match) {
 					item = new Object();
 					item.nid = nid;
 					item.price = price_of_item(nid);
 					item.qty = 1;
 					window.cart.items.push(item);
-				}
-				$('#cart_hidden_nids').children('ul').append('<li id="item-' + nid + '">' + nid + '</li>');
+				} 
 	
 			}
 			
 			function set_to_unchecked(nid) {
 				$('#check_' + nid).removeClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', false);
+			
 				for (var i in window.cart.items) {
 					if (window.cart.items[i].nid == nid) {
 						// remove item from cart;
-						window.cart.items.slice(i,1);
-						console.debug('removing item from local cart');
+						window.cart.items.splice(i, 1);
 					}
 				}
-				$('#cart_hidden_nids ul li#item-' + nid).remove();
+				
 			}
 		
 			
 			function add_to_cart(nid) {
 				set_to_checked(nid);
-				show_proceed_to_checkout();
 				set_cart_summary();
 
 				// add item to ubercart
@@ -327,9 +310,6 @@ jQuery(document).ready(function() {
 			 */
 			function remove_from_cart(nid) {
 				set_to_unchecked(nid);
-				if (size_of_the_cart() == 0) {
-					hide_proceed_to_checkout();
-				}
 				set_cart_summary();
 				// remove item from ubercart
 				var base_path = Drupal.settings.basePath;
