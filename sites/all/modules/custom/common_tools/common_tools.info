@@ -1,0 +1,6 @@
+name = Runmemo common 
+description = Runmemo common tools
+package = Runmemo Custom Modules
+core = 7.x
+
+files[] = common_tools.module

@@ -69,8 +69,30 @@ function drag_drop_upload_validation() {
 		    	}
 				up.refresh(); // Reposition Flash/Silverlight
 			});
-		
+                        
+                        function UploadPageonSlide( event, ui ) {
+                            $(".page-photographer-upload #price_val").val( ui.value );
+                            console.debug($(".page-photographer-upload #price_val"));
+                            $(".page-photographer-upload #amount").text( "£" + ui.value );
+                        }
+
+                        var price = $(".page-photographer-upload #price_val").val();
+
+                        $(".page-photographer-upload #price").slider({
+                                range: "min",
+                                value: price,
+                                min: 2,
+                                max: 10,
+                                step: 1,
+                                slide: UploadPageonSlide
+                        });
+                        $(".page-photographer-upload #price_val").val( $( ".page-photographer-upload #price" ).slider( "value" ) );
+                        $(".page-photographer-upload #amount").text( "£" + $( ".page-photographer-upload #price" ).slider( "value" ) );
+				
 		}
 
 	};
+        
 })(jQuery);
+
+

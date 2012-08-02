@@ -53,7 +53,12 @@ display:block;
     right:16px;
         
 }
-
+.page-photographer-upload  .price-slider {
+    width: 350px; 
+    float: right;
+    margin-bottom: 10px; 
+    margin-top: 10px;
+}
 .page-photographer-upload .plupload_droptext {
 	height:70%;
 	margin:25px auto;

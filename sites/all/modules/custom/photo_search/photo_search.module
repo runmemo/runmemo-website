@@ -235,12 +235,12 @@ function find_trade_section() {
 
   $find_photos = drupal_render(drupal_get_form('select_event_runner_get_photos'));
 
-  
+
   global $user;
 
   if(!$user->uid) {
     $trade_photos = drupal_render(drupal_get_form('user_login'));
-  } else 
+  } else
   {
     $trade_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
   }
@@ -250,12 +250,12 @@ function find_trade_section() {
     				<div id='trade'>Photographers</div>  
     				<div id='taken_picture'>Sell your photos</div>
     				<div id='front-trade-photos'>
-                      $trade_photos
+    				$trade_photos
     				</div>
     			</div>	
   			</div>";
 
-  return $style;
+    				return $style;
 }
 
 /**
@@ -280,6 +280,240 @@ function select_event_runner_sell_photos_submit($form, &$form_state) {
       $form_state['redirect'] = "photographer/upload";
     }
   }
+}
+
+
+function photo_search_mail($key, &$message, $params) {
+
+  $node = node_load($params['nid']);
+  $event_title = $node->title;
+  
+  $options = array(
+    'langcode' => $message['language']->language,
+  );
+
+  switch ($key) {
+    // send confirmation for requests.
+    case 'number_request_response':
+      $message['subject'] = t('Confirmation from @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
+      // Note that the message body is an array, not a string.
+      $message['body'][] = t('Thank you for your request. We will notify you as soon as we find a photo from @event with bib number @number',
+   
+      array(
+                                	'@event' => $event_title, 
+                                	'@number' => $params['number'])
+      , $options);
+      break;
+    case 'number_found_notification':
+      $message['subject'] = t('Check you photos at @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
+
+      $message['body'][] = t('It looks like we found your photo from @event.', array('@event' => $event_title)
+      , $options);
+       
+      $search_url = 'search-results/'. $params['nid'] . '/' . $params['number'];
+
+      $message['body'][] = t('Please follow the link to see photo(s) with bib @number: ', array('@number' => $params['number'])) . $search_url;
+       
+      break;
+  };
+}
+
+define('PHOTO_SEARCH_CRON_LAST_RUN', variable_get('photo_search_cron_last_run', 0));
+/**
+ * 
+ * Implements hook_cron
+ */
+function photo_search_cron() {
+
+  // get time of last cron execution
+  $expire = PHOTO_SEARCH_CRON_LAST_RUN;
+  // set time of last cron execution to now
+  variable_set('photo_search_cron_last_run', REQUEST_TIME);
+  // send notifications to runners
+  send_notifications($expire);
+  
+}
+
+/**
+ * 
+ * Sends notifications in response to requests for new photos.
+ * @param integer $expire - timestamp from which we need to check new photos
+ */
+function send_notifications($expire) {
+  // get all items from requests after last execution
+  $requests = PhotoRequest::getRequests(0);
+  $counter = 0;
+  foreach ($requests as $item) {
+    if (product_exists($item->eventid, $item->number, $expire)) {
+
+      // send email to user
+      $to =  $item->email;
+      $from = 'no-reply@runmemo.com';
+      $values = array();
+      $values['number'] = $item->number;
+      $values['nid'] = $item->eventid;
+      drupal_mail('photo_search', 'number_found_notification', $to, language_default(), $values, $from);
+      $counter++;
+       
+      // mark result as complete
+      $updated = PhotoRequest::RequestPerformed($item->id);      
+      if(!$updated) {
+        watchdog('search notifications', 'Did not update request with id =' . $item->id);
+      }    
+    }
+  }
+  
+  watchdog('search notifications', 'Photo Search Cron sent ' . $counter . ' emails.');
+  return $counter; 
+}
+
+/**
+ * 
+ * Checks whether new photos with specified number were added to the system.
+ * @param integer $nid
+ * @param integer $number
+ */
+function product_exists($nid, $number, $expire = 0) {
+  
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'product')
+      ->propertyCondition('status', 1)
+      ->propertyCondition('changed', $expire, '>=')
+      ->fieldCondition('field_event_reference', 'nid', $nid, '=')
+      ->fieldCondition('ocr_numbers', 'value', $number, '=');
+
+   $count = $query->count()->execute();
+
+   return ($count > 0) ? TRUE : FALSE;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ * Form(photo_request_form) to be shown on the search result page if no results were found,
+ * asks user for an email address and a number
+ * @param array $form
+ * @param array $form_state
+ * @param string $form_id
+ * @return renderable array
+ */
+function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_id) {
+    if (arg(0) == 'search-result') {
+      if (is_numeric(arg(1)) && (arg(1) != '')) {
+        $eventid = arg(1);
+      }
+      if (is_numeric(arg(2)) && (arg(2) != '')) {
+        $number = arg(2);
+      }
+      
+        
+    }
+//  $form['prefix'] = array(
+//    '#type' => 'markup', 
+//    '#value' => '<div class="photo-request">',      
+//  );
+  $event = node_load($eventid);
+  
+  $form['message'] = array(
+      '#type' => 'markup',
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#id' => 'let-me-know-message',
+      '#markup' => t('Let me know when my photos from ') . $event->title . t(' are ready'),
+  );
+  
+  $form['eventid'] = array(
+    '#id' => 'eventid',
+    '#type' => 'hidden',
+    '#value' => $eventid,
+  );   
+  
+  $form['email'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Email address'),
+      '#size' => 30,
+      '#maxlength' => 255,
+      '#description' => t('Enter your email address'),
+  );
+  
+  $form['number'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Bib number '),
+      '#size' => 30,
+      '#maxlength' => 6,
+      '#description' => t('Enter your bib number'),
+      '#default_value' => $number
+  );
+  $form['submit'] = array(
+      '#type' => 'submit', 
+      '#prefix' => '<div id="photo-request-submit-button">',
+      '#suffix' => '</div>',
+      '#value' => t('Submit'), 
+      '#submit' => array('event_registration_form_submit'), 
+      '#ajax' => array(
+          'callback' => 'photo_request_form_js',
+          'wrapper' => 'photo-request-form',
+          'effect' => 'fade',
+      ),
+  );
+  
+//  $form['suffix'] = array(
+//    '#type' => 'markup', 
+//    '#value' => '</div>',      
+//  );
+  return $form;
+}
+
+/**
+ * Implements validations for photo_request_form
+ * @param array $form
+ * @param array $form_state 
+ */
+ function photo_request_form_validate($form, &$form_state) {
+  if ($form_state['values']['email'] == '') {
+    form_set_error('email', t('Please enter a valid email address'));
+  }
+  
+  $number = $form_state['values']['number'];
+  if ($number == '' || !is_numeric($number)) {
+    form_set_error('number', t('Please enter a bib number'));
+  }
+
+} 
+
+/**
+ * AJAX callback for submit button on photo_request_form
+ * Adds photo request and sends a confirmation email
+ * @param array $form
+ * @param array $form_state 
+ */
+function photo_request_form_js($form, &$form_state) {
+  $eventid = $form_state['values']['eventid'];
+  $email = $form_state['values']['email'];
+  $number = $form_state['values']['number'];
+  
+  if ($eventid == '' || $email == '' || $number == ''
+      || !is_numeric($eventid) || !is_numeric($number)) {
+    return $form;
+  }
+
+  PhotoRequest::AddRequest($email, $eventid, $number);
+  
+  $from = 'no-reply@runmemo.com';
+  $values['number'] = $number;
+  $values['nid'] = $eventid;
+  
+  drupal_mail('photo_search', 'number_request_response', $email, language_default(), $values, $from);
+  
+  $markup = '<div id="photo-request-form" class="message">'
+    . '<p>Thank you for your request!</p>'
+    . '<p>We will let you know once we get any photos of you via email '
+    . $email
+    . '</div>';
+  
+  // post registration message
+  return $markup;
+  
 }
 
 

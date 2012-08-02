@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * @file
+ * Install and uninstall functions for the photo search.
+ * 
+ * 
+ */
+
+
+/**
+ * Implements hook_schema(). 
+ */
+function photo_search_schema() {
+  //table to store photo requests
+  $schema['photo_requests'] = array(
+    'description' => 'Photo requsts',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary id for a request.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE),
+      'email' => array(
+        'description' => 'Email address',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => ''),          
+      'eventid' => array(
+        'description' => 'Node id for an event',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),          
+      'number' => array(
+        'description' => 'Requested number.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE),          
+      'created' => array(
+        'description' => 'The Unix timestamp when the request was created.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0),
+      'performed' => array(
+        'description' => 'The Unix timestamp when the request was performed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0),
+    ),
+    
+    'primary key' => array('id'),
+    'indexes' => array( 
+        'request_created' => array('created'),
+        'request_performed' => array('performed'),
+    ),
+  );
+  
+  return $schema;
+
+}
+
+/**
+ * Create new database table {photo_requests}.
+ */
+function photo_search_update_7101() {
+  $schema['photo_requests'] = drupal_get_schema('photo_requests');
+  db_create_table('photo_requests', $schema['photo_requests']);
+}

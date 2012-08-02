@@ -36,10 +36,12 @@ function photo_upload_menu() {
   //url for photographer
   $items['photographer/upload'] = array(
       'title' => 'Upload Photos',
+      'menu_name' => 'navigation',
       'description' => 'View the objects in a bucket on your Amazon S3 account.',
       'page callback' => 'photographer_upload_photos',
       'access arguments' => array('access_photographer'),
-      'type' => MENU_CALLBACK,
+      'weight' => '1',
+      'type' => MENU_NORMAL_ITEM,
   );
   $items['admin/photographer/share'] = array(
       'title' => 'Managing share for Photographers',
@@ -82,13 +84,9 @@ function select_event_function() {
 
   $form = array();
 
-  $form['event_title'] = array(
-  		'#markup' => '<div class="select_event_title" >' . t('Upload to event:') .'</div>'
-  );
-
   $form['events_select'] = array(
   		'#type' => 'select', 
-  		'#title' => '', 
+  		'#title' => t('Upload to event:'), 
   		'#id' => 'event_select', 
   		'#attributes' => array(
   			'onchange' => 'return select_event_upload();'), 
@@ -109,7 +107,11 @@ function select_event_function() {
     $default = arg(2);
     $form['events_select']['#default_value'] = $default;
   }
-
+  
+  $form['price_slider'] = array(
+  		'#markup' => get_rendered_slider(),
+  );
+  
   return $form;
 }
 /**
@@ -153,6 +155,12 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   		'#type' => 'textfield', 
   		'#title' => '', 
   		'#id' => 'selected_event_nid');
+  $form['box']['price_val'] = array(
+  		'#type' => 'textfield', 
+  		'#id' => 'price_val',
+                '#attributes' => array('style' => 'display: none;'),
+                '#default_value' => variable_get('RUNMEMO_DEFAULT_PRICE', 5),
+  );
   return $form;
 }
 
@@ -180,7 +188,8 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       file_save($file);
       $saved_files[] = $file;
       $event = $form_state['values']['selected_event'];
-      $node = create_photo_node($file, $event);
+      $price = $form_state['values']['price_val'];
+      $node = create_photo_node($file, $event, $price);
     }
     else {
       // @todo: move this to element validate or something and clean up t().
@@ -190,7 +199,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   $count_files = count($saved_files);
   if ($count_files > 0) {
   // drupal_set_message(t("Files uploaded successfully"));
-    $form_state['redirect'] = "myphotos";   
+    $form_state['redirect'] = "photographer/myphotos";   
   } else {
     // @todo add message may be.
   }
@@ -271,7 +280,7 @@ function photograher_share_submit($form, &$form_state) {
  * @param $event id
  */
 
-function create_photo_node($file, $event_nid) {
+function create_photo_node($file, $event_nid, $price = 0) {
   
   // We create a new node object
   $node = new stdClass();
@@ -292,14 +301,21 @@ function create_photo_node($file, $event_nid) {
   $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
 
  
-  $selected_event = node_load($event_nid);
-  $price = $selected_event->field_pricing['und']['0']['value'];
-  $node->field_event_reference['und']['0']['nid'] = $event_nid;
-  if ($price != '') {
-    $node->sell_price = $price;
-    $node->list_price = $price;
+  $event = node_load($event_nid);
+  if ($price == 0) {
+    $field_pricing = field_get_items('node', $event, 'field_pricing');
+    if ($field_pricing[0]['value'] != 0) {
+      $price = $field_pricing[0]['value'];
+    } else {
+      $price = 5;
+    }
   }
   
+  $node->sell_price = $price + variable_get('RUNMEMO_COMMISION', 1);
+  $node->list_price = $price;
+    
+  $node->field_event_reference[$node->language]['0']['nid'] = $event->nid;
+
   node_object_prepare($node); // set default values
   $node = node_submit($node); // set author and creation date
   node_save($node); // After this call we'll get a nid

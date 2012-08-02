@@ -2,8 +2,13 @@ name = Photo search results
 description = Module is used to present search results
 package = Runmemo Custom Modules
 core = 7.x
+version = 7.1
 
+dependencies[] = sport_event
+dependencies[] = ubercart_custom
+
+files[] = photo_search.inc
 files[] = photo_search.module
 files[] = photo_search.views_default.inc
 files[] = photo_search.js
-dependencies[] = sport_event
+files[] = tests/photo_search.test

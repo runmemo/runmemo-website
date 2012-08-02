@@ -104,6 +104,43 @@ function runmemo_preprocess_page(&$vars) {
  */
 function runmemo_preprocess_node(&$vars) {
   $vars['submitted'] = $vars['date'] . ' — ' . $vars['name'];
+  
+  
+}
+
+function runmemo_field__field_photographers__event($variables) {
+  
+ $output = '';
+
+  // Render the label, if it's not hidden.
+  if (!$variables['label_hidden']) {
+    $output .= '<div class="field-label"' . $variables['title_attributes'] . '>' . $variables['label'] . ':&nbsp;</div>';
+  }
+  
+  $counter = 0;
+  foreach ($variables['items'] as $delta => $item) {
+    $counter++;
+  }
+
+  $output .= '<div class="field-item"' . $variables['item_attributes'][$delta] . '>' . $counter . '</div>';
+  
+    // Render the top-level DIV.
+  $output = '<div class="' . $variables['classes'] . '"' . $variables['attributes'] . '>' . $output . '</div>';
+
+  return $output;
+   
+}
+
+/**
+ * 
+ */
+function runmemo_preprocess_field($variables) {
+   // $photographers = $variables['items'];  
+  //  print_r($variables);
+    // @todo - fix numbe of photographers on event node.
+ // 	print_r($photographers);
+ //   $vars['photographers'] = $photographers ? count($photographers) : 0;
+ // 	drupal_render($vars['photographers']);
 }
 
 /**

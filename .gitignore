@@ -9,6 +9,5 @@ sites/*/private
 /.settings
 /.buildpath
 /.project
-/sites/all/modules/admin_menu/
 /sites/default/files_private/
 /FirePHPCore/

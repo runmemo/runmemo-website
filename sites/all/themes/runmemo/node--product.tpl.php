@@ -101,17 +101,8 @@
   <div class="product_content">
     <?php 
       print render($content); 
-      print render( drupal_get_form('product_node_custom_form') );
+      print get_rendered_slider()
     ?>
-   
-    
-    <div id="sell-price-container" style="width: 150px; margin-bottom: 10px; margin-top: 10px;">
-      <div style="margin-bottom: 3px; margin-top: 3px;">
-      <label for="amount" class="field-label" style="float: left">Sell price:</label>
-      <span id="amount" style="margin-left: 10px"></span>    
-      </div>
-      <div id="sell_price"></div> 
-    </div>
     <label for="product-node-runner-number" class="field-label">Runner numbers:</label>
     <input name="product-node-runner-number" id="product-node-runner-number" value="
       <?php 
@@ -125,4 +116,7 @@
 
   </div>
 
+  <input type="hidden" name="product_id" id="product_id" value="<?php echo $node->nid; ?>">
+  <input type="hidden" name="price_val" id="price_val" value="<?php echo $node->list_price; ?>"> 
+   
 </div>
