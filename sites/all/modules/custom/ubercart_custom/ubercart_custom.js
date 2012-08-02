@@ -85,33 +85,30 @@
 	  }
 	
 	  function onPriceChange( event, ui ) {
-	    var sell_price = $( ".node-type-product #sell_price" ).slider( "value" );
+	    var price = $( ".node-type-product #price" ).slider( "value" );
 	    var base_path = Drupal.settings.basePath;
 	    var nid = $('.node-type-product #product_id').val();
-	
 	    //define php info and make ajax call
 	    $.ajax({
 	        url : base_path + "ajax/change_price",
 	        type: "POST",
-	        data: {nid: nid, sell_price: sell_price},
+	        data: {nid: nid, price: price},
                 dataType: 'json',
 	        cache: false,
-	        success : function(msg) {
+	        success : function(msg) {              
                   if (msg.success) {
                     $( ".node-type-product #product-nice-message-container" ).text("Price was changed to £" + ui.value);
                   }
 	        }
 	    }); 
-	
-
-	  
+            
 	  }
 	
-	  var sell_price = $( ".node-type-product #sell_price_value" ).val();
+	  var price = $( ".node-type-product #price_val" ).val();
 	 
-	  $(".node-type-product #sell_price").slider({
+	  $(".node-type-product #price").slider({
 	          range: "min",
-	          value: sell_price,
+	          value: price,
 	          min: 2,
 	          max: 10,
 	          step: 1,
@@ -119,7 +116,7 @@
 	          change: onPriceChange
 	  });
 	
-	  $(".node-type-product #amount").text( "£" + $( ".node-type-product #sell_price" ).slider( "value" ) );
+	  $(".node-type-product #amount").text( "£" + $( ".node-type-product #price" ).slider( "value" ) );
 	 
 	
 		}

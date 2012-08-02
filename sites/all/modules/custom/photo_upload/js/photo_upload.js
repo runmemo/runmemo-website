@@ -71,23 +71,23 @@ function drag_drop_upload_validation() {
 			});
                         
                         function UploadPageonSlide( event, ui ) {
-                            $(".page-photographer-upload #sell_price_val").val( ui.value );
-                            console.debug($(".page-photographer-upload #sell_price_val"));
+                            $(".page-photographer-upload #price_val").val( ui.value );
+                            console.debug($(".page-photographer-upload #price_val"));
                             $(".page-photographer-upload #amount").text( "£" + ui.value );
                         }
 
-                        var sell_price = 5; //$( "#sell_price_value" ).val();
+                        var price = $(".page-photographer-upload #price_val").val();
 
-                        $(".page-photographer-upload #sell_price").slider({
+                        $(".page-photographer-upload #price").slider({
                                 range: "min",
-                                value: sell_price,
+                                value: price,
                                 min: 2,
                                 max: 10,
                                 step: 1,
                                 slide: UploadPageonSlide
                         });
-                        $(".page-photographer-upload #sell_price_val").val( $( ".page-photographer-upload #sell_price" ).slider( "value" ) );
-                        $(".page-photographer-upload #amount").text( "£" + $( ".page-photographer-upload #sell_price" ).slider( "value" ) );
+                        $(".page-photographer-upload #price_val").val( $( ".page-photographer-upload #price" ).slider( "value" ) );
+                        $(".page-photographer-upload #amount").text( "£" + $( ".page-photographer-upload #price" ).slider( "value" ) );
 				
 		}
 
