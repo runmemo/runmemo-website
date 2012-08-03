@@ -137,18 +137,16 @@ jQuery(document).ready(function() {
 			
 			function set_cart($cart_json) {
 				window.cart = jQuery.parseJSON($cart_json);
-				console.debug(window.cart);
 				// uncheck all checks on the page
 				$('span.node_check input').each(function() {
 					var nid = $(this).val();
 					set_to_unchecked(nid);	
-					console.debug('Unchecking nid = ' + nid);
 				});
 				var nid = 0;
+				// update checkboxes for items in cart
 				for (var i in window.cart.items) {
 					nid = window.cart.items[i].nid;
 					set_to_checked(nid);
-					console.debug('Checking nid = ' + nid);
 				}				
 
 				set_cart_summary();
@@ -241,9 +239,23 @@ jQuery(document).ready(function() {
 			function set_to_checked(nid) {
 				$('#check_' + nid).addClass('c_on');
 				$('span.node_check #'+ nid).attr('checked', true);
+			}
+			
+			function set_to_unchecked(nid) {
+				$('#check_' + nid).removeClass('c_on');
+				$('span.node_check #'+ nid).attr('checked', false);
+			
 				
+				
+			}
+		
+			
+			function add_to_cart(nid) {
+				set_to_checked(nid);
+				
+
+				// add item to browser cart
 				var match = is_product_in_cart(nid);
-				
 				if (!match) {
 					item = new Object();
 					item.nid = nid;
@@ -251,27 +263,9 @@ jQuery(document).ready(function() {
 					item.qty = 1;
 					window.cart.items.push(item);
 				} 
-	
-			}
-			
-			function set_to_unchecked(nid) {
-				$('#check_' + nid).removeClass('c_on');
-				$('span.node_check #'+ nid).attr('checked', false);
-			
-				for (var i in window.cart.items) {
-					if (window.cart.items[i].nid == nid) {
-						// remove item from cart;
-						window.cart.items.splice(i, 1);
-					}
-				}
 				
-			}
-		
-			
-			function add_to_cart(nid) {
-				set_to_checked(nid);
 				set_cart_summary();
-
+				
 				// add item to ubercart
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
@@ -310,6 +304,14 @@ jQuery(document).ready(function() {
 			 */
 			function remove_from_cart(nid) {
 				set_to_unchecked(nid);
+				
+				// remove item from browser cart;
+				for (var i in window.cart.items) {
+					if (window.cart.items[i].nid == nid) {
+						window.cart.items.splice(i, 1);
+					}
+				}
+				
 				set_cart_summary();
 				// remove item from ubercart
 				var base_path = Drupal.settings.basePath;
