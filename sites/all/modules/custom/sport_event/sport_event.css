@@ -36,17 +36,13 @@
 
 .node-event .field {
 		clear:left;
-}		
-.googlemaps {
-	background:transparent url(images/googlemaps.png);
-	background-repeat:no-repeat;
-	padding-top: 100px;
-	padding-left: 150px;
-	width:350px;
-	display:block;
-	height:200px;
-  /*	opacity: 0.4; */
-	
+}
+
+.geofieldMap {
+	margin-top:20px;
+	border-style:solid;
+	border-width:1px;'
+	border-color:#555;
 	}
 .coming-soon {
 	padding:20px;

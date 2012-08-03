@@ -338,10 +338,10 @@ function search_result_cart($form, &$form_state) {
 			<a href='$url'></a>
 		</div>
 		<div>
-			<span class='summary_selected_photos'>
-				<span class='placeholder'></span>" 
-                                . t('Items') .
-                                "</span>
+			<span class='summary_selected_photos'>"
+			. t('Photos:') . '&nbsp;' .
+			 "<span class='placeholder'></span>
+			</span>
 				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
                                       "<span class='placeholder'></span>
 				</span>

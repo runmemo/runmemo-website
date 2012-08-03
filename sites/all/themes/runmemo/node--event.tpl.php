@@ -111,14 +111,6 @@
     print render($content);
    
   ?>
-  <?php if ($teaser && isset($node->field_photographers)): ?>
-  <?php else: ?>
- 	<div class='googlemaps'>
- 		<div class='coming-soon'>
- 			<span>Event Route - Coming Soon!</span>
- 		</div>
- 	</div>
- <?php endif; ?>
  
   <?php //print render($content['links']); ?>
 
