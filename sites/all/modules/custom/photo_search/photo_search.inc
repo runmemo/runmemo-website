@@ -22,7 +22,7 @@ class PhotoRequest {
    * @throws Exception 
    */
   public static function AddRequest($email, $eventid, $number) {
-    if(!db_table_exists(self::DBTABLE)) {
+    if (!db_table_exists(self::DBTABLE)) {
       throw new Exception('DB table photo_requests does not exist.');
     }    
     //check if reuest already exists
@@ -34,7 +34,7 @@ class PhotoRequest {
       ->condition('r.performed', 0, '=');
     $num_rows  = $query->countQuery()->execute()->fetchField();
     
-    if($num_rows == 0) {
+    if ($num_rows == 0) {
       db_insert(self::DBTABLE)->fields(
         array( 
             'email'   => $email,

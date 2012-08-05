@@ -67,7 +67,7 @@ class product_node_creator {
    */
   public static function getNewProductNode($eventid = NULL) {
     // Create new event node to use for product node
-    if(is_null($eventid)) {
+    if (is_null($eventid)) {
 
       $event = new stdClass();
       $event->language = LANGUAGE_NONE;

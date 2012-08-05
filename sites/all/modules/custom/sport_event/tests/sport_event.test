@@ -58,7 +58,7 @@ class SportEventTestCase extends DrupalWebTestCase {
         
   }
   
-  function testPhotographerUnRegistration () {
+  function testPhotographerUnRegistration() {
     $nid = $this->testEvent->nid;
     $uid = $this->testUser->uid;
     // add photographer to the event

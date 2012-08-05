@@ -339,8 +339,8 @@ function search_result_cart($form, &$form_state) {
 		</div>
 		<div>
 			<span class='summary_selected_photos'>"
-			. t('Photos:') . '&nbsp;' .
-			 "<span class='placeholder'></span>
+              . t('Photos:') . '&nbsp;' .
+            "<span class='placeholder'></span>
 			</span>
 				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
                                       "<span class='placeholder'></span>
@@ -384,7 +384,7 @@ function save_numbers() {
   
 //check permission
   $node = node_load($nid);
-  if(!node_access("update", $node)) {
+  if (!node_access("update", $node)) {
     echo json_message(FALSE, 'Has no permissions');
     return;
   }  
@@ -427,7 +427,7 @@ function change_price() {
   
 //check permission
   $node = node_load($nid);
-  if(!node_access("update", $node)) {
+  if (!node_access("update", $node)) {
     echo json_message(FALSE, 'Has no permissions');
     return;
   }  

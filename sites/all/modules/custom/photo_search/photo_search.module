@@ -205,9 +205,9 @@ function select_event_runner_sell_photos($form, &$form_state) {
 
 
   $form['sellfield']['events_select_runner'] = array(
-    		'#type' => 'select',
-      		'#title' => '', 
-      		'#id' => 'event_runner_sell');
+    '#type' => 'select',
+    '#title' => '',
+    '#id' => 'event_runner_sell');
 
   $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
   //select event options from content type 'event'
@@ -238,10 +238,10 @@ function find_trade_section() {
 
   global $user;
 
-  if(!$user->uid) {
+  if (!$user->uid) {
     $trade_photos = drupal_render(drupal_get_form('user_login'));
-  } else
-  {
+  } 
+  else {
     $trade_photos = drupal_render(drupal_get_form('select_event_runner_sell_photos'));
   }
   $style = "<div id='front-search-photos'>
@@ -255,7 +255,7 @@ function find_trade_section() {
     			</div>	
   			</div>";
 
-    				return $style;
+  return $style;
 }
 
 /**
@@ -298,21 +298,19 @@ function photo_search_mail($key, &$message, $params) {
       $message['subject'] = t('Confirmation from @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
       // Note that the message body is an array, not a string.
       $message['body'][] = t('Thank you for your request. We will notify you as soon as we find a photo from @event with bib number @number',
-   
-      array(
-                                	'@event' => $event_title, 
-                                	'@number' => $params['number'])
-      , $options);
+        array(
+          '@event' => $event_title,
+          '@number' => $params['number'])
+         , $options);
       break;
+    // email with link to the search results for the new number
     case 'number_found_notification':
       $message['subject'] = t('Check you photos at @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
-
       $message['body'][] = t('It looks like we found your photo from @event.', array('@event' => $event_title)
       , $options);
-       
-      $search_url = 'search-results/'. $params['nid'] . '/' . $params['number'];
-
-      $message['body'][] = t('Please follow the link to see photo(s) with bib @number: ', array('@number' => $params['number'])) . $search_url;
+      
+      $search_url = 'search-results/' . $params['nid'] . '/' . $params['number'];
+      $message['body'][] = t('Please follow the link to see photo(s) with bib @number:', array('@number' => $params['number'])) . ' ' . $search_url;
        
       break;
   };
@@ -357,7 +355,7 @@ function send_notifications($expire) {
        
       // mark result as complete
       $updated = PhotoRequest::RequestPerformed($item->id);      
-      if(!$updated) {
+      if (!$updated) {
         watchdog('search notifications', 'Did not update request with id =' . $item->id);
       }    
     }
@@ -404,14 +402,9 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
       }
       if (is_numeric(arg(2)) && (arg(2) != '')) {
         $number = arg(2);
-      }
-      
-        
+      }  
     }
-//  $form['prefix'] = array(
-//    '#type' => 'markup', 
-//    '#value' => '<div class="photo-request">',      
-//  );
+
   $event = node_load($eventid);
   
   $form['message'] = array(
@@ -419,7 +412,7 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
       '#prefix' => '<p>',
       '#suffix' => '</p>',
       '#id' => 'let-me-know-message',
-      '#markup' => t('Let me know when my photos from ') . $event->title . t(' are ready'),
+      '#markup' => t('Let me know when my photos from @event_name are ready', array('@event_name' => $event->title, )),
   );
   
   $form['eventid'] = array(
@@ -438,7 +431,7 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
   
   $form['number'] = array(
       '#type' => 'textfield',
-      '#title' => t('Bib number '),
+      '#title' => t('Bib number') . ' ',
       '#size' => 30,
       '#maxlength' => 6,
       '#description' => t('Enter your bib number'),
@@ -457,10 +450,6 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
       ),
   );
   
-//  $form['suffix'] = array(
-//    '#type' => 'markup', 
-//    '#value' => '</div>',      
-//  );
   return $form;
 }
 

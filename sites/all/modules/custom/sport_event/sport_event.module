@@ -14,8 +14,8 @@ function sport_event_menu() {
  */
 function sport_event_views_api() {
   return array(
-  	'version' => '3.0', 
-  	'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
+    'version' => '3.0',
+    'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
   );
 }
 
@@ -91,8 +91,8 @@ function get_recent_event_images_view($nid, $items) {
       'title' => $image['title'],
     );
      
-    $markup = $markup . '<div class="recent-event-image" id="thumb-'. $product->nid .'"->';
-    $markup = $markup . theme('image_style',$image_array);
+    $markup = $markup . '<div class="recent-event-image" id="thumb-' . $product->nid . '"->';
+    $markup = $markup . theme('image_style', $image_array);
     $markup = $markup . '</div>';
   }
   $markup = $markup . '</div>';
@@ -149,15 +149,15 @@ function recent_event_search_form() {
   $form = array();
   $form['runner_number'] =
   array(
-  	'#type' => 'textfield',
-  	'#title' => 'Runner Number', 
-  	'#size' => '20',
-  	'#required' => 'true');
+    '#type' => 'textfield',
+    '#title' => 'Runner Number',
+    '#size' => '20',
+    '#required' => 'true');
   $form['submit_button'] =
   array( // search button
-  	'#type' => 'submit', 
-  	'#value' => '', 
-  	'#submit' => array('recent_event_search_submit'), 
+    '#type' => 'submit', 
+    '#value' => '', 
+    '#submit' => array('recent_event_search_submit'), 
   );
 
   return  $form;
@@ -194,11 +194,11 @@ function registration_button_form($form, &$form_state) {
   $nid = -1;
 
   // get node id for the event
-  if(arg(0) == 'node' && is_numeric(arg(1))) {
+  if (arg(0) == 'node' && is_numeric(arg(1))) {
     $nid = arg(1);
   }
   else { // it is not a node profile page, so don't show the button
-    watchdog ('Callback', 'Registration button is visible in a wrong place.', array($form), WATCHDOG_ERROR);
+    watchdog('Callback', 'Registration button is visible in a wrong place.', array($form), WATCHDOG_ERROR);
     return;
   }
   
@@ -251,7 +251,7 @@ function registration_button_js($form, $form_state) {
   // replace button with disabled version
   $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
   // post registration message
-  return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see your photos!') . '</div>';
+  return $markup . '<div id="complete-registration" class="nice-message">' . t('We are looking forward to see your photos!') . '</div>';
 
 }
 

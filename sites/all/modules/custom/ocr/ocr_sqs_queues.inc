@@ -146,14 +146,12 @@ class FakeSqsQueue implements SqsQueueInterface {
   public function __construct($queueName) {
     $this->queue = new MemoryQueue($queueName);   
   }
-  public function getMessage()
-  {
+  public function getMessage() {
     $item = $this->queue->claimItem(10);
-    debug($item,'got item from the FakeSqsQueue');
-    if(!$item) {
+    if (!$item) {
       return FALSE;
     }
-    $message = new FakeSqsQueueMessage($item->data ,$item->item_id);
+    $message = new FakeSqsQueueMessage($item->data, $item->item_id);
     return $message;
   }
   public function sendMessage($message) {
@@ -161,7 +159,6 @@ class FakeSqsQueue implements SqsQueueInterface {
     $this->queue->createItem($message);
   }
   public function deleteMessage($message) {
-   
     $item = new stdClass();
     $item->item_id = $message->GetID();
     $this->queue->deleteItem($item);
