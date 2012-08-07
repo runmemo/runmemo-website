@@ -37,7 +37,7 @@
 						</a> <img
 							src="<?php echo base_path().path_to_theme(); ?>/images/separator.png"
 							width="1" height="23" alt="separator" /> <a
-							href="<?php echo base_path();?>login"><span
+							href="<?php echo base_path();?>user/register"><span
 							class="float-R underline">Register</span> </a>
 					</div>
 					<?php
