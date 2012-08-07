@@ -28,6 +28,7 @@ function sport_event_block_info() {
 
   $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'), );
   $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'), );
+  $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   return $blocks;
 }
@@ -43,9 +44,14 @@ function sport_event_block_view($delta = '') {
     case 'recent_event_left':
       $nid = get_recent_event_id(0, 1);
       return recent_events_block($nid);
+      break;
     case 'recent_event_right':
       $nid = get_recent_event_id(1, 1);
       return recent_events_block($nid);
+      break;
+    case 'registration_link':
+      return registration_link_block();
+      break;
     case 'registration_button':
       return registration_button_block();
       break;
@@ -169,6 +175,26 @@ function recent_event_search_validate($form, &$form_state) {
   if ($form['runner_number']['#value']  == 'My Number' || $form['runner_number']['#value']  == '') {
     form_set_error('runner_number', t('Please enter your number'));
   }
+}
+
+/**
+ *
+ * Builds "Register to join our team" link block
+ */
+function registration_link_block() {
+
+  $node = menu_get_object();
+  $block = array();
+  $block['subject'] = 'Register to join our team link';
+  $block['title'] = '<none>';
+  $block['content'][] = array(
+      '#markup' => 
+        '<a href="/user/register/'
+        . $node->nid
+        . '" id="user-register">Register to join our team!</a>',      
+   );
+
+  return $block;
 }
 
 function registration_button_block() {

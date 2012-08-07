@@ -190,7 +190,19 @@ function sport_event_views_default_views() {
   // Add view to list of views to provide.
 
   $views[$view->name] = $view;
+/**
+ * =============================================================================
+ * End of Events view 
+ * =============================================================================
+ */
 
+  
+/**
+ * =============================================================================
+ * 2. Begin of Registered Photographers view
+ * =============================================================================
+ */
+  
   // VIEW Registreded Photographers
   $view = new view;
   $view->name = 'event_registered_photographers';
@@ -283,9 +295,7 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['rid']['table'] = 'users_roles';
   $handler->display->display_options['filters']['rid']['field'] = 'rid';
   $rid = user_custom_helper::get_photographer_rid();
-  $handler->display->display_options['filters']['rid']['value'] = array(
-  $rid => (string)$rid,
-  );
+  $handler->display->display_options['filters']['rid']['value'] = array($rid => (string)$rid);
   $handler->display->display_options['filters']['rid']['reduce_duplicates'] = 0;
   /* Filter criterion: Content: Event Name (field_event_reference) */
   $handler->display->display_options['filters']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
@@ -331,9 +341,7 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['rid']['id'] = 'rid';
   $handler->display->display_options['filters']['rid']['table'] = 'users_roles';
   $handler->display->display_options['filters']['rid']['field'] = 'rid';
-  $handler->display->display_options['filters']['rid']['value'] = array(
-  $rid => (string)$rid,
-  );
+  $handler->display->display_options['filters']['rid']['value'] = array($rid => (string)$rid);
   $handler->display->display_options['filters']['rid']['reduce_duplicates'] = 0;
   $handler->display->display_options['block_description'] = 'Registered Photographers';
 
@@ -341,14 +349,14 @@ function sport_event_views_default_views() {
  
 /**
  * =============================================================================
- * End of Events view 
+ * End of Event Registered Photographers view 
  * =============================================================================
  */
 
   
 /**
  * =============================================================================
- * 2. Begin of My Events view 
+ * 3. Begin of My Events view 
  * =============================================================================
  */
   
