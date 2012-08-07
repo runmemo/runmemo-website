@@ -15,9 +15,9 @@
 function get_rendered_slider() {
   $slider =  
   '<div id="price-container" class="price-slider">
-      <div style="margin-bottom: 3px; margin-top: 3px;">
-      <label for="amount" class="field-label" style="float: left">My price:</label>
-      <span id="amount" style="margin-left: 10px"></span>    
+      <div>
+      	<label for="amount" class="field-label" style="float: left">My price:</label>
+      	<span id="amount" style="margin-left: 10px"></span>    
       </div>
       <div id="price"></div> 
     </div>';

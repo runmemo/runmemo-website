@@ -866,6 +866,7 @@ height:39px!important;
 padding:0 10px;
 width:400px!important;
 }
+
 .chzn-container-single .chzn-single{
 height:39px!important; 
 background-image: none!important;
@@ -1111,13 +1112,28 @@ margin-top:0 !important;
 	margin:0;
 }
 
-.page-user form,
-.view-filters form {
+.page-user form {
 	padding:20px;
 	border: 1px solid #BFBFBF;
     border-radius: 5px;
-    float:left;
 	}
+
+.page-user form,
+.view-filters form {
+    float:left;
+    width:100%;
+	}
+
+.views-exposed-form {
+	border: 1px solid #BFBFBF;
+    border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding:20px;
+	}
+.views-exposed-form .views-exposed-widget .form-submit {
+	margin-top:19px;
+}
+
 .page-user #user-login{
     height: 200px;
     width: 400px;
@@ -2548,10 +2564,9 @@ border-bottom: 1px solid #e9e9e9!important;
 
 #block-system-navigation {
   display: block;
-  height: 30px;
+  height: 33px;
   background-color: #384551;
   margin-top: 5px; 
-  margin-bottom: 15px;
 }
 
 #block-system-navigation ul li {
@@ -2568,3 +2583,11 @@ border-bottom: 1px solid #e9e9e9!important;
 #block-system-navigation .active-trail a {
   color: #48C2FF;
 }
+
+
+/* Photographer pages */
+
+.page-photographer .region-content {
+	width:100%;
+	min-height:500px;
+	}

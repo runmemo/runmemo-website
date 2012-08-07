@@ -121,14 +121,6 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
- $form['style-guide-notice'] = array(
-    '#type' => 'markup',
-    '#markup' => '<div class="guide-line"><span>Please read our ' . l("style guide", "style-guide", array(
-          'attributes' => array(
-              'id' => 'guide',
-          )
-      )) . ' before uploading the photos</span></div>',
-  );
   $form['box'] = array(
       '#type' => 'fieldset',
       '#title' => t(''),
@@ -291,10 +283,6 @@ function create_photo_node($file, $event_nid, $price = 0) {
   //user id
   $node->uid = $file->uid;
   // Let's add standard body field
-  //$node->body[$node->language][0]['value'] = 'This is a body text';
-  //$node->body[$node->language][0]['summary'] = 'Here goes a summary';
-  //$node->body[$node->language][0]['format'] = 'filtered_html';
-
 
   $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
 
