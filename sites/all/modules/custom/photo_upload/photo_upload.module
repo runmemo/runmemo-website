@@ -76,7 +76,7 @@ function photo_upload_permission() {
 
 
 /**
- * Photographer page
+ * Photo Uploader Page
  * where the photographer can upload the photos by selecting the event
  * uploaded photos are stored in the amazon_s3
  */
@@ -147,6 +147,7 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   		'#type' => 'textfield', 
   		'#title' => '', 
   		'#id' => 'selected_event_nid');
+  
   $form['box']['price_val'] = array(
     '#type' => 'textfield',
     '#id' => 'price_val',
@@ -170,7 +171,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //file_uri_to_object();
   foreach ($form_state['values']['file'] as $uploaded_file) {
     if ($uploaded_file['status'] == 'done') {
+      /*
       $source = $uploaded_file['tmppath'];
+      dvm($source);
       $destination = file_stream_wrapper_uri_normalize($scheme . $uploaded_file['name']);
       // Rename it to its original name, and put it in its final home.
       // Note - not using file_move here because if we call file_get_mime
@@ -182,23 +185,39 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       $event = $form_state['values']['selected_event'];
       $price = $form_state['values']['price_val'];
       $node = create_photo_node($file, $event, $price);
+      */
     }
     else {
       // @todo: move this to element validate or something and clean up t().
       form_set_error('pud', "Upload of {$uploaded_file['name']} failed");
     }
   }
-  $count_files = count($saved_files);
-  if ($count_files > 0) {
-  // drupal_set_message(t("Files uploaded successfully"));
-    $form_state['redirect'] = "photographer/myphotos";   
-  } 
-  else {
-    // @todo add message may be.
-  }
- 
+  
+  $form_state['redirect'] = "photographer/myphotos";   
+  
 }
 
+function photo_upload_file_uploaded($fileinfo) {
+  
+  watchdog('file upload info', 'File uploaded and hook invoked, path = ' . $fileinfo['name']);
+  
+  $source =  $fileinfo['tmppath']; 
+  $scheme = 'public://';
+  
+  $destination = file_stream_wrapper_uri_normalize($scheme . $fileinfo['name']);
+  // Rename it to its original name, and put it in its final home.
+  // Note - not using file_move here because if we call file_get_mime
+  // (in file_uri_to_object) while it has a .tmp extension, it horks.
+  $destination = file_unmanaged_move($source, $destination, FILE_EXISTS_RENAME);
+  $file = plupload_file_uri_to_object($destination);
+  file_save($file);
+ 
+  $event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
+  $price = isset($_REQUEST["price"]) ? $_REQUEST["price"] : 1;
+ 
+  $node = create_photo_node($file, $event, $price);
+  
+}
 
 /**
  * Call back function for photographer
