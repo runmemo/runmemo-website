@@ -34,14 +34,13 @@ function drag_drop_upload_validation() {
   if (selected_value=='All') {
     alert(Drupal.t('Select the event'));
     return false;
-
   }
 
-  var selected_value=document.getElementById('event_select').value;
+  var eventid = document.getElementById('event_select').value;
+  var price = document.getElementById('price_val').value;
   var uploader = jQuery("#edit-file").pluploadQueue();
-  uploader.settings.url = Drupal.settings.plupload._default.url+'&event='+selected_value;
-	//uploader.settings.unique_names  = false;
-	
+  uploader.settings.url = Drupal.settings.plupload._default.url+'&event='+eventid +'&price='+price;
+  
 }
 
 // add custom elements to upload form and
@@ -70,9 +69,8 @@ function drag_drop_upload_validation() {
 				up.refresh(); // Reposition Flash/Silverlight
 			});
                         
-                        function UploadPageonSlide( event, ui ) {
+                        function UploadPageonSlide(event, ui) {
                             $(".page-photographer-upload #price_val").val( ui.value );
-                            console.debug($(".page-photographer-upload #price_val"));
                             $(".page-photographer-upload #amount").text( "£" + ui.value );
                         }
 

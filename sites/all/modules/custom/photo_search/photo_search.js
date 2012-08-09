@@ -135,8 +135,8 @@ jQuery(document).ready(function() {
 				return false;
 			}
 			
-			function set_cart($cart_json) {
-				window.cart = jQuery.parseJSON($cart_json);
+			function set_cart(cart_json) {
+				window.cart = jQuery.parseJSON(cart_json);
 				// uncheck all checks on the page
 				$('span.node_check input').each(function() {
 					var nid = $(this).val();

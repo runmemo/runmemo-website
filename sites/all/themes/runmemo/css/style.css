@@ -1743,7 +1743,6 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
 .page-cart .region-content {
   float: left;
   width: 480px;
-  padding: 15px 0 0 0;
 }
 
 .page-cart #sidebar-second {
@@ -1847,15 +1846,15 @@ text-align: center;
 }
 
 /* checkout */
-.cartPane{
- border: 1px solid #CCCCCC;
- float: left;
- overflow: hidden;
+.cartPane {
+ 	border: 1px solid #CCCCCC;
+ 	float: left;
+ 	overflow: hidden;
 /* overflow-x: hidden;
  overflow-y: scroll;*/
- width: 475px;
- min-height: 700px;
-}
+ 	width: 475px;
+ 	padding-bottom:30px;
+ }
 .blueHeading {
 color:#4AB0F8;
 font-family:'Walkway Bold',sans-serif;
@@ -1867,20 +1866,26 @@ letter-spacing:2px;
 margin-top:15px;
 padding:10px;
 }
-.boldText{
-font-weight:bold;
-padding:10px;
-float:left;
+
+
+.order-items{
+	font-weight:bold;
+	padding:10px;
+	float:left;
+	width:250px;
 }
-.totalPrice{
-font-weight:bold;
-width: 150px;
-padding-left: 10px;
-}
-.currencyText{
-color: #00A14E;
-padding:0px;
-float: right;
+.order-currency, #order-items, #order-subtotal {
+	color: #00A14E;
+	}
+
+.order-subtotal {
+	width:250px;
+	}
+
+.total-price{
+	font-weight:bold;
+	width: 150px;
+	padding-left: 10px;
 }
 
 
@@ -1913,7 +1918,6 @@ float: right;
 }
 .uc-cart-checkout-form .form-item {
   height: 55px;
-  line-height: 39px;
 }
 .uc-cart-checkout-form .form-item label {
   float: left;
@@ -1931,14 +1935,12 @@ float: right;
   -webkit-border-radius: 5px 5px 5px 5px;
   margin: 0 0 0 10px;
 }
-.uc-cart-checkout-form .form-item span {
-  line-height: 20px;
-}
+
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
-  float: right;
-  padding: 11px 109px 0 0;
-  width: 136px;
-}
+  float: left;
+  margin-left:10px;
+  margin-top:10px;
+ }
 .uc-cart-checkout-form .form-submit {
   float: right;
   margin: 0 38px 10px 0;
@@ -2041,6 +2043,7 @@ float: right;
  }
  .page-cart-checkout .paymentPane #edit-panes-payment-details-cc-cvv {
    width: 56px;
+   float: left;
  }
  .chzn-container-single .chzn-single div {
     height: 28px!important;
@@ -2567,6 +2570,7 @@ border-bottom: 1px solid #e9e9e9!important;
   height: 33px;
   background-color: #384551;
   margin-top: 5px; 
+  width:100%;
 }
 
 #block-system-navigation ul li {
@@ -2575,6 +2579,10 @@ border-bottom: 1px solid #e9e9e9!important;
   float: left;
   
 }
+
+#block-system-navigation .first {
+	margin-left:15px;
+	}
 
 #block-system-navigation a {
   color: #dddddd;
