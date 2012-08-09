@@ -456,38 +456,32 @@ jQuery(document).ready(function() {
 								var img_cost_arr = img_cost.split('.');
 								if (img_cost_arr['1'] == '00') {
 									$(this).parents("td")
-											.find("span.node_cost").html(
-													img_cost_arr['0']);
+											.find("span.node_cost").html(img_cost_arr['0']);
 								}
 
 								$(this).parents("td").find("span.node_cost")
-										.attr('style',
-												'display:block !important;');
+										.attr('style', 'display:block !important;');
 							}).mouseout(
 							function() {
 								$(this).parents("td").find("span.node_cost")
-										.attr('style',
-												'display:none !important;');
+										.attr('style', 'display:none !important;');
 							});
 
 			/**
-			 * Mouseover Event for thumbnail image that shows the bubble with
+			 * Mouseover event for thumbnail image that shows the bubble with
 			 * price (review order page)
 			 */
 			$(
-					".page-cart-checkout-review .order-review-table .review-order-img img")
-					.mouseover(
-							function() {
-								$(this).parent("td").find("span.node_cost")
-										.attr('style',
-												'display:block !important;');
-							}).mouseout(
-							function() {
-
-								$(this).parent("td").find("span.node_cost")
-										.attr('style',
-												'display:none !important;');
-							});
+				".page-cart-checkout-review .order-review-table .review-order-img img")
+				.mouseover(
+					function() {
+						$(this).parent("td").find("span.node_cost")
+								.attr('style', 'display:block !important;');
+					}).mouseout(
+					function() {
+						$(this).parent("td").find("span.node_cost")
+								.attr('style', 'display:none !important;');
+					});
 
 			// change the first tr class name in the review order page
 			if ($('.page-cart-checkout-review .content .order-review-table').length > 0) {

@@ -400,11 +400,11 @@ function search_result_cart($form, &$form_state) {
 		</div>
 	</div>");
   $form['prev_img_det'] = array('#markup' =>
-   t('<div class="cost_auth_det">
-  		<span id="photo_cost">Price:<label class="photo_cost">' . variable_get('uc_currency_sign') . '</label>
+ 	'<div class="cost_auth_det">
+  		<span id="photo_cost">Price: ' . variable_get('uc_currency_sign') . '<label class="photo_cost"></label>
   		</span><br/>
   		<span id="photo_author">Photo by:<label class="photo_author"></label>
-  		</span></div>'), '#prefix' => '<div class="prev_img_details">', );
+  		</span></div>', '#prefix' => '<div class="prev_img_details">', );
   $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
 
   return $form;

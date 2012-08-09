@@ -101,7 +101,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['sell_price']['field'] = 'sell_price';
   $handler->display->display_options['fields']['sell_price']['label'] = '';
   $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">[sell_price]</span>';
+  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">' . variable_get('uc_currency_sign') . '[sell_price]</span>';
   $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
