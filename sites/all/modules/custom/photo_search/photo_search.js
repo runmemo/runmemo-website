@@ -108,8 +108,7 @@ jQuery(document).ready(function() {
 			// result page
 			// store this nids in the array
 			var checked_products_nids = new Array();
-			$('span.node_check input')
-					.click(
+			$('span.node_check input').click(
 							function() {
 								var nid = $(this).val();
 								switch_check_box(nid);
@@ -137,11 +136,11 @@ jQuery(document).ready(function() {
 			
 			function set_cart(cart_json) {
 				window.cart = jQuery.parseJSON(cart_json);
-				// uncheck all checks on the page
-				$('span.node_check input').each(function() {
-					var nid = $(this).val();
-					set_to_unchecked(nid);	
-				});
+				console.debug(cart_json);
+				console.debug(window.cart);
+				
+				uncheck_all_checks_on_page();
+				
 				var nid = 0;
 				// update checkboxes for items in cart
 				for (var i in window.cart.items) {
@@ -151,7 +150,14 @@ jQuery(document).ready(function() {
 
 				set_cart_summary();
 			}
-
+			
+			// uncheck all checks on the page
+			function uncheck_all_checks_on_page() {
+				$('span.node_check input').each(function() {
+					var nid = $(this).val();
+					set_to_unchecked(nid);	
+				});
+			}
 			/**
 			 * Gets Size of the cart from HTML tags on the page
 			 */
@@ -278,6 +284,10 @@ jQuery(document).ready(function() {
 
 			}
 			
+			function get_currency_sign() {
+				return $('#currency-sign').html();
+			}
+			
 			function load_selected_products_from_ubercart() {
 
 				var base_path = Drupal.settings.basePath;
@@ -319,8 +329,6 @@ jQuery(document).ready(function() {
 					// type : "POST",
 					url : base_path + "cart_remove_item?nid=" + nid,
 					success : function(msg) {
-						console.debug(msg);
-
 					}
 				});
 			}
@@ -377,15 +385,11 @@ jQuery(document).ready(function() {
 			/**
 			 * Click Event for Add to Cart button
 			 */
-			$('#add_to_cart')
-					.click(
-							function() {
+			$('#add_to_cart').click(function() {
 
 								var base_path = Drupal.settings.basePath;
 								var nid = $('#cart_hidden').val();
-
 								var in_cart = is_product_in_cart(nid);
-
 								if (in_cart) {
 									remove_from_cart(nid);
 									show_add_button();
@@ -398,6 +402,40 @@ jQuery(document).ready(function() {
 								return false;
 							});
 
+			
+			/**
+			 * Click event for clear all link
+			 */
+			$('#clear-all').click(function() {
+				uncheck_all_checks_on_page();
+				
+				console.debug('clear all - click');
+				
+				window.cart.items = [];
+				
+				set_cart_summary();
+				var base_path = Drupal.settings.basePath;
+				$.ajax({
+					// type : "POST",
+					url : base_path + "ajax/cart_clear",
+					
+					success : function(msg) {
+						console.debug(msg);
+					}
+				});
+				
+			});
+
+			/**
+			 * Click event for select all link
+			 */
+			$('#select-all').click(function() {
+				$('span.node_check').each(function() {
+					var nid = $(this).parent().children('span').text();
+					add_to_cart(nid);
+				});
+			});
+			
 			/**
 			 * Click Event for the thumbnail image.
 			 */
@@ -411,7 +449,7 @@ jQuery(document).ready(function() {
 						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
 
 						var imgsrc = $(this).attr('src');
-						var price_txt = $(this).parents('td').find('span.node_cost').text();
+						var price_txt = get_currency_sign() + $(this).parents('td').find('span.node_cost').text();
 						$('.page-search-result span#photo_cost label').text(price_txt);
 
 						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();

@@ -39,6 +39,17 @@ function photo_search_views_default_views() {
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
   $handler->display->display_options['row_options']['default_field_elements'] = 1;
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['empty'] = FALSE;
+  $handler->display->display_options['header']['area']['content'] = 
+  	"<div id='select-all'>select all</div>
+  	 <div id='clear-all'>clear all</div>";
+  $handler->display->display_options['header']['area']['format'] = 'full_html';
+  $handler->display->display_options['header']['area']['tokenize'] = 0;
+  
   /* Footer: Global: PHP */
   $handler->display->display_options['footer']['php']['id'] = 'php';
   $handler->display->display_options['footer']['php']['table'] = 'views';
@@ -101,7 +112,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['sell_price']['field'] = 'sell_price';
   $handler->display->display_options['fields']['sell_price']['label'] = '';
   $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">' . variable_get('uc_currency_sign') . '[sell_price]</span>';
+  $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">[sell_price]</span>';
   $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;

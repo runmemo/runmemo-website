@@ -110,8 +110,15 @@ function ubercart_custom_menu() {
   );
   $items['cart_list_items'] = array(
     'title' => '',
-    'description' => '',
+    'description' => 'api point that returns json with list of items in the cart',
     'page callback' => 'cart_list_items',
+    'access arguments' => array('search photos'),
+    'type' => MENU_CALLBACK
+  );
+  $items['ajax/cart_clear'] = array(
+    'title' => '',
+    'description' => 'api point that clears cart of current user',
+    'page callback' => 'cart_clear',
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
@@ -129,6 +136,7 @@ function ubercart_custom_menu() {
     'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
+  
     
   return $items;
 }
@@ -252,8 +260,9 @@ function json_message($success, $attributes = array()) {
   return json_encode($result);
 }
 
-/*
- * AJAX cart add,remove function
+/**
+ * AJAX call
+ * returns json with the list of items in the cart of current user
  */
 function cart_list_items() {
   $cid = uc_cart_get_id($create = TRUE);
@@ -268,8 +277,14 @@ function cart_list_items() {
   echo json_encode($result);
 }
 
-
-
+/**
+ * AJAX call
+ * Clears the cart of the current user
+ */
+function cart_clear() {
+   uc_cart_empty(uc_cart_get_id());
+   echo json_message(TRUE, array('message' => 'Cart was cleared.'));
+}
 
 /**
  * Form alter function
@@ -382,12 +397,14 @@ function search_result_cart($form, &$form_state) {
   // @todo move this html block from here to theme
   $form['cart_summary'] = array('#markup' => 
     "<div class='cart_summ'>
+    	<div id='currency-sign' style='display:none'>" . variable_get('uc_currency_sign') . "</div>
   		<div class='summary_item_cost'>
   			<span class='cart-block-icon-full' title='View your shopping cart.'></span>
 			<span class='shop_cart_title'>" . t('Shopping Cart') . "</span>
 		</div>
 		<div class='proceed_to_cart'>
 			<a href='$url'></a>
+			
 		</div>
 		<div>
 			<span class='summary_selected_photos'>"
@@ -401,7 +418,7 @@ function search_result_cart($form, &$form_state) {
 	</div>");
   $form['prev_img_det'] = array('#markup' =>
  	'<div class="cost_auth_det">
-  		<span id="photo_cost">Price: ' . variable_get('uc_currency_sign') . '<label class="photo_cost"></label>
+  		<span id="photo_cost">Price:<label class="photo_cost"></label>
   		</span><br/>
   		<span id="photo_author">Photo by:<label class="photo_author"></label>
   		</span></div>', '#prefix' => '<div class="prev_img_details">', );
@@ -423,7 +440,7 @@ function save_numbers() {
   $option = $_POST['option'];
   
   if (empty($nid) || empty($number) || empty($option)) {
-    echo json_message(FALSE, array('message' => 'Required parametr is not set'));
+    echo json_message(FALSE, array('message' => 'Required parameter is not set'));
     return;
   }
   

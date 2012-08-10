@@ -213,8 +213,26 @@ form#select-event-runner-get-photos {
     overflow-x: hidden;
     overflow-y: scroll;
     width: 550px;
-    border: 1px solid #CCCCCC;
 }
+
+.view-search-results {
+	border: 1px solid #CCCCCC;
+}
+.view-header {
+	border-bottom:1px solid #CCCCCC;
+	height:30px;
+}
+#clear-all, #select-all {
+	padding-top:5px;
+	float:right;
+	margin-right:10px;
+	cursor:pointer;
+	text-decoration:underline;
+}
+
+
+
+
 .page-search-result .region-content .view-content table{
   margin:0px;
 }
