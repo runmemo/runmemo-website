@@ -135,3 +135,8 @@ div.tagsinput div {
 	cursor:pointer;
 	text-align:center;
 }
+
+.page-photographer-my-sales 
+#edit-created-value-year_chzn, #edit-created-value-month_chzn{
+  width: 100px!important;
+}

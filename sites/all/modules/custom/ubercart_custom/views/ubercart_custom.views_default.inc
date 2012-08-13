@@ -375,6 +375,7 @@ function ubercart_custom_views_default_views() {
   $handler->display->display_options['fields']['created']['id'] = 'created';
   $handler->display->display_options['fields']['created']['table'] = 'uc_orders';
   $handler->display->display_options['fields']['created']['field'] = 'created';
+  $handler->display->display_options['fields']['created']['label'] = 'Order date';
   $handler->display->display_options['fields']['created']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['created']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['created']['alter']['absolute'] = 0;
@@ -533,7 +534,7 @@ function ubercart_custom_views_default_views() {
   $handler->display->display_options['filters']['order_status']['table'] = 'uc_orders';
   $handler->display->display_options['filters']['order_status']['field'] = 'order_status';
   $handler->display->display_options['filters']['order_status']['value'] = array(
-    'in_checkout' => 'in_checkout',
+    'completed' => 'completed',
   );
   $handler->display->display_options['filters']['order_status']['group'] = 1;
   /* Filter criterion: Order: Creation date */
@@ -543,7 +544,7 @@ function ubercart_custom_views_default_views() {
   $handler->display->display_options['filters']['created']['group'] = 1;
   $handler->display->display_options['filters']['created']['exposed'] = TRUE;
   $handler->display->display_options['filters']['created']['expose']['operator_id'] = 'created_op';
-  $handler->display->display_options['filters']['created']['expose']['label'] = 'Creation date';
+  $handler->display->display_options['filters']['created']['expose']['label'] = 'Order date';
   $handler->display->display_options['filters']['created']['expose']['operator'] = 'created_op';
   $handler->display->display_options['filters']['created']['expose']['identifier'] = 'created';
   $handler->display->display_options['filters']['created']['expose']['multiple'] = FALSE;
