@@ -45,19 +45,24 @@ function get_rendered_runner_number_box($nid) {
   
 }
 
- function get_event_name_by_product($nid) {
-   if (!isset($nid)) {
-     return;
-   }
-   
-   $product = node_load($nid);
-   $event_filed = field_get_items('node', $product, 'field_event_reference');
-   $eventid = $event_filed[0]['nid'];
-   
-   if (!isset($eventid)) {
-     return;
-   }   
-   $event = node_load($eventid);
-   return $event->title;
+/**
+ * Gets event title by product node ID
+ * @param integer $nid
+ * @return string 
+ */
+function get_event_name_by_product($nid) {
+  if (!isset($nid)) {
+    return;
+  }
 
- };
+  $product = node_load($nid);
+  $event_filed = field_get_items('node', $product, 'field_event_reference');
+  $eventid = $event_filed[0]['nid'];
+
+  if (!isset($eventid)) {
+    return;
+  }   
+  $event = node_load($eventid);
+  return $event->title;
+
+};
