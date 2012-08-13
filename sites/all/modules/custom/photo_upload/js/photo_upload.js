@@ -79,7 +79,7 @@ function drag_drop_upload_validation() {
                         $(".page-photographer-upload #price").slider({
                                 range: "min",
                                 value: price,
-                                min: 2,
+                                min: 1,
                                 max: 10,
                                 step: 1,
                                 slide: UploadPageonSlide
