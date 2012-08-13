@@ -696,9 +696,7 @@ display:none;
 	float:right;
 	}
 
-.front #center .content {
-	margin-left:20px;
-}
+
 .front #field-number label, .front #field-event label {
 	display:none;
 }
@@ -848,7 +846,8 @@ margin-bottom:20px;
 #front-search-photos {
 	width:400px;
 	padding-right:20px;
-	}
+	margin-left:20px;
+}
 
 .page-search-result .chzn-container-single .chzn-single{
 width:450px!important;
