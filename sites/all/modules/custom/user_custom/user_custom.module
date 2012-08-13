@@ -21,7 +21,7 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
       $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
       
       $form['join-link'] = array(
-        '#markup' => l(t('Join us!'), 'login',
+        '#markup' => l(t('Join us!'), 'user/register',
         array('attributes' => array('id' => 'user-login-register'))));
     
        //  $form['#validate'][] = 'cookie_check_validate';
