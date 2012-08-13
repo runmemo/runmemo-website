@@ -16,9 +16,6 @@
 
 /* css for sell field in the runner side */
 #edit-sellfield  {
-    -moz-border-radius: 4px 4px 4px 4px;
-    background: none repeat scroll 0 0 gray;
-    border: 1px solid #CCCCCC;
     margin-bottom: 32px;
     margin-top: -1px;
     padding: 0 0 10px;
@@ -216,8 +213,26 @@ form#select-event-runner-get-photos {
     overflow-x: hidden;
     overflow-y: scroll;
     width: 550px;
-    border: 1px solid #CCCCCC;
 }
+
+.view-search-results {
+	border: 1px solid #CCCCCC;
+}
+.view-header {
+	border-bottom:1px solid #CCCCCC;
+	height:30px;
+}
+#clear-all, #select-all {
+	padding-top:5px;
+	float:right;
+	margin-right:10px;
+	cursor:pointer;
+	text-decoration:underline;
+}
+
+
+
+
 .page-search-result .region-content .view-content table{
   margin:0px;
 }

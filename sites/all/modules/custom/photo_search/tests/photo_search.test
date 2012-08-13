@@ -1,7 +1,7 @@
 <?php
 
 require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'sport_event') . '/tests/' . 'sport_event.test.inc');
-require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr')         . '/tests/' . 'ocr_test.inc');
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
 
 /**
  *  @file contains test cases for Photo Search module.
@@ -106,10 +106,11 @@ class PhotoSearchRequestsTestCase extends DrupalWebTestCase {
       $num_records_before = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
       PhotoRequest::AddRequest($req->email, $req->eventid, $req->number);
       $num_records_after = db_query('SELECT COUNT(*) FROM {photo_requests}')->fetchField();
-      if($req->performed == 0) {
+      if ($req->performed == 0) {
         $this->assertIdentical($num_records_before , $num_records_after,
         t('The same request cannot be inserted twice.'));
-      } else {
+      } 
+      else {
         $this->assertIdentical($num_records_before + 1 , (int) $num_records_after,
         t('After request was performed, user can add new request with the same params'));
       }

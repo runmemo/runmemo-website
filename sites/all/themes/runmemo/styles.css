@@ -289,11 +289,6 @@ span.form-required {
   margin: 0.25em 0;
 }
 
-#center form {
-  margin-bottom: 2em;
-}
-
-
 /**
  * Skip link
  */
@@ -470,9 +465,6 @@ body.two-sidebars #squeeze {
   padding: 0 0 0 15px; /* LTR */
 }
 
-.block .content {
- /* margin: 0.5em 0; */
-}
 
 #sidebar-first .block-region {
   margin: 0 15px 0 0px; /* LTR */

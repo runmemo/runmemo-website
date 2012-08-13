@@ -360,6 +360,21 @@ function plupload_handle_uploads() {
 
         fclose($out);
         drupal_unlink($_FILES['file']['tmp_name']);
+        
+        // How many chunks?
+        $total_chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : -1;
+        //$chunk is 0 based count
+        if ($chunk == $total_chunks-1 || ($total_chunks == -1 && isset($_REQUEST["name"]))) {
+          watchdog('Upload debug', 'Uploaded file, total chunks - ' . $total_chunks, array(), WATCHDOG_DEBUG);
+          $file = array();
+          //original name
+          $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+          $file['tmppath'] = $temp_directory . $file_name;
+          _file_uploaded($file);
+        }
+        else {
+          watchdog('Upload debug', 'Uploaded chunk  - ' . $chunk, array(), WATCHDOG_DEBUG);
+        }
       }
       else {
         die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
@@ -395,6 +410,10 @@ function plupload_handle_uploads() {
 
   // Return JSON-RPC response
   die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
+}
+
+function _file_uploaded($fileinfo) {
+  module_invoke_all('file_uploaded', $fileinfo); 
 }
 
 /**
@@ -449,11 +468,8 @@ function plupload_file_uri_to_object($uri) {
  *   original one.
  */
 function _plupload_fix_temporary_filename($filename) {
-  $pos = strpos($filename, '.');
-  if ($pos !== FALSE) {
-    $filename = substr_replace($filename, '.tmp', $pos);
-  }
-  return $filename;
+  $tempname = pathinfo($filename, PATHINFO_FILENAME) . '.tmp';
+  return $tempname;
 }
 
 /**

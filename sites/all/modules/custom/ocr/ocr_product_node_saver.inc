@@ -80,20 +80,21 @@ class ProductNodeSaver {
   }
   
   /**
-   * Get runner numbser as string (exml "1120,3123,11")
+   * Get runner numbser from node as string (example: "1120,3123,11")
    */
   public function GetNumbersStr() {
-    $runner_numbers = "";
+    $runner_numbers = '';
     $numbers = field_get_items('node', $this->node, 'ocr_numbers');
     
-    if(!$numbers) {
-      return "";
+    if (!$numbers) {
+      return '';
     }
     
     foreach ($numbers as $number) {
       if (empty($runner_numbers)) {
         $runner_numbers = (string)$number['value'];
-      } else {
+      } 
+      else {
         $runner_numbers = $runner_numbers . ',' . (string)$number['value'];
       }
     }
@@ -102,7 +103,7 @@ class ProductNodeSaver {
   }
   
   /**
-   * Set price
+   * Sets prices on the node 
    */
   public function SetPrice($price) {
     $this->node->sell_price = $price + variable_get('RUNMEMO_COMMISION', 1);

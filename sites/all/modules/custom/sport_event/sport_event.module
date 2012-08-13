@@ -14,8 +14,8 @@ function sport_event_menu() {
  */
 function sport_event_views_api() {
   return array(
-  	'version' => '3.0', 
-  	'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
+    'version' => '3.0',
+    'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
   );
 }
 
@@ -28,6 +28,7 @@ function sport_event_block_info() {
 
   $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'), );
   $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'), );
+  $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   return $blocks;
 }
@@ -43,9 +44,14 @@ function sport_event_block_view($delta = '') {
     case 'recent_event_left':
       $nid = get_recent_event_id(0, 1);
       return recent_events_block($nid);
+      break;
     case 'recent_event_right':
       $nid = get_recent_event_id(1, 1);
       return recent_events_block($nid);
+      break;
+    case 'registration_link':
+      return registration_link_block();
+      break;
     case 'registration_button':
       return registration_button_block();
       break;
@@ -91,8 +97,8 @@ function get_recent_event_images_view($nid, $items) {
       'title' => $image['title'],
     );
      
-    $markup = $markup . '<div class="recent-event-image" id="thumb-'. $product->nid .'"->';
-    $markup = $markup . theme('image_style',$image_array);
+    $markup = $markup . '<div class="recent-event-image" id="thumb-' . $product->nid . '"->';
+    $markup = $markup . theme('image_style', $image_array);
     $markup = $markup . '</div>';
   }
   $markup = $markup . '</div>';
@@ -149,15 +155,15 @@ function recent_event_search_form() {
   $form = array();
   $form['runner_number'] =
   array(
-  	'#type' => 'textfield',
-  	'#title' => 'Runner Number', 
-  	'#size' => '20',
-  	'#required' => 'true');
+    '#type' => 'textfield',
+    '#title' => 'Runner Number',
+    '#size' => '20',
+    '#required' => 'true');
   $form['submit_button'] =
   array( // search button
-  	'#type' => 'submit', 
-  	'#value' => '', 
-  	'#submit' => array('recent_event_search_submit'), 
+    '#type' => 'submit', 
+    '#value' => '', 
+    '#submit' => array('recent_event_search_submit'), 
   );
 
   return  $form;
@@ -169,6 +175,26 @@ function recent_event_search_validate($form, &$form_state) {
   if ($form['runner_number']['#value']  == 'My Number' || $form['runner_number']['#value']  == '') {
     form_set_error('runner_number', t('Please enter your number'));
   }
+}
+
+/**
+ *
+ * Builds "Register to join our team" link block
+ */
+function registration_link_block() {
+
+  $node = menu_get_object();
+  $block = array();
+  $block['subject'] = 'Register to join our team link';
+  $block['title'] = '<none>';
+  $block['content'][] = array(
+      '#markup' => 
+        '<a href="/user/register/'
+        . $node->nid
+        . '" id="user-register">Register to join our team!</a>',      
+   );
+
+  return $block;
 }
 
 function registration_button_block() {
@@ -194,11 +220,11 @@ function registration_button_form($form, &$form_state) {
   $nid = -1;
 
   // get node id for the event
-  if(arg(0) == 'node' && is_numeric(arg(1))) {
+  if (arg(0) == 'node' && is_numeric(arg(1))) {
     $nid = arg(1);
   }
   else { // it is not a node profile page, so don't show the button
-    watchdog ('Callback', 'Registration button is visible in a wrong place.', array($form), WATCHDOG_ERROR);
+    watchdog('Callback', 'Registration button is visible in a wrong place.', array($form), WATCHDOG_ERROR);
     return;
   }
   
@@ -251,7 +277,7 @@ function registration_button_js($form, $form_state) {
   // replace button with disabled version
   $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
   // post registration message
-  return $markup . '<div id="complete-registration" class="nice-message">'. t('We are looking forward to see your photos!') . '</div>';
+  return $markup . '<div id="complete-registration" class="nice-message">' . t('We are looking forward to see your photos!') . '</div>';
 
 }
 

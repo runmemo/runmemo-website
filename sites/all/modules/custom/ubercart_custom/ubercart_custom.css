@@ -106,3 +106,37 @@ div.tagsinput div {
   background: #FBD8DB !important; 
   color: #90111A !important;
 }
+
+.page-cart-checkout .image-thumbnail {
+	float:left;
+	margin:15px;
+	display:block;
+	width:100px;
+	height:100px;
+	
+}
+
+.image-thumbnail img {
+	float:left;
+	max-height:100%;
+	max-width:100%;
+	}
+
+.image-thumbnail .remove-cart-item {
+	top:10px;
+	position: relative;
+	margin-left:90px;
+	background-color:red;
+	color:#FFF;
+	border-radius:50px;
+	font-weight:bold;
+	width:20px;
+	height:20px;
+	cursor:pointer;
+	text-align:center;
+}
+
+.page-photographer-my-sales 
+#edit-created-value-year_chzn, #edit-created-value-month_chzn{
+  width: 100px!important;
+}

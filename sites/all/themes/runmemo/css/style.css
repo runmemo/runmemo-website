@@ -471,42 +471,30 @@ float:left;
 #tabs-wrapper{
 border:none !important;
 }
-.page-login #user-register-form .form-item-field-phone-number-und-0-value{
-margin-bottom:0;
+
+.captcha {
+	background:none;
+	padding:0;
+	margin:0;
 }
-.captcha{
-background:none !important;
-padding:0 !important;
-margin:0 !important;
-}
-#find, #trade{
+#find, #trade {
  color: #94BB1F;
     font-family: 'Walkway Bold',sans-serif;
     font-size: 36px;
     font-weight: normal;
     letter-spacing: 2px;
-    margin: 25px 0 0;
     padding: 0;
 	position:relative;
 	
 }
+#trade {
+	margin-top:25px;
+	color:#4AB0F8;	
+}
+	
 #great_photos, #taken_picture {
-font-family: 'Futura LT Light',sans-serif;
-    font-size: 18px;
-    font-weight: normal;
-    padding: 0;
-}
-
-#trade{
-color:#4AB0F8;
-}
-#select-event-runner-get-photos{
-margin:0 !important;
-}
-#edit-setfield,#edit-sellfield,#edit-box{
-margin:0 !important;
-background:none !important;
-border:0 none !important;
+	font-family: 'Futura LT Light',sans-serif;
+    font-size: 18px; 
 }
 
 /**************************************Login Page********************************/
@@ -521,14 +509,13 @@ margin:0 !important;
 padding:0;
 width:980px;
 }
-.page-user .right-corner{
-float:left;
-width:980px;
+.page-user .right-corner {
+	float:left;
+	width:980px;
 }
-.page-user .left-corner{
-
-    width:980px;
-float:left;
+.page-user .left-corner {
+	width:980px;
+	float:left;
 }
 .page-user #user-login{	
 	margin-top:20px;
@@ -538,9 +525,25 @@ float:left;
     font-family: 'Walkway Bold',sans-serif;
     font-size: 26px;
     font-weight: normal;
-    background-color:#fbfbfb ;
-    margin-top:100px
 }
+
+.page-user .region-sidebar-second h2 {
+	color: #94BB17;
+	font-size: 26px;
+	font-weight: normal;
+	font-family: 'Walkway Bold',sans-serif;
+}
+
+.page-user .region-sidebar-second h3 {
+	font-size: 20px;
+	color: #4AB0F8;
+	font-family: 'Walkway Bold',sans-serif;
+}
+
+.page-user .region-sidebar-second .node-block-content { 
+	padding:0px;
+}
+
 .page-user #sidebar-second h1{
 color: #4AB0F8;
 font-size: 26px;
@@ -551,18 +554,8 @@ border: 1px solid #D2D2D2;
     width: 470px;
 float:right;
 }
-.page-user .region-content .content{
-min-height:480px;
--webkit-box-shadow: none !important; 
-	-moz-box-shadow: none !important; 
-	box-shadow: none !important;
-}
-.page-user .content {
-	border:none;
-	-webkit-box-shadow: none !important; 
-	-moz-box-shadow: none !important; 
-	box-shadow: none !important;
-}
+
+
 .page-user #sidebar-second .block {
 	padding:0;
 }
@@ -573,49 +566,28 @@ min-height:480px;
     width: 490px;
 	margin-bottom:20px;
 }
-.page-user #user-login .form-text,
-.page-login #user-login .form-text {
-	width:250px;
-	margin-right:10px;
-	float:right;
-	clear:right;
-	margin-bottom:15px;
-	}
 
-.page-user .form-submit {
-	width:150px;
-	}
+
+
 #login-links, #login-message, #login-form .description,.page-user .login-forgot{
 display:none;
 }
-.page-user #login-form{
-border: 1px solid #D2D2D2;
+.page-user #login-form {
+	border: 1px solid #D2D2D2;
     float: right;
- width: 470px;
-display:block !important;
-}
-#user-register-form{
-float:left;
-margin-top:20px;
+ 	width: 470px;
+	display:block !important;
 }
 
-.page-login #user-register .form-item{
-float: left;
-margin-bottom: 15px;
-width:490px;
+#user-register-form {
+ 	float:left;
+ 	margin-top:20px;
+	padding:20px;
 }
+
+
  #user-register-form label,
- #user-login label{
-    color: #1A253C;
-    float: left;
-    font-family: arial;
-    font-size: 13px;
-    font-weight: 300;
-    margin-top: 14px;
-    text-align: right;
-}
-.page-user #user-login label,
-.page-login #user-login label{
+ #user-login label {
     color: #1A253C;
     float: left;
     font-family: arial;
@@ -624,23 +596,30 @@ width:490px;
     margin-top: 14px;
     height: 30px
 }
-.page-user .form-item,
-.page-login .form-item {
+
+.page-user .form-item {
 	clear:both;
 	margin-bottom:10px;
 	display:block;
 	height:45px;
-	}
+}
 
 
 #user-register-form .form-text {
 	float:right;
 	 width: 300px;
+	 clear:right;
 	}
+	
+.page-user .form-text {
+	float:right;
+	width:300px;
+	clear:right;
+}
 
 #user-register-form .sidebar input{
-width:80px;
-margin-left:10px;
+	width:80px;
+	margin-left:10px;
 }
 
 
@@ -651,26 +630,33 @@ margin-left:10px;
 float:left;
 border:none;
 }
-#user-register-form #edit-actions{
-float:left;
-}
 
 .page-user-edit .password-strength, .page-user-edit .description
 {
-    display:none!important;
+    display:none;
 }
 
-#user-register-form .password-strength,#user-register-form .password-confirm{
-display:none;
+
+.page-user div.password-confirm {
+	margin-top:0px;
+	float: left;
+	display:block;
+	clear:left;
+	width: auto;
+	font-size:10px;
+	}
+
+.form-item-pass-pass2 label {
+	clear:left;
+	}
+
+#user-register-form .password-strength
+{
+	display:none;
 }
-#user-register-form #edit-pass-pass2{
-display:block;
-}
-#user-register-form .form-item-pass-pass2{
-margin-left:8px;
-}
+
 #user-register-form .field-widget-options-onoff .option{
-width:149px;
+	width:149px;
 }
 #user-register-form .field-widget-options-onoff input{
  left: 15px;
@@ -681,7 +667,7 @@ border:none;
 outline:none;
 }
 #user-register-form .field-widget-options-onoff .description{
- float: right;
+ 	float: right;
     margin-top: 14px;
     width:285px;
 }
@@ -720,14 +706,13 @@ display:none;
 .front .form-item-name label,
 .front .form-item-pass label,
 .front .form-item-fake-password label {
-display:none;
-
+	display:none;
 }
 
 .front form {
 	border:none;
 	padding:0px;
-	}	
+}	
 
 #user-login-register, #new-password-link {
 	float:left;
@@ -743,7 +728,7 @@ display:none;
 .one-sidebar .content span table{
 display:none !important;
 }
-.one-sidebar #center .content{
+.one-sidebar #center .content {
 border:none !important;
 /*width:415px !important; */
 -webkit-box-shadow: none !important; 
@@ -798,11 +783,12 @@ top: 50px;
 margin:0 !important;
 color:#4ab0f8 !important;
 }
-#user-register-form{
-	margin-top:40px;
-	padding:20px;
-}
 
+
+#user-register-form .confirm-parent, 
+#user-register-form .password-parent {
+	width:auto;
+	}
 
 .content .login #login-form{
 margin:0 auto !important;
@@ -820,10 +806,6 @@ float:none !important;
   margin-left: 142px;
 }
 
-.page-user #edit-actions #edit-submit {
-width:150px;
-}
-
 .captcha img{
 float:right;
 position: relative;
@@ -831,16 +813,17 @@ position: relative;
 }
 .captcha .fieldset-wrapper{
 float:left;
-border:none !important;
-height: auto !important;
+border:none;
+height: auto;
 }
 .captcha .description{
 display:none;
 }
-.password-suggestions{
-border:none !important;
-width:338px !important;
-float:right;
+.page-user .form-item .password-suggestions {
+	border:none;
+	width:260px;
+	float:right;
+	margin-top:5px;
 }
 .log_in{
   font-family: 'Walkway Bold';
@@ -883,6 +866,7 @@ height:39px!important;
 padding:0 10px;
 width:400px!important;
 }
+
 .chzn-container-single .chzn-single{
 height:39px!important; 
 background-image: none!important;
@@ -915,19 +899,22 @@ z-index: 0;
 z-index:-1;
 }
 
+.page-user .block-nodeblock {
+	width: 400px;
+	}
 
 #register-form #edit-actions #edit-submit{
-width:170px;
-background:#f5f5f5;
-border:1px solid #bfbfbf;
-border-radius:5px;
-position:relative;
-left:150px;
-color: #34373A;
-cursor:pointer;
-font-family:Arial,Helvetica,sans-serif;
-font-size:14px;
-font-weight:bold;
+	width:170px;
+	background:#f5f5f5;
+	border:1px solid #bfbfbf;
+	border-radius:5px;
+	position:relative;
+	left:150px;
+	color: #34373A;
+	cursor:pointer;
+	font-family:Arial,Helvetica,sans-serif;
+	font-size:14px;
+	font-weight:bold;
 }
 
 .chzn-container-single .chzn-single div{
@@ -1059,13 +1046,6 @@ height:26px;
 background: url("../images/bread.png")repeat-x !important;
 background-position:24px 0!important;
 }
-.page-login #user-register-form .description {
- font-size:small;
- float:right; 
- margin-right:50px;
- font-style:italic;
-
-}
 
 .page-login  .description {
 display:none;
@@ -1119,65 +1099,6 @@ display:none;
 	float:left;
 }
 
-.page-login .content {
-	float:right;
-}
-.page-login #user-register-form{
-   border: 1px solid #D2D2D2;
-    width: 450px;
-	margin-right:20px;
-	margin-top:0;
-}
-
-.page-login #register-fieldset .fieldset-wrapper {
-  margin-right: 10px;
-    padding: 0;
-    width: 450px;
-
-}
-
-.page-login #sign-in-fieldset .fieldset-wrapper {
-  width:400px;
-
-float:right;
-
-}
-
-.page-login #user-register-form #paypal_icon {
-  position:relative;
-  right:9px;
-  top:18px;
-
-float:right;
-}
-.page-login .option .description {
-  display:block!important;
-}
-
-.page-login #edit-field-paypal-id {
-margin-top:10px;
-margin-bottom:10px;
-}
-
-.page-login #edit-field-term .description, 
-.page-login #edit-field-paypal-id .description	
-{
-  display:block;
-}
-
-.page-login #register-fieldset #edit-actions #edit-submit {
-    background: none repeat scroll 0 0 #F5F5F5;
-    border: 1px solid #BFBFBF;
-    color: #34373A;
-    cursor: pointer;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 14px;
-    font-weight: bold;
-    left: 150px;
-    position: relative;
-    width: 170px;
-}
-
 .page-user .profile h3{
 font-weight: bold;
 font-size: 100%;
@@ -1191,14 +1112,28 @@ margin-top:0 !important;
 	margin:0;
 }
 
-.page-user form,
-.page-login form,
-.view-filters form {
+.page-user form {
 	padding:20px;
 	border: 1px solid #BFBFBF;
     border-radius: 5px;
-   
 	}
+
+.page-user form,
+.view-filters form {
+    float:left;
+    width:100%;
+	}
+
+.views-exposed-form {
+	border: 1px solid #BFBFBF;
+    border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding:20px;
+	}
+.views-exposed-form .views-exposed-widget .form-submit {
+	margin-top:19px;
+}
+
 .page-user #user-login{
     height: 200px;
     width: 400px;
@@ -1208,11 +1143,6 @@ margin-top:0 !important;
 .page-login #user-login {
 	height:200px;
 	}
-
-
-.page-user .form{
-	margin-top:50px!important;
-}
 
 .page-user-password #edit-actions #edit-submit{
 	width:auto;
@@ -1225,7 +1155,7 @@ padding:0;
 margin-left:25px;
 } 
 .toolbar-drawer #edit-actions #edit-submit{
-float:left;
+	float:left;
 }
 .toolbar-drawer #edit-actions #edit-preview{
 float:right;
@@ -1342,56 +1272,28 @@ text-align:center;
     text-align: right;
     width: 136px;
 }
-#user-profile-form input {
-    -moz-box-shadow: none !important;
-    box-shadow:none!important;
-    -webkit-box-shadow:none!important;
-    border: 1px solid #DEE4E7;
-    color: #1A253C;
-    font-family: Arial,Helvetica,sans-serif;
-    font-size: 13px;
-    height: 40px; line-height:40px;
-    margin-left: 8px;
-    padding: 2px;
-/*    text-indent: 7px;*/
-    width: 300px;  
-    border-radius:5px;
-    -mox-border-radius:5px;
-    -webkit-border-radius:5px;
-}
 
 #user-profile-form fieldset.collapsible
 {
    display:none;
 }
-#user-profile-form .confirm-parent, #user-profile-form .password-parent
-{
-    clear: left;
-    margin: 0;
-    width: 670px;
-}
+
 #user-profile-form .description  {
     color: #898989;
-    left: 145px;
-    line-height: 150%;
     margin-bottom: 0.75em;
     margin-top: 5px;
     position: relative;
-    width: 300px;
 }
-#user-profile-form .form-type-checkbox 
-{
-   width:600px;
-}
+
 #user-profile-form .form-type-checkbox input
 {
    margin-top:17px;
 }
 #user-profile-form .form-type-checkbox .description
 {
-   left: 120px;
-    position: relative;
     width: 328px;
+    float:right;
+	display:block;
 }
 #user-profile-form #paypal_icon
 {
@@ -1405,9 +1307,7 @@ text-align:center;
 }
 #user-profile-form .password-suggestions
 { 
-    left: -168px;
-    position: relative;
-    top: -53px;
+   
 }
 
 .page-runner .content 
@@ -1510,7 +1410,7 @@ text-align:center;
 
 .block .content
 {
-   margin:0px 0px!important;
+   margin:0px;
 }
 
 .plupload_upload_status
@@ -1722,7 +1622,7 @@ text-align:justify;
 
 div.form-item-url-hidden ,
 .page-search-result .left-corner #tabs-wrapper h1{
-display:none; 
+	display:none; 
 }
 /*
 #overlay-content #block-feedback-form .feedback-message {
@@ -1737,7 +1637,6 @@ box-shadow: none;
 }
 
 
-#user-register-form div.form-item-field-paypal-id-und-0-value {margin-top:0;}
 ul#edit-file_filelist{
 	*visibility:hidden!important; /* IE 7 (IE6 also uses this, so put it first) */
 	_visibility:hidden!important; /* IE 6 */
@@ -1844,7 +1743,6 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
 .page-cart .region-content {
   float: left;
   width: 480px;
-  padding: 15px 0 0 0;
 }
 
 .page-cart #sidebar-second {
@@ -1948,15 +1846,15 @@ text-align: center;
 }
 
 /* checkout */
-.cartPane{
- border: 1px solid #CCCCCC;
- float: left;
- overflow: hidden;
+.cartPane {
+ 	border: 1px solid #CCCCCC;
+ 	float: left;
+ 	overflow: hidden;
 /* overflow-x: hidden;
  overflow-y: scroll;*/
- width: 475px;
- min-height: 700px;
-}
+ 	width: 475px;
+ 	padding-bottom:30px;
+ }
 .blueHeading {
 color:#4AB0F8;
 font-family:'Walkway Bold',sans-serif;
@@ -1968,20 +1866,26 @@ letter-spacing:2px;
 margin-top:15px;
 padding:10px;
 }
-.boldText{
-font-weight:bold;
-padding:10px;
-float:left;
+
+
+.order-items{
+	font-weight:bold;
+	padding:10px;
+	float:left;
+	width:250px;
 }
-.totalPrice{
-font-weight:bold;
-width: 150px;
-padding-left: 10px;
-}
-.currencyText{
-color: #00A14E;
-padding:0px;
-float: right;
+.order-currency, #order-items, #order-subtotal {
+	color: #00A14E;
+	}
+
+.order-subtotal {
+	width:250px;
+	}
+
+.total-price{
+	font-weight:bold;
+	width: 150px;
+	padding-left: 10px;
 }
 
 
@@ -2014,7 +1918,6 @@ float: right;
 }
 .uc-cart-checkout-form .form-item {
   height: 55px;
-  line-height: 39px;
 }
 .uc-cart-checkout-form .form-item label {
   float: left;
@@ -2032,14 +1935,12 @@ float: right;
   -webkit-border-radius: 5px 5px 5px 5px;
   margin: 0 0 0 10px;
 }
-.uc-cart-checkout-form .form-item span {
-  line-height: 20px;
-}
+
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
-  float: right;
-  padding: 11px 109px 0 0;
-  width: 136px;
-}
+  float: left;
+  margin-left:10px;
+  margin-top:10px;
+ }
 .uc-cart-checkout-form .form-submit {
   float: right;
   margin: 0 38px 10px 0;
@@ -2142,6 +2043,7 @@ float: right;
  }
  .page-cart-checkout .paymentPane #edit-panes-payment-details-cc-cvv {
    width: 56px;
+   float: left;
  }
  .chzn-container-single .chzn-single div {
     height: 28px!important;
@@ -2178,16 +2080,6 @@ border-bottom: 1px solid #e9e9e9!important;
    
 }
 
-.page-user .form-item-remember-me #edit-remember-me {
-  width: 15px!important;
-  height: 15px!important;
-  float: left;
-}
-.page-user .form-item-remember-me .option {
-  float: left!important;
-  margin: 0px!important;
-  padding: 0 0 0 6px!important;
-}
 .page-user #forgot_pwd {
     float: left;
     padding: 0 0 0 21px;
@@ -2195,16 +2087,20 @@ border-bottom: 1px solid #e9e9e9!important;
     font-weight: normal;
 }
 
-.page-login #user-register-form .confirm-parent, .password-parent {
-    width: 450px;
-    margin: 10px 0 10px 0;
-}
-.page-login #user-register-form .confirm-parent label {
-    padding: 0 9px 0 0;
+.page-user-register .description {
+	display:none;
+	font-size:small;
+	float:right; 
+	margin-right:50px;
+	font-style:italic;
+	}
+	
+#user-register-form {
+	width:450px;
 }
 
-.page-login #user-register-form .form-submit {
-	width: 200px;
+#user-register-form .form-submit {
+	width: 220px;
 	}
 
 .page-login #forgot_pwd {
@@ -2671,10 +2567,10 @@ border-bottom: 1px solid #e9e9e9!important;
 
 #block-system-navigation {
   display: block;
-  height: 30px;
+  height: 33px;
   background-color: #384551;
   margin-top: 5px; 
-  margin-bottom: 15px;
+  width:100%;
 }
 
 #block-system-navigation ul li {
@@ -2684,6 +2580,10 @@ border-bottom: 1px solid #e9e9e9!important;
   
 }
 
+#block-system-navigation .first {
+	margin-left:15px;
+	}
+
 #block-system-navigation a {
   color: #dddddd;
 }
@@ -2691,3 +2591,11 @@ border-bottom: 1px solid #e9e9e9!important;
 #block-system-navigation .active-trail a {
   color: #48C2FF;
 }
+
+
+/* Photographer pages */
+
+.page-photographer .region-content {
+	width:100%;
+	min-height:500px;
+	}

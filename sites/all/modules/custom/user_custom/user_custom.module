@@ -8,8 +8,7 @@
  * $form_id is the form id
  */
 function user_custom_form_user_login_alter(&$form, $form_state) {
-      
-        $form['fake-password'] = array (
+      $form['fake-password'] = array(
          '#id' => 'edit-pass-fake', 
          '#type' => 'textfield',
          '#default_value' => 'Password',    
@@ -19,19 +18,17 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
          '#required' => FALSE ,
         ); 
        
-      $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member? ') . '</span>', );
+      $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
       
       $form['join-link'] = array(
-      	'#markup' => l(t('Join us!'), 'login', 
+        '#markup' => l(t('Join us!'), 'login',
         array('attributes' => array('id' => 'user-login-register'))));
     
        //  $form['#validate'][] = 'cookie_check_validate';
       //  $form['new-password-text'] = array('#markup' => '<span id="new-password-text">' . t('Forgot your password? ') . '</span>', );
         $form['new-password-link'] = array(
         '#markup' => l(t('Request new password.'), 'user/password', 
-         array('attributes' =>array('id' => 'new-password-link'))));
-      
-  
+         array('attributes' => array('id' => 'new-password-link'))));
 }
 
 
@@ -57,7 +54,7 @@ function user_set_photographer_role($form, &$from_state) {
     $rid = user_custom_helper::get_photographer_rid();
 
     $new_user = user_load($uid);
-    user_save($new_user, array ('roles'=>array($rid => 'Photographer')));
+    user_save($new_user, array('roles' => array($rid => 'Photographer')));
 
 }
 

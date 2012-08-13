@@ -78,7 +78,7 @@ class OcrPendingNodesTestCase extends DrupalWebTestCase {
     
     $item = $queue->getMessage();
     $this->assertNotEqual(FALSE, $item, 'Item was added to the queue for file awaiting OCR.');
-    if($item) {
+    if ($item) {
       $json_message  = $item->getBody();
       $message_obj = json_decode($json_message);    
       $this->assertEqual($message_obj->ExternalReference, $this->testNode->nid, 'ExternalReference of file matches node id of Product node.');  

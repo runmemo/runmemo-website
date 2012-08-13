@@ -41,7 +41,7 @@
 .geofieldMap {
 	margin-top:20px;
 	border-style:solid;
-	border-width:1px;'
+	border-width:1px;
 	border-color:#555;
 	}
 .coming-soon {
@@ -83,6 +83,13 @@
 .node-type-event .view-empty {
 	padding-left:10px;
 	padding-right:10px;
+}
+
+.view-event-registered-photographers #user-register {
+  	padding: 5px;
+        margin-left: auto;
+        margin-right: auto;
+        
 }
 
 /* Registration Button */

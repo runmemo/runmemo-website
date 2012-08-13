@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @file generate_thumbnails.install
+ * 
+ * contains installation hooks for thumbnail generation.
+ */
 
 /**
  * Implements install hook

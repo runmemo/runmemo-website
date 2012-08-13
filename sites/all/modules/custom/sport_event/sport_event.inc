@@ -66,7 +66,7 @@ function sport_event_is_registered_photographer($nid, $uid) {
   $photographers = field_get_items('node', $node, 'field_photographers');
 
   if ($photographers) {
-    foreach($photographers as $index => $photographer) {
+    foreach ($photographers as $index => $photographer) {
       if ($photographer['uid'] == $uid) {
         return TRUE;
       }
@@ -109,8 +109,8 @@ function sport_event_unregister_photographer($nid, $uid) {
   $photographers = field_get_items('node', $node, 'field_photographers');
 
   $removed = FALSE;
-  if($photographers) {
-    foreach($photographers as $index => $photographer) {
+  if ($photographers) {
+    foreach ($photographers as $index => $photographer) {
       if ($photographer['uid'] === $uid) {
         unset($node->field_photographers[$node->language][$index]);
         $removed = TRUE;
@@ -118,7 +118,7 @@ function sport_event_unregister_photographer($nid, $uid) {
     }
   } 
   
-  if(!$removed) {
+  if (!$removed) {
     return FALSE; // user was not in the list of registered photogrpahers
   }
   

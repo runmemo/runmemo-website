@@ -12,7 +12,7 @@ function photo_upload_init() {
 }
 
 function photo_upload_preprocess_page(&$variables) {
-  if('upload' === arg(1)) {
+  if ('upload' === arg(1)) {
     drupal_add_js(drupal_get_path("module", "photo_upload") . "/js/photo_upload.js");
     drupal_add_css(drupal_get_path('module', 'photo_upload') . '/photo_upload.css');
   }
@@ -76,7 +76,7 @@ function photo_upload_permission() {
 
 
 /**
- * Photographer page
+ * Photo Uploader Page
  * where the photographer can upload the photos by selecting the event
  * uploaded photos are stored in the amazon_s3
  */
@@ -85,15 +85,15 @@ function select_event_function() {
   $form = array();
 
   $form['events_select'] = array(
-  		'#type' => 'select', 
-  		'#title' => t('Upload to event:'), 
-  		'#id' => 'event_select', 
-  		'#attributes' => array(
-  			'onchange' => 'return select_event_upload();'), 
-  		'#prefix' => '<div id="event_drop">', 
-  		'#suffix' => '</div>');
+    '#type' => 'select',
+    '#title' => t('Upload to event:'),
+    '#id' => 'event_select',
+    '#attributes' => array(
+      'onchange' => 'return select_event_upload();'),
+      '#prefix' => '<div id="event_drop">',
+      '#suffix' => '</div>');
 
-  $form['events_select']['#options'] = array('All' => "Select Event");
+  $form['events_select']['#options'] = array('All' => 'Select Event');
 
   //get the event name from content type 'event'
   $events = get_events();
@@ -109,7 +109,7 @@ function select_event_function() {
   }
   
   $form['price_slider'] = array(
-  		'#markup' => get_rendered_slider(),
+    '#markup' => get_rendered_slider(),
   );
   
   return $form;
@@ -121,14 +121,6 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   $form = array();
   $form['#attributes'] = array('enctype' => 'multipart/form-data');
 
- $form['style-guide-notice'] = array(
-    '#type' => 'markup',
-    '#markup' => '<div class="guide-line"><span>Please read our ' . l("style guide", "style-guide", array(
-          'attributes' => array(
-              'id' => 'guide',
-          )
-      )) . ' before uploading the photos</span></div>',
-  );
   $form['box'] = array(
       '#type' => 'fieldset',
       '#title' => t(''),
@@ -145,21 +137,22 @@ function photographer_drag_and_drop_form($form, &$form_state) {
   );
 
   $form['box']['upload'] = array(
-  	'#type' => 'submit', 
-  	'#value' => 'Start Uplaod', 
+    '#type' => 'submit',
+    '#value' => 'Start Uplaod',
     '#validators' => array(),
-  	'#attributes' => array(
-  						'onclick' => 'return drag_drop_upload_validation();')
+    '#attributes' => array(
+                       'onclick' => 'return drag_drop_upload_validation();')
   );
   $form['box']['selected_event'] = array(
   		'#type' => 'textfield', 
   		'#title' => '', 
   		'#id' => 'selected_event_nid');
+  
   $form['box']['price_val'] = array(
-  		'#type' => 'textfield', 
-  		'#id' => 'price_val',
-                '#attributes' => array('style' => 'display: none;'),
-                '#default_value' => variable_get('RUNMEMO_DEFAULT_PRICE', 5),
+    '#type' => 'textfield',
+    '#id' => 'price_val',
+    '#attributes' => array('style' => 'display: none;'),
+    '#default_value' => variable_get('RUNMEMO_DEFAULT_PRICE', 5),
   );
   return $form;
 }
@@ -178,7 +171,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //file_uri_to_object();
   foreach ($form_state['values']['file'] as $uploaded_file) {
     if ($uploaded_file['status'] == 'done') {
+      /*
       $source = $uploaded_file['tmppath'];
+      dvm($source);
       $destination = file_stream_wrapper_uri_normalize($scheme . $uploaded_file['name']);
       // Rename it to its original name, and put it in its final home.
       // Note - not using file_move here because if we call file_get_mime
@@ -190,22 +185,39 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       $event = $form_state['values']['selected_event'];
       $price = $form_state['values']['price_val'];
       $node = create_photo_node($file, $event, $price);
+      */
     }
     else {
       // @todo: move this to element validate or something and clean up t().
       form_set_error('pud', "Upload of {$uploaded_file['name']} failed");
     }
   }
-  $count_files = count($saved_files);
-  if ($count_files > 0) {
-  // drupal_set_message(t("Files uploaded successfully"));
-    $form_state['redirect'] = "photographer/myphotos";   
-  } else {
-    // @todo add message may be.
-  }
- 
+  
+  $form_state['redirect'] = "photographer/myphotos";   
+  
 }
 
+function photo_upload_file_uploaded($fileinfo) {
+  
+  watchdog('file upload info', 'File uploaded and hook invoked, path = ' . $fileinfo['name']);
+  
+  $source =  $fileinfo['tmppath']; 
+  $scheme = 'public://';
+  
+  $destination = file_stream_wrapper_uri_normalize($scheme . $fileinfo['name']);
+  // Rename it to its original name, and put it in its final home.
+  // Note - not using file_move here because if we call file_get_mime
+  // (in file_uri_to_object) while it has a .tmp extension, it horks.
+  $destination = file_unmanaged_move($source, $destination, FILE_EXISTS_RENAME);
+  $file = plupload_file_uri_to_object($destination);
+  file_save($file);
+ 
+  $event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
+  $price = isset($_REQUEST["price"]) ? $_REQUEST["price"] : 1;
+ 
+  $node = create_photo_node($file, $event, $price);
+  
+}
 
 /**
  * Call back function for photographer
@@ -221,8 +233,7 @@ function photographer_upload_photos() {
 
 
 function photo_upload_form_alter(&$form, &$form_state, $form_id) {
-  
-  if(isset($form_state['view']) && $form_state['view']->name == 'myphotos') {
+  if (isset($form_state['view']) && $form_state['view']->name == 'myphotos') {
     $form['field_event_reference_nid']['#options']['All'] = t('Select Event');
   }
 }
@@ -233,32 +244,30 @@ function photo_upload_form_alter(&$form, &$form_state, $form_id) {
  */
 function photograher_share()
 {
-  $form['share']  = array('#type' => 'textfield', 
-  			'#title' => 'Runmemo Share', 
-  			'#size' => '20', 
-  			'#required' => 'true', 
-  			'#default_value' => variable_get('photographer_share'), 
-  			'#prefix' => '<div class="pshare">', 
-  			'#suffix' => '<span class="sharePer"></span></div>',
-         	'#description' => 'Share of runmemo', );
+  $form['share']  = array(
+    '#type' => 'textfield',
+    '#title' => 'Runmemo Share',
+    '#size' => '20',
+    '#required' => 'true',
+    '#default_value' => variable_get('photographer_share'),
+    '#prefix' => '<div class="pshare">',
+    '#suffix' => '<span class="sharePer"></span></div>',
+    '#description' => 'Share of runmemo', );
 
   $form['submit']  = array(
-  		'#type' => 'submit', 
-  		'#title' => 'Submit', 
-  		'#value' => 'Submit');
+    '#type' => 'submit',
+    '#title' => 'Submit',
+    '#value' => 'Submit');
   return $form;
 }
 
 /**
  * Form validation for numeric values photograher_share()
  */
-function photograher_share_validate($form, &$form_state)
-{
+function photograher_share_validate($form, &$form_state) {
 
   $share = $form_state['values']['share'];
-
   if (!is_numeric($share) || $share < 0 || $share > 100) {
-
     form_set_error('share', t('Enter a Numeric Value'));
   }
 }
@@ -293,10 +302,6 @@ function create_photo_node($file, $event_nid, $price = 0) {
   //user id
   $node->uid = $file->uid;
   // Let's add standard body field
-  //$node->body[$node->language][0]['value'] = 'This is a body text';
-  //$node->body[$node->language][0]['summary'] = 'Here goes a summary';
-  //$node->body[$node->language][0]['format'] = 'filtered_html';
-
 
   $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
 
@@ -306,7 +311,8 @@ function create_photo_node($file, $event_nid, $price = 0) {
     $field_pricing = field_get_items('node', $event, 'field_pricing');
     if ($field_pricing[0]['value'] != 0) {
       $price = $field_pricing[0]['value'];
-    } else {
+    } 
+    else {
       $price = 5;
     }
   }

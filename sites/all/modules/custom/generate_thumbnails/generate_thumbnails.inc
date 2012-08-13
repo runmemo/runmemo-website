@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @file generate_thumbnails.inc
+ */
 
 function _pre_image_cache_styles() {
   $styles = array('search_preview', 'search_thumbnail'); 

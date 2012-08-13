@@ -110,8 +110,15 @@ function ubercart_custom_menu() {
   );
   $items['cart_list_items'] = array(
     'title' => '',
-    'description' => '',
+    'description' => 'api point that returns json with list of items in the cart',
     'page callback' => 'cart_list_items',
+    'access arguments' => array('search photos'),
+    'type' => MENU_CALLBACK
+  );
+  $items['ajax/cart_clear'] = array(
+    'title' => '',
+    'description' => 'api point that clears cart of current user',
+    'page callback' => 'cart_clear',
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
@@ -129,6 +136,7 @@ function ubercart_custom_menu() {
     'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
+  
     
   return $items;
 }
@@ -139,7 +147,7 @@ function ubercart_custom_menu() {
  */
 function cart_add_item() {
   if (!isset($_GET['nid'])) {
-    echo json_message(FALSE, 'Required parameter nid is not set.');
+    echo json_message(FALSE, array('message' => 'Required parameter nid is not set.'));
     return;
   }
   $nid = $_GET['nid'];
@@ -148,13 +156,13 @@ function cart_add_item() {
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
-      echo json_message(FALSE, 'Did not add item. Item ' . $nid . ' is already in the cart.');
+      echo json_message(FALSE, array('message' => 'Did not add item. Item ' . $nid . ' is already in the cart.'));
       return;
     }
   }
   // add item to cart
   $url = uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid);
-  echo json_message(TRUE, 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid);
+  echo json_message(TRUE, array('message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid));
    
 }
 
@@ -164,23 +172,76 @@ function cart_add_item() {
  */
 function cart_remove_item() {
   if (!isset($_GET['nid'])) {
-    echo json_message(FALSE, 'Required parameter nid is not set.');
+    echo json_message(FALSE, array('message' => 'Required parameter nid is not set.'));
     return;
   }
  
   $nid = $_GET['nid'];
   $cart_ids = array();
   $cid = uc_cart_get_id($create = TRUE);
+  $items = count_cart_items($cid);
+  $photographers = count_cart_photographers($cid);
+  $subtotal = cart_total_amount($cid);
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product')); //, $cid = $uid, $data = array('module' => 'uc_product'));
   
-      echo json_message(TRUE, 'Removed item from the cart:' . $nid);
+      echo json_message(TRUE, 
+            array(
+            		'message' => t('Removed item from the cart.'), 
+      				'nid' => $nid,
+                    'items' => $items - 1,
+                    'photographers' => count_cart_photographers($cid),
+                    'subtotal' => $subtotal - $item->price * $item->qty,
+                 )
+           );
       return;
     }
   }
   
-  echo json_message(FALSE, 'Item was not found in the cart.');
+  echo json_message(FALSE, array('message' => t('Item was not found in the cart.'), 'nid' => $nid));
+}
+
+function order_summary_text() {
+  
+}
+
+/**
+ * 
+ * Counts number of items in the cart for given cart id
+ * @param integer $cid
+ */
+function count_cart_items($cid) {
+  return count(uc_cart_get_contents($cid));
+} 
+
+/**
+ * Gets subtotal of the cart for given cart id
+ * 
+ * @param integer $cid - cart id
+ */
+function cart_total_amount($cid) {
+  $subtotal = 0;
+  foreach (uc_cart_get_contents($cid) as $item) {
+    $subtotal += $item->price * $item->qty;
+  }
+  return $subtotal;
+}
+
+/**
+ * 
+ * Counts number of photographers who took photos that were selected in the cart.
+ * @param integer $cid
+ */
+function count_cart_photographers($cid) {
+  $cart = uc_cart_get_contents($cid);
+  
+  foreach ($cart as $index=> $product) {
+	  $photographer[] = $product->uid;
+	}
+	
+  return count(array_unique($photographer));
+  
 }
 
 /**
@@ -190,18 +251,18 @@ function cart_remove_item() {
  * @param string $message message that will be added to the response. 
  * 	Message attribute will be ignored if not provided or NULL.
  */
-function json_message($success, $message = NULL) {
-  if (!isset($message)) {
-    $result = array('success' => $success);
+function json_message($success, $attributes = array()) {
+  $result = array('success' => $success);
+  
+  foreach ($attributes as $index => $attribute) {
+    $result[$index] = $attribute;
   }
-  else {
-     $result = array('success' => $success, 'message' => $message);
-  }
-   return json_encode($result);
+  return json_encode($result);
 }
 
-/*
- * AJAX cart add,remove function
+/**
+ * AJAX call
+ * returns json with the list of items in the cart of current user
  */
 function cart_list_items() {
   $cid = uc_cart_get_id($create = TRUE);
@@ -216,8 +277,14 @@ function cart_list_items() {
   echo json_encode($result);
 }
 
-
-
+/**
+ * AJAX call
+ * Clears the cart of the current user
+ */
+function cart_clear() {
+   uc_cart_empty(uc_cart_get_id());
+   echo json_message(TRUE, array('message' => 'Cart was cleared.'));
+}
 
 /**
  * Form alter function
@@ -330,17 +397,19 @@ function search_result_cart($form, &$form_state) {
   // @todo move this html block from here to theme
   $form['cart_summary'] = array('#markup' => 
     "<div class='cart_summ'>
+    	<div id='currency-sign' style='display:none'>" . variable_get('uc_currency_sign') . "</div>
   		<div class='summary_item_cost'>
   			<span class='cart-block-icon-full' title='View your shopping cart.'></span>
 			<span class='shop_cart_title'>" . t('Shopping Cart') . "</span>
 		</div>
 		<div class='proceed_to_cart'>
 			<a href='$url'></a>
+			
 		</div>
 		<div>
 			<span class='summary_selected_photos'>"
-			. t('Photos:') . '&nbsp;' .
-			 "<span class='placeholder'></span>
+              . t('Photos:') . '&nbsp;' .
+            "<span class='placeholder'></span>
 			</span>
 				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
                                       "<span class='placeholder'></span>
@@ -348,11 +417,11 @@ function search_result_cart($form, &$form_state) {
 		</div>
 	</div>");
   $form['prev_img_det'] = array('#markup' =>
-   t('<div class="cost_auth_det">
-  		<span id="photo_cost">Price:<label class="photo_cost">' . variable_get('uc_currency_sign') . '</label>
+ 	'<div class="cost_auth_det">
+  		<span id="photo_cost">Price:<label class="photo_cost"></label>
   		</span><br/>
   		<span id="photo_author">Photo by:<label class="photo_author"></label>
-  		</span></div>'), '#prefix' => '<div class="prev_img_details">', );
+  		</span></div>', '#prefix' => '<div class="prev_img_details">', );
   $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
 
   return $form;
@@ -371,21 +440,21 @@ function save_numbers() {
   $option = $_POST['option'];
   
   if (empty($nid) || empty($number) || empty($option)) {
-    echo json_message(FALSE, 'Required parametr is not set');
+    echo json_message(FALSE, array('message' => 'Required parameter is not set'));
     return;
   }
   
   $number_int = (int) $number;
   
   if ((string)$number_int != $number) {
-    echo json_message(FALSE, 'Number is not int');
+    echo json_message(FALSE, array('message' => 'Number is not int'));
     return;    
   }
   
 //check permission
   $node = node_load($nid);
-  if(!node_access("update", $node)) {
-    echo json_message(FALSE, 'Has no permissions');
+  if (!node_access("update", $node)) {
+    echo json_message(FALSE, array('message' => 'Has no permissions'));
     return;
   }  
   
@@ -401,13 +470,13 @@ function save_numbers() {
       break;
 
     default:
-      echo json_message(FALSE, 'Parametr option=' . $option . ' is not supported');
+      echo json_message(FALSE, array('message' => 'Parametr option=' . $option . ' is not supported'));
       return;
   }
   
   $productSaver->Save();
   
-  echo json_message(TRUE, 'node=' . $nid . ',number=' . $number . ',option=' . $option);
+  echo json_message(TRUE, array('message' => 'node=' . $nid . ',number=' . $number . ',option=' . $option));
   return;
 }
 
@@ -421,14 +490,14 @@ function change_price() {
   $nid = $_POST['nid'];
   $price  = $_POST['price'];
   if (empty($nid) || empty($price)) {
-    echo json_message(FALSE, 'Required parametr is not set');
+    echo json_message(FALSE, array('message' => 'Required parametr is not set'));
     return;
   }
   
 //check permission
   $node = node_load($nid);
-  if(!node_access("update", $node)) {
-    echo json_message(FALSE, 'Has no permissions');
+  if (!node_access("update", $node)) {
+    echo json_message(FALSE, array('message' => 'Has no permissions'));
     return;
   }  
   
@@ -436,6 +505,6 @@ function change_price() {
   $productSaver->SetPrice($price);
   $productSaver->Save();
 
-  echo json_message(TRUE, 'node=' . $nid . ',new_price=' . $price);
+  echo json_message(TRUE, array('message' => t('New price was set to @price', array('@price' => $price)), 'nid' => $nid, 'price' =>  $price));
   return;
 }

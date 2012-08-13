@@ -101,17 +101,11 @@
   <div class="product_content">
     <?php 
       print render($content); 
-      print get_rendered_slider()
+      if (node_access("update", $node)) { 
+        print get_rendered_slider();
+        print get_rendered_runner_number_box($node->nid);
+      }
     ?>
-    <label for="product-node-runner-number" class="field-label">Runner numbers:</label>
-    <input name="product-node-runner-number" id="product-node-runner-number" value="
-      <?php 
-        require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr_product_node_saver.inc');
-        $productSaver = new ProductNodeSaver($node->nid);
-        echo $productSaver->GetNumbersStr(); 
-      ?>" 
-    />
-
     <div id="product-nice-message-container" class="message" ></div>
 
   </div>

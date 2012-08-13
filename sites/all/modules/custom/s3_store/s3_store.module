@@ -41,7 +41,7 @@ function s3_store_cron() {
  */
 function _send_file_to_s3($file, $dummy = FALSE) {
   
-  if($dummy) {
+  if ($dummy) {
     return;
   }
   
