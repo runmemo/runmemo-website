@@ -29,7 +29,7 @@ jQuery(document).ready(function() {
 
 				$("#prev_img").html('<img src="' + initial_preview + '" />');
 
-				var initial_cost = $('#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost').text();
+				var initial_cost = get_currency_sign() + $('#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost').text();
 
 				$("span#photo_cost label").text(initial_cost);
 
@@ -281,7 +281,6 @@ jQuery(document).ready(function() {
 					//	console.debug(msg);
 					}
 				});
-
 			}
 			
 			function get_currency_sign() {
