@@ -309,7 +309,8 @@ function photo_search_mail($key, &$message, $params) {
       $message['body'][] = t('It looks like we found your photo from @event.', array('@event' => $event_title)
       , $options);
       
-      $search_url = 'search-results/' . $params['nid'] . '/' . $params['number'];
+      // $search_url = url('search-result/' . $params['nid'] . '/' . $params['number'], array('absolute' => TRUE));
+      $search_url = $base_url . '/search-result/' . $params['nid'] . '/' . $params['number'];
       $message['body'][] = t('Please follow the link to see photo(s) with bib @number:', array('@number' => $params['number'])) . ' ' . $search_url;
        
       break;
