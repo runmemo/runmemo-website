@@ -27,7 +27,7 @@ class AWSSDKUnitTest extends DrupalUnitTestCase {
     // Ensure the requirements check out properly and configuration settings
     // were success loaded since awssdk_requirements() checks for them.
     require_once 'includes/install.inc';
-    $requirements = awssdk_requirements();
+    $requirements = awssdk_requirements('runtime');
     if (!$this->assertEqual($requirements['awssdk']['severity'], REQUIREMENT_OK, 'AWS SDK library loaded and compatible.')) {
       return;
     }
