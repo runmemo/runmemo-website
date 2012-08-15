@@ -158,16 +158,22 @@ ul.links li, ul.inline li {
 	background:none;
 	color:#000;
 	}
-	
+
+ul.user-menu li.sfHover ul {
+	top:25px;
+	width:100px;
+}
+
 ul.user-menu li.sf-depth-1 a {
 	font-size:14px;
 	margin:0px;
 	}
 ul.user-menu li {
 	border:none;
-	width:auto;
-	}
-
+}
+ul.user-menu li.sf-depth-2 ul li {
+	width:100px;
+}
 ul.user-menu li a,
 ul.user-menu li a:hover, 
 ul.user-menu li a:visited,

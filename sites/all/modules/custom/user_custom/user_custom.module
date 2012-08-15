@@ -146,13 +146,13 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
  */  
 function user_custom_form_user_register_form_alter(&$form, $form_state) {
   
-  drupal_set_title('Register new photographer account');
+  drupal_set_title('New photographer account');
   $form['#submit'][''] = 'user_set_photographer_role'; 
    
 }
 
 function user_custom_form_user_profile_form_alter(&$form, $form_state) {
-   drupal_set_title('Edit my account details');
+   drupal_set_title('Edit account details');
   
 }
 
