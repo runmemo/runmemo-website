@@ -6,7 +6,10 @@ module_load_include('inc', 'sport_event', 'sport_event');
  * Implements hook_views_api().
  */
 function photo_search_views_api() {
-  return array("version" => "3.0");
+  return array(
+  		'api' => 3.0,
+  		'path' => drupal_get_path('module', 'photo_search') . '/views',
+        );
 }
 
 /**
