@@ -29,10 +29,29 @@
 	 background: url(images/checkbox.png) no-repeat; 
 	 display: block; 
 	 cursor: pointer; 
-	 line-height: 20px; 
-	 padding-bottom: 26px; 
 	 text-shadow: 0 -1px 0 rgba(0,0,0,.2);
-	 }
+	 width: 28px;
+    height:28px;
+}
+	 
+.page-search-result .node_check {
+	float: right;
+    position: relative;
+    right: 0;
+    top: 25px;
+    z-index: 1;
+}
+
+.views-field-sell-price {
+	float:left;
+	display:block;
+	height:40px; 
+	width:40px;
+	position:relative; 
+	z-index:1; 
+	top:30px;
+}
+
 .page-search-result label.c_on { background: url(images/checkbox-hover.png) no-repeat; }
 
 .page-search-result .label_check input,
@@ -230,7 +249,9 @@ form#select-event-runner-get-photos {
 	text-decoration:underline;
 }
 
-
+.page-search-result .left-corner {
+   min-height: 920px;
+}
 
 
 .page-search-result .region-content .view-content table{
@@ -240,9 +261,8 @@ form#select-event-runner-get-photos {
 .page-search-result .region-content .views-field-uc-product-image
 {
    text-align:center;
-  height:100px;
-  position: relative;
-  top:-18px;
+    
+   position: relative;
 }
 
 .page-search-result .region-content .content table tr td  {
@@ -250,6 +270,13 @@ form#select-event-runner-get-photos {
 	text-align:center;
  	border: 0 none;
 }
+
+.page-search-result .region-content .content table tr td {
+	padding-right:10px;
+	padding-left:10px;
+}
+
+
 
 .page-search-result #photo-request-form {
   border:1px solid #cccccc;

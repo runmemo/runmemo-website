@@ -140,6 +140,31 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['sell_price']['precision'] = '0';
   $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
   $handler->display->display_options['fields']['sell_price']['format'] = 'numeric';
+  
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
+  $handler->display->display_options['fields']['check_box']['table'] = 'node';
+  $handler->display->display_options['fields']['check_box']['field'] = 'nid';
+  $handler->display->display_options['fields']['check_box']['label'] = '';
+  $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['text'] = '<span class="node_check" ></span><span class="node_check_id" style="display:none;">[check_box]</span>';
+  $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['check_box']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['check_box']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['check_box']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['check_box']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['check_box']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['check_box']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['check_box']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['check_box']['link_to_node'] = 0;
 
   /* Field: Content: Image */
   $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
@@ -171,31 +196,6 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['uc_product_image']['delta_reversed'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['delta_first_last'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['field_api_classes'] = 0;
-
-  /* Field: Content: Nid */
-  $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
-  $handler->display->display_options['fields']['check_box']['table'] = 'node';
-  $handler->display->display_options['fields']['check_box']['field'] = 'nid';
-  $handler->display->display_options['fields']['check_box']['label'] = '';
-  $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['text'] = '<span class="node_check" ></span><span class="node_check_id" style="display:none;">[check_box]</span>';
-  $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['check_box']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['check_box']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['check_box']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['check_box']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['check_box']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['check_box']['link_to_node'] = 0;
 
   /* Field: User: First Name */
 
