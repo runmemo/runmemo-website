@@ -277,7 +277,7 @@ function registration_button_js($form, $form_state) {
   // replace button with disabled version
   $markup = '<div id="registration-button" class="button disabled">I will be there!</div>';
   // post registration message
-  return $markup . '<div id="complete-registration" class="nice-message">' . t('We are looking forward to see your photos!') . '</div>';
+  return $markup . '<div id="complete-registration" class="nice-message">' . t('Awesome, we are looking forward to see your photos!') . '</div>';
 
 }
 
