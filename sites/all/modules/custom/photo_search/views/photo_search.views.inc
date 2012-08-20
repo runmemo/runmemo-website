@@ -79,6 +79,23 @@ function photo_search_views_data() {
     ),
   );
   
+  
+  // Performed On.
+  $data['photo_requests']['performed'] = array(
+    'title' => t('Performed On'), 
+    'help' => t('Timestamp of response.'), 
+    'field' => array(
+      'handler' => 'views_handler_field_date', 
+      'click sortable' => TRUE,
+    ), 
+    'sort' => array(
+      'handler' => 'views_handler_sort_date',
+    ), 
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
+  );
+  
   // Event nid
   $data['photo_requests']['eventid'] = array(
     'title' => t('Event Foreign Key'), 

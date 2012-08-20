@@ -382,6 +382,29 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['created']['empty_zero'] = 0;
   $handler->display->display_options['fields']['created']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['created']['date_format'] = 'short';
+  /* Field: Photo Requests: Performed On */
+  $handler->display->display_options['fields']['performed']['id'] = 'performed';
+  $handler->display->display_options['fields']['performed']['table'] = 'photo_requests';
+  $handler->display->display_options['fields']['performed']['field'] = 'performed';
+  $handler->display->display_options['fields']['performed']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['performed']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['performed']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['performed']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['performed']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['performed']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['performed']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['performed']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['performed']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['performed']['date_format'] = 'short';
   /* Field: Photo Requests: Number */
   $handler->display->display_options['fields']['number']['id'] = 'number';
   $handler->display->display_options['fields']['number']['table'] = 'photo_requests';
