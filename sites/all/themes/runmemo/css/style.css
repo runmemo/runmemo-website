@@ -2617,3 +2617,25 @@ border-bottom: 1px solid #e9e9e9!important;
 	width:100%;
 	min-height:500px;
 	}
+	
+/* Social Login */
+.block-rpx-widgets {
+	float:right;
+}
+.block-rpx-widgets br {
+	display:none;	
+}
+
+.block-rpx-widgets li a:first-child {
+	display:none;
+}
+
+.block-rpx-widgets .item-list ul li {
+	list-style-image:none;
+	list-style-type:none;
+	margin-top:0px;
+	}
+.block-rpx-widgets .item-list ul {
+	margin-top:0px;
+	margin-left:0.5em;
+	}
