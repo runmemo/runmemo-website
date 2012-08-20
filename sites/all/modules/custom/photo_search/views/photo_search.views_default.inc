@@ -8,7 +8,7 @@
  */
 function photo_search_views_default_views() {
 
-  $export = array();
+  $views = array();
 
   
 /**
@@ -285,7 +285,7 @@ echo $cart_items;}?>" />
 
   $handler->display->display_options['path'] = 'search-result/%/%';
 
-  $export[$view->name] = $view;
+  $views[$view->name] = $view;
   
 /**
  * =============================================================================
@@ -492,5 +492,5 @@ echo $cart_items;}?>" />
  * =============================================================================
  */
 
-  return $export;
+  return $views;
 }
