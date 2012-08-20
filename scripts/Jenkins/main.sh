@@ -16,6 +16,7 @@
 # * #Exporting Instance ID and certificate
 # * export INSTANCE=i-0f8e1f47
 # * export CERT=/root/web_staging.pem
+# * export SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no"
 # * #Exporting EC2 settings
 # * export EC2_KEYPAIR=TestMicroInstances 
 # * export EC2_URL=https://ec2.eu-west-1.amazonaws.com
@@ -38,8 +39,7 @@ fi
 echo "main.sh"
 echo "instance=${INSTANCE}"
 echo "certificate=${CERT}"
-
-SSH_OPTIONS="-o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no"
+echo "SSH_OPTIONS=${SSH_OPTIONS}"
 
 #get ip of test instance
 ip=$(ec2-describe-instances ${INSTANCE} --filter "instance-state-code=16" | grep ^INSTANCE | cut -f 18)
