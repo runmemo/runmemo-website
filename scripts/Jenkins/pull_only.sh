@@ -1,15 +1,14 @@
 #!/bin/sh -x
 
 #/**
-# * @file main.sh
+# * @file pull_only.sh
 # * @author  Leonid <leonid@runmemo.com>
 # * @version 1.0
 # *
 # * @section DESCRIPTION
 # *
 # * This is the main script should be executed by Jenkins when a code change is detected.  
-# * The script pulls git repo on test instance, executes test_run.sh on test instance  
-# * and downloads resuls. 
+# * The script pulls git repo on test instance.
 # * 
 # * WARNING Test instance must be running
 # * WARNING Following parametrs must be set by Jenkins:
@@ -53,21 +52,5 @@ echo "ip=${ip}"
 ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "cd /var/www/html/runmemo/runmemo-website/; git pull"
 if [ $? -ne 0 ]; then
 	echo "Failed to pull repo on test instance"
-	exit 1
-fi
-
-#run tests
-ssh ${SSH_OPTIONS} -i ${CERT} root@${ip} "/bin/sh -x /var/www/html/runmemo/runmemo-website/scripts/Jenkins/tests_run.sh"
-if [ $? -ne 0 ]; then
-	echo "Failed to run tests"
-	exit 1
-fi
-
-#get results
-#Create directory for test results
-mkdir -p ${WORKSPACE}/${BUILD_ID}
-scp ${SSH_OPTIONS} -i ${CERT} root@${ip}:"/tmp/tests/*"  ${WORKSPACE}/${BUILD_ID}
-if [ $? -ne 0 ]; then
-	echo "Failed to get results"
 	exit 1
 fi
