@@ -311,7 +311,7 @@ function photo_search_mail($key, &$message, $params) {
       $message['subject'] = t('Check you photos at @site-name', array('@site-name' => variable_get('site_name', 'Runmemo.com')), $options);
       $message['body'][] = t('It looks like we found your photo from @event.', array('@event' => $event_title)
       , $options);
-      
+      global $base_url;
       // $search_url = url('search-result/' . $params['nid'] . '/' . $params['number'], array('absolute' => TRUE));
       $search_url = $base_url . '/search-result/' . $params['nid'] . '/' . $params['number'];
       $message['body'][] = t('Please follow the link to see photo(s) with bib @number:', array('@number' => $params['number'])) . ' ' . $search_url;
