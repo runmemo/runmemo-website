@@ -44,9 +44,6 @@ ul.sf-menu li a:hover  {
 }
 
 ul.sf-menu li.sf-depth-1 {
-	
-
-	
 	}
 
 ul.sf-menu li.sf-depth-1 a{ 
@@ -68,8 +65,7 @@ ul.sf-menu li.sf-depth-2 a{
 
 .content ul.sf-menu li ul {
     background:#fbfbfb;/*url(../images/menu-arrow.png) no-repeat 20px -5px*/
-	
-	width:162px!important;
+
    margin:7px 0 0 0!important;
    padding:0px!important;
    border:1px solid #c4c4c4;
@@ -84,7 +80,7 @@ ul.sf-menu li.sf-depth-2 a{
   white-space: nowrap!important;
 }
 .content ul.sf-menu li ul li a:hover{
-border-radius:0px;
+	border-radius:0px;
    	-moz-border-radius:0px;
     -webkit-border-radius:0px;
 	background:none!important;
@@ -94,15 +90,9 @@ border-radius:0px;
    width:14px;
    height:8px;
    position:relative;
-   /*newly edited*/
-   top:1px;
-   left:15px;
-   display: block;
-   position:relative;
-   z-index:999;
 }
 .content ul.sf-menu li:hover li#menu-450-1 div#main-arrow {
-	display: none;
+	/*display: none;*/
 }
 .sf-item-3 {
    position:relative;
@@ -146,3 +136,84 @@ ul.links li, ul.inline li {
 {
     z-index:1;
 }
+
+/* USER MENU */
+#block-superfish-3 {
+	float:right;
+	}
+.user-menu {
+	float:right;
+}
+.user-menu.sf-menu.sf-style-default a{
+	border:none;
+	
+	}
+	
+.user-menu.sf-menu.sf-style-default li li {
+	background:#FFF;
+	}
+	
+.user-menu.sf-menu.sf-style-default li, 
+.user-menu.sf-menu.sf-style-default.sf-navbar {
+	background:none;
+	color:#000;
+	}
+
+ul.user-menu li.sfHover ul {
+	top:25px;
+	width:100px;
+}
+
+ul.user-menu li.sf-depth-1 a {
+	font-size:14px;
+	margin:0px;
+	}
+ul.user-menu li {
+	border:none;
+}
+ul.user-menu li.sf-depth-2 ul li {
+	width:100px;
+}
+ul.user-menu li a,
+ul.user-menu li a:hover, 
+ul.user-menu li a:visited,
+ul.user-menu li a:focus,
+ul.user-menu li a:active,
+ul.user-menu.sf-menu.sf-style-default li:hover {
+	background:none;
+	color:#000;
+}
+
+
+.user-menu .sf-depth-1 {
+	font-weight: bold;
+	text-decoration: underline;}
+.user-menu .sf-depth-2 { 
+	font-weight:normal;
+	text-decoration: none;
+	}
+	
+#block-menu-menu-anonymous-menu {
+	float:right;
+	
+}
+#block-menu-menu-anonymous-menu a {
+	color:black;
+}
+
+#block-menu-menu-anonymous-menu * {
+	list-style:none;	
+}
+
+#block-menu-menu-anonymous-menu li a {
+	text-decoration:underline;
+}
+#block-menu-menu-anonymous-menu li.active-trail a {
+	text-decoration:none;
+}
+
+#block-menu-menu-anonymous-menu ul li {
+	float:right;
+	list-style-image:none;
+}
+

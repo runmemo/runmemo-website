@@ -1,6 +1,115 @@
 <?php
 
 /**
+ * Implements hook_menu_default_menu_custom().
+ */
+function user_custom_menu_default_menu_custom() {
+  $menus = array();
+
+  // Exported menu: menu-anonymous-menu.
+  $menus['anonymous-menu'] = array(
+    'menu_name' => 'anonymous-menu',
+    'title' => 'Anonymous Menu',
+    'description' => '',
+  );
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Anonymous Menu');
+ 
+  return $menus;
+}
+
+/**
+ * Implements hook_menu_default_menu_links().
+ */
+function anonymous_menu_menu_default_menu_links() {
+  $menu_links = array();
+
+  // Exported menu link: menu-anonymous-menu:user
+  $menu_links['anonymous-menu:user'] = array(
+    'menu_name' => 'menu-anonymous-menu',
+    'link_path' => 'user',
+    'router_path' => 'user',
+    'link_title' => 'Login',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+      'alter' => TRUE,
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: menu-anonymous-menu:user/register
+  $menu_links['anonymous-menu:user/register'] = array(
+    'menu_name' => 'menu-anonymous-menu',
+    'link_path' => 'user/register',
+    'router_path' => 'user/register',
+    'link_title' => 'Register',
+    'options' => array(
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'menu',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '0',
+  );
+  // Exported menu link: navigation:photographer/upload
+  $menu_links['navigation:photographer/upload'] = array(
+    'menu_name' => 'navigation',
+    'link_path' => 'photographer/upload',
+    'router_path' => 'photographer/upload',
+    'link_title' => 'Upload Photos',
+    'options' => array(
+      'attributes' => array(
+        'title' => 'View the objects in a bucket on your Amazon S3 account.',
+      ),
+    ),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '1',
+  );
+  
+  // Exported menu link: user-menu:user/logout
+  $menu_links['user-menu:user/logout'] = array(
+    'menu_name' => 'user-menu',
+    'link_path' => 'user/logout',
+    'router_path' => 'user/logout',
+    'link_title' => 'Logout',
+    'options' => array(
+      'alter' => TRUE,
+      'attributes' => array(
+        'title' => '',
+      ),
+    ),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+  );
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('Login');
+  t('Logout');
+  t('Register');
+  t('Upload Photos');
+ 
+  return $menu_links;
+}
+
+/**
  * Form alter function
  * by using this form_alter function we can alter the form without editing core module
  * @param $form,$form_state,$form_id
@@ -36,10 +145,14 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
  * implements hook_form_alter for user_register_form 
  */  
 function user_custom_form_user_register_form_alter(&$form, $form_state) {
-   $form['#submit'][''] = 'user_set_photographer_role'; 
+  
+  drupal_set_title('New photographer account');
+  $form['#submit'][''] = 'user_set_photographer_role'; 
+   
 }
 
 function user_custom_form_user_profile_form_alter(&$form, $form_state) {
+   drupal_set_title('Edit account details');
   
 }
 

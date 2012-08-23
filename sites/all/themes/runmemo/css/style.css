@@ -12,7 +12,7 @@ background:none !important;
 }*/
 a {
 	outline:none;
-	text-decoration:none!important;
+	text-decoration:none;
 }
 img {
 	border:0 none;
@@ -149,6 +149,14 @@ it
 .page-title {
 	display:none
 }
+.page-user-edit .page-title,
+.page-user-register .page-title {
+	display:inline;
+	width:500px;
+	float:left;
+	
+}
+
 
 .facebook-logo {
 	background:url('../images/facebook-login.png') no-repeat;
@@ -599,7 +607,6 @@ display:none;
 
 .page-user .form-item {
 	clear:both;
-	margin-bottom:10px;
 	display:block;
 	height:45px;
 }
@@ -610,7 +617,14 @@ display:none;
 	 width: 300px;
 	 clear:right;
 	}
-	
+
+#modal-content label {
+	display:block;
+}
+#modal-content .description {
+	display:none;
+	}
+
 .page-user .form-text {
 	float:right;
 	width:300px;
@@ -722,6 +736,7 @@ display:none;
 #edit-actions {
 	float:right;
 	width:152px;
+	margin-top:0px;
 	}
 .one-sidebar .content span table{
 display:none !important;
@@ -784,16 +799,21 @@ color:#4ab0f8 !important;
 
 
 #user-register-form .confirm-parent, 
-#user-register-form .password-parent {
+#user-register-form .password-parent,
+.page-user .confirm-parent,
+.page-user .password-parent {
 	width:auto;
 	}
+
+.password-suggestions {
+	display:none!important;
+}
 
 .content .login #login-form{
 margin:0 auto !important;
 height:auto !important;
 float:none !important;
 }
-
 
 .page-user #user-login #edit-actions
 {
@@ -1148,10 +1168,9 @@ margin-top:0 !important;
 	padding:7px;
 }
 .toolbar-drawer #edit-actions{
-float:left;
-
-padding:0;
-margin-left:25px;
+	float:left;
+	padding:0;
+	margin-left:25px;
 } 
 .toolbar-drawer #edit-actions #edit-submit{
 	float:left;
@@ -1290,9 +1309,10 @@ text-align:center;
 }
 #user-profile-form .form-type-checkbox .description
 {
-    width: 328px;
+    width: 300px;
     float:right;
 	display:block;
+	margin-left:0px;
 }
 #user-profile-form #paypal_icon
 {
@@ -1449,23 +1469,7 @@ display:none!important;
 position:relative;
 
 }
-.page-search-result .region-content .content table tr td .views-field-check-box .field-content .node_check{
-	float: right;
-    margin-top: -127px;
-    position: relative;
-    right: 0;
-    top: 0;
-    width: 28px;
-    z-index: 1;
-}
-.page-search-result .region-content .content table tr td,.page-search-result .region-content .content table tr th{
-width:170px;
-height:158px;
-padding:0px 10px !important; 
-}
-.page-search-result .region-content .content table tr td{
-text-align:justify;
-}
+
 
 
 /*-----UI_21-02-12-------*/
@@ -1613,11 +1617,7 @@ text-align:justify;
 	font-weight: normal;
 	font-style: normal;
 }
-.page-search-result .left-corner {
-   min-height: 920px;
-   border-bottom: 10px solid #E8E8E8;
 
-}
 
 div.form-item-url-hidden ,
 .page-search-result .left-corner #tabs-wrapper h1{
@@ -1647,23 +1647,17 @@ ul#edit-file_filelist{
 }
 
 /* 13.03.2012 */
-.page-search-result .node_cost,.page-cart .node_cost {
-  background: url("../images/price-bg.png") no-repeat scroll left center transparent;
+.node_cost {
+  border-radius:20px;
   color:#fff;
+  background-color:green;
   font-size: 12px;
-  width: 60px;
-  height: 59px;
-  line-height: 61px;
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
   text-align: center;
 }
-.views-field-sell-price {
-  height:45px; 
-  width:44px; 
-  position:relative; 
-  top:4px; 
-  z-index:1; 
- 
-}
+
 .page-cart #prev_img_cart {
   text-align: right;
   width: 464px;
@@ -1796,8 +1790,6 @@ background: url("../images/cart-full.png") no-repeat scroll left center transpar
     height: 50px;
     top : 14px;
     z-index: 1;
-
-  
 }
 
 
@@ -2407,16 +2399,20 @@ border-bottom: 1px solid #e9e9e9!important;
 .form-text {	
     border: 1px solid #DEE4E7;
    	border-radius: 3px 3px 3px 3px;
-    color: #1A253C;
+    color: #6A758C;
     font-family: Arial,Helvetica,sans-serif;
-    font-size: 18px;
+    font-size: 13px;
     height: 40px;
-    text-indent: 7px;
+    text-indent: 18px;
     width:400px;
     padding:0px;
     vertical-align: middle;
 	}
-	
+
+.form-text:focus {
+	color:black;
+	}
+
 #runner_number {
     width: 220px;
 }
@@ -2620,4 +2616,26 @@ border-bottom: 1px solid #e9e9e9!important;
 .page-photographer .region-content {
 	width:100%;
 	min-height:500px;
+	}
+	
+/* Social Login */
+.block-rpx-widgets {
+	float:right;
+}
+.block-rpx-widgets br {
+	display:none;	
+}
+
+.block-rpx-widgets li a:first-child {
+	display:none;
+}
+
+.block-rpx-widgets .item-list ul li {
+	list-style-image:none;
+	list-style-type:none;
+	margin-top:0px;
+	}
+.block-rpx-widgets .item-list ul {
+	margin-top:0px;
+	margin-left:0.5em;
 	}

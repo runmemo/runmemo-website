@@ -109,22 +109,6 @@
 		
 }
 
-#block-sport-event-registration-button {
-	padding:1px 10px 10px 10px;
-	}
-
-#registration-button {
-	margin-top:10px;
-}
-#registration-button input {
-	background-color: #BBCCEE;	/*#FF6600; */
-	color:			rgb(26,37,60);	/*#FFFFFF;*/
-	float:right;
-	margin-top:0.5em;
-	margin-left:0px;
-	line-height:20px;
-}
-
 .disabled {
 	background-color: #BBCCEE;	/*#FF6600; */
 	color:			rgb(26,37,60);	/*#FFFFFF;*/	

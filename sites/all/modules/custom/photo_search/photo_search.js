@@ -497,11 +497,11 @@ jQuery(document).ready(function() {
 								}
 
 								$(this).parents("td").find("span.node_cost")
-										.attr('style', 'display:block !important;');
+										.attr('style', 'display:block!important;');
 							}).mouseout(
 							function() {
 								$(this).parents("td").find("span.node_cost")
-										.attr('style', 'display:none !important;');
+										.attr('style', 'display:none!important;');
 							});
 
 			/**
