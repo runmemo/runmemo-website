@@ -83,10 +83,16 @@
  * @see template_process()
  */
 ?>
-  
-<div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
 
-  <h2> <?php print "Photo profile"; ?> </h2>
+<div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
+  <div id="prev-next-container">
+    <div id="prev-product">
+      <?php print get_product_link($node->nid, 'PREV'); ?>
+    </div>
+    <div id="next-product">
+      <?php print get_product_link($node->nid, 'NEXT'); ?>
+    </div>
+  </div>
 
   <?php
       // We hide the comments and links now so that we can render them later.

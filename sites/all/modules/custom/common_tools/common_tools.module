@@ -66,3 +66,100 @@ function get_event_name_by_product($nid) {
   return $event->title;
 
 };
+
+/**
+ * Gets next product node ID(for the same user on the same event)
+ * @param integer $nid
+ * @return integer
+ */
+function get_next_product($nid) {
+  if (!isset($nid)) {
+    return FALSE;
+  }
+
+  $product = node_load($nid);
+  $event_filed = field_get_items('node', $product, 'field_event_reference');
+  $eventid = $event_filed[0]['nid'];
+  if (!isset($eventid)) {
+    return FALSE;
+  }   
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'product')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('nid', $nid, '>')
+        ->propertyCondition('uid', $product->uid)
+        ->propertyOrderBy('nid', 'ASC')          
+        ->fieldCondition('field_event_reference', 'nid', $eventid, '=')
+        ->range(0, 1);
+
+  $results = $query->execute(); 
+  
+  if (isset($results['node'])) {
+    $nodeid = array_keys($results['node']);
+    return $nodeid[0];
+  }
+  else {
+    return FALSE;
+  }
+};
+
+/**
+ * Gets previos product node ID(for the same user on the same event)
+ * @param integer $nid
+ * @return integer
+ */
+function get_prev_product($nid) {
+  if (!isset($nid)) {
+    return FALSE;
+  }
+
+  $product = node_load($nid);
+  $event_filed = field_get_items('node', $product, 'field_event_reference');
+  $eventid = $event_filed[0]['nid'];
+  if (!isset($eventid)) {
+    return FALSE;
+  }   
+
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'product')
+        ->propertyCondition('status', 1)
+        ->propertyCondition('nid', $nid, '<')
+        ->propertyCondition('uid', $product->uid)
+        ->propertyOrderBy('nid', 'DESC')          
+        ->fieldCondition('field_event_reference', 'nid', $eventid, '=')
+        ->range(0, 1);
+
+  $results = $query->execute(); 
+  
+  if (isset($results['node'])) {
+    $nodeid = array_keys($results['node']);
+    return $nodeid[0];
+  }
+  else {
+    return FALSE;
+  }
+};
+
+function get_product_link($nid, $switch) {
+  switch ($switch) {
+    case 'PREV':
+      $productid = get_prev_product($nid);
+      if (!$productid) {
+        return;
+      }
+      return '<a href="/node/' . (string)$productid . '" title="Previous"><< prev</a>';
+      break;
+    case 'NEXT':
+      $productid = get_next_product($nid);
+      if (!$productid) {
+        return;
+      }
+      return '<a href="/node/' . (string)$productid . '" title="Next">next >></a>';
+      break;
+    default :
+      
+  }
+}
