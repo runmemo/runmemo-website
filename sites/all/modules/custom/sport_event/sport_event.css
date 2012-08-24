@@ -35,8 +35,14 @@
 	}
 
 .node-event .field {
-		clear:left;
+		float:left;
+		margin-right:20px;
 }
+
+.node-event .field-name-body {
+	clear:both;
+	width:100%;
+	}
 
 .geofieldMap {
 	margin-top:20px;
