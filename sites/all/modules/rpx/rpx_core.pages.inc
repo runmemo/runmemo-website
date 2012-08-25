@@ -17,11 +17,9 @@ function rpx_token_handler() {
 
   // are we completing an Engage sign-in transaction?
   $token = isset($_REQUEST['token']) ? $_REQUEST['token'] : '';
-  $add_to_account = isset($_REQUEST['add_to_account']) ? TRUE : FALSE;
-
+  $add_to_account = isset($_REQUEST['add_to_account']) ? TRUE : FALSE; 
   if ($token) {
     $rpx_data = RPX::auth_info($token, variable_get('rpx_apikey', ''), variable_get('rpx_extended_authinfo', FALSE));
-
     if (!$rpx_data) {
       drupal_goto();
     }
@@ -141,6 +139,7 @@ function rpx_token_handler() {
           $account->login ||
           !empty($account->data['rpx_data']['profile']['verifiedEmail']) &&
           strtolower($account->data['rpx_data']['profile']['verifiedEmail']) == strtolower($account->mail)) {
+        
         // IF settings do not require email verification
         // OR
         // it's not the first login for the user (which means the email has
@@ -179,9 +178,12 @@ function rpx_token_handler() {
       // Check that users are allowed to register on their own.
       if (variable_get('user_register', 1)) {
         if (!variable_get('rpx_force_registration_form', FALSE)) {
+           
           $form_state['values'] = array();
           $form_state['values']['op'] = t('Create new account');
+
           drupal_form_submit('user_register_form', $form_state);
+          
           // See if the user was successfully registered.
           if (!empty($form_state['user'])) {
             // Let other modules (e.g. rpx_rules) know that a linked account has been

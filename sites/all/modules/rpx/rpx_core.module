@@ -257,13 +257,16 @@ function rpx_core_form_user_register_form_alter(&$form, &$form_state) {
  * Custom submit handler for the standard user_register form.
  */
 function rpx_user_register_submit($form, &$form_state) {
+  
   form_state_values_clean($form_state);
 
   $pass = user_password();
 
   $form_state['values']['pass'] = $pass;
   $form_state['values']['init'] = $form_state['values']['mail'];
-
+  // @custom: activate users who come from social world.
+  $form_state['values']['status'] = TRUE;
+  
   $account = $form['#user'];
   $category = $form['#user_category'];
 
@@ -273,12 +276,13 @@ function rpx_user_register_submit($form, &$form_state) {
 
   $edit = array_intersect_key((array) $account, $form_state['values']);
   $account = user_save($account_unchanged, $edit, $category);
-
+ 
   // Add the Engage user profile data to the account.
   $rpx_data = rpx_core_get_rpx_session();
   $edit['data']['rpx_data']['profile'] = $rpx_data['profile'];
+  
   $account = user_save($account, $edit);
-
+  
   // Terminate if an error occurred during user_save().
   if (!$account) {
     drupal_set_message(t("Error saving user account."), 'error');
@@ -301,7 +305,7 @@ function rpx_user_register_submit($form, &$form_state) {
   if (module_exists('profile2') && isset($form_state['rpx_flag_call_profile2_submit_handler'])) {
     profile2_form_submit_handler($form_copy, $form_state_copy);
   }
-
+ print_r('getting user data to the account.');
   _rpx_import_user_data($account);
   rpx_core_delete_rpx_session();
 
@@ -309,16 +313,19 @@ function rpx_user_register_submit($form, &$form_state) {
   $account->password = $pass;
 
   // If no email verification required, log the user in immediately.
-  if ((!variable_get('user_email_verification', TRUE) ||
+ /* if ((!variable_get('user_email_verification', TRUE) ||
        variable_get('rpx_bypass_email_verification', FALSE) ||
        !empty($rpx_data['profile']['verifiedEmail']) &&
        strtolower($account->mail) == strtolower($rpx_data['profile']['verifiedEmail'])) &&
-      $account->status) {
-
-    _user_mail_notify('register_no_approval_required', $account);
+      $account->status)*/
+  if (!empty($rpx_data['profile']['verifiedEmail'])  &&
+      $account->status &&
+      strtolower($account->mail) == strtolower($rpx_data['profile']['verifiedEmail'])) { // @custom: durty hack for rpx core to get users registering via RPX straight to the app
+    //_user_mail_notify('register_no_approval_required', $account);
     $form_state['uid'] = $account->uid;
     user_login_submit(array(), $form_state);
     drupal_set_message(t('Registration successful. You are now logged in.'));
+   
   }
   elseif ($account->status) {
     // Require email confirmation
