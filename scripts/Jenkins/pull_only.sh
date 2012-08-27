@@ -35,7 +35,7 @@ if [ -z ${CERT} ]; then
 	exit 1
 fi
 
-echo "main.sh"
+echo "pull_only.sh"
 echo "instance=${INSTANCE}"
 echo "certificate=${CERT}"
 echo "SSH_OPTIONS=${SSH_OPTIONS}"
