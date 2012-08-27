@@ -64,22 +64,22 @@
 	}
 
 /* Blocks */
-.node-type-event .region .title {
+/*.node-type-event .region .title {
 	background-color: rgb(26,37,60);
 	color: #FFF;
 	font-weight:bold;
 	height:20px;
 	padding-top:10px;
 	padding-bottom:10px;
-	}
+	}*/
 
 /* Block Registered Photographers */
-.view-event-registered-photographers {
+/*.view-event-registered-photographers {
 	border-top: 		1px solid rgba(100,100,150,0.8);
 	border-bottom: 		1px solid rgba(0,0,0,0.1);
 	border-left: 		1px solid rgba(100,100,150,0.8);
 	border-right: 		1px solid rgba(0,0,0,0.1);
-	}
+	}*/
 .view-event-registered-photographers .views-row {
 	padding-top: 5px;
 	padding-bottom:5px;
@@ -91,8 +91,9 @@
 	padding-right:10px;
 }
 
-.view-event-registered-photographers #user-register {
-  	padding: 5px;
+.node-type-event .region-sidebar-second #user-register {
+  	float: right;
+        padding: 5px;
         margin-left: auto;
         margin-right: auto;
         
@@ -190,4 +191,37 @@ border: 0 none!important;
 cursor: pointer!important;
 height: 40px!important;
 width: 108px!important;
+}
+
+.node-type-event .region-sidebar-second #block-sport-event-search-by-number {
+  height: 150px;
+}
+
+.node-type-event .region-sidebar-second h2 {
+  color: #94BB17;
+  padding: 0px;
+  font-size: 26px;
+  font-weight: normal;
+  font-family: 'Walkway Bold',sans-serif;
+}
+
+.node-type-event .region-sidebar-second h3 {
+  font-size: 20px;
+  color: #4AB0F8;
+  font-family: 'Walkway Bold',sans-serif;
+}
+
+.node-type-event .region-sidebar-second #field-number {
+  width: 120px;
+  padding-left: 10px;
+  margin: 1px;
+}
+
+.node-type-event .region-sidebar-second #edit-submit {
+  margin: 0px;
+}
+
+.node-type-event .region-sidebar-second .username, p {
+  font-style: italic;
+  color: grey;
 }

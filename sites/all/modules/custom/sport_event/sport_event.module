@@ -30,6 +30,8 @@ function sport_event_block_info() {
   $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'), );
   $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
+  $blocks['search_by_number'] = array('info' => t('Search photos from an event'), );
+  $blocks['future_events'] = array('info' => t('Events that will be happening in near future'), );
   return $blocks;
 }
 
@@ -55,6 +57,12 @@ function sport_event_block_view($delta = '') {
     case 'registration_button':
       return registration_button_block();
       break;
+    case 'search_by_number':
+      return search_by_number_block();
+      break;
+    case 'future_events':
+      return future_events_block();
+      break;       
   }
 
 }
@@ -210,6 +218,30 @@ function registration_button_block() {
 
 }
 
+function search_by_number_block() {
+
+
+  $block = array();
+  $block['subject'] = 'Search photos from an event';
+  $block['content'][] = drupal_get_form('search_by_number_form');
+
+  return $block;
+
+}
+
+//function future_events_block() {
+//
+//
+//  $block = array();
+//  $block['subject'] = 'Event Registration Button';
+//  // add form to search products from same event
+//
+//  $block['content'][] = drupal_get_form('registration_button_form');
+//
+//  return $block;
+//
+//}
+
 /**
  *
  * Ajax button implementation for photographer registration at an event
@@ -279,6 +311,63 @@ function registration_button_js($form, $form_state) {
   // post registration message
   return $markup . '<div id="complete-registration" class="nice-message">' . t('Awesome, we are looking forward to see your photos!') . '</div>';
 
+}
+
+/**
+ * Search photos from an event form implementation
+ * @param array $form
+ * @param array $form_state
+ */
+function search_by_number_form($form, &$form_state) {
+  $nid = -1;
+  $node = menu_get_object();
+  if(isset($node)) {
+    $nid = $node->nid;
+  }
+  else {
+    watchdog('Callback', 'search_by_number_form is visible in a wrong place.', array($form), WATCHDOG_ERROR);    
+    return;
+  }
+  
+  $form['markup1'] = array(
+    '#markup' => "<h2>I've been there</h2>",
+  );
+  $form['markup2'] = array(
+    '#markup' => '<h3>Find my photos by bib number</h3>',
+  );
+  $form['number'] = array(
+      '#id' => 'field-number',
+      '#type' => 'textfield',
+      '#size' => 20,
+  );
+  $form['submit'] = array( // search button
+      '#type' => 'submit', 
+      '#value' => t('Search'), 
+      '#prefix' => '<div id="search-by-number-button">',
+      '#suffix' => '</div>',
+      '#submit' => array('search_by_number_form_submit'), 
+  );
+
+  // cache nid in the form as it will not be available in the callback overwise
+  $form['event_id'] = array(
+    '#type' => 'hidden',
+    '#value' =>  $nid,   
+  );
+  return $form;
+}
+
+
+function search_by_number_form_submit($form, &$form_state) {
+  // get event id and number
+  $eid = $form['event_id']['#value'];
+  $number = $form['number']['#value'];
+  // build path to the search page
+  $path = 'search-result/' . $eid . '/' . $number;
+  $form_state['redirect'] = array( 
+      $path,    // http_path
+      array(),  // $options
+      302,      // $http_response_code
+  );
 }
 
 /**
