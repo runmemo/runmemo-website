@@ -225,3 +225,12 @@ width: 108px!important;
   font-style: italic;
   color: grey;
 }
+
+.node-type-event #block-views-future-events-future-events {
+  color: #94BB17;
+  padding: 0px;
+  font-size: 26px;
+  font-weight: normal;
+  font-family: 'Walkway Bold',sans-serif;
+
+}
