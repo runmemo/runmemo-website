@@ -103,7 +103,7 @@
 .node-type-event #center form {
   margin-bottom: 0;
 }
-#block-sport-event-registration-button {
+#block-sport-event-registration-button #registration-button{
   height: 60px;
   margin-bottom: 20px;
 }
@@ -198,7 +198,8 @@ width: 108px!important;
 }
 
 .node-type-event .region-sidebar-second #block-sport-event-search-by-number {
-  height: 150px;
+  height: 100px;
+  margin-bottom: 20px;
 }
 
 .node-type-event .region-sidebar-second h2 {

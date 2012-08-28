@@ -313,11 +313,6 @@ function search_by_number_form($form, &$form_state) {
     return;
   }
   
-  $form['markup'] = array(
-    '#prefix' => '<h3>',
-    '#suffix' => '</h3>',
-    '#markup' => t('Find my photos by bib number'),
-  );
   $form['number'] = array(
       '#id' => 'field-number',
       '#type' => 'textfield',
