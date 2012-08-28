@@ -103,6 +103,10 @@
 .node-type-event #center form {
   margin-bottom: 0;
 }
+#block-sport-event-registration-button {
+  height: 60px;
+  margin-bottom: 20px;
+}
 
 #block-sport-event-registration-button h2.title {
 	display:none;
@@ -202,6 +206,7 @@ width: 108px!important;
   padding: 0px;
   font-size: 26px;
   font-weight: normal;
+  text-align: left;
   font-family: 'Walkway Bold',sans-serif;
 }
 
@@ -226,11 +231,27 @@ width: 108px!important;
   color: grey;
 }
 
-.node-type-event #block-views-future-events-future-events {
-  color: #94BB17;
-  padding: 0px;
-  font-size: 26px;
-  font-weight: normal;
-  font-family: 'Walkway Bold',sans-serif;
+#block-sport-event-registration-link {
+  height: 28px;
+  margin-bottom: 10px;
+  text-decoration: underline;
+}
 
+#block-views-upcoming-events-upcoming-events  .date-display-single {
+  float: left;
+  display: block;
+  margin-right: 10px;
+  padding: 2px;
+  background: #FCFCFC;
+  background: linear-gradient(top, #FCFCFC 0%,#DAD8D8 100%);
+  background: -moz-linear-gradient(top, #FCFCFC 0%, #DAD8D8 100%);
+  background: -webkit-linear-gradient(top, #FCFCFC 0%,#DAD8D8 100%);
+  border: 1px solid #D2D2D2;
+  border-radius: 10px 0 10px 0px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px 0 10px 0px;
+  box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+  -moz-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+  -webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+  
 }

@@ -556,22 +556,22 @@ function sport_event_views_default_views() {
   
 /**
  * =============================================================================
- * 4. Begin of Future Events view 
+ * 4. Begin of Upcoming Events view 
  * =============================================================================
  */  
   $view = new view;
-  $view->name = 'future_events';
+  $view->name = 'upcoming_events';
   $view->description = '';
   $view->tag = 'default';
   $view->base_table = 'node';
-  $view->human_name = 'Future Events';
+  $view->human_name = 'Upcoming Events';
   $view->core = 7;
   $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'Events';
+  $handler->display->display_options['title'] = 'Upcoming Events';
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
@@ -583,14 +583,51 @@ function sport_event_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'grid';
   $handler->display->display_options['style_options']['columns'] = '1';
   $handler->display->display_options['style_options']['fill_single_line'] = 1;
-  $handler->display->display_options['row_plugin'] = 'node';
-  $handler->display->display_options['row_options']['links'] = 1;
-  $handler->display->display_options['row_options']['comments'] = 0;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['row_options']['inline'] = array(
+    'title' => 'title',
+    'field_date' => 'field_date',
+    'field_event_address1' => 'field_event_address1',
+  );
+  $handler->display->display_options['row_options']['hide_empty'] = 0;
+  $handler->display->display_options['row_options']['default_field_elements'] = 1;
+  /* Field: Content: Date */
+  $handler->display->display_options['fields']['field_date']['id'] = 'field_date';
+  $handler->display->display_options['fields']['field_date']['table'] = 'field_data_field_date';
+  $handler->display->display_options['fields']['field_date']['field'] = 'field_date';
+  $handler->display->display_options['fields']['field_date']['label'] = '';
+  $handler->display->display_options['fields']['field_date']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['field_date']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_date']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_date']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_date']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_date']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_date']['element_default_classes'] = 0;
+  $handler->display->display_options['fields']['field_date']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_date']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_date']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['field_date']['settings'] = array(
+    'format_type' => 'day_month',
+    'fromto' => 'both',
+    'multiple_number' => '',
+    'multiple_from' => '',
+    'multiple_to' => '',
+    'show_repeat_rule' => 'show',
+  );
+  $handler->display->display_options['fields']['field_date']['field_api_classes'] = 0;
   /* Field: Content: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
-  $handler->display->display_options['fields']['title']['label'] = 'Name';
+  $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
@@ -604,90 +641,12 @@ function sport_event_views_default_views() {
   $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['title']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['title']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['title']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Date */
-  $handler->display->display_options['fields']['field_date']['id'] = 'field_date';
-  $handler->display->display_options['fields']['field_date']['table'] = 'field_data_field_date';
-  $handler->display->display_options['fields']['field_date']['field'] = 'field_date';
-  $handler->display->display_options['fields']['field_date']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_date']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_date']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_date']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_date']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_date']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_date']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_date']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_date']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_date']['settings'] = array(
-    'format_type' => 'event_date',
-    'fromto' => 'both',
-    'multiple_number' => '',
-    'multiple_from' => '',
-    'multiple_to' => '',
-    'show_repeat_rule' => '',
-  );
-  $handler->display->display_options['fields']['field_date']['field_api_classes'] = 0;
-  /* Field: Content: Address1 */
-  $handler->display->display_options['fields']['field_event_address1']['id'] = 'field_event_address1';
-  $handler->display->display_options['fields']['field_event_address1']['table'] = 'field_data_field_event_address1';
-  $handler->display->display_options['fields']['field_event_address1']['field'] = 'field_event_address1';
-  $handler->display->display_options['fields']['field_event_address1']['label'] = 'Place';
-  $handler->display->display_options['fields']['field_event_address1']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_event_address1']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_event_address1']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_event_address1']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_event_address1']['field_api_classes'] = 0;
-  /* Field: Content: Number of Participant */
-  $handler->display->display_options['fields']['field_no_of_participant']['id'] = 'field_no_of_participant';
-  $handler->display->display_options['fields']['field_no_of_participant']['table'] = 'field_data_field_no_of_participant';
-  $handler->display->display_options['fields']['field_no_of_participant']['field'] = 'field_no_of_participant';
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['more_link'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['element_label_colon'] = 1;
-  $handler->display->display_options['fields']['field_no_of_participant']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['field_no_of_participant']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['field_no_of_participant']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['field_no_of_participant']['field_api_classes'] = 0;
   /* Sort criterion: Content: Date (field_date) */
   $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
   $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
@@ -714,13 +673,13 @@ function sport_event_views_default_views() {
   $handler->display->display_options['filters']['field_date_value']['default_date'] = 'now';
 
   /* Display: Block */
-  $handler = $view->new_display('block', 'Block', 'future_events');
-  $handler->display->display_options['block_description'] = 'Future Events';
+  $handler = $view->new_display('block', 'Block', 'upcoming_events');
+  $handler->display->display_options['block_description'] = 'Upcoming Events';
 
   $views[$view->name] = $view;
 /**
  * =============================================================================
- * End of My Future Events view 
+ * End of My Upcoming Events view 
  * =============================================================================
  */
   
