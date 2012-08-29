@@ -36,7 +36,7 @@ function get_rendered_runner_number_box($nid) {
   $numbers_str = $productSaver->GetNumbersStr(); 
         
   $numbers_box =
-    '<label for="product-node-runner-number" class="field-label">Runner numbers:</label>
+    '<label for="product-node-runner-number" class="field-label">' . t('Runner numbers') . ':</label>
     <input name="product-node-runner-number" id="product-node-runner-number" value="'
     . $numbers_str     
     . '"/>';
@@ -150,14 +150,14 @@ function get_product_link($nid, $switch) {
       if (!$productid) {
         return;
       }
-      return '<a href="/node/' . (string)$productid . '" title="Previous"><< prev</a>';
+      return '<a href="/node/' . (string)$productid . '" title="Previous">'. t('<< prev') . '</a>';
       break;
     case 'NEXT':
       $productid = get_next_product($nid);
       if (!$productid) {
         return;
       }
-      return '<a href="/node/' . (string)$productid . '" title="Next">next >></a>';
+      return '<a href="/node/' . (string)$productid . '" title="Next">' . t('next >>') . '</a>';
       break;
     default :
       

@@ -146,14 +146,14 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
  */  
 function user_custom_form_user_register_form_alter(&$form, $form_state) {
   
-  drupal_set_title('New photographer account');
+  drupal_set_title(t('New photographer account'));
   
   $form['#submit']['set_photographer_role_submit'] = 'user_set_photographer_role'; 
  
 }
 
 function user_custom_form_user_profile_form_alter(&$form, $form_state) {
-   drupal_set_title('Edit account details');
+   drupal_set_title(t('Edit account details'));
   
 }
 
@@ -166,15 +166,10 @@ function user_set_photographer_role($form, &$from_state) {
   $rid = user_custom_helper::get_photographer_rid();
 
   $account =  $form['#user'];
-  //$edit['roles'] = array($rid =>'Photographer'); 
-  //$account = user_save($account, $edit);
-  watchdog('uCm', 'Account uid = ' . $account->uid);
+ 
   if (isset($account->uid) && $account->uid > 0) {
     user_custom_helper::user_role_id_insert($rid, $account->uid);
   }
-  //$form_state['user'] = $account;
-  //$form_state['values']['uid'] = $account->uid;
- 
 }
 
 

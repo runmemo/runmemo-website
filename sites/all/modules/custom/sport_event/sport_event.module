@@ -199,7 +199,7 @@ function registration_link_block() {
       '#markup' => 
         '<a href="/user/register/'
         . $node->nid
-        . '" id="user-register">Register to join our team!</a>',      
+        . '" id="user-register">' . t('Register to join our team!') .'</a>',      
    );
 
   return $block;
@@ -209,7 +209,7 @@ function registration_button_block() {
 
 
   $block = array();
-  $block['subject'] = 'Event Registration Button';
+  $block['subject'] = t('Event Registration Button');
   // add form to search products from same event
 
   $block['content'][] = drupal_get_form('registration_button_form');
@@ -222,7 +222,7 @@ function search_by_number_block() {
 
 
   $block = array();
-  $block['subject'] = 'Search photos from an event';
+  $block['subject'] = t('Search photos from an event');
   $block['content'][] = drupal_get_form('search_by_number_form');
 
   return $block;
