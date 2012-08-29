@@ -71,7 +71,6 @@ function generate_thumbnails_cron() {
     //Try saving the data.
     _generate_image_styles($item->data, $styles);
     $queue->deleteItem($item);
-    watchdog('Queue Item', 'Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
   };
 
 }
