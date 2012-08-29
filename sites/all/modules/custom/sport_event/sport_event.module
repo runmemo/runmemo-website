@@ -31,7 +31,6 @@ function sport_event_block_info() {
   $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   $blocks['search_by_number'] = array('info' => t('Search photos from an event'), );
-  $blocks['future_events'] = array('info' => t('Events that will be happening in near future'), );
   return $blocks;
 }
 
@@ -59,10 +58,7 @@ function sport_event_block_view($delta = '') {
       break;
     case 'search_by_number':
       return search_by_number_block();
-      break;
-    case 'future_events':
-      return future_events_block();
-      break;       
+      break;    
   }
 
 }
@@ -229,18 +225,6 @@ function search_by_number_block() {
 
 }
 
-//function future_events_block() {
-//
-//
-//  $block = array();
-//  $block['subject'] = 'Event Registration Button';
-//  // add form to search products from same event
-//
-//  $block['content'][] = drupal_get_form('registration_button_form');
-//
-//  return $block;
-//
-//}
 
 /**
  *
@@ -329,11 +313,6 @@ function search_by_number_form($form, &$form_state) {
     return;
   }
   
-  $form['markup'] = array(
-    '#prefix' => '<h3>',
-    '#suffix' => '</h3>',
-    '#markup' => t('Find my photos by bib number'),
-  );
   $form['number'] = array(
       '#id' => 'field-number',
       '#type' => 'textfield',
