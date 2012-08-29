@@ -4,7 +4,7 @@
 	float:left;
 }
 .node-type-event .region-sidebar-second {
-	width: 300px;
+	width: 330px;
 	}
 .node-event {
 	margin:0;
@@ -205,7 +205,7 @@ width: 108px!important;
 .node-type-event .region-sidebar-second h2 {
   color: #94BB17;
   padding: 0px;
-  font-size: 26px;
+  font-size: 20px;
   font-weight: normal;
   text-align: left;
   font-family: 'Walkway Bold',sans-serif;
@@ -218,7 +218,7 @@ width: 108px!important;
 }
 
 .node-type-event .region-sidebar-second #field-number {
-  width: 120px;
+  width: 150px;
   padding-left: 10px;
   margin: 1px;
 }
@@ -227,7 +227,12 @@ width: 108px!important;
   margin: 0px;
 }
 
-.node-type-event .region-sidebar-second .username, p {
+.node-type-event .region-sidebar-second .username{
+  font-style: italic;
+  color: grey;
+}
+
+.node-type-event .region-sidebar-second p{
   font-style: italic;
   color: grey;
 }
@@ -255,4 +260,8 @@ width: 108px!important;
   -moz-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
   -webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
   
+}
+
+.field-name-field-geolocation { 
+  float:none; 
 }
