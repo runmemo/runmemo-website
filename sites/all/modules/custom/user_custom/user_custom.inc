@@ -40,11 +40,11 @@ class user_custom_helper {
 
   public static function user_role_update($role_id, $uid) {
     db_update('users')
-                    ->fields(array(
-                    'role' => $role_id,
-                    ))
-                    ->condition('uid', $uid)
-                    ->execute();
+        ->fields(array(
+        'role' => $role_id,
+        ))
+        ->condition('uid', $uid)
+        ->execute();
 
   }
   /**

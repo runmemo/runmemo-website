@@ -11,9 +11,13 @@
 }*/
 
 .node-type-product .product_preview {
-	width:400px;
 	float:left;
         border: 1px solid #DEE4E7;
+        padding:2px;
+}
+
+.node-type-product .field-name-uc-product-image {
+	margin-bottom:0px;
 }
 
 .node-type-product .product_content {

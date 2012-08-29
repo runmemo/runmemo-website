@@ -122,7 +122,7 @@ function runmemo_field__field_photographers__event($variables) {
     $counter++;
   }
 
-  $output .= '<div class="field-item"' . $variables['item_attributes'][$delta] . '>' . $counter . '</div>';
+  $output .= '<div class="field-items"><div class="field-item"' . $variables['item_attributes'][$delta] . '>' . $counter . '</div></div>';
   
     // Render the top-level DIV.
   $output = '<div class="' . $variables['classes'] . '"' . $variables['attributes'] . '>' . $output . '</div>';
