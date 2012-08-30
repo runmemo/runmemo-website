@@ -87,7 +87,7 @@
 
   <?php 
     $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
-    $ev_month = t(format_date($timestamp, 'custom', 'M'));
+    $ev_month = format_date($timestamp, 'custom', 'M');
     $ev_day = format_date($timestamp, 'custom', 'd');
   ?>
   <div class="date">
