@@ -35,7 +35,7 @@ function photo_search_preprocess_page(&$variables) {
 function photo_search_menu() {
   //url for runner
   $items['runner'] = array(
-    'title' => 'Photo Gallery',
+    'title' => t('Photo Gallery'),
     'description' => 'View the objects in a event on your Amazon S3 account.',
     'page callback' => 'find_trade_section',
     'access arguments' => array('search photos'),
@@ -101,17 +101,17 @@ function select_event_runner_get_photos($form, &$form_state) {
   if (arg('0') != 'search-result') {
     $form['search_filter']['find'] =
     array(
-    '#markup' => "<div id='find'>Runners</div>
-    <div id='great_photos'>Find great photos of you</div>");
+    '#markup' => "<div id='find'>" . t('Runners') . "</div>
+    <div id='great_photos'>" . t('Find great photos of you') . "</div>");
   }
   $form['search_filter']['events_select_runner'] = array(
     '#type' => 'select', 
-    '#title' => "I ran this event: ", 
+    '#title' => t('I ran this event: '), 
     '#id' => 'event_runner',
     '#prefix' => "<div id='field-event'>",
     '#suffix' => '</div>',
     '#required' => 'true',
-    '#default_value' => 'None');
+    '#default_value' => t('None'));
 
   $form['search_filter']['events_select_runner']['#options']['None'] = t('Select Event');
   //$form['search_filter']['events_select_runner']['#options'] = array('select_event' => "Select Event");
@@ -132,7 +132,7 @@ function select_event_runner_get_photos($form, &$form_state) {
 
   $form['search_filter']['runner_number'] = array(
     '#type' => 'textfield',
-    '#title' => 'With number:',
+    '#title' => t('With number') . ':',
     '#size' => '20',
     '#id' => 'runner_number',
     '#prefix' => "<div id='field-number'>",
@@ -147,11 +147,11 @@ function select_event_runner_get_photos($form, &$form_state) {
 
   }
   else {
-    $form['search_filter']['runner_number']['#title'] = 'Runner Number';
+    $form['search_filter']['runner_number']['#title'] = t('Runner Number');
   }
 
   //submit get my photo in the runner side
-  $form['search_filter']['search'] = array('#type' => 'submit', '#value' => 'Search');
+  $form['search_filter']['search'] = array('#type' => 'submit', '#value' => t('Search'));
 
   return $form;
 
@@ -159,12 +159,12 @@ function select_event_runner_get_photos($form, &$form_state) {
 
 function select_event_runner_get_photos_validate($form, &$form_state) {
   $event_selected = $form['search_filter']['events_select_runner']['#value'];
-  if ($event_selected == 'None') {
+  if ($event_selected == t('None')) {
     form_set_error('search_filter][events_select_runner', t('Please select event'));
   }
 
   $runner_num = $form['search_filter']['runner_number']['#value'];
-  if ($runner_num == 'My Number') {
+  if ($runner_num == t('My Number')) {
     form_set_error('runner_number', t('Please enter your number'));
   }
 
@@ -212,7 +212,7 @@ function select_event_runner_sell_photos($form, &$form_state) {
     '#title' => '',
     '#id' => 'event_runner_sell');
 
-  $form['sellfield']['events_select_runner']['#options'] = array('select_event' => "Select Event");
+  $form['sellfield']['events_select_runner']['#options'] = array('select_event' => t('Select Event'));
   //select event options from content type 'event'
 
   //get the event name from content type 'event'
@@ -222,7 +222,7 @@ function select_event_runner_sell_photos($form, &$form_state) {
     $event_nid   = $event->nid;
     $form['sellfield']['events_select_runner']['#options'][$event_nid] = $event_title;
   }
-  $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => 'Uploader');
+  $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => t('Uploader'));
 
 
   return $form;
@@ -250,8 +250,8 @@ function find_trade_section() {
   $style = "<div id='front-search-photos'>
   				<div>$find_photos</div>
   				<div id='block-photographers'>
-    				<div id='trade'>Photographers</div>  
-    				<div id='taken_picture'>Sell your photos</div>
+    				<div id='trade'>" . t('Photographers'). "</div>  
+    				<div id='taken_picture'>" . t('Sell your photos') . "</div>
     				<div id='front-trade-photos'>
     				$trade_photos
     				</div>
@@ -499,9 +499,8 @@ function photo_request_form_js($form, &$form_state) {
   drupal_mail('photo_search', 'number_request_response', $email, language_default(), $values, $from);
   
   $markup = '<div id="photo-request-form" class="message">'
-    . '<p>Thank you for your request!</p>'
-    . '<p>We will let you know once we get any photos of you via email '
-    . $email
+    . '<p>' . t('Thank you for your request!') . '</p>'
+    . '<p>' . t('We will let you know once we get any photos of you via email - @email', array('@email' => $email))
     . '</div>';
   
   // post registration message

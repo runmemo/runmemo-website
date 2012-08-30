@@ -365,7 +365,6 @@ function plupload_handle_uploads() {
         $total_chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : -1;
         //$chunk is 0 based count
         if ($chunk == $total_chunks-1 || ($total_chunks == -1 && isset($_REQUEST["name"]))) {
-          watchdog('Upload debug', 'Uploaded file, total chunks - ' . $total_chunks, array(), WATCHDOG_DEBUG);
           $file = array();
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
@@ -373,7 +372,7 @@ function plupload_handle_uploads() {
           _file_uploaded($file);
         }
         else {
-          watchdog('Upload debug', 'Uploaded chunk  - ' . $chunk, array(), WATCHDOG_DEBUG);
+          
         }
       }
       else {

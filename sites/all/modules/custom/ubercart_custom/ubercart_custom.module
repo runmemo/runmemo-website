@@ -147,7 +147,7 @@ function ubercart_custom_menu() {
  */
 function cart_add_item() {
   if (!isset($_GET['nid'])) {
-    echo json_message(FALSE, array('message' => 'Required parameter nid is not set.'));
+    echo json_message(FALSE, array('message' => t('Required parameter nid is not set.')));
     return;
   }
   $nid = $_GET['nid'];
@@ -156,7 +156,7 @@ function cart_add_item() {
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
-      echo json_message(FALSE, array('message' => 'Did not add item. Item ' . $nid . ' is already in the cart.'));
+      echo json_message(FALSE, array('message' => t('Did not add item. Item @nid is already in the cart.', array('@nid' => $nid ))));
       return;
     }
   }
@@ -172,7 +172,7 @@ function cart_add_item() {
  */
 function cart_remove_item() {
   if (!isset($_GET['nid'])) {
-    echo json_message(FALSE, array('message' => 'Required parameter nid is not set.'));
+    echo json_message(FALSE, array('message' => t('Required parameter nid is not set.')));
     return;
   }
  
@@ -399,7 +399,7 @@ function search_result_cart($form, &$form_state) {
     "<div class='cart_summ'>
     	<div id='currency-sign' style='display:none'>" . variable_get('uc_currency_sign') . "</div>
   		<div class='summary_item_cost'>
-  			<span class='cart-block-icon-full' title='View your shopping cart.'></span>
+  			<span class='cart-block-icon-full' title=" . t('View your shopping cart.') . "></span>
 			<span class='shop_cart_title'>" . t('Shopping Cart') . "</span>
 		</div>
 		<div class='proceed_to_cart'>
@@ -408,19 +408,19 @@ function search_result_cart($form, &$form_state) {
 		</div>
 		<div>
 			<span class='summary_selected_photos'>"
-              . t('Photos:') . '&nbsp;' .
+              . t('Photos') . ':&nbsp;' .
             "<span class='placeholder'></span>
 			</span>
-				<span class='summary_cost'>Total:&nbsp;" . variable_get('uc_currency_sign') . 
+				<span class='summary_cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
                                       "<span class='placeholder'></span>
 				</span>
 		</div>
 	</div>");
   $form['prev_img_det'] = array('#markup' =>
  	'<div class="cost_auth_det">
-  		<span id="photo_cost">Price:<label class="photo_cost"></label>
+  		<span id="photo_cost">' . t('Price') .':<label class="photo_cost"></label>
   		</span><br/>
-  		<span id="photo_author">Photo by:<label class="photo_author"></label>
+  		<span id="photo_author">' . t('Photo by') . ':<label class="photo_author"></label>
   		</span></div>', '#prefix' => '<div class="prev_img_details">', );
   $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
 
@@ -440,21 +440,21 @@ function save_numbers() {
   $option = $_POST['option'];
   
   if (empty($nid) || empty($number) || empty($option)) {
-    echo json_message(FALSE, array('message' => 'Required parameter is not set'));
+    echo json_message(FALSE, array('message' => t('Required parameter is not set')));
     return;
   }
   
   $number_int = (int) $number;
   
   if ((string)$number_int != $number) {
-    echo json_message(FALSE, array('message' => 'Number is not int'));
+    echo json_message(FALSE, array('message' => t('Number is not int')));
     return;    
   }
   
 //check permission
   $node = node_load($nid);
   if (!node_access("update", $node)) {
-    echo json_message(FALSE, array('message' => 'Has no permissions'));
+    echo json_message(FALSE, array('message' => t('Has no permissions')));
     return;
   }  
   
@@ -470,7 +470,7 @@ function save_numbers() {
       break;
 
     default:
-      echo json_message(FALSE, array('message' => 'Parametr option=' . $option . ' is not supported'));
+      echo json_message(FALSE, array('message' => t('Parametr option=@option is not supported', array('@option' => $option))));
       return;
   }
   
@@ -490,14 +490,14 @@ function change_price() {
   $nid = $_POST['nid'];
   $price  = $_POST['price'];
   if (empty($nid) || empty($price)) {
-    echo json_message(FALSE, array('message' => 'Required parametr is not set'));
+    echo json_message(FALSE, array('message' => t('Required parametr is not set')));
     return;
   }
   
 //check permission
   $node = node_load($nid);
   if (!node_access("update", $node)) {
-    echo json_message(FALSE, array('message' => 'Has no permissions'));
+    echo json_message(FALSE, array('message' => t('Has no permissions')));
     return;
   }  
   

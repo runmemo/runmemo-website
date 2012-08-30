@@ -246,6 +246,7 @@ width: 108px!important;
 #block-views-upcoming-events-upcoming-events  .date-display-single {
   float: left;
   display: block;
+  width: 58px;
   margin-right: 10px;
   padding: 2px;
   background: #FCFCFC;

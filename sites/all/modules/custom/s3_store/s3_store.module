@@ -12,11 +12,8 @@
 function s3_store_cron() {
   $queue = DrupalQueue::get('send_images_to_S3');
 
-  //$queue->deleteQueue();
-  watchdog('S3 info', 'Started S3 cron job for jobs = ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
-  //Pull items out one at a time.
+   //Pull items out one at a time.
   while ($item = $queue->claimItem(15)) {
-    watchdog('S3 info', 'Items in the queue(S3) == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
     //Try saving the data.
     $file = $item->data;
     try {
@@ -30,7 +27,6 @@ function s3_store_cron() {
     }
     $queue->deleteItem($item);
   };
-  watchdog('S3 info', 'Finished S3 cron job.', array(), WATCHDOG_DEBUG);
 }
 
 /**

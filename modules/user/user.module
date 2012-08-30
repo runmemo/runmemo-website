@@ -3749,6 +3749,7 @@ function user_register_validate($form, &$form_state) {
  * @see user_register_form()
  */
 function user_register_submit($form, &$form_state) {
+ 
   $admin = $form_state['values']['administer_users'];
 
   if (!variable_get('user_email_verification', TRUE) || $admin) {
