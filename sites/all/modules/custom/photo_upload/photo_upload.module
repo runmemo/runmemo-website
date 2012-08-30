@@ -330,7 +330,6 @@ function create_photo_node($file, $event_nid, $price = 0) {
   // put file to the queue for further processing.
   $queue = DrupalQueue::get('create_image_cache');
   $queue->createItem($file);
-  watchdog('Queue Item', 'Items in the queue == ' . $queue->numberOfItems(), array(), WATCHDOG_DEBUG);
   return $node;
 
 }

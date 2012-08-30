@@ -182,8 +182,6 @@ function ocr_cron() {
     $message_counter++;
     try {
       $message_body = $message->getBody();
-      watchdog('OCR info' , 'Getting body from the message.');
-      watchdog('OCR info' , $message_body);
       $results_saver = new OcrResultsSaver($message_body);
       $results_saver->Save();
     } catch (Exception $e) {
@@ -191,7 +189,6 @@ function ocr_cron() {
     }
     $queue->deleteMessage($message);
   }
-  watchdog('OCR Cron', 'Processed messages from SQS: ' . $message_counter, array(), WATCHDOG_DEBUG);
   // put files that were not processed to the S3 queue ?
   // _queue_nodes_pending_ocr();
 }
