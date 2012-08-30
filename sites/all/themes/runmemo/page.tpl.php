@@ -129,23 +129,6 @@
 				</div>
 			</div>
 		</div>
-
-				
-		<!-- Region Recent Events -->
-		<?php if($is_front):?>
-		<div class="region float-L region-recent-events">
-			<div class="cont-header-bg float-L">
-				<h1 class="float-L">Recent Events</h1>
-			</div>
-			<div class="cont-lft float-L recent-event recent-event-left">
-			<?php print render($page['recent_event_left']); ?>
-			</div>
-			<div class="cont-rig float-R recent-event recent-event-right">
-			<?php print render($page['recent_event_right']); ?>
-			</div>
-		</div>
-		<div class="clr"></div>
-		<?php endif; ?>
 	</div>
 
 

@@ -682,6 +682,206 @@ function sport_event_views_default_views() {
  * End of My Upcoming Events view 
  * =============================================================================
  */
+
+/**
+ * =============================================================================
+ * Recent Events view 
+ * =============================================================================
+ */
+
+  $view = new view;
+  $view->name = 'recent_events';
+  $view->description = 'Shows images from recent events';
+  $view->tag = 'default';
+  $view->base_table = 'node';
+  $view->human_name = 'Recent Events';
+  $view->core = 7;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Master */
+  $handler = $view->new_display('default', 'Master', 'default');
+  $handler->display->display_options['title'] = 'Recent Events';
+  $handler->display->display_options['css_class'] = 'recent-events';
+  $handler->display->display_options['access']['type'] = 'perm';
+  $handler->display->display_options['cache']['type'] = 'time';
+  $handler->display->display_options['cache']['results_lifespan'] = '3600';
+  $handler->display->display_options['cache']['output_lifespan'] = '3600';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['query']['options']['query_comment'] = FALSE;
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '2';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['style_plugin'] = 'grid';
+  $handler->display->display_options['style_options']['columns'] = '2';
+  $handler->display->display_options['style_options']['fill_single_line'] = 1;
+  $handler->display->display_options['style_options']['summary'] = 'Sample photos from recent events';
+  $handler->display->display_options['row_plugin'] = 'fields';
+  /* Field: Content: Nid */
+  $handler->display->display_options['fields']['nid']['id'] = 'nid';
+  $handler->display->display_options['fields']['nid']['table'] = 'node';
+  $handler->display->display_options['fields']['nid']['field'] = 'nid';
+  $handler->display->display_options['fields']['nid']['label'] = '';
+  $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['nid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nid']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['nid']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['nid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['nid']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['nid']['link_to_node'] = 0;
+  /* Field: Content: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Content: Profile Image */
+  $handler->display->display_options['fields']['field_profile_image']['id'] = 'field_profile_image';
+  $handler->display->display_options['fields']['field_profile_image']['table'] = 'field_data_field_profile_image';
+  $handler->display->display_options['fields']['field_profile_image']['field'] = 'field_profile_image';
+  $handler->display->display_options['fields']['field_profile_image']['label'] = '';
+  $handler->display->display_options['fields']['field_profile_image']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['element_type'] = 'div';
+  $handler->display->display_options['fields']['field_profile_image']['element_class'] = 'recent-event-thumbnail';
+  $handler->display->display_options['fields']['field_profile_image']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['field_profile_image']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['click_sort_column'] = 'fid';
+  $handler->display->display_options['fields']['field_profile_image']['settings'] = array(
+  'image_style' => 'search_thumbnail',
+  'image_link' => '',
+  );
+  $handler->display->display_options['fields']['field_profile_image']['group_rows'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['delta_offset'] = '0';
+  $handler->display->display_options['fields']['field_profile_image']['delta_reversed'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['delta_first_last'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['field_api_classes'] = 0;
+  /* Field: Search Form */
+  $handler->display->display_options['fields']['php']['id'] = 'php';
+  $handler->display->display_options['fields']['php']['table'] = 'views';
+  $handler->display->display_options['fields']['php']['field'] = 'php';
+  $handler->display->display_options['fields']['php']['ui_name'] = 'Search Form';
+  $handler->display->display_options['fields']['php']['label'] = '';
+  $handler->display->display_options['fields']['php']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['php']['alter']['text'] = '<div class="recent-event">
+  <div class="event-title">[title]</div>
+  <div class="event-thumbnails">[field_profile_image]</div>
+  <div class="event-search-form">[php]</div>
+</div>';
+  $handler->display->display_options['fields']['php']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['php']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['php']['alter']['more_link'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['php']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['php']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['php']['element_default_classes'] = 1;
+  $handler->display->display_options['fields']['php']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['php']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['php']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_output'] = '<?php
+require_once DRUPAL_ROOT . \'/sites/all/modules/custom/sport_event/sport_event.module\';
+$form = drupal_get_form(\'recent_event_search_form_\'. $row->nid, $row->nid);
+print drupal_render($form); 
+?>
+</div>
+';
+  $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
+  $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
+  /* Sort criterion: Content: Date (field_date) */
+  $handler->display->display_options['sorts']['field_date_value']['id'] = 'field_date_value';
+  $handler->display->display_options['sorts']['field_date_value']['table'] = 'field_data_field_date';
+  $handler->display->display_options['sorts']['field_date_value']['field'] = 'field_date_value';
+  $handler->display->display_options['sorts']['field_date_value']['order'] = 'DESC';
+  /* Filter criterion: Content: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = 1;
+  $handler->display->display_options['filters']['status']['group'] = 1;
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+  /* Filter criterion: Content: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+  'event' => 'event',
+  );
+  /* Filter criterion: Content: Promoted (field_promoted) */
+  $handler->display->display_options['filters']['field_promoted_value']['id'] = 'field_promoted_value';
+  $handler->display->display_options['filters']['field_promoted_value']['table'] = 'field_data_field_promoted';
+  $handler->display->display_options['filters']['field_promoted_value']['field'] = 'field_promoted_value';
+  $handler->display->display_options['filters']['field_promoted_value']['value'] = array(
+  1 => '1',
+  );
+
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block');
+  $handler->display->display_options['block_description'] = 'Recent Events';
+  $handler->display->display_options['block_caching'] = '8';
+  
+  $views[$view->name] = $view;
+  
+/**
+ * =============================================================================
+ * End of Recent Events view 
+ * =============================================================================
+ */
   
   // At the end, return array of default views.
   return $views;

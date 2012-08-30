@@ -16,9 +16,6 @@ regions[sidebar_second] = Right sidebar
 regions[footer] = Footer
 regions[highlighted] = Highlighted
 
-regions[recent_event_left] = Recent Event Left
-regions[recent_event_right] = Recent Event Right
-
 regions[shopping_cart] = Shopping cart
 
 

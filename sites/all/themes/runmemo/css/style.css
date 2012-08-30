@@ -340,15 +340,6 @@ float:left;
 	margin-bottom:20px;
 	/*min-height:333px;*/
 }
-.cont-header-bg {
-	background:url('../images/cont-header-bg.png') repeat-x;
-	width:100%;
-	height:56px
-}
-.front .cont-header-bg{
-        margin-bottom: 10px;
-  
-}
 
 #user-login #edit-submit {
 	margin-top: 0px;
@@ -366,20 +357,7 @@ float:left;
 	margin-top:18px;
 	margin-left:25px;
 }
-.cont-lft {
-	width:471px; border:1px solid #dedede;
-	/*height:262px;*/
-	background:url('../images/cont-inner-bg.png') repeat;
-	border-top:1px solid #dedede;
-	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	margin-top:10px;
-	margin-bottom:10px;
-        min-height: 245px;
-        position: relative;
-}
+
 .cont-rig {
 	width:471px; border:1px solid #dedede;
 	/*height:262px;*/
@@ -1344,25 +1322,66 @@ text-align:center;
     -webkit-box-shadow:none!important;
 }
 
+/* ************ Footer Region ********** */
+
+.region-footer {
+clear:both;
+width:100%;
+	}
 /* ****************** For Recent event home page ******************* */
 
-.recent-event-images
-{
-  margin-left: 4px;
-  float: left;
-  width: 431px;
-  height:176px;
+.recent-event {
+	border:1px solid #dedede;
+	/*height:262px;*/
+	background:url('../images/cont-inner-bg.png') repeat;
+	border-top:1px solid #dedede;
+	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	-webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+	margin-top:10px;
+	margin-bottom:10px;
+    position: relative;
+
 }
 
-.recent-event-image {
+.col-last .recent-event {
+	margin-left:10px;
+	margin-right:0px;
+}
+
+.col-first .recent-event {
+	margin-left:0px;
+	margin-right:10px;
+}
+.recent-events table td { 
+	    vertical-align: top;	
+	}
+.recent-events table {
+	margin-top:0px;
+}
+
+.recent-events table td {
+	width:50%;	
+}
+
+
+.recent-event-thumbnail {
 	float:left;
 	display:block;
+    margin-left: 4px;
 	margin-right:10px;
 	}
-.region-recent-events {
-	margin-top:20px;
+
+#block-views-revent-events-block h2.title {
+	background:url('../images/cont-header-bg.png') repeat-x;
+	width:100%;
+	height:46px;
+	padding-top:10px;
+	text-indent:20px;
 }
-.region-recent-events .title {
+
+.recent-events  .event-title {
 	color:#444;
 	font-family:Arial, Helvetica, sans-serif;
 	font-size:14px;
@@ -1371,8 +1390,15 @@ text-align:center;
 	padding-bottom:10px;
 	border-bottom:1px solid #dedede;
 }
-
-.region-recent-events img
+.recent-events  .event-title a {	color: rgb(68, 68, 68);
+	font-family: Arial,Helvetica,sans-serif;
+	font-size: 14px;
+	text-align: center;
+	padding-top: 20px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid rgb(222, 222, 222);
+}
+.recent-events img
 {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -1384,18 +1410,27 @@ text-align:center;
   padding-bottom:2px;
   padding-right: 2px;
 }
-.region-recent-events form {
-	float:right;
-	width:230px;
+.recent-events form {
+	width:100%;
+	height:50px;
 	display:block;
 	padding-bottom:5px;
 }
-.region-recent-events label {
+.recent-events form div {
+	float:right;
+	width:50%;
+	}
+.recent-events form .form-submit,
+.recent-events form .form-item {
+	float:left;
+	margin-top:5px;
+	}
+.recent-events label {
 	/* hide label of the text field*/
 	display:none;
 }
 
-.region-recent-events .form-text {
+.recent-events .form-text {
 	width:100px;
    	line-height:25px;
    	height:25px;
@@ -1416,7 +1451,7 @@ text-align:center;
 
 }
 
-.region-recent-events .form-submit
+.recent-events .form-submit
 {
   	margin-top:0px;
 	cursor:pointer;
@@ -1426,6 +1461,11 @@ text-align:center;
     height: 32px;
     width: 88px;
     float:left;
+}
+.recent-events .form-submit:hover
+{
+	background: url("../images/find-btn.png") no-repeat scroll 0 0 transparent;
+	background-color:#777;
 }
 
 .block .content
