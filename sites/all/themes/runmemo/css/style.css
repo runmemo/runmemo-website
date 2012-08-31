@@ -1,4 +1,3 @@
-
 @import url("menu.css");
 
 /*@charset "utf-8";*/
@@ -2310,7 +2309,6 @@ border-bottom: 1px solid #e9e9e9!important;
   }
   .page-cart-checkout-complete .order-complete-preview {
     margin: 41px 0 20px;
-    background: url("../images/cont-header-bg.png") repeat-x scroll 0 0 transparent;
     width: 100%;
     border: 1px solid #f9f9f9;
     padding-bottom:10px;
