@@ -288,7 +288,7 @@ function runmemo_preprocess_uc_cart_complete_sale(&$variables) {
   
   $no_of_image = count($img_uri);
   
-  $output = '<div class="order-complete-title">' . t('Your payment is complete, thank you for your order') . '</div><div class="order-complete-preview"><h1 class="float-L">' . t('Preview Image') . '</h1>';
+  $output = '<div class="order-complete-title">' . t('Your payment is complete, thank you for your order') . '</div><div class="order-complete-preview">';
   $output .= '<div class="order-sale-description">' . t('Click on the preview to open original size image in the new window') . '</div>'; 
   $output .= '<table><tr>';
   $j = 0;
