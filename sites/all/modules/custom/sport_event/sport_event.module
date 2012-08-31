@@ -25,9 +25,6 @@ function sport_event_views_api() {
  * implements hook_block_info()
  */
 function sport_event_block_info() {
-
-  $blocks['recent_event_left'] = array('info' => t('Recent Event Images - Left'), );
-  $blocks['recent_event_right'] = array('info' => t('Recent Event Images - Right'), );
   $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   $blocks['search_by_number'] = array('info' => t('Search photos from an event'), );
@@ -42,14 +39,6 @@ function sport_event_block_view($delta = '') {
   // The $delta parameter tells us which block is being requested.
   $nid = 0;
   switch ($delta) {
-    case 'recent_event_left':
-      $nid = get_recent_event_id(0, 1);
-      return recent_events_block($nid);
-      break;
-    case 'recent_event_right':
-      $nid = get_recent_event_id(1, 1);
-      return recent_events_block($nid);
-      break;
     case 'registration_link':
       return registration_link_block();
       break;
@@ -63,73 +52,6 @@ function sport_event_block_view($delta = '') {
 
 }
 
-
-
-/**
- *
- * Creates markup for first N promoted products.
- * @param integer $nid - nid of event node
- * @param integer $items - number of images to show
- */
-function get_recent_event_images_view($nid, $items) {
-
-  $style_name = 'search_thumbnail';
-  // Select first N products associated with event
-  $query = new EntityFieldQuery;
-  $entities =  $query
-  ->entityCondition('entity_type', 'node')
-  ->entityCondition('bundle', 'product')
-  ->propertyCondition('status', 1)
-  ->fieldCondition('field_event_reference', 'nid', $nid, '=')
-  ->fieldCondition('field_promote', 'value', TRUE, '=')
-  ->range(0, $items)
-  ->execute();
-
-  $products = node_load_multiple(array_keys($entities['node']));
-
-  // build makrup for images
-  $markup ='<div class="recent-event-images">';
-  foreach ($products as $product) {
-    // get html for the image style
-    $image= $product->uc_product_image['und'][0];
-    $image_array = array(
-      'style_name' => 'search_thumbnail',
-      'path' => $image['uri'],
-      'width' => '',
-      'height' => '',
-      'alt' => $image['alt'],
-      'title' => $image['title'],
-    );
-     
-    $markup = $markup . '<div class="recent-event-image" id="thumb-' . $product->nid . '"->';
-    $markup = $markup . theme('image_style', $image_array);
-    $markup = $markup . '</div>';
-  }
-  $markup = $markup . '</div>';
-  return $markup;
-}
-
-
-/**
- *
- * Builds recent event block for event node id provided
- * @param integer $nid nid of Event
- */
-function recent_events_block($nid) {
-
-  $event = node_load($nid);
-  $block = array();
-  $block['subject'] = check_plain($event->title);
-
-  // get first images for event
-  $block['content'][] = array('#markup' => get_recent_event_images_view($nid, 4));
-  // add form to search products from same event
-  $block['content'][] = drupal_get_form('recent_event_search_form_' . $nid, $nid); ;
-
-  return $block;
-
-}
-
 /**
  *
  * implements hook_forms
@@ -139,14 +61,13 @@ function photo_search_forms($form_id) {
 
   $forms = array();
   if (strpos($form_id, 'recent_event_search_form_') === 0) {
-    // $nids = array_map('strrev', explode('_', strrev($form_id)));
+    $nids = array_map('strrev', explode('_', strrev($form_id)));
     $forms[$form_id] = array(
       'callback' => 'recent_event_search_form',
-    //   'callback arguments' => array($nids[0]),
+      'callback arguments' => array($nids[0]),
     );
   }
   return $forms;
-
 }
 
 /**
@@ -154,9 +75,12 @@ function photo_search_forms($form_id) {
  * @return string
  */
 //function recent_event1_image() {
-function recent_event_search_form() {
+function recent_event_search_form($nid) {
 
   $form = array();
+  
+  $form['event_id'] = array('#type' => 'hidden', '#value' => $nid, );
+  
   $form['runner_number'] =
   array(
     '#type' => 'textfield',
@@ -355,7 +279,8 @@ function search_by_number_form_submit($form, &$form_state) {
  */
 function recent_event_search_submit($form, &$form_state) {
   // get event id and number
-  $eid = $form['event_id']['#value'];
+ 
+  $eid = $form_state['build_info']['args'][0];
   $number = $form['runner_number']['#value'];
   // build path to the search page
   $path = 'search-result/' . $eid . '/' . $number;
@@ -397,4 +322,11 @@ function image_style_s3_uri($file, $styleName) {
   else {
     return image_style_url($style_name, $file['uri']);
   }
+}
+
+
+function short_month_names() {
+  return array(t('Jan'), t('Feb'), t('Mar'), t('Apr'), 
+        t('May'), t('Jun'), t('Jul'), t('Aug'), 
+        t('Sep'), t('Oct'), t('Nov'), t('Dec'));
 }

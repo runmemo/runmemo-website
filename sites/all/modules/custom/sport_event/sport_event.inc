@@ -30,29 +30,6 @@ function get_event($nid) {
 
 }
 
-/**
- * Get the recent event id
- * @return
- * $event_id recently created event id
- */
-function get_recent_event_id($start, $end) {
-
-  $query = new EntityFieldQuery();
-  
-  $results = $query->entityCondition('entity_type', 'node', '=')
-  ->entityCondition('bundle', 'event')
-  ->propertyCondition('status', 1, '=')
-  ->fieldCondition('field_date', 'value', date('Y-m-d'), '<')
-  ->fieldOrderBy('field_date', 'value', 'ASC')
-  ->range($start, $end)
-  ->execute();
-  
-  $nodes = node_load_multiple(array_keys($results['node']));
-  
-  foreach ($nodes as $node) {
-    return $node->nid;
-  }
-}
 
 /**
  * 

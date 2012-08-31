@@ -1,6 +1,6 @@
 <div class="checkoutPane">
 	<div class="paymentPane">
-		<div><span class="checkout_title">Payment Details</span></div>
+		<div><span class="checkout_title"><?php print t('Payment Details'); ?></span></div>
 	<?php 
 	  print $billing;
       print $customer;
@@ -19,9 +19,9 @@
 	
        ?>
 	   <div class="cartSummary">
-			<div class="blueHeading">Order Summary</div>
-			<div class="order-items">Photos: <span id="order-items"><?php echo $count ?></span></div>
-			<div class="total-price">Total Price: <span class="order-currency"><?php echo variable_get('uc_currency_sign') ?></span>
+			<div class="blueHeading"><?php print t('Order Summary'); ?></div>
+			<div class="order-items"><?php print t('Photos'); ?>: <span id="order-items"><?php echo $count ?></span></div>
+			<div class="total-price"><?php print t('Total Price'); ?>: <span class="order-currency"><?php echo variable_get('uc_currency_sign') ?></span>
 			<span id ='order-subtotal'><?php echo $subtotal ?></span>
 			</div>
 		</div>
