@@ -1,6 +1,6 @@
 <div class="checkoutPane">
 	<div class="paymentPane">
-		<div><span class="checkout_title">Payment Details</span></div>
+		<div><span class="checkout_title"><?php print t('Payment Details'); ?></span></div>
 	<?php 
 	  print $billing;
       print $customer;
