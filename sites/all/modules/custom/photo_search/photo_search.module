@@ -439,7 +439,7 @@ function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_
       '#size' => 30,
       '#maxlength' => 6,
       '#description' => t('Enter your bib number'),
-      '#default_value' => $number
+      '#default_value' => $number,  
   );
   $form['submit'] = array(
       '#type' => 'submit', 

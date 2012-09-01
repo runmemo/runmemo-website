@@ -18,7 +18,7 @@ function feedback_custom_form_alter(&$form, $form_state, $form_id) {
     drupal_add_css(drupal_get_path('module', 'feedback_custom') . '/feedback_custom.css');
     $form['close'] = array(
     	'#markup' => '<div id="fb_close">
-    					<span id="feedback_title">' . t(Feedback) . '</span>
+    					<span id="feedback_title">' . t('Feedback') . '</span>
     					<a id="fb_close_link" style="cursor:pointer">&nbsp;</a>
     				  </div>', '#weight' => '-5');
     $form['help']['#weight'] = '-1'; 
