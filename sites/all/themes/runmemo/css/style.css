@@ -1324,6 +1324,8 @@ text-align:center;
 /* ************ Footer Region ********** */
 
 .region-footer {
+float: right;
+width: 100%;
 margin-top:20px;
 clear:both;
 width:100%;
