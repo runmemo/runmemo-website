@@ -57,14 +57,13 @@ function sport_event_block_view($delta = '') {
  * implements hook_forms
  * @param sting $form_id
  */
-function photo_search_forms($form_id) {
+function photo_search_forms($form_id, $nid) {
 
   $forms = array();
-  if (strpos($form_id, 'recent_event_search_form_') === 0) {
-    $nids = array_map('strrev', explode('_', strrev($form_id)));
+  if (strpos($form_id, 'recent_event_search_') === 0) {
     $forms[$form_id] = array(
-      'callback' => 'recent_event_search_form',
-      'callback arguments' => array($nids[0]),
+      'callback' => 'recent_event_search',
+      'callback arguments' => array($nid),
     );
   }
   return $forms;
@@ -74,36 +73,38 @@ function photo_search_forms($form_id) {
  * Builds form for recent events regions
  * @return string
  */
-//function recent_event1_image() {
-function recent_event_search_form($nid) {
+function recent_event_search($nid = 0) {
 
   $form = array();
-  
-  $form['event_id'] = array('#type' => 'hidden', '#value' => $nid, );
-  
-  $form['runner_number'] =
-  array(
-    '#type' => 'textfield',
-    '#title' => 'Runner Number',
-    '#size' => '20',
-    '#required' => 'true');
-  $form['submit_button'] =
-  array( // search button
-    '#type' => 'submit', 
-    '#value' => '', 
-    '#submit' => array('recent_event_search_submit'), 
-  );
+  $form['runner_number'] = array(
+      '#type' => 'textfield',
+      '#title' => 'Runner Number',
+      '#size' => '20',
+      '#required' => 'true');
+  $form['submit_button'] = array( // search button
+      '#type' => 'submit', 
+      '#value' => '', 
+      '#submit' => array('recent_event_search_submit'), 
+    );
 
   return  $form;
-
 }
 
-function recent_event_search_validate($form, &$form_state) {
 
-  if ($form['runner_number']['#value']  == 'My Number' || $form['runner_number']['#value']  == '') {
-    form_set_error('runner_number', t('Please enter your number'));
-  }
-}
+/**
+ * For testing purpose
+ * @param type $form
+ * @param type $form_state
+ */
+function recent_event_search_submit($form, &$form_state) {
+  // get event id and number 
+  $eid = $form_state['build_info']['args'][0];
+  $number = $form['runner_number']['#value'];
+  // build path to the search page
+  $path = 'search-result/' . $eid . '/' . $number;
+  // redirect to search page
+  $form_state['redirect'] = $path;
+ }
 
 /**
  *
@@ -272,25 +273,7 @@ function search_by_number_form_submit($form, &$form_state) {
   );
 }
 
-/**
- * For testing purpose
- * @param type $form
- * @param type $form_state
- */
-function recent_event_search_submit($form, &$form_state) {
-  // get event id and number
- 
-  $eid = $form_state['build_info']['args'][0];
-  $number = $form['runner_number']['#value'];
-  // build path to the search page
-  $path = 'search-result/' . $eid . '/' . $number;
-  $form_state['redirect'] =
-  array(
-  $path,
-  array(),    // $options
-  302,  // $http_response_code
-  );
-}
+
 
 /**
  * impelements hook form_alter
