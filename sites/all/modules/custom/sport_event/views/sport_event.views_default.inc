@@ -719,7 +719,7 @@ $translatables['upcoming_events'] = array(
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'time';
   $handler->display->display_options['cache']['results_lifespan'] = '3600';
-  $handler->display->display_options['cache']['output_lifespan'] = '3600';
+  $handler->display->display_options['cache']['output_lifespan'] = '-1';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['query']['options']['query_comment'] = FALSE;
   $handler->display->display_options['exposed_form']['type'] = 'basic';
@@ -813,9 +813,11 @@ $translatables['upcoming_events'] = array(
   'image_link' => '',
   );
   $handler->display->display_options['fields']['field_profile_image']['group_rows'] = 1;
+  $handler->display->display_options['fields']['field_profile_image']['delta_limit'] = '3';
   $handler->display->display_options['fields']['field_profile_image']['delta_offset'] = '0';
   $handler->display->display_options['fields']['field_profile_image']['delta_reversed'] = 0;
   $handler->display->display_options['fields']['field_profile_image']['delta_first_last'] = 0;
+  $handler->display->display_options['fields']['field_profile_image']['separator'] = '';
   $handler->display->display_options['fields']['field_profile_image']['field_api_classes'] = 0;
   /* Field: Search Form */
   $handler->display->display_options['fields']['php']['id'] = 'php';
@@ -847,12 +849,11 @@ $translatables['upcoming_events'] = array(
   $handler->display->display_options['fields']['php']['empty_zero'] = 0;
   $handler->display->display_options['fields']['php']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['php']['use_php_setup'] = 0;
+  $handler->display->display_options['fields']['php']['php_value'] = 'require_once DRUPAL_ROOT . \'/sites/all/modules/custom/sport_event/sport_event.module\';';
   $handler->display->display_options['fields']['php']['php_output'] = '<?php
-require_once DRUPAL_ROOT . \'/sites/all/modules/custom/sport_event/sport_event.module\';
-$form = drupal_get_form(\'recent_event_search_form_\'. $row->nid, $row->nid);
+$form = drupal_get_form(\'recent_event_search_\' . $row->nid, $row->nid);
 print drupal_render($form); 
 ?>
-</div>
 ';
   $handler->display->display_options['fields']['php']['use_php_click_sortable'] = '0';
   $handler->display->display_options['fields']['php']['php_click_sortable'] = '';
@@ -886,7 +887,8 @@ print drupal_render($form);
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block');
   $handler->display->display_options['block_description'] = 'Recent Events';
-  $handler->display->display_options['block_caching'] = '8';
+  $handler->display->display_options['block_caching'] = '-1';
+  
   
   $views[$view->name] = $view;
   
