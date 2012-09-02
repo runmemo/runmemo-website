@@ -242,6 +242,7 @@ function search_by_number_form($form, &$form_state) {
       '#id' => 'field-number',
       '#type' => 'textfield',
       '#size' => 20,
+      '#required' => TRUE,
   );
   $form['submit'] = array( // search button
       '#type' => 'submit', 
