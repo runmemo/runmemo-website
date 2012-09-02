@@ -264,5 +264,7 @@ width: 108px!important;
 }
 
 .node-event .field-name-field-geolocation {
-  float: none;
+  clear: both;
+  float: left;
+  width: 100%;
 }
