@@ -154,12 +154,12 @@ body.sidebar-second #squeeze {
 /**
  * Primary navigation
  */
-ul.main-menu {
+ul.main-menu, ul.menu-main-menu-rus {
   float: left;
   width:70%;
 }
 
-ul.main-menu li {
+ul.main-menu li, ul.menu-main-menu-rus li {
   float: right;
 }
 

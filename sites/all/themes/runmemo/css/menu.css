@@ -2,7 +2,7 @@
 /**
  * Primary navigation
  */
-ul.main-menu {
+ul.main-menu, ul.menu-main-menu-rus {
   margin: 0;
   padding: 0;
   float: right; /* LTR */
@@ -10,14 +10,14 @@ ul.main-menu {
   z-index: 4;
 }
 
-ul.main-menu {
+ul.main-menu, ul.menu-main-menu-rus {
   margin:auto;
   float:left;
   z-index:10;
 }
 
 
-ul.main-menu li, ul.sf-menu li
+ul.main-menu li, ul.menu-main-menu-rus li, ul.sf-menu li
 {
 	margin: 0;
   	float: left; /* LTR */
@@ -28,7 +28,7 @@ ul.main-menu li, ul.sf-menu li
 	height:29px;
 }
 
-ul.main-menu li a:visited {
+ul.main-menu li a:visited, ul.menu-main-menu-rus li a:visited {
   color:rgb(88, 149, 190);
   background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0;
 }

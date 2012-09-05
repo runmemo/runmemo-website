@@ -201,8 +201,6 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
 
 function photo_upload_file_uploaded($fileinfo) {
   
-  watchdog('file upload info', 'File uploaded and hook invoked, path = ' . $fileinfo['name']);
-  
   $source =  $fileinfo['tmppath']; 
   $scheme = 'public://';
   
