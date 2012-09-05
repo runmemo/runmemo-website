@@ -53,7 +53,7 @@ width:100%
 .region-header .clearfix {
 	clear:right;
 }
-#block-superfish-1{
+#block-superfish-1, #block-superfish-2{
 float:left;
 margin-left:10px;
 }
@@ -2612,6 +2612,7 @@ border-bottom: 1px solid #e9e9e9!important;
 	}
 
 .views-view-grid {
+        float: left;
 	margin-top: .5em;
 }
 
