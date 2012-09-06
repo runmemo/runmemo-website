@@ -40,9 +40,12 @@ class ProductNodeSaver {
     }
   
     // Do NOT add the same number
-    foreach ($this->node->ocr_numbers[$this->node->language] as $set_number) {
-      if ($set_number['value'] == $number) {
-        return;
+    $saved_numbers = field_get_items('node', $this->node, 'ocr_numbers');
+    if ($saved_numbers != FALSE) {
+      foreach ($saved_numbers as $saved_number) {
+        if ($saved_number['value'] == $number) {
+          return;
+        } 
       }
     }
     
