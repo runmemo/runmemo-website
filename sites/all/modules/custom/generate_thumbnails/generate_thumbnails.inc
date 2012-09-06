@@ -43,7 +43,7 @@ function search_results_image_styles() {
         'data' => array(
           'xpos' => 'left',
           'ypos' => 'center',
-          'alpha' => '15',
+          'alpha' => '30',
           'path' => 'module://generate_thumbnails/preview_watermark.png',
         ),
         'weight' => '2',
