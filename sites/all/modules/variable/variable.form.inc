@@ -20,12 +20,18 @@ function variable_form_element($variable, $options = array()) {
     $element = variable_form_element_default($variable, $options);
   }
   if (!empty($variable['validate callback'])) {
-    $element['#validate'][] = $variable['validate callback'];
+    $element['#element_validate'][] = 'variable_form_element_validate';
+  }
+  if (!empty($options['form parents'])) {
+    $element['#parents'] = $options['form parents'];
+    $element['#parents'][] = $variable['name'];
   }
   $element += array('#access' => variable_access($variable));
   if (!empty($variable['required'])) {
     $element += array('#required' => TRUE);
   }
+  // Add variable data to element so we can use it later fo validation, etc..
+  $element['#variable'] = $variable;
   return $element;
 }
 
@@ -148,6 +154,18 @@ function variable_form_element_options($variable, $options = array()) {
 }
 
 /**
+ * Implement validate callback
+ */
+function variable_form_element_validate($element, &$form_state, $form) {
+  $variable = $element['#variable'];
+  variable_include($variable);
+  $variable['value'] = isset($element['#value']) ? $element['#value'] : NULL;
+  if ($error = call_user_func($variable['validate callback'], $variable)) {
+    form_error($element, $error);
+  }
+}
+
+/**
  * Form to select variables
  */
 function theme_variable_table_select($variables) {
@@ -156,7 +174,12 @@ function theme_variable_table_select($variables) {
   $fields = array_keys($header);
   $rows = array();
   foreach (element_children($element) as $name) {
-    $variable_name = isset($element[$name]['#variable_name']) ? $element[$name]['#variable_name'] : $name;
+    if (isset($element[$name]['#variable_name'])) {
+      $variable_name = $element[$name]['#variable_name'];
+    }
+    else {
+      $variable_name = str_replace(array('<', '>'), array('[', ']'), $name);
+    }
     $variable = _variable_variable($variable_name);
     $row = array();
     foreach ($fields as $field) {

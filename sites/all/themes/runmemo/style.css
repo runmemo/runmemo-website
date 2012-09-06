@@ -629,7 +629,8 @@ div#branding strong {
 /**
  * Primary navigation
  */
-ul.main-menu {
+ul.main-menu,
+ul.menu-main-menu-rus {
   margin: 0;
   padding: 0;
   float: right; /* LTR */
@@ -637,7 +638,8 @@ ul.main-menu {
   z-index: 4;
 }
 
-ul.main-menu li {
+ul.main-menu li,
+ul.menu-main-menu-rus li {
   margin: 0;
   padding: 0;
   float: left; /* LTR */
@@ -646,7 +648,10 @@ ul.main-menu li {
 
 ul.main-menu li a,
 ul.main-menu li a:link,
-ul.main-menu li a:visited {
+ul.main-menu li a:visited,
+ul.menu-main-menu-rus li a,
+ul.menu-main-menu-rus li a:link,
+ul.menu-main-menu-rus li a:visited {
   display: block;
   margin: 0 1em;
   padding: .75em 0 0;
@@ -655,7 +660,9 @@ ul.main-menu li a:visited {
 }
 
 ul.main-menu li a:hover,
-ul.main-menu li a.active {
+ul.main-menu li a.active,
+ul.menu-main-menu-rus li a:hover,
+ul.menu-main-menu-rus li a.active {
   color: #fff;
   background: transparent url(images/bg-navigation-item-hover.png) no-repeat 50% 0;
 }

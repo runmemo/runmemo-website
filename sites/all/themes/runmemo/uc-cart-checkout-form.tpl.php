@@ -9,7 +9,7 @@
       print $form_token;
       print $form_id;
       print $submit;
-    ?>
+	?>
 	</div>
 	<div class="cartPane">
 	<?php 

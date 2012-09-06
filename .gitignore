@@ -11,3 +11,5 @@ sites/*/private
 /.project
 /sites/default/files_private/
 /FirePHPCore/
+/profiles/l10n_install/
+/sites/all/modules/jcarousel/

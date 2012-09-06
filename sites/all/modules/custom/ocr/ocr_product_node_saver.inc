@@ -34,6 +34,21 @@ class ProductNodeSaver {
    * Saves runner's number from ocr response to Drupal
    */
   public function AddNumber($number) {
+    // Do NOT add 0
+    if ($number == 0) {
+      return;
+    }
+  
+    // Do NOT add the same number
+    $saved_numbers = field_get_items('node', $this->node, 'ocr_numbers');
+    if ($saved_numbers != FALSE) {
+      foreach ($saved_numbers as $saved_number) {
+        if ($saved_number['value'] == $number) {
+          return;
+        } 
+      }
+    }
+    
     $this->node->ocr_numbers[$this->node->language][]['value'] = $number;
     $this->changed = TRUE;
   }

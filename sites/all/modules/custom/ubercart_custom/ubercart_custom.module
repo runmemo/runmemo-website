@@ -137,6 +137,16 @@ function ubercart_custom_menu() {
     'type' => MENU_CALLBACK
   );
   
+  $items['admin/store/settings/checkout/edit/fields_lang'] = array(
+    'title' => 'Translate address fields',
+    'description' => 'Translate the address field names',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('ubercart_custom_uc_store_address_fields'),  
+    'access arguments' => array('administer store'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => 8,
+  );  
+  
     
   return $items;
 }
@@ -508,3 +518,36 @@ function change_price() {
   echo json_message(TRUE, array('message' => t('New price was set to @price', array('@price' => $price)), 'nid' => $nid, 'price' =>  $price));
   return;
 }
+
+/*
+ * Enable traslation of the uberacart Adress fields.
+ */
+function ubercart_custom_uc_store_address_fields() {
+  $form = array();
+  //Copied from uc_store_address_fields_form
+  $fields = array(
+    'first_name' => array(t('First name'), TRUE),
+    'last_name' => array(t('Last name'), TRUE),
+    'phone' => array(t('Phone number'), TRUE),
+    'company' => array(t('Company'), TRUE),
+    'street1' => array(t('Street address 1'), TRUE),
+    'street2' => array(t('Street address 2'), TRUE),
+    'city' => array(t('City'), TRUE),
+    'zone' => array(t('State/Province'), TRUE),
+    'country' => array(t('Country'), TRUE),
+    'postal_code' => array(t('Postal code'), TRUE),
+    'address' => array(t('Address'), FALSE),
+    'street' => array(t('Street address'), FALSE),
+  );
+  //Just loop and build the fields
+  foreach ($fields as $field => $data) {
+    $form['uc_field_'.$field] = array(
+        '#type' => 'textfield',
+        '#title' => $data[0],
+        '#default_value' => $data[0],//variable_get('uc_field_'.$field, $data),    
+    );
+  }
+  //Magic happens
+  return system_settings_form($form);
+}
+

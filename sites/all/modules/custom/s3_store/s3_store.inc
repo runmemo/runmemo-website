@@ -63,10 +63,8 @@ class s3_mover {
     $path=drupal_realpath($this->path);
     $file_path = drupal_realpath($file->uri);
     $success = $this->s3->putObjectFile($file_path, $this->bucket, $file->filename, $this->acl);
-    if ($success) {
-      // original file was sent to S3
-      watchdog('S3 info', 'Sent file: ' . $file->uri . ' to s3://' . $this->bucket . '/' . $file->filename, array(), WATCHDOG_DEBUG);
-
+    if ($success) { // original file was sent to S3
+  
       $local_uri = $file->uri;
       // update uri of the file to point to S3
       $this->update_uri($file->fid, $file->uri);
@@ -85,9 +83,7 @@ class s3_mover {
   public function move_imagecache($file, $style) {
     // move imagecache to S3
     $derivative_uri = drupal_realpath(image_style_path($style, $file->uri));
-
-    watchdog('Image caching', 'Sending file to S3 for Style == ' . $style, array(), WATCHDOG_DEBUG);
-     
+   
     if (file_exists($derivative_uri)) {
       try { // Copy file to S3 and remove local file.
 
