@@ -93,7 +93,7 @@
       <?php print get_product_link($node->nid, 'NEXT'); ?>
     </div>
   </div>
-
+  
   <?php
       // We hide the comments and links now so that we can render them later.
       hide($content['comments']);
@@ -103,7 +103,7 @@
   <div class="product_preview">
     <?php print render($content['uc_product_image']) ?>
   </div>
-
+  
   <div class="product_content">
     <?php 
       print render($content); 
@@ -112,7 +112,7 @@
         print get_rendered_runner_number_box($node->nid);
       }
     ?>
-    <div id="product-nice-message-container" class="message" ></div>
+    <div id="product-nice-message-container" class="message" ><?php echo "photo by $name"; ?></div>
 
   </div>
 
