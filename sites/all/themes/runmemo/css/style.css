@@ -2731,16 +2731,7 @@ border-bottom: 1px solid #e9e9e9!important;
 	margin-left:10px;
 	}
 
-#block-locale-language-content {
-  float: left;
-  margin-left: 20px;
-  width: 20px;
-  height: 30px;
-}
 
-#block-locale-language-content li {
-  margin: 0px;
-}
 .page-cart-checkout .form-submit {
 	width:200px;
 	margin-bottom: 20px;
@@ -2750,12 +2741,7 @@ border-bottom: 1px solid #e9e9e9!important;
 .review-order-img img {
 margin:10px;
 }
-#block-locale-language-content a {
-  overflow: hidden;
-  display: block;
-  width: 16px;
-  height: 14px;
-}
+
 
 #review-instructions {
 	width:940px;
@@ -2768,6 +2754,27 @@ margin:10px;
 	-o-border-radius:5px;
 	border: 1px solid #DEE4E7;
 }
+
+/* Language Block Styling */
+
+#block-locale-language-content {
+  float: left;
+  margin-left: 20px;
+  width: 20px;
+  height: 30px;
+}
+
+#block-locale-language-content li {
+  margin: 0px;
+}
+
+#block-locale-language-content a {
+  overflow: hidden;
+  display: block;
+  width: 16px;
+  height: 14px;
+}
+
 #block-locale-language-content .language-switcher-locale-url {
   margin: 0px;
   padding: 0px;
