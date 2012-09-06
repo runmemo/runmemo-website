@@ -1960,10 +1960,7 @@ padding:10px;
   text-align: right;
 }
 .uc-cart-checkout-form .form-item input {
-  padding: 10px 0 10px 0;
   width: 273px;
-  height:22px;
-  border: 2px solid #EEF1F2;
   border-radius: 5px 5px 5px 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   -webkit-border-radius: 5px 5px 5px 5px;
@@ -2038,10 +2035,24 @@ padding:10px;
 .page-cart-checkout .paymentPane .chzn-single-with-drop {
   width:265px !important;
 }
-.page-cart-checkout #edit-panes-billing-billing-country_chzn{
-  width:275px !important;
+.page-cart-checkout #edit-panes-billing-billing-country_chzn,
+.page-cart-checkout #edit-panes-billing-billing-zone_chzn {
+  width:275px!important;
   float:left;
+  margin-left:10px;
  }
+ 
+ .page-cart-checkout #edit-panes-payment-details-cc-exp-year_chzn {
+ 	width:100px!important;
+ 	float:left;
+  	margin-left:10px;
+ }
+ 
+ .form-item-panes-payment-details-cc-exp-month,
+ .form-item-panes-payment-details-cc-exp-year {
+ float:left;
+ }
+ 
  .page-cart-checkout .chzn-drop{
    width:255px !important;
    margin-left: 10px;
@@ -2092,6 +2103,8 @@ padding:10px;
 }
 .page-cart-checkout .chzn-drop .chzn-search input {
   margin: 0px;
+  height:25px;
+  width:200px!important;
 }
 .chzn-container-active .chzn-single-with-drop {
   background: none!important;
@@ -2265,10 +2278,7 @@ border-bottom: 1px solid #e9e9e9!important;
    width : 25%;
  }
  .page-cart-checkout-review table.review-order-img .views-field-sell-price{
-   height:45px; 
-  width:44px; 
-  position:relative; 
-  z-index:1; 
+	  display:none;
   }
   
   /*----------Checkout Complete--------------*/
@@ -2715,4 +2725,30 @@ border-bottom: 1px solid #e9e9e9!important;
 
 .page-user #edit-id-display {
   display: none;
+}
+
+.uc-cart-checkout-form .chzn-container { 
+	margin-left:10px;
+	}
+
+.page-cart-checkout .form-submit {
+	width:200px;
+	margin-bottom: 20px;
+	margin-right: 20px
+}
+
+.review-order-img img {
+margin:10px;
+}
+
+#review-instructions {
+	width:940px;
+	margin-bottom:10px;
+	margin-left:auto;
+	margin-right:auto;
+	padding:20px;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	-o-border-radius:5px;
+	border: 1px solid #DEE4E7;
 }
