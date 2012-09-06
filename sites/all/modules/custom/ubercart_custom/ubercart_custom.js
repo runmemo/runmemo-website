@@ -85,7 +85,7 @@
 	  }
 	
 	  function onPriceChange( event, ui ) {
-	    var price = $( ".node-type-product #price" ).slider( "value" );
+	    var price = 0// $( ".node-type-product #price" ).slider( "value" );
 	    var base_path = Drupal.settings.basePath;
 	    var nid = $('.node-type-product #product_id').val();
 	    //define php info and make ajax call
@@ -106,7 +106,7 @@
 	
 	  var price = $( ".node-type-product #price_val" ).val();
 	 
-	  $(".node-type-product #price").slider({
+	/* $(".node-type-product #price").slider({
 	          range: "min",
 	          value: price,
 	          min: 1,
@@ -114,12 +114,12 @@
 	          step: 1,
 	          slide: onSlide,
 	          change: onPriceChange
-	  });
+	  }); 
 	
-	  $(".node-type-product #amount").text( "£" + $( ".node-type-product #price" ).slider( "value" ) );
-	 
+	  $(".node-type-product #amount").text( "£" + $(".node-type-product #price").slider( "value" ));
+	 */
 	
-		}
+	 }
 	};
 	
 	Drupal.behaviors.runmemoCheckoutPage = {
