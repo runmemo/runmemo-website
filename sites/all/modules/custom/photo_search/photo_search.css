@@ -79,8 +79,13 @@
 }
 
 .i18n-en .proceed_to_cart a {
-	background: transparent url(images/Cart-Summary.png) no-repeat scroll 0px 0px;
+	background: transparent url(images/proceed-to-checkout.png) no-repeat scroll 0px 0px;
 }
+
+.i18n-ru .proceed_to_cart a {
+	background: transparent url(images/proceed-to-checkout-ru.png) no-repeat scroll 0px 0px;
+}
+
 .proceed_to_cart a {
 	color: #34373A;
 }
