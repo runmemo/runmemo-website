@@ -55,7 +55,7 @@ function drag_drop_upload_validation() {
 	Drupal.behaviors.runmemoUploadPage = {
 		attach : function(context, settings) {
 		
-			$('.plupload_droptext').html('<div class="drag_drop_text">Drag and drop your photos here</div><div class="start_upload_text">and click on Start Upload button below</div>');
+			$('.plupload_droptext').html('<div class="drag_drop_text">Drag and drop your photos here</div><div class="start_upload_text">and click on Start Upload button below<br />(<i>works in Chrome, Firefox and Safari</i>).</div>');
 			
 			var uploader = $("#edit-file").pluploadQueue();
 		    uploader.bind('UploadProgress', function(up, file) {
