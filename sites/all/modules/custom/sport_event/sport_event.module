@@ -57,7 +57,7 @@ function sport_event_block_view($delta = '') {
  * implements hook_forms
  * @param sting $form_id
  */
-function photo_search_forms($form_id, $nid) {
+function sport_event_forms($form_id, $nid) {
 
   $forms = array();
   if (strpos($form_id, 'recent_event_search_') === 0) {

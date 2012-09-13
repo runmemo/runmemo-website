@@ -83,7 +83,7 @@ echo $cart_items;}?>" />
   $handler->display->display_options['empty']['php']['field'] = 'php';
   $handler->display->display_options['empty']['php']['empty'] = FALSE;
   $handler->display->display_options['empty']['php']['php_output'] =
-  '<?php print render(drupal_get_form("photo_request_form")); ?>';
+  '<?php print render(drupal_get_form("photo_search_request_form")); ?>';
   /* Relationship: Content: Author */
   $handler->display->display_options['relationships']['uid']['id'] = 'uid';
   $handler->display->display_options['relationships']['uid']['table'] = 'node';
