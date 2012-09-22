@@ -16,7 +16,9 @@
 	$cid = uc_cart_get_id($create = TRUE);
 	$count  = count_cart_items($cid);
 	$subtotal = cart_total_amount($cid);
-	
+	if ($subtotal > 12) {
+	  $subtotal = 12;
+	}
        ?>
 	   <div class="cartSummary">
 			<div class="blueHeading"><?php print t('Order Summary'); ?></div>

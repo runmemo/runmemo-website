@@ -69,7 +69,7 @@ function ubercart_custom_init() {
 
   drupal_add_css( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/start/jquery-ui.css', 'external');
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
-  
+
   drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/jquery.tagsinput.js');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
@@ -136,7 +136,7 @@ function ubercart_custom_menu() {
     'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
-  
+
   $items['admin/store/settings/checkout/edit/fields_lang'] = array(
     'title' => 'Translate address fields',
     'description' => 'Translate the address field names',
@@ -145,14 +145,14 @@ function ubercart_custom_menu() {
     'access arguments' => array('administer store'),
     'type' => MENU_LOCAL_TASK,
     'weight' => 8,
-  );  
-  
-    
+  );
+
+
   return $items;
 }
 
 /**
- * 
+ *
  * Function that adds product to cart for the AJAX calls on /cart_add_item?nid={nid}
  */
 function cart_add_item() {
@@ -162,7 +162,7 @@ function cart_add_item() {
   }
   $nid = $_GET['nid'];
   $cid = uc_cart_get_id($create = TRUE);
-  
+
   // check whether item is already in the cart
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
@@ -176,8 +176,80 @@ function cart_add_item() {
    
 }
 
+function ubercart_custom_uc_order ($op, &$order, $arg2) {
+  $max_order_value = 12;
+  
+  switch ($op) {
+    case 'load':
+      break;
+    case 'save':
+      // The first thing we do is remove the line item if it exists. Since users can go back and forth from the order review page to the checkout page, they may make different selections each time. By defaulting to having the line item removed, we prevent accidentally adding it multiple times, as well as preventing adding it if the user hasn't selected it when reviewing the page. So we loop through the existing line items searching for our specific line item, and removing it if it exists. We will add it afterwards if it needs to be added.
+      foreach($order->line_items as $key => $line_item)
+      {
+        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the line item ID that will be defined after this loop.
+        {
+          unset($order->line_items[$key]);
+          db_query('DELETE FROM {uc_order_line_items} WHERE order_id = :oid AND type = :type',  array(':oid' => $order->order_id, ':type' => 'gift_discount'));
+          break;
+        }
+      }
+
+      // Now we can get the total value of the order
+      $subtotal = 0;
+      foreach ($order->line_items as $item) {
+        // need to get price from the node in case it was set to 0 already...
+        if($item['type'] == 'subtotal')
+        $subtotal += $item['amount'];
+      }
+      
+      $discount = 0;
+      if($subtotal > $max_order_value) {
+        $discount = $subtotal - $max_order_value;
+      } 
+      else {
+        break;
+      }
+
+      // We will enter this conditional when the checkbox was selected.
+      // In this tutorial, the amount of the line item is a fixed amount, 3 pounds, but in my real tutorial the value was a percentage of the total, as I explained above in the hook_line_order() explanation. You will most likely need to re-calculate the value of the line item again here, however in this tutorial it is a fixed amount.
+      $line_item_value = $discount;
+      // Next we add the line item
+      uc_order_line_item_add
+      (
+      $order->order_id, // This is the order ID.
+          'gift_discount', // This is the line item ID. We used this ID to remove the line item in the loop above.
+      t('Package Discount'), // This is the text that will be shown on the order review page to describe what the line item is
+      -1 * $discount, // This is the value of the line item. Discounts will be a negative number, surcharges a positive number
+      NULL, // This is the weight of the line item
+      array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
+      );
+
+      break;
+
+      case 'total':
+      // Here we return a value that will be added to the order total. For discounts we would return a negative value, for surcharges we return a positive value. We do NOT return the new total, only the change in the total.
+      // We loop through each of the line items to see if ours has been added. If it has, we adjust the order total accordingly.
+      foreach($order->line_items as $line_item)
+      {
+        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the ID of the line item as defined when $op equals 'save'
+        {
+          // If we enter this, the line item exists, so we need to return the value of the line item. This will adjust the order total.
+          return $line_item['amount'];
+        }
+      }
+      break;
+
+    case 'delete':
+      // Delete existing order codes
+
+      //TO DO: determine if uses should be deleted or put global setting in for user to decide
+      break;
+  }
+}
+
+
 /**
- * 
+ *
  * Function that removes product from cart for the AJAX calls on /cart_add_item?nid={nid}
  */
 function cart_remove_item() {
@@ -185,7 +257,7 @@ function cart_remove_item() {
     echo json_message(FALSE, array('message' => t('Required parameter nid is not set.')));
     return;
   }
- 
+
   $nid = $_GET['nid'];
   $cart_ids = array();
   $cid = uc_cart_get_id($create = TRUE);
@@ -195,39 +267,39 @@ function cart_remove_item() {
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product')); //, $cid = $uid, $data = array('module' => 'uc_product'));
-  
-      echo json_message(TRUE, 
-            array(
+
+      echo json_message(TRUE,
+      array(
             		'message' => t('Removed item from the cart.'), 
       				'nid' => $nid,
                     'items' => $items - 1,
                     'photographers' => count_cart_photographers($cid),
                     'subtotal' => $subtotal - $item->price * $item->qty,
-                 )
-           );
+      )
+      );
       return;
     }
   }
-  
+
   echo json_message(FALSE, array('message' => t('Item was not found in the cart.'), 'nid' => $nid));
 }
 
 function order_summary_text() {
-  
+
 }
 
 /**
- * 
+ *
  * Counts number of items in the cart for given cart id
  * @param integer $cid
  */
 function count_cart_items($cid) {
   return count(uc_cart_get_contents($cid));
-} 
+}
 
 /**
  * Gets subtotal of the cart for given cart id
- * 
+ *
  * @param integer $cid - cart id
  */
 function cart_total_amount($cid) {
@@ -238,32 +310,33 @@ function cart_total_amount($cid) {
   return $subtotal;
 }
 
+
 /**
- * 
+ *
  * Counts number of photographers who took photos that were selected in the cart.
  * @param integer $cid
  */
 function count_cart_photographers($cid) {
   $cart = uc_cart_get_contents($cid);
-  
+
   foreach ($cart as $index=> $product) {
-	  $photographer[] = $product->uid;
-	}
-	
+    $photographer[] = $product->uid;
+  }
+
   return count(array_unique($photographer));
-  
+
 }
 
 /**
- * 
- * Function that generates JSON message that can be returned for AJAX call 
+ *
+ * Function that generates JSON message that can be returned for AJAX call
  * @param boolean $success shows whether request was actioned successfully
- * @param string $message message that will be added to the response. 
+ * @param string $message message that will be added to the response.
  * 	Message attribute will be ignored if not provided or NULL.
  */
 function json_message($success, $attributes = array()) {
   $result = array('success' => $success);
-  
+
   foreach ($attributes as $index => $attribute) {
     $result[$index] = $attribute;
   }
@@ -282,7 +355,7 @@ function cart_list_items() {
     $subtotal += $item->price * $item->qty;
     $items[]=array('nid' => $item->nid, 'price' => $item->price, 'qty' => $item->qty);
   }
-  
+
   $result = array('total' => $subtotal, 'items' => $items);
   echo json_encode($result);
 }
@@ -292,8 +365,8 @@ function cart_list_items() {
  * Clears the cart of the current user
  */
 function cart_clear() {
-   uc_cart_empty(uc_cart_get_id());
-   echo json_message(TRUE, array('message' => 'Cart was cleared.'));
+  uc_cart_empty(uc_cart_get_id());
+  echo json_message(TRUE, array('message' => 'Cart was cleared.'));
 }
 
 /**
@@ -405,7 +478,7 @@ function search_result_cart($form, &$form_state) {
   $form['selected_product'] = array('#type' => 'textfield', '#title' => '', '#id' => 'selected_cart_products', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $url = url('cart/checkout');
   // @todo move this html block from here to theme
-  $form['cart_summary'] = array('#markup' => 
+  $form['cart_summary'] = array('#markup' =>
     "<div class='cart_summ'>
     	<div id='currency-sign' style='display:none'>" . variable_get('uc_currency_sign') . "</div>
   		<div class='summary_item_cost'>
@@ -418,7 +491,7 @@ function search_result_cart($form, &$form_state) {
 		</div>
 		<div>
 			<span class='summary_selected_photos'>"
-              . t('Photos') . ':&nbsp;' .
+  . t('Photos') . ':&nbsp;' .
             "<span class='placeholder'></span>
 			</span>
 				<span class='summary_cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
@@ -440,7 +513,7 @@ function search_result_cart($form, &$form_state) {
 
 /**
  * AJAX call
- * Function that adds/removes runners' numbers from product node  
+ * Function that adds/removes runners' numbers from product node
  * @return
  * JSON message that can be returned for AJAX call
  */
@@ -448,33 +521,33 @@ function save_numbers() {
   $nid = $_POST['nid'];
   $number = $_POST['number'];
   $option = $_POST['option'];
-  
+
   if (empty($nid) || empty($number) || empty($option)) {
     echo json_message(FALSE, array('message' => t('Required parameter is not set')));
     return;
   }
-  
+
   $number_int = (int) $number;
-  
+
   if ((string)$number_int != $number) {
     echo json_message(FALSE, array('message' => t('Number is not int')));
-    return;    
+    return;
   }
-  
-//check permission
+
+  //check permission
   $node = node_load($nid);
   if (!node_access("update", $node)) {
     echo json_message(FALSE, array('message' => t('Has no permissions')));
     return;
-  }  
-  
+  }
+
   $productSaver = new ProductNodeSaver($nid);
-  
+
   switch ($option) {
     case "add":
       $productSaver->AddNumber($number);
       break;
-    
+
     case "remove":
       $productSaver->RemoveNumber($number);
       break;
@@ -483,16 +556,16 @@ function save_numbers() {
       echo json_message(FALSE, array('message' => t('Parametr option=@option is not supported', array('@option' => $option))));
       return;
   }
-  
+
   $productSaver->Save();
-  
+
   echo json_message(TRUE, array('message' => 'node=' . $nid . ',number=' . $number . ',option=' . $option));
   return;
 }
 
 /**
  * AJAX call
- * Function that changes price from product node  
+ * Function that changes price from product node
  * @return
  * JSON message that can be returned for AJAX call
  */
@@ -503,14 +576,14 @@ function change_price() {
     echo json_message(FALSE, array('message' => t('Required parametr is not set')));
     return;
   }
-  
-//check permission
+
+  //check permission
   $node = node_load($nid);
   if (!node_access("update", $node)) {
     echo json_message(FALSE, array('message' => t('Has no permissions')));
     return;
-  }  
-  
+  }
+
   $productSaver = new ProductNodeSaver($nid);
   $productSaver->SetPrice($price);
   $productSaver->Save();

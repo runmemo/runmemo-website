@@ -15,9 +15,10 @@ function photo_search_views_api() {
 /**
  * Init function for adding the external file
  */
-function photo_search_init() {
+function photo_search_init() { 
 
 }
+
 
 function photo_search_preprocess_page(&$variables) {
   if ('search-result' === arg(0)) {
@@ -399,7 +400,7 @@ function product_exists($nid, $number, $expire = 0) {
  * @param string $form_id
  * @return renderable array
  */
-function photo_search_form_photo_request_form_alter(&$form, &$form_state, $form_id) {
+function photo_search_request_form($form, &$form_state) {
     if (arg(0) == 'search-result') {
       if (is_numeric(arg(1)) && (arg(1) != '')) {
         $eventid = arg(1);

@@ -196,6 +196,10 @@ jQuery(document).ready(function() {
 			 *            total price of products in the cart
 			 */
 			function set_total_price(price) {
+				var package_price = 12; // @todo: get this variable from page data.
+				if (price > package_price) {
+					price = package_price; 
+				}
 				$("span.summary_cost span.placeholder").text(price);
 			}
 
