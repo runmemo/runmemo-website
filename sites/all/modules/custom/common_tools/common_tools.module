@@ -170,9 +170,15 @@ function get_product_link($nid, $switch) {
  * @return string 
  */
 function get_photo_url($nid) {
+  if (!isset($nid)) {
+    return FALSE;
+  }
   $product = node_load($nid);
   $image_field = field_get_items('node', $product, 'uc_product_image');
   $img_uri = $image_field[0]['uri'];
+  if (!isset($img_uri)) {
+    return FALSE;
+  }     
   $img_url = file_create_url($img_uri);
   return $img_url;
   
