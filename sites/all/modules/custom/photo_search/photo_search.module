@@ -44,6 +44,14 @@ function photo_search_menu() {
   );
 
 
+  $items['search-result/%'] = array(
+    'titile' => t('Search link without number'),
+    'description' => 'Need to redirect to working page',
+  	'page callback' => 'bad_search_event_redirect',
+    'page arguments' => array(1),
+    'access arguments' => array('search photos'), 
+  );
+  
   return $items;
 
 }
@@ -62,6 +70,11 @@ function photo_search_permission() {
   );
 }
 
+function bad_search_event_redirect($eventid) {
+  print_r ('redirecting to event ' . $eventid);
+  drupal_goto('node/' . $eventid);
+}
+ 
 /**
  * Implements photo_search_user_default_permissions().
  */
