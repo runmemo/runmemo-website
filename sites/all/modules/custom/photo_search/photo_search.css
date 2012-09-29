@@ -19,22 +19,25 @@
 }
 
 /* check box in search results */
-.page-search-result .label_check {
+.page-search-result .img_check {
 	background: url(images/checkbox.png) no-repeat;
 	display: block;
 	cursor: pointer;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
 	width: 28px;
 	height: 28px;
-}
-
-.page-search-result .node_check {
+	/* position */
 	float: right;
 	position: relative;
 	right: 0;
 	top: 25px;
 	z-index: 1;
 }
+
+.page-search-result .img_check.checked {
+	background: url(images/checkbox-hover.png) no-repeat;
+}
+
 
 .views-field-sell-price {
 	float: left;
@@ -46,9 +49,7 @@
 	top: 30px;
 }
 
-.page-search-result label.c_on {
-	background: url(images/checkbox-hover.png) no-repeat;
-}
+
 
 .page-search-result .label_check input,.page-search-result .label_radio input
 	{

@@ -7,18 +7,16 @@ jQuery(document).ready(function() {
  */
 (function($) {
 	Drupal.behaviors.runmemoSearchPage = {
-
 		attach : function(context, settings) {
-
-			$('#block-system-main table.views-view-grid td').each(function() {
+			/*
+			$('.page-search-result table.views-view-grid td').each(function() {
 				var markup = $(this).html();
-
 				if ($(this).has("div").length == 0) {
 					$(this).css("border", "none");
 				}
-
 			});
-
+			*/
+			
 			if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) {
 				var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');
 				// for highlight the thumbnail image related to the preview
@@ -59,6 +57,9 @@ jQuery(document).ready(function() {
 				} else {
 					show_remove_button();
 				}
+				
+				load_selected_products_from_ubercart();
+				
 			}
 
 			else { // hide cart details block
@@ -74,25 +75,6 @@ jQuery(document).ready(function() {
  			});
 			
 
-			// onload ajax calling in the search result page
-			if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) {
-				load_selected_products_from_ubercart();
-			}
-
-			$('span.node_check').each(
-				function() {
-						var nid = $(this).parent().children('span').text();
-						$(this).html(
-						'<label class="label_check" for="'+ nid + '" id="check_'+ nid 
-							+ '"><input type="checkbox" name="id_' + nid 
-							+ '" id="' + nid + '" value="'+ nid
-							+ '" class="img_check"/></label>');
-							});
-
-			// message for adding and removing cart
-			// $(".page-search-result #center").prepend('<div class="cart_msg"
-			// style="display:none"></div>');
-
 			if ($('.page-search-result #search-result-cart .summary_selected_photos .placeholder').length > 0) {
 				if ($(
 						'.page-search-result #search-result-cart .summary_selected_photos .placeholder')
@@ -103,24 +85,16 @@ jQuery(document).ready(function() {
 					hide_proceed_to_checkout();
 				}
 			}
-			// for add to cart functionality when check the checkbox in the
-			// search
-			// result page
-			// store this nids in the array
-			var checked_products_nids = new Array();
-			$('span.node_check input').click(
-							function() {
-								var nid = $(this).val();
-								switch_check_box(nid);
-								switch_add_remove_buttons(nid);
-							});
-
-
-		
+			
+			// Onclick event for checkbox 
+			$('.img_check').click(function() {
+				var nid = $(this).attr('title');
+				switch_check_box(nid);
+				switch_add_remove_buttons(nid);
+			});
 
 			/**
-			 * Tells whether product with specified nid is in the cart from HTML
-			 * tags on the page
+			 * Tells whether product with specified nid is in the cart on the page
 			 */
 			function is_product_in_cart(nid) {
 				if (window.cart) {
@@ -135,26 +109,27 @@ jQuery(document).ready(function() {
 			}
 			
 			function set_cart(cart_json) {
-				window.cart = jQuery.parseJSON(cart_json);
-				console.debug(cart_json);
-				console.debug(window.cart);
+				window.cart = cart_json;				
 				
+				console.debug(window.cart);
 				uncheck_all_checks_on_page();
 				
 				var nid = 0;
+
 				// update checkboxes for items in cart
 				for (var i in window.cart.items) {
 					nid = window.cart.items[i].nid;
 					set_to_checked(nid);
-				}				
+				}	
+			
 
 				set_cart_summary();
 			}
 			
 			// uncheck all checks on the page
 			function uncheck_all_checks_on_page() {
-				$('span.node_check input').each(function() {
-					var nid = $(this).val();
+				$('.img_check').each(function() {
+					var nid = $(this).attr('title');
 					set_to_unchecked(nid);	
 				});
 			}
@@ -162,13 +137,13 @@ jQuery(document).ready(function() {
 			 * Gets Size of the cart from HTML tags on the page
 			 */
 			function size_of_the_cart() {
-				if(window.cart.items) {
+		
+				if(window.cart) {
 					return window.cart.items.length;
 				}
 				else {
 					return 0;
 				}
-				
 			}
 
 			// Action check event
@@ -209,12 +184,12 @@ jQuery(document).ready(function() {
 			function set_cart_summary() {
 				var total_price = 0;
 				var price = 0;
-
+			
 				for (var i in window.cart.items) {
 					price = parseFloat(window.cart.items[i].price);
 					total_price = total_price + price;
 				}		
-	
+				
 				set_total_items(size_of_the_cart());
 				set_total_price(total_price);
 				
@@ -239,7 +214,7 @@ jQuery(document).ready(function() {
 			}
 			
 			function switch_check_box(nid) {
-				if ($('#check_' + nid).hasClass('c_on')) {
+				if ($('#check_' + nid).hasClass('checked')) {
 					remove_from_cart(nid);
 				} else {
 					add_to_cart(nid);
@@ -247,22 +222,16 @@ jQuery(document).ready(function() {
 			}
 			
 			function set_to_checked(nid) {
-				$('#check_' + nid).addClass('c_on');
-				$('span.node_check #'+ nid).attr('checked', true);
+				$('#check_'+ nid).addClass('checked');
 			}
 			
 			function set_to_unchecked(nid) {
-				$('#check_' + nid).removeClass('c_on');
-				$('span.node_check #'+ nid).attr('checked', false);
-			
-				
-				
+				$('#check_'+ nid).removeClass('checked');
 			}
 		
 			
 			function add_to_cart(nid) {
 				set_to_checked(nid);
-				
 
 				// add item to browser cart
 				var match = is_product_in_cart(nid);
@@ -295,9 +264,15 @@ jQuery(document).ready(function() {
 
 				var base_path = Drupal.settings.basePath;
 
+				var event = $('#event_runner option:selected').val();
+				var number = $('#runner_number').val();
+				
 				$.ajax({
-					// type : "POST",
-					url : base_path + "cart_list_items",
+					url : base_path + "ajax/cart_list_items",
+					type: "POST",
+					data: {event: event, number: number},
+					dataType: 'json',
+				    cache: false,
 					success : function(msg) {
 						set_cart(msg);
 					}
@@ -433,8 +408,8 @@ jQuery(document).ready(function() {
 			 * Click event for select all link
 			 */
 			$('#select-all').click(function() {
-				$('span.node_check').each(function() {
-					var nid = $(this).parent().children('span').text();
+				$('.img_check').each(function() {
+					var nid = $(this).attr('title');
 					add_to_cart(nid);
 				});
 			});

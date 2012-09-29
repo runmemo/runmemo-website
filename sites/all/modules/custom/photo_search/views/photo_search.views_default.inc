@@ -147,7 +147,8 @@ echo $cart_items;}?>" />
   $handler->display->display_options['fields']['check_box']['field'] = 'nid';
   $handler->display->display_options['fields']['check_box']['label'] = '';
   $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['text'] = '<span class="node_check" ></span><span class="node_check_id" style="display:none;">[check_box]</span>';
+  $handler->display->display_options['fields']['check_box']['alter']['text'] = 
+    '<div title="[check_box]" id="check_[check_box]" class="img_check"></div>';                                                                                                              
   $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
