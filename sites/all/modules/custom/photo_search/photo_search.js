@@ -36,28 +36,7 @@ jQuery(document).ready(function() {
 						.text();
 				$('.page-search-result span#photo_author label').text(
 						initial_authour_name);
-				// change the add to cart hidden value.
-				var wrap_id = $(
-						"#block-system-main table.views-view-grid tr.row-first td.col-first img")
-						.parent().attr('id');
-				var exploded = wrap_id.split('thumb-');
-				var nid = exploded[1];
-				$("#cart_hidden").val(nid);
-
-				// Add/remove functionality based on the cart contents
-				var cart_contents = new Array();
-				var cart_str = $('.view-footer #cart_hidden_nids input').val();
-
-				// var temp = new Array();
-				cart_contents = cart_str.split(",");
-
-				if (jQuery.inArray(nid, cart_contents) == -1) {
-					show_add_button();
-
-				} else {
-					show_remove_button();
-				}
-				
+			
 				load_selected_products_from_ubercart();
 				
 			}
@@ -301,9 +280,15 @@ jQuery(document).ready(function() {
 				    cache: false,
 					success : function(msg) {
 						set_cart(msg);
+						
+						// show add/remove button
+						if ($(".row-first .col-first .img_check").hasClass('checked')) {
+							show_remove_button();
+						} else {
+							show_add_button();
+						}
 					}
 				});
-
 			}
 			
 			
@@ -462,27 +447,22 @@ jQuery(document).ready(function() {
 						// preload image
 						var image = $('<img />').attr('src', replacement_url);
 						
-						// fade out old image and fade in the new one
 						var preview = $("#prev_img img");
 						var current_preview_url = preview.attr('src');
 						if (current_preview_url != replacement_url) {
-							preview.animate({opacity: 0.40}, 200, function() {
+								// fade out old image and fade in the new one
+								preview.animate({opacity: 0.40}, 200, function() {
 								preview.attr('src', replacement_url);
 								preview.animate({ opacity: 1 }, 200);
 							});
 						}
-						//$("#prev_img img").attr('src', replacement_url);
 					
-						// change the addtocart button id
+						// #cart_hidden contains the nid 
+						// of currently selected product
 						var wrap_id1 = $(this).parent().attr('id');
 						var exploded = wrap_id1.split('thumb-');
 						var new_id = exploded[1];
 						$("#cart_hidden").val(new_id);
-
-						// Add/remove functionality based on the cart
-						// contents
-						var cart_contents = new Array();
-						var cart_str = $('.view-footer #cart_hidden_nids input').val();
 
 						// var temp = new Array();
 						if ($('#check_' + new_id).hasClass('checked') == true) {

@@ -56,27 +56,6 @@ function photo_search_views_default_views() {
   	 <div id='clear-all'>clear all</div>";
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
-  
-  /* Footer: Global: PHP */
-  $handler->display->display_options['footer']['php']['id'] = 'php';
-  $handler->display->display_options['footer']['php']['table'] = 'views';
-  $handler->display->display_options['footer']['php']['field'] = 'php';
-  $handler->display->display_options['footer']['php']['empty'] = FALSE;
-  $handler->display->display_options['footer']['php']['php_output'] = '<?php
-$cart_ids = array();
-foreach (uc_cart_get_contents() as $item) {
-    $cart_ids[]=$item->nid ;
-  }
-if(!empty($cart_ids)) {
-$cart_items = implode(",", $cart_ids);
-}
-else {
-$cart_items = \'\';
-}
-?>
-<div id="cart_hidden_nids" style="display:none"><input type="text" name="cart_text"  value="<?php if($cart_items != \'\'){
-echo $cart_items;}?>" />
-</div>';
   /* No results behavior: Global: PHP */
   $handler->display->display_options['empty']['php']['id'] = 'php';
   $handler->display->display_options['empty']['php']['table'] = 'views';

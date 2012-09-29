@@ -390,3 +390,7 @@ form#select-event-runner-get-photos {
 	height:16px;
 	width:16px;
 }
+
+.page-search-result .prev_img_details .form-submit {
+	background-color: #FFF;
+	}
