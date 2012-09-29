@@ -110,8 +110,6 @@ jQuery(document).ready(function() {
 			
 			function set_cart(cart_json) {
 				window.cart = cart_json;				
-				
-				console.debug(window.cart);
 				uncheck_all_checks_on_page();
 				
 				var nid = 0;
@@ -133,6 +131,15 @@ jQuery(document).ready(function() {
 					set_to_unchecked(nid);	
 				});
 			}
+			
+			// pending all checks on the page
+			function pending_all_checks_on_page() {
+				$('.img_check').each(function() {
+					var nid = $(this).attr('title');
+					set_to_pending(nid);	
+				});
+			}
+			
 			/**
 			 * Gets Size of the cart from HTML tags on the page
 			 */
@@ -221,17 +228,28 @@ jQuery(document).ready(function() {
 				}
 			}
 			
+			function set_to_pending(nid) {
+				if ( $('#check_'+ nid).children().length == 0 ) {
+					$('#check_'+ nid).removeClass('checked');
+					$('#check_'+ nid).append('<div class="ajax-pending"></div>');
+				}
+			}
+			
 			function set_to_checked(nid) {
+				$('#check_'+ nid).empty();
 				$('#check_'+ nid).addClass('checked');
+				
 			}
 			
 			function set_to_unchecked(nid) {
+				$('#check_'+ nid).empty();
 				$('#check_'+ nid).removeClass('checked');
 			}
 		
 			
 			function add_to_cart(nid) {
-				set_to_checked(nid);
+				set_to_pending(nid);
+			
 
 				// add item to browser cart
 				var match = is_product_in_cart(nid);
@@ -243,7 +261,6 @@ jQuery(document).ready(function() {
 					window.cart.items.push(item);
 				} 
 				
-				set_cart_summary();
 				
 				// add item to ubercart
 				var base_path = Drupal.settings.basePath;
@@ -251,9 +268,20 @@ jQuery(document).ready(function() {
 					// type : "POST",
 					url : base_path + "cart_add_item?nid=" + nid,
 					success : function(msg) {
-					//	console.debug(msg);
+						set_to_checked(nid);
+						set_cart_summary();
+					},
+					error: function(msg) {
+						set_error_message(nid, 'Sorry, we could not add item to the cart...');
 					}
 				});
+			}
+			
+			function set_error_message(nid, msg) {
+				$('#check_'+ nid + ' .ajax-pending').remove();
+				if ($('#check_'+ nid).children().length == 0) {
+					$('#check_'+ nid).append('<div class="ajax-error" title = "' + msg + '"></div>');
+				}
 			}
 			
 			function get_currency_sign() {
@@ -292,6 +320,7 @@ jQuery(document).ready(function() {
 			 */
 			function remove_from_cart(nid) {
 				set_to_unchecked(nid);
+				set_to_pending(nid);
 				
 				// remove item from browser cart;
 				for (var i in window.cart.items) {
@@ -300,13 +329,17 @@ jQuery(document).ready(function() {
 					}
 				}
 				
-				set_cart_summary();
 				// remove item from ubercart
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
 					// type : "POST",
 					url : base_path + "cart_remove_item?nid=" + nid,
 					success : function(msg) {
+						set_to_unchecked(nid);
+						set_cart_summary();
+					},
+					error : function(msg) {
+						set_error_message(nid, 'Sorry, we could not remove item from the cart...');
 					}
 				});
 			}
@@ -385,20 +418,16 @@ jQuery(document).ready(function() {
 			 * Click event for clear all link
 			 */
 			$('#clear-all').click(function() {
-				uncheck_all_checks_on_page();
-				
-				console.debug('clear all - click');
-				
-				window.cart.items = [];
-				
-				set_cart_summary();
+				pending_all_checks_on_page();
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
 					// type : "POST",
 					url : base_path + "ajax/cart_clear",
 					
 					success : function(msg) {
-						console.debug(msg);
+						set_cart_summary();						
+						window.cart.items = [];
+						uncheck_all_checks_on_page();
 					}
 				});
 				

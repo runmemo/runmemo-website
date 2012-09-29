@@ -24,8 +24,10 @@
 	display: block;
 	cursor: pointer;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
-	width: 28px;
-	height: 28px;
+	width: 22px;
+	height: 22px;
+	padding-top:3px;
+	padding-left:3px;
 	/* position */
 	float: right;
 	position: relative;
@@ -375,4 +377,16 @@ form#select-event-runner-get-photos {
 
 .page-search-result #photo-request-submit-button .form-submit {
 	float: right;
+}
+
+.ajax-pending {
+	background: url(images/ajax-loader.gif);
+	height:16px;
+	width:16px;
+}
+
+.ajax-error {
+	background: url(images/ajax-error.gif);
+	height:16px;
+	width:16px;
 }
