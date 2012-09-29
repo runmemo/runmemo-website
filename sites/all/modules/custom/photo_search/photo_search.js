@@ -445,24 +445,34 @@ jQuery(document).ready(function() {
 			 */
 			$('div.field-content img').bind('click',function() {
 
-						// for highlight the thumbnail image related to
-						// the preview image
-				
+						// highlight selected image
 						$('div.field-content img').removeClass('selected-thumbnail').addClass('thumbnail');
-						
 						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
 
-						var imgsrc = $(this).attr('src');
+						// change the price of the photo
 						var price_txt = get_currency_sign() + $(this).parents('td').find('span.node_cost').text();
 						$('.page-search-result span#photo_cost label').text(price_txt);
-
+						// change the autor text
 						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
 						$(".page-search-result span#photo_author label").text(node_author_txt);
 
-						var replacementurl = imgsrc.replace('search_thumbnail', 'search_preview');
-
-						$("#prev_img").html('<img src="' + replacementurl + '" />');
-
+						var imgsrc = $(this).attr('src');
+						var replacement_url = imgsrc.replace('search_thumbnail', 'search_preview');
+						
+						// preload image
+						var image = $('<img />').attr('src', replacement_url);
+						
+						// fade out old image and fade in the new one
+						var preview = $("#prev_img img");
+						var current_preview_url = preview.attr('src');
+						if (current_preview_url != replacement_url) {
+							preview.animate({opacity: 0.40}, 200, function() {
+								preview.attr('src', replacement_url);
+								preview.animate({ opacity: 1 }, 200);
+							});
+						}
+						//$("#prev_img img").attr('src', replacement_url);
+					
 						// change the addtocart button id
 						var wrap_id1 = $(this).parent().attr('id');
 						var exploded = wrap_id1.split('thumb-');
@@ -472,13 +482,10 @@ jQuery(document).ready(function() {
 						// Add/remove functionality based on the cart
 						// contents
 						var cart_contents = new Array();
-						var cart_str = $(
-								'.view-footer #cart_hidden_nids input')
-								.val();
+						var cart_str = $('.view-footer #cart_hidden_nids input').val();
 
 						// var temp = new Array();
-						if ($('#' + new_id).attr('checked') == true) {
-
+						if ($('#check_' + new_id).hasClass('checked') == true) {
 							show_remove_button();
 						} else {
 							show_add_button();
