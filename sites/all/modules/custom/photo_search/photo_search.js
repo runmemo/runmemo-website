@@ -119,8 +119,6 @@ jQuery(document).ready(function() {
 					nid = window.cart.items[i].nid;
 					set_to_checked(nid);
 				}	
-			
-
 				set_cart_summary();
 			}
 			
@@ -413,7 +411,6 @@ jQuery(document).ready(function() {
 								return false;
 							});
 
-			
 			/**
 			 * Click event for clear all link
 			 */
@@ -425,8 +422,8 @@ jQuery(document).ready(function() {
 					url : base_path + "ajax/cart_clear",
 					
 					success : function(msg) {
-						set_cart_summary();						
 						window.cart.items = [];
+						set_cart_summary();						
 						uncheck_all_checks_on_page();
 					}
 				});
