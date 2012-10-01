@@ -212,6 +212,67 @@ function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
   $submit = $variables['form']['actions'];
   $form_build_id = $variables['form']['form_build_id'];
   
+  foreach( $billing['address']['billing_first_name'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_first_name'][$key]= t('First name');
+    }
+  }
+
+  foreach( $billing['address']['billing_last_name'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_last_name'][$key]= t('Last name');
+    }
+  }
+
+  foreach( $billing['address']['billing_company'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_company'][$key]= t('Company');
+    }
+  }  
+  
+  foreach( $billing['address']['billing_street1'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_street1'][$key]= t('Street address');
+    }
+  }
+  
+  foreach( $billing['address']['billing_city'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_city'][$key]= t('City');
+    }
+  }
+
+  foreach( $billing['address']['billing_zone'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_zone'][$key]= t('State/Province');
+    }
+  }
+  
+  foreach( $billing['address']['billing_country'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_country'][$key]= t('Country');
+    }
+  }  
+  
+  foreach( $billing['address']['billing_postal_code'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_postal_code'][$key]= t('Postal code');
+    }
+  }
+  
+  foreach( $billing['address']['billing_phone'] as $key => $val) {
+    if( $key == '#title') {
+      $billing['address']['billing_phone'][$key]= t('Phone number');
+    }
+  }
+
+  foreach( $submit as $key => &$val) {
+    if( $key == 'continue' ) {
+      $val['#value'] = t('Continue');
+    }
+  }
+  
+  
   $variables['billing'] = drupal_render($billing);
   $variables['email'] = $customer['#theme']['primary_email'];
   $variables['customer'] = drupal_render($customer);

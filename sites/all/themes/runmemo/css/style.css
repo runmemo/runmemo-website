@@ -1823,7 +1823,7 @@ text-align: center;
 .blueHeading {
 color:#4AB0F8;
 font-family:'Walkway Bold',sans-serif;
-font-size:36px;
+font-size:28px;
 font-weight:normal;
 
 letter-spacing:2px;
@@ -1875,7 +1875,7 @@ padding:10px;
 .checkout_title {
   color: #94BB1F;
   font-family: 'Walkway Bold',sans-serif;
-  font-size: 36px;
+  font-size: 24px;
   font-weight: normal;
   letter-spacing: 2px;
   margin-top: 15px;
@@ -2668,6 +2668,69 @@ border-bottom: 1px solid #e9e9e9!important;
 	margin-bottom: 20px;
 	margin-right: 20px
 }
+
+.page-cart-checkout #payment-details {
+  display: none;
+}
+
+.page-cart-checkout #edit-continue {
+/* text */
+	text-decoration: 		none;
+	font-size: 				20px;
+	font-weight: 			bold;
+	-webkit-user-select: 	none;
+	-moz-user-select: 		none;
+	
+	
+/* layout */
+	display: 				inline-block;
+	position: 				relative;
+	width: 150px;
+	height: 44px;
+	float:right;
+	-webkit-border-radius: 	5px;
+	-moz-border-radius: 	5px;
+	border-radius: 5px;
+	margin-top:15px;
+
+/* effects */
+		
+	-webkit-transition: background .2s ease-in-out;
+	-moz-transition: 	background .2s ease-in-out;
+	transition: 		background .2s ease-in-out;
+	
+/* color 
+	color: 				hsl(0, 0%, 0%) !important; 
+	background-color: 	hsl(0, 0%, 75%);
+	*/
+	color:#EEE;
+        background: none;
+	background-color:#EE6600;
+}
+
+/* -------------- button (tag) -------------- */
+
+.page-cart-checkout #edit-continue:hover {
+	background-color:#FF4400;
+}
+
+.page-cart-checkout #edit-continue:active {
+	/*background-image: 	-webkit-gradient(radial, 50% 0, 100, 50% 0, 0, from( rgba(255,255,255,0) ), to( rgba(255,255,255,0) )), url(noise.png);
+	background-image: 	-moz-gradient(radial, 50% 0, 100, 50% 0, 0, from( rgba(255,255,255,0) ), to( rgba(255,255,255,0) )), url(noise.png);
+	background-image: 	gradient(radial, 50% 0, 100, 50% 0, 0, from( rgba(255,255,255,0) ), to( rgba(255,255,255,0) )), url(noise.png);
+	
+	*/
+	-webkit-transform: 	translateY(.2em);
+	-moz-transform: 	translateY(.2em);
+	transform: 			translateY(.2em);
+}
+
+.page-cart-checkout #edit-continue:focus {
+	outline: none;
+	color: rgba(254,255,255,0.9) !important;
+	text-shadow: rgba(0,0,0,0.2) 0 1px 2px;
+}
+
 
 .review-order-img img {
 margin:10px;
