@@ -392,6 +392,7 @@ function ucr_cart_remove_items_new_search($cid, $event, $number) {
     $item_event = field_get_items('node', $node, 'field_event_reference', $node->language);
    
     if ($item_event[0]['nid'] == $event) {
+    	/* Find a better way to restrict cart items
        $same_number = FALSE;
        foreach ($item_numbers as $item_number) {
          if (partial_match($item_number['value'], $number)) {
@@ -401,7 +402,7 @@ function ucr_cart_remove_items_new_search($cid, $event, $number) {
        if (!$same_number) {
          watchdog('debug', 'Removing item from cart due to different number: ' . $nid);
           uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product'));   
-       }
+       } */
     } 
     else { // event in the search is different
       watchdog('debug', 'Removing item from cart due to different event: ' . $nid);
