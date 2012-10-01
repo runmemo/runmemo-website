@@ -405,7 +405,6 @@ function ucr_cart_remove_items_new_search($cid, $event, $number) {
        } */
     } 
     else { // event in the search is different
-      watchdog('debug', 'Removing item from cart due to different event: ' . $nid);
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product'));
     } 
     
