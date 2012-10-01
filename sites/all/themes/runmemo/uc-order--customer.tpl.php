@@ -238,10 +238,10 @@
                             <td width="98%">
                               <b>
                                 <?php 
-                                if(module_exists('s3_store') && function_exists('get_s3_signed_url')){
+                                if (module_exists('s3_store') && function_exists('get_s3_signed_url')) {
                                   $original_img_url = get_s3_signed_url($product->title);
                                 }
-                              print '<a href="' . $original_img_url .'" target="_blank">' . $product->title .'</a>'; ?> - <?php print $product->total_price; ?></b>
+                                print '<a href="' . $original_img_url .'" target="_blank">' . $product->title .'</a>'; ?> - <?php print $product->total_price; ?></b>
                               <?php print $product->individual_price; ?><br />
                               <?php //print t('SKU'); ?> <?php //print $product->model; ?><br />
                               <?php print $product->details; ?>

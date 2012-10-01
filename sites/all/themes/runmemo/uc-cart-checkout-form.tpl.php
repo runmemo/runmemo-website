@@ -13,12 +13,13 @@
 	</div>
 	<div class="cartPane">
 	<?php 
-	$cid = uc_cart_get_id($create = TRUE);
-	$count  = count_cart_items($cid);
-	$subtotal = cart_total_amount($cid);
-	if ($subtotal > 12) {
-	  $subtotal = 12;
-	}
+  	$cid = uc_cart_get_id($create = TRUE);
+  	$count  = count_cart_items($cid);
+  	$subtotal = cart_total_amount($cid);
+  	$max_order_value = variable_get('max_order_value', 20);
+  	if ($subtotal > $max_order_value) {
+  	  $subtotal = $max_order_value; // @todo:bulat - replace with variable or value on the event.
+  	}
        ?>
 	   <div class="cartSummary">
 			<div class="blueHeading"><?php print t('Order Summary'); ?></div>
