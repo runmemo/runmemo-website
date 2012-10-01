@@ -83,8 +83,23 @@ function ubercart_custom_init() {
       drupal_goto();
     }
   }
+  variable_set('max_order_value', 12);
 }
 
+function get_max_order_value() {
+  return variable_get('max_order_value', 12);
+}
+
+function get_cart_total_with_discount($total) {
+  $max_order_value = get_max_order_value();
+  if($total > $max_order_value) {
+    return $max_order_value;
+  } 
+  else {
+    return $total;
+  }
+  
+}
 
 /**
  * Create the hook menu for each page
@@ -94,14 +109,14 @@ function ubercart_custom_init() {
  */
 function ubercart_custom_menu() {
   //AJAX urls
-  $items['cart_remove_item'] = array(
+  $items['ajax/cart_remove_item'] = array(
     'title' => '',
     'description' => '',
     'page callback' => 'cart_remove_item',
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
-  $items['cart_add_item'] = array(
+  $items['ajax/cart_add_item'] = array(
     'title' => '',
     'description' => '',
     'page callback' => 'cart_add_item',
@@ -156,11 +171,11 @@ function ubercart_custom_menu() {
  * Function that adds product to cart for the AJAX calls on /cart_add_item?nid={nid}
  */
 function cart_add_item() {
-  if (!isset($_GET['nid'])) {
+  if (!isset($_POST['nid'])) {
     echo json_message(FALSE, array('message' => t('Required parameter nid is not set.')));
     return;
   }
-  $nid = $_GET['nid'];
+  $nid = $_POST['nid'];
   $cid = uc_cart_get_id($create = TRUE);
 
   // check whether item is already in the cart
@@ -172,12 +187,19 @@ function cart_add_item() {
   }
   // add item to cart
   $url = uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid);
-  echo json_message(TRUE, array('message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid));
+  
+  $count = count_cart_items($cid);
+  $total = get_cart_total_with_discount(cart_total_amount($cid));
+ 
+  echo json_message(TRUE, array(
+  		'message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid,
+        'count' => $count,
+        'total' => $total));
    
 }
 
 function ubercart_custom_uc_order ($op, &$order, $arg2) {
-  $max_order_value = 12;
+  $max_order_value = get_max_order_value();
 
   switch ($op) {
     case 'load':
@@ -218,8 +240,8 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       (
       $order->order_id, // This is the order ID.
           'gift_discount', // This is the line item ID. We used this ID to remove the line item in the loop above.
-      t('Package Discount'), // This is the text that will be shown on the order review page to describe what the line item is
-      -1 * $discount, // This is the value of the line item. Discounts will be a negative number, surcharges a positive number
+          t('Package Discount'), // This is the text that will be shown on the order review page to describe what the line item is
+          -1 * $discount, // This is the value of the line item. Discounts will be a negative number, surcharges a positive number
       NULL, // This is the weight of the line item
       array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
       );
@@ -258,35 +280,42 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
  * Function that removes product from cart for the AJAX calls on /cart_add_item?nid={nid}
  */
 function cart_remove_item() {
-  if (!isset($_GET['nid'])) {
+  
+  if (!isset($_POST['nid'])) {
     echo json_message(FALSE, array('message' => t('Required parameter nid is not set.')));
     return;
   }
 
-  $nid = $_GET['nid'];
+  $nid = $_POST['nid'];
   $cart_ids = array();
   $cid = uc_cart_get_id($create = TRUE);
-  $items = count_cart_items($cid);
-  $photographers = count_cart_photographers($cid);
-  $subtotal = cart_total_amount($cid);
+  $item_removed = FALSE;
+  $removed_item = NULL;
   foreach (uc_cart_get_contents($cid) as $item) {
     if ($nid == $item->nid) {
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product')); //, $cid = $uid, $data = array('module' => 'uc_product'));
-
-      echo json_message(TRUE,
+      $item_removed = TRUE;
+      $removed_item = $item;
+      break;   
+    }
+  }
+  if ($item_removed) {
+    $count = count_cart_items($cid) - 1;
+    $total = get_cart_total_with_discount(cart_total_amount($cid) - $removed_item->price * $removed_item->qty);
+    
+    echo json_message(TRUE,
       array(
             		'message' => t('Removed item from the cart.'), 
       				'nid' => $nid,
-                    'items' => $items - 1,
-                    'photographers' => count_cart_photographers($cid),
-                    'subtotal' => $subtotal - $item->price * $item->qty,
+                    'count' => $count,
+                    'total' => $total,
       )
       );
       return;
-    }
+  } 
+  else {
+    echo json_message(FALSE, array('message' => t('Item was not found in the cart.'), 'nid' => $nid));
   }
-
-  echo json_message(FALSE, array('message' => t('Item was not found in the cart.'), 'nid' => $nid));
 }
 
 function order_summary_text() {
@@ -360,16 +389,21 @@ function cart_list_items() {
   
   // remove cart items selected in previous searches
   ucr_cart_remove_items_new_search($cid, $event, $number);
-  
-  
-  $subtotal = 0;
+   
   $items = array();
   foreach (uc_cart_get_contents($cid) as $item) {
-    $subtotal += $item->price * $item->qty;
     $items[]=array('nid' => $item->nid, 'price' => $item->price, 'qty' => $item->qty);
   }
-
-  $result = array('total' => $subtotal, 'items' => $items, 'event' => $event, 'number' => $number);
+  
+  $count = count_cart_items($cid);
+  $total = get_cart_total_with_discount(cart_total_amount($cid));
+  
+  $result = array('total' => $total, 
+  			  'items' => $items, 
+  			  'event' => $event, 
+  			  'number' => $number, 
+  			  'count' => $count,
+            );
   echo json_encode($result);
   
   
@@ -436,7 +470,12 @@ function partial_match($val1, $val2) {
  */
 function cart_clear() {
   uc_cart_empty(uc_cart_get_id());
-  echo json_message(TRUE, array('message' => 'Cart was cleared.'));
+  echo json_message(TRUE, array(
+  			'message' => 'Cart was cleared.',
+            'count' => 0,
+            'total' => 0,
+          )
+      );
 }
 
 /**

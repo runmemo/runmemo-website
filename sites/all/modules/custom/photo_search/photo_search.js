@@ -27,15 +27,18 @@ jQuery(document).ready(function() {
 
 				$("#prev_img").html('<img src="' + initial_preview + '" />');
 
-				var initial_cost = get_currency_sign() + $('#block-system-main table.views-view-grid tr.row-first td.col-first .node_cost').text();
+				var initial_cost = get_currency_sign() + $('.views-view-grid tr.row-first td.col-first .node_cost').text();
 
 				$("span#photo_cost label").text(initial_cost);
 
-				var initial_authour_name = $(
-						'#block-system-main table.views-view-grid tr.row-first td.col-first .authour_first_name')
+				var initial_authour_name = $('.views-view-grid tr.row-first td.col-first .authour_first_name')
 						.text();
 				$('.page-search-result span#photo_author label').text(
 						initial_authour_name);
+			
+				// cache nid of the first image in the view
+				var initial_nid = $('.views-view-grid tr.row-first td.col-first .img_check').attr('title');
+				$("#cart_hidden").val(initial_nid);
 			
 				load_selected_products_from_ubercart();
 				
@@ -87,8 +90,8 @@ jQuery(document).ready(function() {
 				return false;
 			}
 			
-			function set_cart(cart_json) {
-				window.cart = cart_json;				
+			function set_cart(data) {
+				window.cart = data;				
 				uncheck_all_checks_on_page();
 				
 				var nid = 0;
@@ -98,7 +101,7 @@ jQuery(document).ready(function() {
 					nid = window.cart.items[i].nid;
 					set_to_checked(nid);
 				}	
-				set_cart_summary();
+				set_cart_summary(data);
 			}
 			
 			// uncheck all checks on the page
@@ -155,34 +158,21 @@ jQuery(document).ready(function() {
 			 *            total price of products in the cart
 			 */
 			function set_total_price(price) {
-				var package_price = 12; // @todo: get this variable from page data.
-				if (price > package_price) {
-					price = package_price; 
-				}
 				$("span.summary_cost span.placeholder").text(price);
 			}
 
 			/**
 			 * Sets the total price in curt summary section
 			 */
-			function set_cart_summary() {
-				var total_price = 0;
-				var price = 0;
-			
-				for (var i in window.cart.items) {
-					price = parseFloat(window.cart.items[i].price);
-					total_price = total_price + price;
-				}		
-				
-				set_total_items(size_of_the_cart());
-				set_total_price(total_price);
+			function set_cart_summary(data) {
+				set_total_items(data.count);
+				set_total_price(data.total);
 				
 				if (size_of_the_cart() > 0) {
 					show_proceed_to_checkout();
 				} else {
 					hide_proceed_to_checkout();
 				}
-
 			}
 
 			/**
@@ -243,10 +233,14 @@ jQuery(document).ready(function() {
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
 					// type : "POST",
-					url : base_path + "cart_add_item?nid=" + nid,
+					url : base_path + "ajax/cart_add_item",
+					type: "POST",
+					data: {nid: nid},
+					dataType: 'json',
+				    cache: false,
 					success : function(msg) {
 						set_to_checked(nid);
-						set_cart_summary();
+						set_cart_summary(msg);
 					},
 					error: function(msg) {
 						set_error_message(nid, 'Sorry, we could not add item to the cart...');
@@ -315,11 +309,14 @@ jQuery(document).ready(function() {
 				// remove item from ubercart
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
-					// type : "POST",
-					url : base_path + "cart_remove_item?nid=" + nid,
-					success : function(msg) {
+					url : base_path + "ajax/cart_remove_item",
+					type: "POST",
+					data: {nid: nid},
+					dataType: 'json',
+				    cache: false,
+				    success : function(msg) {
 						set_to_unchecked(nid);
-						set_cart_summary();
+						set_cart_summary(msg);
 					},
 					error : function(msg) {
 						set_error_message(nid, 'Sorry, we could not remove item from the cart...');
@@ -403,12 +400,13 @@ jQuery(document).ready(function() {
 				pending_all_checks_on_page();
 				var base_path = Drupal.settings.basePath;
 				$.ajax({
-					// type : "POST",
 					url : base_path + "ajax/cart_clear",
-					
+					type: "POST",
+					dataType: 'json',
+				    cache: false,
 					success : function(msg) {
 						window.cart.items = [];
-						set_cart_summary();						
+						set_cart_summary(msg);						
 						uncheck_all_checks_on_page();
 					}
 				});
@@ -457,7 +455,7 @@ jQuery(document).ready(function() {
 							});
 						}
 					
-						// #cart_hidden contains the nid 
+						// # contains the nid 
 						// of currently selected product
 						var wrap_id1 = $(this).parent().attr('id');
 						var exploded = wrap_id1.split('thumb-');
