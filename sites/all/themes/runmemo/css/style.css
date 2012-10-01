@@ -2774,3 +2774,11 @@ margin:10px;
   padding: 0px;
 
 }
+
+#block-locale-language-content img.language-icon{
+  float: left;
+}
+
+#block-locale-language-content ul, ul li.leaf {
+    list-style: none;
+}
