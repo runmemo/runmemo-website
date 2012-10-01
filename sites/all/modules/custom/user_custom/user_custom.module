@@ -127,6 +127,9 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
          '#required' => FALSE ,
         ); 
        
+      // hide the real password field
+      $form['pass']["#attributes"][] = array('style' => array('display: none;'),);
+       
       $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
       
       $form['join-link'] = array(
