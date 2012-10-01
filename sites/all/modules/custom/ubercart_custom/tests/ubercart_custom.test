@@ -28,7 +28,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
   
   function testAddCartItem_Call_Success_New_Item() {
     
-    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    $response_json = $this->HttpRequest('ajax/cart_add_item', $this->product->nid);
     debug($response_json);
     $response = json_decode($response_json);
 
@@ -43,7 +43,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
     drupal_save_session(TRUE);
     
     // 1st request to add product to cart
-    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
+    $response_json = $this->HttpRequest('ajax/cart_add_item', $this->product->nid);
     debug($response_json);
     $response = json_decode($response_json);
     $this->assertEqual($response->success, TRUE, '1st Item Added to Cart. Got Message: ' . $response->message);
@@ -59,7 +59,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
   function testRemoveCartItem_Call_Fail_Item_not_in_Cart() {
 
      
-    $response_json = $this->HttpRequest('cart_remove_item', $this->product->nid);
+    $response_json = $this->HttpRequest('ajax/cart_remove_item', $this->product->nid);
     debug($response_json);
     $response = json_decode($response_json);
     $this->assertEqual($response->success, FALSE, 'Item was not removed from cart. Got Message: ' . $response->message);
@@ -69,8 +69,8 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
 
     $cid = uc_cart_get_id($create = TRUE);
     debug($cid);
-    $response_json = $this->HttpRequest('cart_add_item', $this->product->nid);
-    $response_json = $this->HttpRequest('cart_remove_item', $this->product->nid);
+    $response_json = $this->HttpRequest('ajax/cart_add_item', $this->product->nid);
+    $response_json = $this->HttpRequest('ajax/cart_remove_item', $this->product->nid);
     debug($response_json);
     $response = json_decode($response_json);
     // @todo figure out how to do
@@ -86,9 +86,11 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
   private function HttpRequest($url, $nid) {
 
     global $base_url;
-    $url = $base_url . '/' . $url . '?nid=' . $nid;
+    $url = $base_url . '/' . $url; // . '?nid=' . $nid;
     debug($url);
 
+    $data = array('nid' => $nid);  
+    
     //open connection
     $ch = curl_init();
 

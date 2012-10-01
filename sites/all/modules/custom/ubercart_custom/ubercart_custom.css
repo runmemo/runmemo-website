@@ -127,10 +127,11 @@ div.tagsinput div {
 	}
 
 .image-thumbnail .remove-cart-item {
+	display:none;
 	top:10px;
 	position: relative;
 	margin-left:90px;
-	background-color:red;
+	background-color:#384551;
 	color:#FFF;
 	border-radius:50px;
 	font-weight:bold;
