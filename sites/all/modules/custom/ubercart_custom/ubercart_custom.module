@@ -108,7 +108,7 @@ function ubercart_custom_menu() {
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
-  $items['cart_list_items'] = array(
+  $items['ajax/cart_list_items'] = array(
     'title' => '',
     'description' => 'api point that returns json with list of items in the cart',
     'page callback' => 'cart_list_items',
@@ -124,14 +124,14 @@ function ubercart_custom_menu() {
   );
   $items['ajax/save_numbers'] = array(
     'title' => '',
-    'description' => '',
+    'description' => 'api point that saves numbers on product',
     'page callback' => 'save_numbers',
     'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
   );
   $items['ajax/change_price'] = array(
     'title' => '',
-    'description' => '',
+    'description' => 'api point that saves new price on product',
     'page callback' => 'change_price',
     'access arguments' => array('edit own product content'),
     'type' => MENU_CALLBACK
@@ -178,7 +178,7 @@ function cart_add_item() {
 
 function ubercart_custom_uc_order ($op, &$order, $arg2) {
   $max_order_value = 12;
-  
+
   switch ($op) {
     case 'load':
       break;
@@ -201,11 +201,11 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
         if($item['type'] == 'subtotal')
         $subtotal += $item['amount'];
       }
-      
+
       $discount = 0;
       if($subtotal > $max_order_value) {
         $discount = $subtotal - $max_order_value;
-      } 
+      }
       else {
         break;
       }
@@ -226,7 +226,7 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
 
       break;
 
-      case 'total':
+    case 'total':
       // Here we return a value that will be added to the order total. For discounts we would return a negative value, for surcharges we return a positive value. We do NOT return the new total, only the change in the total.
       // We loop through each of the line items to see if ours has been added. If it has, we adjust the order total accordingly.
       foreach($order->line_items as $line_item)
@@ -243,6 +243,11 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       // Delete existing order codes
 
       //TO DO: determine if uses should be deleted or put global setting in for user to decide
+      break;
+    case 'update':
+      if ($arg2 == 'abandoned') {
+        rules_invoke_event('ubercart_custom_order_abandoned', $order);
+      }
       break;
   }
 }
@@ -348,7 +353,15 @@ function json_message($success, $attributes = array()) {
  * returns json with the list of items in the cart of current user
  */
 function cart_list_items() {
+  $event = $_POST['event'];
+  $number = $_POST['number'];
+  
   $cid = uc_cart_get_id($create = TRUE);
+  
+  // remove cart items selected in previous searches
+  ucr_cart_remove_items_new_search($cid, $event, $number);
+  
+  
   $subtotal = 0;
   $items = array();
   foreach (uc_cart_get_contents($cid) as $item) {
@@ -356,8 +369,65 @@ function cart_list_items() {
     $items[]=array('nid' => $item->nid, 'price' => $item->price, 'qty' => $item->qty);
   }
 
-  $result = array('total' => $subtotal, 'items' => $items);
+  $result = array('total' => $subtotal, 'items' => $items, 'event' => $event, 'number' => $number);
   echo json_encode($result);
+  
+  
+}
+
+/**
+ * 
+ * Remove items from cart that don't match the search
+ * @param integer $event_id
+ * @param integer $number
+ */
+function ucr_cart_remove_items_new_search($cid, $event, $number) {
+  
+  $items = uc_cart_get_contents($cid);
+  
+  foreach ($items as $item) {
+    $nid = $item->nid;
+    $node = node_load($nid);
+    $item_numbers = field_get_items('node', $node, 'ocr_numbers', $node->language);
+    $item_event = field_get_items('node', $node, 'field_event_reference', $node->language);
+   
+    if ($item_event[0]['nid'] == $event) {
+    	/* Find a better way to restrict cart items
+       $same_number = FALSE;
+       foreach ($item_numbers as $item_number) {
+         if (partial_match($item_number['value'], $number)) {
+           $same_number = TRUE;
+         }
+       }
+       if (!$same_number) {
+         watchdog('debug', 'Removing item from cart due to different number: ' . $nid);
+          uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product'));   
+       } */
+    } 
+    else { // event in the search is different
+      uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product'));
+    } 
+    
+  }
+
+}
+/**
+ * 
+ * Checks whether one of the values contains the other value
+ * @param unknown_type $val1
+ * @param unknown_type $val2
+ */
+function partial_match($val1, $val2) {
+  // convert values to string
+  $strval1 = strval($val1);
+  $strval2 = strval($val2);
+  // check if there is a partial match
+  if(strpos($strval1, $strval2) !== FALSE || strpos($strval2, $strval1) !== FALSE) {
+    return TRUE;
+  } 
+  else {
+    return FALSE;
+  }
 }
 
 /**
@@ -623,4 +693,3 @@ function ubercart_custom_uc_store_address_fields() {
   //Magic happens
   return system_settings_form($form);
 }
-
