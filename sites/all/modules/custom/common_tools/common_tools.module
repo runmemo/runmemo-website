@@ -183,3 +183,18 @@ function get_photo_url($nid) {
   return $img_url;
   
 }
+
+/**
+ * Returns true if the visitor from Russia
+ * @return boolean
+ */
+function is_russia() {
+  $ip = ip_address();
+  $country_code = ip2country_get_country($ip);
+  if ($country_code == "RU") {
+    return TRUE;
+  }
+  else {
+    return FALSE;
+  }
+}
