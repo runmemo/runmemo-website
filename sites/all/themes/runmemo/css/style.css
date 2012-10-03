@@ -1812,97 +1812,161 @@ text-align: center;
 
 /* checkout */
 .cartPane {
- 	border: 1px solid #CCCCCC;
- 	float: left;
+ 	float: right;
  	overflow: hidden;
-/* overflow-x: hidden;
- overflow-y: scroll;*/
- 	width: 475px;
- 	padding-bottom:30px;
+ 	width: 480px;
+ 	padding-bottom:20px;
  }
-.blueHeading {
-color:#4AB0F8;
-font-family:'Walkway Bold',sans-serif;
-font-size:28px;
-font-weight:normal;
 
-letter-spacing:2px;
-
-margin-top:15px;
-padding:10px;
-}
-
-
-.order-items{
+.order-items {
+	display:none;
 	font-weight:bold;
-	padding:10px;
+	padding: 15px;
 	float:left;
-	width:250px;
 }
+
+.thumbnails {
+	padding:0px 10px 10px 10px;
+	float: right;	
+}
+
 .order-currency, #order-items, #order-subtotal {
 	color: #00A14E;
 	}
 
 .order-subtotal {
 	width:250px;
-	}
+}
 
-.total-price{
+.total-price {
+	display:none;
 	font-weight:bold;
-	width: 150px;
-	padding-left: 10px;
+	padding: 15px;
+	float:left;
 }
 
-
-.paymentPane {
-  border : 1px solid #CCCCCC;
-  float: left;
-  margin-right: 25px;
-  width: 465px;
-  padding: 23px 5px 0 5px;
-
-}
-.page-cart-checkout .checkoutPane {
-   width: 980px;
-}
 .paymentPane tbody {
    border: none;
 }
-/* for hide subtotal and order total in checkout page */
-.page-cart-checkout #line-items-div td,.page-cart-checkout #line-items-div th{
-  display:none;
-}
-.checkout_title {
-  color: #94BB1F;
+
+
+.checkout-title {
   font-family: 'Walkway Bold',sans-serif;
   font-size: 28px;
   font-weight: normal;
   letter-spacing: 2px;
-  margin-top: 15px;
-  padding: 10px;
+  margin-bottom: 10px;
 }
-.uc-cart-checkout-form .form-item {
-  height: 55px;
+
+.green-heading {
+  color: #94BB1F;
 }
+  
+.blue-heading {
+	color:#4AB0F8;	
+}
+
+.checkout-cart-summary, .checkout-form {
+	
+	border: 1px solid #CCC;
+	border-radius: 0px 10px 10px 10px;
+	}
+	
+.checkout-cart-summary {
+	float:left;
+	padding: 15px 0px 10px 0px;
+	}
+	
+.checkout-form {
+	width:100%;
+	float: left;
+	padding: 15px 0px 10px 0px;
+}
+
+.checkout-form  .fieldset-description {
+	display:none;	
+}
+
+.uc-cart-checkout-form fieldset {
+  	border-top: 1px solid #CCCCCC;
+	margin-left:0px;
+	margin-right:0px;
+	margin-bottom:0px;
+	padding: 0 35px 0 35px;
+}
+
+.uc-cart-checkout-form fieldset legend span {
+	color:#4AB0F8;	
+}
+
+.checkout-form fieldset legend span {
+	color: #94BB1F;
+}
+
+.checkoutPane {
+  float:left;
+  width: 460px;
+  
+}
+
+.checkout-container {
+	width:980px;
+	}
+	
+.form-type-radio {
+	padding: 0 35px 0 35px;	
+	float:none;
+}
+.page-cart .uc-cart-checkout-form .form-type-radio label {
+	float:none;	
+}
+
 .uc-cart-checkout-form .form-item label {
   float: left;
-  width: 137px;
-  padding: 0 15px 0 0;
-  text-align: right;
+  padding: 0px 15px 3px 0;
 }
-.uc-cart-checkout-form .form-item input {
-  width: 250px;
-  border-radius: 5px 5px 5px 5px;
-  -moz-border-radius: 5px 5px 5px 5px;
-  -webkit-border-radius: 5px 5px 5px 5px;
-  margin: 0 0 0 10px;
+
+.page-cart .uc-cart-checkout-form .form-item {
+	width:380px;
+	}
+
+.uc-cart-checkout-form .form-type-radio input {
+  width: 20px;
 }
+
+#edit-panes-billing-billing-first-name {
+	width:145px;
+	}
+#edit-panes-billing-billing-last-name {
+	width:190px;
+	}
+
+.page-cart .uc-cart-checkout-form .form-item-panes-billing-billing-first-name {
+	float:left;
+	width:165px;
+	}
+.page-cart .uc-cart-checkout-form .form-item-panes-billing-billing-last-name {
+	width:190px;
+	float:left;
+	clear:none;
+	margin-left:20px;
+	}	
+.form-disabled {display:none;}
 
 .uc-cart-checkout-form .form-item .uc-credit-cvv-help {
   float: left;
   margin-left:10px;
   margin-top:10px;
  }
+
+.uc-cart-checkout-form table {
+	margin-left: 0px;
+	margin-right: 0px;
+}
+
+.uc-cart-checkout-form .uc-store-address-field .form-item label {
+ text-align:left;
+	}
 
 .cart_msg {
   background-color: #F8FFF0;
@@ -1913,9 +1977,6 @@ padding:10px;
   padding: 7px;
 }
 
-.checkoutPane fieldset {
-  border: 1px solid #CCCCCC;
-}
 
 .cartPane table td {
   text-align: center;
@@ -1940,13 +2001,6 @@ padding:10px;
   display : block !important;
 }
 
-.paymentPane #payment-pane #line-items-div {
-  border : none !important;
-}
-
-.paymentPane #payment-details {
-  border-top : none !important;
-}
 */
 .page-cart-checkout .paymentPane .chzn-single{
   width:265px !important;
@@ -1959,18 +2013,38 @@ padding:10px;
 .page-cart-checkout #edit-panes-billing-billing-zone_chzn {
   width:275px!important;
   float:left;
-  margin-left:10px;
+  }
+ 
+.page-cart .chzn-container {
+ 	margin-bottom:10px;
  }
  
  .page-cart-checkout #edit-panes-payment-details-cc-exp-year_chzn {
- 	width:100px!important;
+ 	width:140px!important;
  	float:left;
-  	margin-left:10px;
+	clear:left;
+ }
+ #edit-panes-payment-details-cc-exp-month_chzn {
+  width:190px!important;
+  float:left;
+  clear:left;
  }
  
- .form-item-panes-payment-details-cc-exp-month,
- .form-item-panes-payment-details-cc-exp-year {
- float:left;
+ .page-cart .uc-cart-checkout-form .form-item-panes-payment-details-cc-exp-month {
+ 	float:left;
+ 	width:200px;
+ }
+
+ .page-cart .uc-cart-checkout-form .form-item-panes-payment-details-cc-exp-year {
+ 	float:left;
+ 	width:150px;
+ 	clear:right;
+ }
+
+#edit-panes-payment-details-cc-cvv {
+ 	width:70px;
+ 	float: left;
+	clear: left;
  }
  
  .page-cart-checkout .chzn-drop{
@@ -1995,9 +2069,19 @@ padding:10px;
     width: 203px;
  }
 
- /* 28.03.2012 */
- .page-cart-checkout .paymentPane #line-items-div {
-   display: none;
+ .page-cart-checkout #line-items-div {
+   /*display: none; */
+   border-bottom: 1px solid #ccc;
+   border-top: 1px solid #ccc;
+   padding: 0 35px 0 35px;
+ }
+
+ .page-cart-checkout tbody {
+ 	border:none;
+ }
+
+ .page-cart-checkout table {
+ 	width:100%;
  }
  .page-cart-checkout .paymentPane #billing-address-pane {
    padding-top: 15px;
@@ -2647,20 +2731,22 @@ border-bottom: 1px solid #e9e9e9!important;
   display: none;
 }
 
-.uc-cart-checkout-form .chzn-container { 
-	margin-left:10px;
-	}
-
 
 .page-cart-checkout .form-submit {
 	width:200px;
 	margin-bottom: 20px;
-	margin-right: 30px
+	margin-right:20px;
 }
 
+
 .page-cart-checkout #payment-details {
-  display: none;
+  padding: 0px 35px 0px 35px;
 }
+
+.uc-cart-checkout-form .form-text {
+	font-size:20px;
+	margin-bottom:10px;
+	}
 
 /* -------------- button (tag) -------------- */
 

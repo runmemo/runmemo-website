@@ -113,11 +113,9 @@ div.tagsinput div {
 
 .page-cart-checkout .image-thumbnail {
 	float:left;
-	margin:15px;
+	margin:10px;
+	margin-right:auto;
 	display:block;
-	width:100px;
-	height:100px;
-	
 }
 
 .image-thumbnail img {
@@ -145,3 +143,11 @@ div.tagsinput div {
 #edit-created-value-year_chzn, #edit-created-value-month_chzn{
   width: 100px!important;
 }
+
+.page-cart .order-review-table td {
+	vertical-align: middle;
+}
+
+.page-cart .order-review-table {
+	line-height: inherit;
+}	

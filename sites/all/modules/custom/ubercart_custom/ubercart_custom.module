@@ -205,6 +205,7 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
     case 'load':
       break;
     case 'save':
+      //dvm($order, 'order');
       // The first thing we do is remove the line item if it exists. Since users can go back and forth from the order review page to the checkout page, they may make different selections each time. By defaulting to having the line item removed, we prevent accidentally adding it multiple times, as well as preventing adding it if the user hasn't selected it when reviewing the page. So we loop through the existing line items searching for our specific line item, and removing it if it exists. We will add it afterwards if it needs to be added.
       foreach($order->line_items as $key => $line_item)
       {
@@ -246,6 +247,11 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
       );
 
+      // update products in the order with package discount attributed to each product in the cart
+      if ($arg2 == 'completed' || $arg2 == 'in_checkout') {
+          save_discounts_to_order_products($order);
+      }
+      
       break;
 
     case 'total':
@@ -535,26 +541,26 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
     //$form['panes']['payment']['details']['#markup'] = '';
 
 
-    $form['panes']['billing']['#type'] = '';
-    $form['panes']['customer']['#type'] = '';
-    $form['panes']['cart']['#type'] = '';
+   // $form['panes']['billing']['#type'] = '';
+   // $form['panes']['customer']['#type'] = '';
+   // $form['panes']['cart']['#type'] = '';
 
-    $form['panes']['customer']['email_text']['#prefix'] =  '<span class="checkout-email">';
-    $form['panes']['customer']['email_text']['#suffix'] =  '</span>';
-
-
-    $form['panes']['payment']['payment_method']['#type'] = 'hidden';
-    $form['panes']['payment']['details']['cc_number']['#required'] = TRUE;
-    $form['panes']['payment']['details']['cc_cvv']['#required'] = TRUE;
+  //  $form['panes']['customer']['email_text']['#prefix'] =  '<span class="checkout-email">';
+  //  $form['panes']['customer']['email_text']['#suffix'] =  '</span>';
 
 
-    $form['panes']['payment']['details']['cc_policy']['#markup'] = '';
-    $form['panes']['payment']['details']['cc_number']['#size'] = '32';
-    $form['panes']['payment']['details']['cc_exp_month']['#title'] = 'Expiration Month';
+   // $form['panes']['payment']['payment_method']['#type'] = 'hidden';
+   // $form['panes']['payment']['details']['cc_number']['#required'] = TRUE;
+  //  $form['panes']['payment']['details']['cc_cvv']['#required'] = TRUE;
+
+
+  //  $form['panes']['payment']['details']['cc_policy']['#markup'] = '';
+  //  $form['panes']['payment']['details']['cc_number']['#size'] = '32';
+  //  $form['panes']['payment']['details']['cc_exp_month']['#title'] = 'Expiration Month';
     $form['actions']['cancel'] = '';
-    $form['actions']['continue']['#value'] = '';
+  //  $form['actions']['continue']['#value'] = '';
 
-  }
+  } 
 
   //alter for review order page
   if ($form['#form_id'] == 'uc_cart_checkout_review_form') {
@@ -731,4 +737,27 @@ function ubercart_custom_uc_store_address_fields() {
   }
   //Magic happens
   return system_settings_form($form);
+}
+
+function save_discounts_to_order_products($order) {
+    
+    $package_discount = 0;
+    foreach($order->line_items as $key => $line_item) {
+        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the line item ID that will be defined after this loop.
+        {
+           $package_discount = $line_item['amount'];
+        }
+    }
+    
+    if($package_discount != 0) {
+    
+      $count_items = count($order->line_items);
+      //$total_amount = $order->
+      foreach ($order->products as $key => $product) {
+       // $node = node_load($product->nid);
+        $product->field_package_discount[LANGUAGE_NONE][0]['value'] = $product->sell_price/4; // @todo: replace with real calculation
+        node_save($product);
+      }
+    }
+  
 }
