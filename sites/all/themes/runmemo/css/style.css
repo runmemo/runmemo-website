@@ -1814,7 +1814,6 @@ text-align: center;
 .cartPane {
  	float: right;
  	overflow: hidden;
- 	width: 480px;
  	padding-bottom:20px;
  }
 
@@ -1827,7 +1826,8 @@ text-align: center;
 
 .thumbnails {
 	padding:0px 10px 10px 10px;
-	float: right;	
+	float: left;	
+	width:100%;
 }
 
 .order-currency, #order-items, #order-subtotal {
@@ -1873,6 +1873,7 @@ text-align: center;
 	}
 	
 .checkout-cart-summary {
+	width: 480px;
 	float:left;
 	padding: 15px 0px 10px 0px;
 	}
@@ -2740,6 +2741,7 @@ border-bottom: 1px solid #e9e9e9!important;
 
 
 .page-cart-checkout #payment-details {
+  display:none;
   padding: 0px 35px 0px 35px;
 }
 
