@@ -366,6 +366,8 @@ function plupload_handle_uploads() {
         //$chunk is 0 based count
         if ($chunk == $total_chunks-1 || ($total_chunks == -1 && isset($_REQUEST["name"]))) {
           $file = array();
+    //      dvm($_REQUEST["name"]);
+    //      dvm($_FILES['file']);
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
           $file['tmppath'] = $temp_directory . $file_name;

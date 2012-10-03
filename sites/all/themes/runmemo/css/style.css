@@ -2744,12 +2744,36 @@ border-bottom: 1px solid #e9e9e9!important;
   display:none;
   padding: 0px 35px 0px 35px;
 }
+.page-cart-checkout #payment-details.payment-details-credit {
+  display: block;
+}
 
 .uc-cart-checkout-form .form-text {
 	font-size:20px;
 	margin-bottom:10px;
 	}
+label.option {
+	top:5px;
+	position:relative;
+	}
 
+.uc-credit-cctype {
+ top: 3px;
+ position: relative;
+ margin-left: 5px;
+ margin-right: 10px
+}
+
+#paypal-includes {
+	margin-left:32px;
+	}
+
+#paypal-includes .uc-credit-cctype {
+	margin-right: 3px;
+	margin-left: 3px;
+}
+
+	
 /* -------------- button (tag) -------------- */
 
 .page-cart-checkout #edit-continue:hover {
