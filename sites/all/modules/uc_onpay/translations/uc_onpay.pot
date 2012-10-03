@@ -1,0 +1,178 @@
+# $Id$
+#
+# LANGUAGE translation of Drupal (general)
+# Copyright YEAR NAME <EMAIL@ADDRESS>
+# Generated from files:
+#  uc_onpay.module,v 1.0 2010/03/21 10:33:10 www.fabrikasaitov1.ru
+#  uc_onpay.info,v 1.0 2010/03/21 10:33:10 www.fabrikasaitov1.ru
+#  uc_onpay.install,v 1.0 2010/03/21 10:33:10 www.fabrikasaitov1.ru
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2010-03-21 15:14+0300\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Last-Translator: NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: uc_onpay.module:13
+msgid "Your Onpay Login"
+msgstr ""
+
+#: uc_onpay.module:14
+msgid "Please enter Your Onpay Login"
+msgstr ""
+
+#: uc_onpay.module:15
+msgid "API IN Key"
+msgstr ""
+
+#: uc_onpay.module:16
+msgid "Please enter API IN Key"
+msgstr ""
+
+#: uc_onpay.module:17
+msgid "Rate to site currency"
+msgstr ""
+
+#: uc_onpay.module:18
+msgid "Please enter Onpay rate according to site currency"
+msgstr ""
+
+#: uc_onpay.module:19
+msgid "Onpay URL API"
+msgstr ""
+
+#: uc_onpay.module:21
+msgid "Please copy URL API to your Onpay Shop Settings"
+msgstr ""
+
+#: uc_onpay.module:52 uc_onpay.info:0
+msgid "OnPay.ru (Webmoney, Yandex.Money, VISA, MasterCard, etc.)"
+msgstr ""
+
+#: uc_onpay.module:54
+msgid "Pay with OnPay.ru (Webmoney, Yandex.Money, VISA, etc.)"
+msgstr ""
+
+#: uc_onpay.module:82
+msgid "Submit Order"
+msgstr ""
+
+#: uc_onpay.module:134
+msgid "Purchase from site !sitename. Transaction !ID."
+msgstr ""
+
+#: uc_onpay.module:146
+msgid "<p>Checkout !ordersum RUR for order № !orderid</p>"
+msgstr ""
+
+#: uc_onpay.module:146
+msgid "<p>*If you do not see pay form, <a href=\"!orderurl\" target=\"_blank\"><em>follow the link</em></a></p>"
+msgstr ""
+
+#: uc_onpay.module:212;281
+msgid "ERROR 13: NO ORDER"
+msgstr ""
+
+#: uc_onpay.module:215;284
+msgid "ERROR 14: ORDER SUM HACKED"
+msgstr ""
+
+#: uc_onpay.module:243
+msgid "ERROR 1: NO ID"
+msgstr ""
+
+#: uc_onpay.module:245
+msgid "ERROR 2: NO ID"
+msgstr ""
+
+#: uc_onpay.module:247
+msgid "ERROR 3: NO ORDER ID"
+msgstr ""
+
+#: uc_onpay.module:249
+msgid "ERROR 4: NO ORDER ID"
+msgstr ""
+
+#: uc_onpay.module:251
+msgid "ERROR 5: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:253
+msgid "ERROR 6: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:255
+msgid "ERROR 7: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:257
+msgid "ERROR 8: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:259
+msgid "ERROR 9: NO ORDER CURRENCY"
+msgstr ""
+
+#: uc_onpay.module:261
+msgid "ERROR 10: NO ORDER CURRENCY"
+msgstr ""
+
+#: uc_onpay.module:263
+msgid "ERROR 11: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:265
+msgid "ERROR 12: NO ORDER SUM"
+msgstr ""
+
+#: uc_onpay.module:288
+msgid "ERROR 15: MD5 SIGN HACKED"
+msgstr ""
+
+#: uc_onpay.module:302
+msgid "A payment from Onpay was accepted."
+msgstr ""
+
+#: uc_onpay.module:330
+msgid "Your payment has been declined."
+msgstr ""
+
+#: uc_onpay.module:221;296
+msgid "onpayerror"
+msgstr ""
+
+#: uc_onpay.module:221;296
+msgid "@res"
+msgstr ""
+
+#: uc_onpay.module:32
+msgid "Onpay checkout"
+msgstr ""
+
+#: uc_onpay.module:35;38;41
+msgid "Internal Data"
+msgstr ""
+
+#: uc_onpay.install:16;19;26;34
+msgid "TODO"
+msgstr ""
+
+#: uc_onpay.install:48
+msgid "Ubercart: Onpay tables have been created."
+msgstr ""
+
+#: uc_onpay.info:0
+msgid "Onpay"
+msgstr ""
+
+#: uc_onpay.info:0
+msgid "Ubercart - payment"
+msgstr ""
+
