@@ -1,3 +1,8 @@
+<?php 
+    print drupal_render($form['form_build_id']);
+    print drupal_render($form['form_id']);
+    print drupal_render($form['form_token']);
+?>
 <div class='checkout-container'>
 <div class="checkoutPane">
 	<div class="checkout-title green-heading"><?php print t('Payment details'); ?></div>
@@ -5,10 +10,7 @@
 		
 	<?php 
 	
-	  print $form_id;
-      print $form_build_id;
-      print $form_token;
-      print $billing;
+	  print $billing;
       print $customer;
       print $payment;
       print $submit; 

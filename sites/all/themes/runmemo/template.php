@@ -198,19 +198,11 @@ function runmemo_theme($existing, $type, $theme, $path) {
  * Override checkout page design.
  */
 function runmemo_preprocess_uc_cart_checkout_form(&$variables) {
- 
-  $form_build_id = $variables['form']['form_build_id'];
-  //$form_token  =  $variables['form']['form_token'] ;
-  $form_id = $variables['form']['form_id'];
-  $variables['form_build_id'] = drupal_render($form_build_id);
-  $variables['form_token'] = drupal_render($form_token);
-  $variables['form_id'] = drupal_render($form_id);
   
   $billing = $variables['form']['panes']['billing'];
   $customer = $variables['form']['panes']['customer'];
   $payment = $variables['form']['panes']['payment'];
   $submit = $variables['form']['actions'];
-  $form_build_id = $variables['form']['form_build_id'];
   
   foreach( $billing['address']['billing_first_name'] as $key => $val) {
     if( $key == '#title') {
