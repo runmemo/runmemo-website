@@ -71,7 +71,7 @@ class product_node_creator {
 
       $event = new stdClass();
       $event->language = LANGUAGE_NONE;
-      $event->field_pricing[$event->language]['0']['value'] = 5;
+      $event->field_pricing[$event->language]['0']['value'] = 3;
       $event->title = 'OCR Test Event';
       $event->type = 'event';
       $event->status = 1;
