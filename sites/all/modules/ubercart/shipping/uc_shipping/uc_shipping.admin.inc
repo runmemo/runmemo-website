@@ -37,11 +37,8 @@ function uc_shipping_order_packages($order) {
       unset($package->label_image);
     }
 
-    if ($package->sid && $package->label_image) {
+    if (isset($package->sid) && isset($package->label_image)) {
       $method = db_query("SELECT shipping_method FROM {uc_shipments} WHERE sid = :sid", array(':sid' => $package->sid))->fetchField();
-    }
-
-    if (isset($package->label_image)) {
       $row[] = l(
         theme('image_style', array(
           'style_name' => 'uc_thumbnail',
@@ -825,7 +822,6 @@ function uc_shipping_shipment_edit($form, &$form_state, $order, $shipment) {
       '#title'         => t('Weight'),
       '#default_value' => isset($package->weight) ? $package->weight : 0,
       '#size'          => 10,
-      '#maxlength'     => 15,
     );
     $pkg_form['weight']['units'] = array(
       '#type'          => 'select',
@@ -1024,6 +1020,7 @@ function uc_shipping_shipment_edit_submit($form, &$form_state) {
     $shipment->sid = $form_state['values']['sid'];
   }
   $shipment->origin = (object) $form_state['values']['pickup_address'];
+  $shipment->destination = new stdClass();
   foreach ($form_state['values'] as $key => $value) {
     if (substr($key, 0, 9) == 'delivery_') {
       $field = substr($key, 9);

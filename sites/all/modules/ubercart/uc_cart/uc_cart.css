@@ -14,6 +14,7 @@
 .order-review-table td {
   padding-bottom: 0.2em;
   padding-top: 0.1em;
+  vertical-align: top;
 }
 
 .order-review-table .pane-title-row {
@@ -63,6 +64,14 @@
 .next-button {
   margin-top: 1em;
   text-align: right;
+}
+
+#uc-cart-view-form table {
+  width: 100%;
+}
+
+#uc-cart-view-form td {
+  vertical-align: top;
 }
 
 #uc-cart-view-form img {
