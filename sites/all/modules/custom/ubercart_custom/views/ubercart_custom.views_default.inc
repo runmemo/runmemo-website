@@ -305,7 +305,11 @@ $view->disabled = FALSE; /* Edit this to true to make a default view disabled in
 /* Display: Master */
 $handler = $view->new_display('default', 'Master', 'default');
 $handler->display->display_options['title'] = 'My Sales';
-$handler->display->display_options['access']['type'] = 'none';
+$handler->display->display_options['access']['type'] = 'role';
+$handler->display->display_options['access']['role'] = array(
+  3 => '3',
+  5 => '5',
+);
 $handler->display->display_options['cache']['type'] = 'none';
 $handler->display->display_options['query']['type'] = 'views_query';
 $handler->display->display_options['query']['options']['query_comment'] = FALSE;
@@ -358,6 +362,14 @@ $handler->display->display_options['style_options']['info'] = array(
 $handler->display->display_options['style_options']['override'] = 1;
 $handler->display->display_options['style_options']['sticky'] = 0;
 $handler->display->display_options['style_options']['empty_table'] = 0;
+/* No results behavior: Global: Text area */
+$handler->display->display_options['empty']['area']['id'] = 'area';
+$handler->display->display_options['empty']['area']['table'] = 'views';
+$handler->display->display_options['empty']['area']['field'] = 'area';
+$handler->display->display_options['empty']['area']['empty'] = FALSE;
+$handler->display->display_options['empty']['area']['content'] = '<em>No photos were purchased yet</em>';
+$handler->display->display_options['empty']['area']['format'] = 'filtered_html';
+$handler->display->display_options['empty']['area']['tokenize'] = 0;
 /* Relationship: Content: Author */
 $handler->display->display_options['relationships']['uid']['id'] = 'uid';
 $handler->display->display_options['relationships']['uid']['table'] = 'node';
@@ -516,6 +528,11 @@ $handler->display->display_options['fields']['price']['hide_alter_empty'] = 1;
 $handler->display->display_options['fields']['price']['set_precision'] = 0;
 $handler->display->display_options['fields']['price']['precision'] = '0';
 $handler->display->display_options['fields']['price']['format_plural'] = 0;
+/* Sort criterion: Order: Creation date */
+$handler->display->display_options['sorts']['created']['id'] = 'created';
+$handler->display->display_options['sorts']['created']['table'] = 'uc_orders';
+$handler->display->display_options['sorts']['created']['field'] = 'created';
+$handler->display->display_options['sorts']['created']['granularity'] = 'day';
 /* Filter criterion: User: Current */
 $handler->display->display_options['filters']['uid_current']['id'] = 'uid_current';
 $handler->display->display_options['filters']['uid_current']['table'] = 'users';
@@ -560,6 +577,7 @@ $translatables['my_sales'] = array(
   t('Sort by'),
   t('Asc'),
   t('Desc'),
+  t('<em>No photos were purchased yet</em>'),
   t('author'),
   t('#'),
   t('Order date'),
@@ -571,6 +589,7 @@ $translatables['my_sales'] = array(
   t('Sell Price'),
   t('Page'),
 );
+
 
 
   $export[$view->name] = $view;
