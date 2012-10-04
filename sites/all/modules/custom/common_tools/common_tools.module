@@ -198,7 +198,13 @@ function is_russia() {
     return FALSE;
   }
 }
-
+/**
+ * 
+ * Prints object/array as a table with layered structure.
+ * @param object $elem item to print
+ * @param integer $max_level number of layers to print
+ * @param array $print_nice_stack
+ */
 function print_nice($elem, $max_level=10, $print_nice_stack = array()) {
   if (is_array($elem) || is_object($elem)) {
     if (in_array(&$elem,$print_nice_stack,true)) {
