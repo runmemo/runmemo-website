@@ -198,14 +198,17 @@ function cart_add_item() {
    
 }
 
+/**
+ * Implements hook_uc_order
+ * See: http://www.ubercart.org/docs/api/hook_order
+ */
 function ubercart_custom_uc_order ($op, &$order, $arg2) {
   $max_order_value = get_max_order_value();
-
   switch ($op) {
     case 'load':
       break;
     case 'save':
-      //dvm($order, 'order');
+    
       // The first thing we do is remove the line item if it exists. Since users can go back and forth from the order review page to the checkout page, they may make different selections each time. By defaulting to having the line item removed, we prevent accidentally adding it multiple times, as well as preventing adding it if the user hasn't selected it when reviewing the page. So we loop through the existing line items searching for our specific line item, and removing it if it exists. We will add it afterwards if it needs to be added.
       foreach($order->line_items as $key => $line_item)
       {
@@ -239,19 +242,25 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       // Next we add the line item
       uc_order_line_item_add
       (
-      $order->order_id, // This is the order ID.
-          'gift_discount', // This is the line item ID. We used this ID to remove the line item in the loop above.
-          t('Package Discount'), // This is the text that will be shown on the order review page to describe what the line item is
-          -1 * $discount, // This is the value of the line item. Discounts will be a negative number, surcharges a positive number
-      NULL, // This is the weight of the line item
-      array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
+        $order->order_id, // This is the order ID.
+        'gift_discount', // This is the line item ID. We used this ID to remove the line item in the loop above.
+        t('Package Discount'), // This is the text that will be shown on the order review page to describe what the line item is
+        -1 * $discount, // This is the value of the line item. Discounts will be a negative number, surcharges a positive number
+        NULL, // This is the weight of the line item
+        array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
       );
 
-      // update products in the order with package discount attributed to each product in the cart
-      if ($arg2 == 'completed' || $arg2 == 'in_checkout') {
-          save_discounts_to_order_products($order);
+       // upsert order product discounts 
+       //save_discounts_to_order_products($order);
+      $item_discount = 0.0000;
+      if($order->order_status == 'completed') { 
+        // ubercart just saved completed order 
+        foreach ($order->products as $order_product_id => $product) {
+          // calculate discount proportionally to price of a product
+          $item_discount = ($product->price / $subtotal) * $discount;
+          log_order_product_discount($order_product_id, $item_discount);
+        }
       }
-      
       break;
 
     case 'total':
@@ -739,25 +748,12 @@ function ubercart_custom_uc_store_address_fields() {
   return system_settings_form($form);
 }
 
-function save_discounts_to_order_products($order) {
-    
-    $package_discount = 0;
-    foreach($order->line_items as $key => $line_item) {
-        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the line item ID that will be defined after this loop.
-        {
-           $package_discount = $line_item['amount'];
-        }
-    }
-    
-    if($package_discount != 0) {
-    
-      $count_items = count($order->line_items);
-      //$total_amount = $order->
-      foreach ($order->products as $key => $product) {
-       // $node = node_load($product->nid);
-        $product->field_package_discount[LANGUAGE_NONE][0]['value'] = $product->sell_price/4; // @todo: replace with real calculation
-        node_save($product);
-      }
-    }
-  
+/**
+ * Upserts order product discount
+ */ 
+function log_order_product_discount ($order_product_id, $discount) {
+  $result = db_merge('uc_custom_order_discounts')
+      ->key(array('order_product_id' => $order_product_id, ))
+      ->fields(array('amount' => $discount, ))
+      ->execute();
 }

@@ -45,3 +45,48 @@ function create_product_field($field) {
      }
    }
 }
+
+
+/**
+ * Implements hook_schema().
+ */
+function ubercart_custom_update_7001() {
+  $schema = array();
+  
+   $schema['uc_custom_order_discounts'] = array(
+    'description' => 'Order line items other than products.',
+    'fields' => array(
+      'discount_id' => array(
+        'description' => 'Primary key: the discount ID.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'order_product_id' => array(
+        'description' => 'The {uc_order_products}.order_product_id.',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'amount' => array(
+        'description' => "The amount of the discount that was attibuted to product.",
+        'type' => 'numeric',
+        'precision' => 16,
+        'scale' => 5,
+        'not null' => TRUE,
+        'default' => 0.0,
+      ),
+    ),
+    'indexes' => array(
+      'order_product_id' => array('order_product_id'),
+    ),
+    'primary key' => array('discount_id'),
+    'foreign keys' => array(
+      'order_id' => array('uc_order_products' => 'order_product_id'),
+    ),
+  );
+  
+   db_create_table('uc_custom_order_discounts', $schema['uc_custom_order_discounts']);
+  
+}
