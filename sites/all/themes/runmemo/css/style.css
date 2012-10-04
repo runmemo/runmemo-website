@@ -1885,11 +1885,15 @@ text-align: center;
 }
 
 .uc-cart-checkout-form fieldset {
-  	border-top: 1px solid #CCCCCC;
+  /*	border-top: 1px solid #CCCCCC;*/
 	margin-left:0px;
 	margin-right:0px;
 	margin-bottom:0px;
-	padding: 0 35px 0 35px;
+	padding: 10px 35px 0 35px;
+}
+
+.uc-cart-checkout-form fieldset legend { 
+	display:none;
 }
 
 .uc-cart-checkout-form fieldset legend span {
@@ -1918,9 +1922,9 @@ text-align: center;
 	float:none;	
 }
 
-.uc-cart-checkout-form .form-item label {
+.page-cart .uc-cart-checkout-form .form-item label {
   float: left;
-  padding: 0px 15px 3px 0;
+  padding: 0px 15px 3px 0!important;
 }
 
 .page-cart .uc-cart-checkout-form .form-item {
