@@ -88,7 +88,7 @@ class ProductNodeSaver {
    * Update verifyed by field.
    */
   public function SetVerifiedBy($uid) {
-    $this->node->field_manual_taggigng[$this->node->language][0]['value'] = TRUE;
+    $this->node->field_manual_tagging[$this->node->language][0]['value'] = TRUE;
     $this->node->field_verified_by[$this->node->language][0]['uid'] = $uid;
     $this->changed = TRUE;
   }
