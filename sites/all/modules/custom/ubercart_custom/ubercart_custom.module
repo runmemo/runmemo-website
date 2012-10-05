@@ -645,6 +645,9 @@ function save_numbers() {
   $nid = $_POST['nid'];
   $number = $_POST['number'];
   $option = $_POST['option'];
+  
+  global $user;
+  $uid = $user->uid;
 
   if (empty($nid) || empty($number) || empty($option)) {
     echo json_message(FALSE, array('message' => t('Required parameter is not set')));
@@ -670,10 +673,12 @@ function save_numbers() {
   switch ($option) {
     case "add":
       $productSaver->AddNumber($number);
+      $productSaver->SetVerifiedBy($uid);
       break;
 
     case "remove":
       $productSaver->RemoveNumber($number);
+      $productSaver->SetVerifiedBy($uid);
       break;
 
     default:
