@@ -2848,3 +2848,15 @@ margin:10px;
 #block-locale-language-content ul, ul li.leaf {
     list-style: none;
 }
+
+.view-empty {
+  float: left;
+  margin-left: auto ;
+  margin-right: auto ;
+  padding-top: 10px;
+  color: #94BB17;
+  font-size: 26px;
+  font-weight: normal;
+  text-align: left;
+  font-family: 'Walkway Bold',sans-serif;
+}
