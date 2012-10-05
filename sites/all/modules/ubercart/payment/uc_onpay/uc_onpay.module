@@ -1,0 +1,382 @@
+<?php
+// $Id: uc_onpay.module,v 1.0 2010/03/21 10:33:10 www.fabrikasaitov1.ru Exp $
+/**
+ *  настройки способа оплаты
+ */
+error_reporting(E_ALL);
+ini_set('display_errors','On');
+
+function uc_payment_method_onpay($op, &$arg1)
+{
+    switch ($op)
+    {
+        case 'cart-details':
+          
+          $build['instructions'] = array(
+            '#markup' => t('Checks should be made out to:'),
+          );
+
+          if (!variable_get('uc_check_mailing_street1', FALSE)) {
+            $build['address'] = array(
+              '#markup' => uc_address_format(
+                uc_store_name(), 
+                NULL, 
+                variable_get('uc_store_company', ''), 
+                variable_get('uc_store_street1', ''), 
+                variable_get('uc_store_street2', ''), 
+                variable_get('uc_store_city', ''), 
+                variable_get('uc_store_zone', ''), 
+                variable_get('uc_store_postal_code', ''), 
+                variable_get('uc_store_country', 840)
+              ), 
+              '#prefix' => '<p>', 
+              '#suffix' => '</p>',
+            );
+          }
+          else {
+            $build['address'] = array(
+              '#markup' => uc_address_format(
+                variable_get('uc_check_mailing_name', ''), 
+                NULL, 
+                variable_get('uc_check_mailing_company', ''), 
+                variable_get('uc_check_mailing_street1', ''), 
+                variable_get('uc_check_mailing_street2', ''), 
+                variable_get('uc_check_mailing_city', ''), 
+                variable_get('uc_check_mailing_zone', ''), 
+                variable_get('uc_check_mailing_postal_code', ''), 
+                variable_get('uc_check_mailing_country', 840)
+              ), 
+              '#prefix' => '<p>', 
+              '#suffix' => '</p>',
+            );
+          }
+
+          $build['policy'] = array(
+            '#markup' => '<p>' . variable_get('uc_check_policy', '') . '</p>',
+          );
+          return $build;
+          
+        case 'settings':
+            $form['uc_onpay_mrh'] = array('#type' => 'textfield', '#title' => t('Your Onpay Login'),
+                '#default_value' => variable_get('uc_onpay_mrh', ''), '#description' => t("Please enter Your Onpay Login"), );
+            $form['uc_onpay_mps1'] = array('#type' => 'textfield', '#title' => t('API IN Key'),
+                '#default_value' => variable_get('uc_onpay_mps1', ''), '#description' => t("Please enter API IN Key"), );
+            $form['uc_onpay_rate'] = array('#type' => 'textfield', '#title' => t('Rate to site currency'),
+                '#default_value' => variable_get('uc_onpay_rate', '1.00'), '#description' => t("Please enter Onpay rate according to site currency"), );
+            $form['uc_url_api'] = array('#type' => 'textfield', '#title' => t('Onpay URL API'),
+                '#value' => url('uc_onpay/done', array('absolute' => true)), '#attributes' => array('readonly' =>
+                'readonly'), '#description' => t("Please copy URL API to your Onpay Shop Settings"), );
+            return $form;
+        case 'cart-process':
+            return;
+    }
+}
+/**
+ *  список страниц
+ */
+function uc_onpay_menu()
+{
+    $items['uc_onpay/pay'] = array('title' => 'Onpay checkout', 'page callback' =>
+        'uc_onpay_do_payment', 'access arguments' => array('access content'), 'type' =>
+        MENU_CALLBACK);
+    $items['uc_onpay/done'] = array('title' => 'Internal Data', 'page callback' =>
+        'uc_onpay_done_payment', 'access arguments' => array('access content'), 'type' =>
+        MENU_CALLBACK);
+    $items['uc_onpay/success'] = array('title' => 'Internal Data', 'page callback' =>
+        'uc_onpay_payment_end', 'page arguments' => array('success'), 'access arguments' => array
+        ('access content'), 'type' => MENU_CALLBACK);
+    $items['uc_onpay/fail'] = array('title' => 'Internal Data', 'page callback' =>
+        'uc_onpay_payment_end', 'page arguments' => array('fail'), 'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK);
+    return $items;
+}
+/**
+ *  способ оплаты в списке выбора
+ */
+function uc_onpay_uc_payment_method()
+{
+    $path = base_path() . drupal_get_path('module', 'uc_onpay');
+    $title = t('OnPay.ru (Webmoney, Yandex.Money, VISA, MasterCard, etc.)');
+    $title_long = $title . '<br /><img src="' . $path .
+        '/images/logo.gif" style="position: relative; left: 2.5em;">';
+    $methods[] = array('id' => 'uc_onpay', 'name' => $title, 'review' => 'Onpay', 'title' => $title_long, 'desc' => t('Pay with OnPay.ru (Webmoney, Yandex.Money, VISA, etc.)'),
+        'callback' => 'uc_payment_method_onpay', 'weight' => 3, 'checkout' => true, 'no_gateway' => true, );
+    return $methods;
+}
+/**
+ *  подмена кнопки отправки заказа
+ */
+function uc_onpay_form_alter(&$form, &$form_state, $form_id)
+{
+  if ($form_id == 'uc_cart_checkout_review_form' && ($order_id = intval($_SESSION['cart_order'])) > 0) {
+    $order = uc_order_load($order_id);
+    if ($order->payment_method == 'uc_onpay') {
+      //kpr($form);
+      unset($form['actions']['submit']);
+      $form['#prefix'] = '<table ><tr><td>';
+      //$form['#suffix'] = '</td><td></td></tr></table>';
+      $form['#suffix'] = '</td><td>' . drupal_render(drupal_get_form('uc_onpay_form', $order)) . '</td></tr></table>';
+    }
+  }
+}
+/**
+ *  создание кнопки отправки заказа
+ */
+function uc_onpay_form($form, &$form_state, $order)
+{
+    $form = array();
+	  $form['#action'] = url('uc_onpay/pay', array('absolute' => true));
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Submit Order'), );
+    return $form;
+}
+/**
+ *  список theme функций
+ */
+function uc_onpay_theme()
+{
+    return array('uc_onpay_do_payment' => array('arguments' => array('sum' => null, 'order_id' => null,
+        'url' => null)));
+}
+/**
+ *  создание транзакции, генерирование url оплаты
+ */
+function uc_onpay_do_payment()
+{
+	if (($order_id = intval($_SESSION['cart_order'])) > 0)
+    $order = uc_order_load($order_id);
+    $amount = $order->order_total * variable_get('uc_onpay_rate', '1.00');
+    $description = serialize(array('amount' => $amount));
+    // создаем или обновляем транзакцию
+    if (db_query("SELECT COUNT(txnid) FROM {uc_onpay_transaction} WHERE txnid = :txnid",
+        array(':txnid'=>$order->order_id) )->fetchField())
+    {
+        db_update('uc_onpay_transaction')->fields(array('description' => $description))->condition('txnid', $order->order_id)->execute();
+    } else
+    {
+    	db_insert('uc_onpay_transaction')->fields(array('txnid' => $order->order_id,'description' => $description))->execute();
+    }
+    
+    // получаем e-mail покупателя
+    global $user;
+    $user_email = @$user->mail;
+    // получаем настройки оплаты
+    $login = variable_get('uc_onpay_mrh', '');
+    $key = variable_get('uc_onpay_mps1', '');
+    $order_id = $order->order_id;
+    $sum = $amount;
+    $sum = round($sum, 2);
+    $sum_for_md5 = (strpos($sum, ".") ? round($sum, 2) : $sum . ".0");
+    $path = 'http://' . $_SERVER['HTTP_HOST'] . '/';
+    $path1 = url('uc_onpay/success', array('absolute' => true));
+    $path2 = url('uc_onpay/fail', array('absolute' => true));
+    // md5 подпись
+    $md5check = md5("fix;$sum_for_md5;RUR;$order_id;yes;$key");
+    $sitename = variable_get('site_name', 'Drupal');
+    $desc = t('Purchase from site !sitename. Transaction !ID.', array('!sitename' => $sitename,
+        '!ID' => $order->order_id));
+    // платежная ссылка
+    $url = "http://secure.onpay.ru/pay/$login?pay_mode=fix&pay_for=$order_id&price=$sum&currency=RUR&convert=yes&md5=$md5check&user_email=$user_email&url_success=$path1&url_fail=$path2&note=$desc";
+    // темизация
+    return theme('uc_onpay_do_payment', array($sum, $order_id, $url));
+}
+/**
+ *  страница оплаты Onpay
+ */
+function theme_uc_onpay_do_payment($variables)
+{
+  list($sum, $order_id, $url) = $variables;
+  $output = t('<p>Checkout !ordersum RUR for order № !orderid</p>', array('!ordersum' => $sum, '!orderid' => $order_id)) . '<iframe src="'.$url.'" scrolling="no" frameborder="no" height="600" width="100%" align="absmiddle">'.t('<p>*If you do not see pay form, <a href="!orderurl" target="_blank"><em>follow the link</em></a></p>', array('!orderurl' => $url)).'</iframe>';
+    
+    return $output;
+}
+/**
+ *  транслитерация
+ */
+function encodestring($st)
+{
+    return strtr($st, array('а' => 'a', 'б' => 'b', 'в' => 'v', 'г' => 'g', 'д' => 'd', 'е' =>
+        'e', 'ж' => 'g', 'з' => 'z', 'и' => 'i', 'й' => 'y', 'к' => 'k', 'л' => 'l', 'м' => 'm',
+        'н' => 'n', 'о' => 'o', 'п' => 'p', 'р' => 'r', 'с' => 's', 'т' => 't', 'у' => 'u', 'ф' =>
+        'f', 'ы' => 'i', 'э' => 'e', 'А' => 'A', 'Б' => 'B', 'В' => 'V', 'Г' => 'G', 'Д' => 'D',
+        'Е' => 'E', 'Ж' => 'G', 'З' => 'Z', 'И' => 'I', 'Й' => 'Y', 'К' => 'K', 'Л' => 'L', 'М' =>
+        'M', 'Н' => 'N', 'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T', 'У' => 'U',
+        'Ф' => 'F', 'Ы' => 'I', 'Э' => 'E', 'ё' => "yo", 'х' => "h", 'ц' => "ts", 'ч' => "ch", 'ш' =>
+        "sh", 'щ' => "shch", 'ъ' => "", 'ь' => "", 'ю' => "yu", 'я' => "ya", 'Ё' => "YO", 'Х' =>
+        "H", 'Ц' => "TS", 'Ч' => "CH", 'Ш' => "SH", 'Щ' => "SHCH", 'Ъ' => "", 'Ь' => "", 'Ю' =>
+        "YU", 'Я' => "YA"));
+}
+/**
+ *  XML ответ на check запрос
+ */
+function uc_onpay_answer($type, $code, $pay_for, $order_amount, $order_currency, $text, $key)
+{
+    $md5 = strtoupper(md5("$type;$pay_for;$order_amount;$order_currency;$code;$key"));
+    $text = encodestring($text);
+    echo iconv('cp1251', 'utf-8', "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<result>\n<code>$code</code>\n<pay_for>$pay_for</pay_for>\n<comment>$text</comment>\n<md5>$md5</md5>\n</result>");
+    exit;
+}
+/**
+ *  XML ответ на pay запрос
+ */
+function uc_onpay_answerpay($type, $code, $pay_for, $order_amount, $order_currency, $text,
+    $onpay_id, $key)
+{
+    $md5 = strtoupper(md5("$type;$pay_for;$onpay_id;$pay_for;$order_amount;$order_currency;$code;$key"));
+    $text = encodestring($text);
+    echo iconv('cp1251', 'utf-8', "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<result>\n<code>$code</code>\n <comment>$text</comment>\n<onpay_id>$onpay_id</onpay_id>\n <pay_for>$pay_for</pay_for>\n<order_id>$pay_for</order_id>\n<md5>$md5</md5>\n</result>");
+    exit;
+}
+/**
+ *  ONPAY API
+ */
+function uc_onpay_done_payment()
+{
+
+  foreach ($_REQUEST as $itemkey=>$itemvalue) {
+    if (substr($itemkey,0,4)=='amp;') {$_REQUEST[substr($itemkey,4)]=$itemvalue; unset($_REQUEST[$itemkey]);}
+  }
+	if (empty($_REQUEST['type']))
+        exit('type is empty');
+    $login = variable_get('uc_onpay_mrh', ''); //Ваше "Имя пользователя" (логин) в системе OnPay.ru
+    $key = variable_get('uc_onpay_mps1', ''); //Ваш "Секретный ключ для API IN" в системе OnPay.ru
+    //Ответ на запрос check от OnPay
+    if ($_REQUEST['type'] == 'check')
+    {
+        $order_amount = $amount = $_REQUEST['order_amount'];
+        $order_currency = $_REQUEST['order_currency'];
+        $order_id = $pay_for = $_REQUEST['pay_for'];
+        $order_id = intval($order_id); //Код должен быть целым числом
+        $data = db_query("SELECT * FROM {uc_onpay_transaction} WHERE txnid = :txnid",
+           array(':txnid'=>$order_id) )->fetchObject();
+        $un = unserialize($data->description);
+        $order = uc_order_load($order_id);
+        $res = "";
+        if ($order === false || (uc_order_status_data($order->order_status, 'state') !=
+            'in_checkout' && uc_order_status_data($order->order_status, 'state') != 'post_checkout' &&
+            uc_order_status_data($order->order_status, 'state') != 'payment_received'))
+        {
+            $res = t('ERROR 13: NO ORDER');
+        } elseif ($un['amount'] != $amount)
+        {
+            $res = t('ERROR 14: ORDER SUM HACKED');
+        }
+        if ($res != "")
+        {
+            // произошла ошибка, не разрешаем платеж
+            uc_order_comment_save($order_id, 0, $res, 'admin');
+            watchdog('onpayerror', '@res', array('@res'=>$res));
+            uc_order_update_status($order_id, 'canceled');
+            uc_onpay_answer($_REQUEST['type'], 2, $pay_for, $order_amount, $order_currency, $res, $key);
+        }
+        // можно принимать деньги
+        uc_onpay_answer($_REQUEST['type'], 0, $pay_for, $order_amount, $order_currency, 'OK', $key);
+    }
+    //Ответ на запрос pay от OnPay
+    elseif ($_REQUEST['type'] == "pay")
+    {
+        $onpay_id = $_REQUEST['onpay_id'];
+        $order_id = $code = $pay_for = intval($_REQUEST['pay_for']);
+        $amount = $order_amount = $_REQUEST['order_amount'];
+        $order_currency = $_REQUEST['order_currency'];
+        $balance_amount = $_REQUEST['balance_amount'];
+        $balance_currency = $_REQUEST['balance_currency'];
+        $exchange_rate = $_REQUEST['exchange_rate'];
+        $paymentDateTime = $_REQUEST['paymentDateTime'];
+        $md5 = $_REQUEST['md5'];
+        $error = '';
+        //Проверка входных данных
+        if (preg_replace('/[^0-9]/ismU', '', $onpay_id) != $onpay_id)
+            $error = t("ERROR 1: NO ID");
+        elseif (strlen($onpay_id) < 1 or strlen($onpay_id) > 32)
+            $error = t("ERROR 2: NO ID");
+        elseif (preg_replace('/[^0-9a-z]/ismU', '', $pay_for) != $pay_for)
+            $error = t("ERROR 3: NO ORDER ID");
+        elseif (strlen($pay_for) < 1 or strlen($pay_for) > 32)
+            $error = t("ERROR 4: NO ORDER ID");
+        elseif (preg_replace('/[^0-9\.]/ismU', '', $order_amount) != $order_amount)
+            $error = t("ERROR 5: NO ORDER SUM");
+        elseif (floatval($order_amount) <= 0)
+            $error = t("ERROR 6: NO ORDER SUM");
+        elseif (preg_replace('/[^0-9\.]/ismU', '', $balance_amount) != $balance_amount)
+            $error = t("ERROR 7: NO ORDER SUM");
+        elseif (floatval($balance_amount) <= 0)
+            $error = t("ERROR 8: NO ORDER SUM");
+        elseif (strlen($order_currency) != 3)
+            $error = t("ERROR 9: NO ORDER CURRENCY");
+        elseif (strlen($balance_currency) != 3)
+            $error = t("ERROR 10: NO ORDER CURRENCY");
+        elseif (preg_replace('/[^0-9a-z\.]/ismU', '', $exchange_rate) != $exchange_rate)
+            $error = t("ERROR 11: NO ORDER SUM");
+        elseif (strlen($exchange_rate) < 1 or strlen($exchange_rate) > 10)
+            $error = t("ERROR 12: NO ORDER SUM");
+        // произошла ошибка, не разрешаем платеж
+        if ($error != '')
+            uc_onpay_answerpay($_REQUEST['type'], 3, $pay_for, $order_amount, $order_currency, $error,
+                $onpay_id, $key);
+        $data = db_query("SELECT * FROM {uc_onpay_transaction} WHERE txnid = :txnid",
+           array(':txnid'=>$order_id) )->fetchObject();
+		$un = unserialize($data->description);
+        $order = uc_order_load($order_id);
+        $res = "";
+       /* if ($order === false || (uc_order_status_data($order->order_status, 'state') !=
+            'in_checkout' && uc_order_status_data($order->order_status, 'state') != 'post_checkout' &&
+            uc_order_status_data($order->order_status, 'state') != 'payment_received'))
+        {*/
+        if ($order === false)
+        {
+            $res = t('ERROR 13: NO ORDER');
+        } elseif ($un['amount'] != $amount)
+        {
+            $res = t('ERROR 14: ORDER SUM HACKED');
+        } elseif (strtoupper(md5($_REQUEST['type'] . ";" . $pay_for . ";" . $onpay_id . ";" . $order_amount .
+        ";" . $order_currency . ";" . $key . "")) != $_REQUEST['md5'])
+        {
+            $res = t('ERROR 15: MD5 SIGN HACKED');
+            uc_onpay_answerpay($_REQUEST['type'], 7, $pay_for, $order_amount, $order_currency, $res, $onpay_id,
+                $key);
+        }
+        if ($res != "")
+        {
+            // произошла ошибка, не разрешаем платеж
+            uc_order_comment_save($order_id, 0, $res, 'admin');
+            watchdog('onpayerror', '@res', array('@res'=>$res));
+            uc_order_update_status($order_id, 'canceled');
+            uc_onpay_answerpay($_REQUEST['type'], 3, $pay_for, $order_amount, $order_currency, $res, $onpay_id,
+                $key);
+        }
+        // зачисляем платеж
+        $description = t('A payment from Onpay was accepted.');
+		uc_payment_enter($order_id, 'uc_onpay', $amount, $order->uid, null, $description);
+		uc_order_comment_save($order_id, 0, $description, 'admin');
+        uc_cart_complete_sale($order);
+        
+        //db_query("UPDATE {uc_onpay_transaction} SET description = :description WHERE txnid = :txnid", array(':description'=>$description,':txnid'=>$order_id) );
+		uc_onpay_answerpay($_REQUEST['type'], 0, $pay_for, $order_amount, $order_currency, 'OK', $onpay_id,
+            $key);
+    }
+}
+/**
+ *  завершение оплаты
+ */
+function uc_onpay_payment_end($type)
+{
+    if ($type == 'success')
+    {
+        if (isset($_SESSION['cart_order']))
+        {
+            $order_id = $_SESSION['cart_order'];
+            $_SESSION['do_complete'] = true;
+            // поздравляем пользователя с успешной оплатой
+            drupal_goto('cart/checkout/complete');
+        }
+    } else
+    {
+        unset($_SESSION['cart_order']);
+        // отменяем счет и переходим в корзину
+        drupal_set_message(t("Your payment has been declined."));
+        drupal_goto('cart');
+    }
+    return $output;
+}

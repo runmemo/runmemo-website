@@ -154,7 +154,7 @@ function photographer_drag_and_drop_form($form, &$form_state) {
     '#type' => 'textfield',
     '#id' => 'price_val',
     '#attributes' => array('style' => 'display: none;'),
-    '#default_value' => variable_get('RUNMEMO_DEFAULT_PRICE', 5),
+    '#default_value' => variable_get('RUNMEMO_DEFAULT_PRICE', 3),
   );
   return $form;
 }
@@ -313,7 +313,7 @@ function create_photo_node($file, $event_nid, $price = 0) {
       $price = $field_pricing[0]['value'];
     } 
     else {
-      $price = 5;
+      $price = 3;
     }
   }
   

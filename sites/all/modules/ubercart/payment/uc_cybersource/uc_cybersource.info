@@ -7,9 +7,9 @@ core = 7.x
 ; Class definitions
 files[] = uc_cybersource.soap.inc
 
-; Information added by drupal.org packaging script on 2012-04-25
-version = "7.x-3.1"
+; Information added by drupal.org packaging script on 2012-09-10
+version = "7.x-3.2"
 core = "7.x"
 project = "ubercart"
-datestamp = "1335375089"
+datestamp = "1347317679"
 

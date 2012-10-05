@@ -101,7 +101,7 @@
   ?>
 
   <div class="product_preview">
-    <?php print render($content['uc_product_image']) ?>
+    <?php print render($content['uc_product_image']); ?>
   </div>
   
   <div class="product_content">

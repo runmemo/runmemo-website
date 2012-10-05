@@ -38,8 +38,8 @@ function uc_attribute_admin() {
       check_plain($attr->name),
       check_plain($attr->label),
       $attr->required == 1 ? t('Yes') : t('No'),
-      array('data' => $attr->ordering, 'align' => 'center'),
-      array('data' => $attr->options, 'align' => 'center'),
+      $attr->ordering,
+      $attr->options,
       $display_types[$attr->display],
       l(t('edit'), 'admin/store/products/attributes/' . $attr->aid . '/edit'),
       l(t('options'), 'admin/store/products/attributes/' . $attr->aid . '/options'),
@@ -1278,7 +1278,7 @@ function uc_product_adjustments_form($form, &$form_state, $node) {
       $row_title = substr($row_title, 0, strlen($row_title) - 2);
       $default_model = $model;
       foreach ($old_vals as $ov) {
-        if (!count(array_diff_assoc(unserialize($ov->combination), $comb_array))) {
+        if ($ov->combination == serialize($comb_array)) {
           $default_model = $ov->model;
           break;
         }
