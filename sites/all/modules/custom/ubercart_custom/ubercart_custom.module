@@ -117,7 +117,7 @@ function ubercart_custom_menu() {
     'type' => MENU_CALLBACK
   );
   $items['ajax/cart_add_item'] = array(
-    'title' => '',
+    'title' => 'api point that adds item to the cart.',
     'description' => '',
     'page callback' => 'cart_add_item',
     'access arguments' => array('search photos'),
@@ -222,13 +222,8 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       }
 
       // Now we can get the total value of the order
-      $subtotal = 0;
-      foreach ($order->line_items as $item) {
-        // need to get price from the node in case it was set to 0 already...
-        if($item['type'] == 'subtotal')
-        $subtotal += $item['amount'];
-      }
-
+      $subtotal = order_line_amount($order, 'subtotal');
+     
       $discount = 0;
       if($subtotal > $max_order_value) {
         $discount = $subtotal - $max_order_value;
@@ -251,24 +246,13 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
         array() // Here you can pass any data that your module will use for itself when the order is submitted. In the case of my real module, I passed the value of the message that should be attached to the order when the user purchases gift wrapping. In this module there is no custom value so I actually wouldn't even pass the empty array normally. I just put it here to explain how it can be used.
       );
 
-       // upsert order product discounts 
-       //save_discounts_to_order_products($order);
-    
-      $item_discount = 0.0000;
-        // ubercart just saved completed order 
-      foreach ($order->products as $order_product_id => $product) {
-        // calculate discount proportionally to price of a product
-        $item_discount = ($product->price / $subtotal) * $discount;
-        log_order_product_discount($order_product_id, $item_discount);
-      }
-
       break;
     case 'total':
       // Here we return a value that will be added to the order total. For discounts we would return a negative value, for surcharges we return a positive value. We do NOT return the new total, only the change in the total.
       // We loop through each of the line items to see if ours has been added. If it has, we adjust the order total accordingly.
       foreach($order->line_items as $line_item)
       {
-        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the ID of the line item as defined when $op equals 'save'
+        if($line_item['type'] == 'gift_discount') // 'gift_discount' is the ID of the line item as defined when $op equals 'save'
         {
           // If we enter this, the line item exists, so we need to return the value of the line item. This will adjust the order total.
           return $line_item['amount'];
@@ -287,6 +271,36 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       }
       break;
   }
+}
+
+function ubercart_custom_uc_checkout_complete($order, $account) {
+
+  $discount = order_line_amount($order, 'gift_discount');
+  if($discount == 0) {
+    return;
+  }
+  
+  $subtotal = order_line_amount($order, 'subtotal');
+ 
+  $item_discount = 0.0000;
+  // ubercart just saved completed order
+  foreach ($order->products as $order_product_id => $product) {
+    // calculate discount proportionally to price of a product
+    $item_discount = -($product->price / $subtotal) * $discount;
+    log_order_product_discount($order_product_id, $item_discount);
+  }
+
+}
+
+function order_line_amount($order, $line_type) {
+  $amount = 0;
+  foreach ($order->line_items as $item) {
+    // need to get price from the node in case it was set to 0 already...
+    if($item['type'] == $line_type) {
+      $amount += $item['amount'];
+    }
+  }
+  return $amount;
 }
 
 
@@ -403,7 +417,7 @@ function cart_list_items() {
   $cid = uc_cart_get_id($create = TRUE);
   
   // remove cart items selected in previous searches
-  ucr_cart_remove_items_new_search($cid, $event, $number);
+  uc_cart_remove_items_new_search($cid, $event, $number);
    
   $items = array();
   foreach (uc_cart_get_contents($cid) as $item) {
@@ -430,7 +444,7 @@ function cart_list_items() {
  * @param integer $event_id
  * @param integer $number
  */
-function ucr_cart_remove_items_new_search($cid, $event, $number) {
+function uc_cart_remove_items_new_search($cid, $event, $number) {
   
   $items = uc_cart_get_contents($cid);
   
