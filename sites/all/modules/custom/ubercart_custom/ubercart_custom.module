@@ -204,6 +204,7 @@ function cart_add_item() {
  */
 function ubercart_custom_uc_order ($op, &$order, $arg2) {
   $max_order_value = get_max_order_value();
+   watchdog('uc_custom', 'OP: ' . $op);
   switch ($op) {
     case 'load':
       break;
@@ -252,17 +253,16 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
 
        // upsert order product discounts 
        //save_discounts_to_order_products($order);
+    
       $item_discount = 0.0000;
-      if($order->order_status == 'completed') { 
         // ubercart just saved completed order 
-        foreach ($order->products as $order_product_id => $product) {
-          // calculate discount proportionally to price of a product
-          $item_discount = ($product->price / $subtotal) * $discount;
-          log_order_product_discount($order_product_id, $item_discount);
-        }
+      foreach ($order->products as $order_product_id => $product) {
+        // calculate discount proportionally to price of a product
+        $item_discount = ($product->price / $subtotal) * $discount;
+        log_order_product_discount($order_product_id, $item_discount);
       }
-      break;
 
+      break;
     case 'total':
       // Here we return a value that will be added to the order total. For discounts we would return a negative value, for surcharges we return a positive value. We do NOT return the new total, only the change in the total.
       // We loop through each of the line items to see if ours has been added. If it has, we adjust the order total accordingly.
