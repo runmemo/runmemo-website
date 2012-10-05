@@ -273,6 +273,9 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
   }
 }
 
+/**
+ *  implments hook_uc_checkout_complete
+ */
 function ubercart_custom_uc_checkout_complete($order, $account) {
 
   $discount = order_line_amount($order, 'gift_discount');
