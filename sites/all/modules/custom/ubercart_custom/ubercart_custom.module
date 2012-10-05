@@ -204,7 +204,7 @@ function cart_add_item() {
  */
 function ubercart_custom_uc_order ($op, &$order, $arg2) {
   $max_order_value = get_max_order_value();
-   watchdog('uc_custom', 'OP: ' . $op);
+  
   switch ($op) {
     case 'load':
       break;
