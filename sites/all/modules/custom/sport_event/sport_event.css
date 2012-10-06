@@ -8,35 +8,35 @@
 	}
 .node-event {
 	margin:0;
-	border-top: 		1px solid rgba(100,100,150,0.8);
-	border-bottom: 		1px solid rgba(0,0,0,0.1);
-	border-left: 		1px solid rgba(100,100,150,0.8);
-	border-right: 		1px solid rgba(0,0,0,0.1);
+	border-top: 		1px solid #d2d2d2;
+	border-bottom: 		1px solid #333;
+	border-left: 		1px solid #d2d2d2;
+	border-right: 		1px solid #333;
 	}
 .field {
 	margin-bottom: 5px;
 	}
 /* Event Title */
 .node-event h2 {
-	float:left;
-	margin-left:35px;
-	clear:right;
-	display:block; 
-	width:80%;
-	margin-bottom:30px;
-	padding-bottom:10px;
-	border-bottom: 		1px solid rgba(0,0,0,0.1);
+	float: left;
+	margin-left: 35px;
+	clear: right;
+	display: block; 
+	width: 80%;
+	margin-bottom: 30px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #000;
 }
 
 .node-teaser h2 {
 	font-size:20px;
 	margin-left:35px;
 	margin-top:0px;
-	}
+}
 
 .node-event .field {
-		float:left;
-		margin-right:20px;
+	float:left;
+	margin-right:20px;
 }
 
 .node-event .field-name-body {
@@ -51,16 +51,16 @@
 	border-color:#555;
 	}
 .coming-soon {
-	padding:20px;
-	background-color:#0452A9;
-	font-size:large;
-	width:300px;
+	padding: 20px;
+	background-color: #0452A9;
+	font-size: large;
+	width: 300px;
 	}
 	
 .coming-soon span {
-	margin-top:10px;
-	color:#eee;
-	font-family:"Comic Sans MS", cursive, sans-serif;
+	margin-top: 10px;
+	color: #eee;
+	font-family: "Comic Sans MS", cursive, sans-serif;
 	}
 
 /* Blocks */
@@ -82,20 +82,20 @@
 	}*/
 .view-event-registered-photographers .views-row {
 	padding-top: 5px;
-	padding-bottom:5px;
-	margin-left:10px;
+	padding-bottom: 5px;
+	margin-left: 10px;
 	}
 
 .node-type-event .view-empty {
-	padding-left:10px;
-	padding-right:10px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .node-type-event .region-sidebar-second #user-register {
   	float: right;
-        padding: 5px;
-        margin-left: auto;
-        margin-right: auto;
+    padding: 5px;
+    margin-left: auto;
+    margin-right: auto;
         
 }
 
@@ -115,9 +115,7 @@
 #complete-registration {
 	margin-top:10px;
 	background-color:#99FF33;
-	margin-left:40px;
-	
-		
+	margin-left:40px;	
 }
 
 .disabled {
@@ -134,7 +132,7 @@
 	-webkit-border-radius: 20px 0px 0px 0px;
 }
 
-.date {
+.node-event .date {
 	float:left;
 	display:block;
 	margin-right:10px;
@@ -154,13 +152,13 @@
 	-moz-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
 	-webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
 }
-	.date p {
+.node-event .date p {
 		margin:0px;
 		font-family: Helvetica, sans-serif;
 		font-size: 30px; text-align: center; color:rgb(26,37,60); 
 	}
 	
-	.date p span {
+.node-event .date p span {
 		background: #FF6600; 
 		background: linear-gradient(top, #FF6600 0%, #A32900 100%);
 		background: -moz-linear-gradient(top, #FF6600 0%, #A32900 100%);
@@ -173,15 +171,6 @@
 		-webkit-border-radius: 0 0 10px 0px;
 		padding: 6px 0 6px 0;
 	}
-
-@-moz-document url-prefix() {
-    .date {
-        padding: 16px 0 0 0;
-    }
-    .date p span {
-    	padding: 9px 0 3px 0;
-    }
-}
 
 /* ******** Events List View ********* */
 
@@ -229,12 +218,12 @@ width: 108px!important;
 
 .node-type-event .region-sidebar-second .username{
   font-style: italic;
-  color: grey;
+  color: #777;
 }
 
-.node-type-event .region-sidebar-second p{
+.node-type-event .region-sidebar-second p {
   font-style: italic;
-  color: grey;
+  color: #777;
 }
 
 #block-sport-event-registration-link {

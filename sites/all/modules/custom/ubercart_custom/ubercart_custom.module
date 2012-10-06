@@ -295,6 +295,12 @@ function ubercart_custom_uc_checkout_complete($order, $account) {
 
 }
 
+/**
+ * 
+ * Gets amount for the specified line type in the order.
+ * @param object $order
+ * @param string $line_type
+ */
 function order_line_amount($order, $line_type) {
   $amount = 0;
   foreach ($order->line_items as $item) {
@@ -473,9 +479,7 @@ function uc_cart_remove_items_new_search($cid, $event, $number) {
     else { // event in the search is different
       uc_cart_remove_item($nid, $cid, $data = array('module' => 'uc_product'));
     } 
-    
   }
-
 }
 /**
  * 
@@ -631,22 +635,28 @@ function search_result_cart($form, &$form_state) {
 			
 		</div>
 		<div>
-			<span class='summary_selected_photos'>"
+			<span class='search-summary-photos'>"
   . t('Photos') . ':&nbsp;' .
             "<span class='placeholder'></span>
 			</span>
-				<span class='summary_cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
+				<span class='search-summary-cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
                                       "<span class='placeholder'></span>
 				</span>
 		</div>
 	</div>");
-  $form['prev_img_det'] = array('#markup' =>
- 	'<div class="cost_auth_det">
+  $form['prev_img_det'] = array(
+  	'#markup' =>
+ 		'<div class="cost_auth_det">
   		<span id="photo_cost">' . t('Price') .':<label class="photo_cost"></label>
   		</span><br/>
   		<span id="photo_author">' . t('Photo by') . ':<label class="photo_author"></label>
-  		</span></div>', '#prefix' => '<div class="prev_img_details">', );
-  $form['add_to_cart'] = array('#type' => 'submit', '#value' => '', '#id' => 'add_to_cart', '#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
+  		</span></div>', 
+   '#prefix' => '<div class="search-image-preview">', );
+  $form['add_to_cart'] = array(
+  	'#type' => 'submit', 
+  	'#value' => '', 
+  	'#id' => 'add_to_cart', 
+  	'#suffix' => '<div id="prev_img"><img  id="preview_image"  src="" alt="preview-image"/></div></div>', );
 
   return $form;
 }

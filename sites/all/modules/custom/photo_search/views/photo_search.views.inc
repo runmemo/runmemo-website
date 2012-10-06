@@ -21,15 +21,11 @@ function photo_search_views_data() {
   );
   
   // join requests to event
-   $data['photo_requests']['table']['join'] = array(
-    // Index this array by the table name to which this table refers.
-    // 'left_field' is the primary key in the referenced table.
-    // 'field' is the foreign key in this table.
-    'node' => array(
+  // @todo: test that this works
+   $data['node']['table']['join']['photo_requests'] = array(
       'left_field' => 'nid', 
       'field' => 'eventid',
-    ),
-  );
+   );
   
   // Unique Identifier
    $data['photo_requests']['id'] = array(

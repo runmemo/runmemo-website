@@ -6,6 +6,7 @@ jQuery(document).ready(function($) {
 	$('.front #user-login #edit-name').val('Username');
 	
 	$('.front .form-item-pass').hide();
+	
 	$('.form-item-fake-password').hide();
 	$('.front .form-item-fake-password').show();
 	
@@ -68,6 +69,7 @@ jQuery(document).ready(function($) {
 			$('.front #edit-pass-fake').focus( function() {
 				 $('.front .form-item-fake-password').hide();
 				 $('.front .form-item-pass').show();
+				 $('.front #edit-pass').show();
 				 $('.front .form-item-pass').focus();
 			});
 		
