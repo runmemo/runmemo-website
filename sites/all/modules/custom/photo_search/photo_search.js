@@ -37,7 +37,7 @@ jQuery(document).ready(function() {
 						initial_authour_name);
 			
 				// cache nid of the first image in the view
-				var initial_nid = $('.views-view-grid tr.row-first td.col-first .img_check').attr('title');
+				var initial_nid = $('.views-view-grid tr.row-first td.col-first .search-checkbox').attr('title');
 				$("#cart_hidden").val(initial_nid);
 			
 				load_selected_products_from_ubercart();
@@ -57,9 +57,9 @@ jQuery(document).ready(function() {
  			});
 			
 
-			if ($('.page-search-result #search-result-cart .summary_selected_photos .placeholder').length > 0) {
+			if ($('.search-summary-photos .placeholder').length > 0) {
 				if ($(
-						'.page-search-result #search-result-cart .summary_selected_photos .placeholder')
+						'.search-summary-photos .placeholder')
 						.html() <= 0) {
 					// for hide the proceed to checkout link in the search
 					// result page
@@ -69,7 +69,7 @@ jQuery(document).ready(function() {
 			}
 			
 			// Onclick event for checkbox 
-			$('.img_check').click(function() {
+			$('.search-checkbox').click(function() {
 				var nid = $(this).attr('title');
 				switch_check_box(nid);
 				switch_add_remove_buttons(nid);
@@ -106,7 +106,7 @@ jQuery(document).ready(function() {
 			
 			// uncheck all checks on the page
 			function uncheck_all_checks_on_page() {
-				$('.img_check').each(function() {
+				$('.search-checkbox').each(function() {
 					var nid = $(this).attr('title');
 					set_to_unchecked(nid);	
 				});
@@ -114,7 +114,7 @@ jQuery(document).ready(function() {
 			
 			// pending all checks on the page
 			function pending_all_checks_on_page() {
-				$('.img_check').each(function() {
+				$('.search-checkbox').each(function() {
 					var nid = $(this).attr('title');
 					set_to_pending(nid);	
 				});
@@ -148,7 +148,7 @@ jQuery(document).ready(function() {
 			 *            number of items in the cart
 			 */
 			function set_total_items(items) {
-				$('.summary_selected_photos .placeholder').html(items);
+				$('.search-summary-photos .placeholder').html(items);
 			}
 
 			/**
@@ -158,7 +158,7 @@ jQuery(document).ready(function() {
 			 *            total price of products in the cart
 			 */
 			function set_total_price(price) {
-				$("span.summary_cost span.placeholder").text(price);
+				$(".search-summary-cost .placeholder").text(price);
 			}
 
 			/**
@@ -276,7 +276,7 @@ jQuery(document).ready(function() {
 						set_cart(msg);
 						
 						// show add/remove button
-						if ($(".row-first .col-first .img_check").hasClass('checked')) {
+						if ($('.row-first .col-first .search-checkbox').hasClass('checked')) {
 							show_remove_button();
 						} else {
 							show_add_button();
@@ -284,9 +284,7 @@ jQuery(document).ready(function() {
 					}
 				});
 			}
-			
-			
-			
+					
 			function clear_cart() {
 				// @todo
 			}
@@ -351,7 +349,7 @@ jQuery(document).ready(function() {
 
 				if (nid == cart_hidden) {
 
-					if (currentclass[1] == 'add_cart') {
+					if (currentclass[1] == 'search-add-button') {
 						show_remove_button();
 					} else {
 						show_add_button();
@@ -363,14 +361,14 @@ jQuery(document).ready(function() {
 			 * Shows Add to Cart button
 			 */
 			function show_add_button() {
-				$('#add_to_cart').removeClass('remove_cart').addClass('add_cart');				
+				$('#add_to_cart').removeClass('search-remove-button').addClass('search-add-button');				
 			}
 
 			/**
 			 * Shows Remove from Cart button
 			 */
 			function show_remove_button() {
-				$('#add_to_cart').removeClass('add_cart').addClass('remove_cart');
+				$('#add_to_cart').removeClass('search-add-button').addClass('search-remove-button');
 			}
 
 			/**
@@ -417,7 +415,7 @@ jQuery(document).ready(function() {
 			 * Click event for select all link
 			 */
 			$('#select-all').click(function() {
-				$('.img_check').each(function() {
+				$('.search-checkbox').each(function() {
 					var nid = $(this).attr('title');
 					add_to_cart(nid);
 				});

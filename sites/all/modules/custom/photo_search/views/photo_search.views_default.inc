@@ -52,8 +52,8 @@ function photo_search_views_default_views() {
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['empty'] = FALSE;
   $handler->display->display_options['header']['area']['content'] = 
-  	"<div id='select-all'>select all</div>
-  	 <div id='clear-all'>clear all</div>";
+  	"<div id='select-all' class='search-select-all'>select all</div>
+  	 <div id='clear-all' class='search-remove-all'>clear all</div>";
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* No results behavior: Global: PHP */
@@ -127,7 +127,7 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['check_box']['label'] = '';
   $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['check_box']['alter']['text'] = 
-    '<div title="[check_box]" id="check_[check_box]" class="img_check"></div>';                                                                                                              
+    '<div title="[check_box]" id="check_[check_box]" class="search-checkbox"></div>';                                                                                                              
   $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
