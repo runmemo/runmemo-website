@@ -219,8 +219,8 @@ table {
 	width: 980px;
 }
 
-.form-item-events-select-runner,
-.form-item-runner-number {
+.page-search-result .form-item-runner-number,
+.page-search-result .form-item-events-select-runner {
 	float: left;
 	padding: 20px;
 }
