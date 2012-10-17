@@ -8,8 +8,10 @@
 
 function ocr_update_7001() {
  
-   // New Ocr Numbers
+  // Enable bib_numbers module
+  module_enable(array('bib_number'));
   
+  // New Ocr Numbers
   $field = array(
     'field_config' => array(
       'active' => '1',
