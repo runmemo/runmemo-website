@@ -238,6 +238,12 @@ function photo_search_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Default Page', 'page');
   $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Sort criterion: OCR Probability */
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['id'] = 'field_ocr_numbers_probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['table'] = 'field_data_field_ocr_numbers';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['field'] = 'field_ocr_numbers_probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['ui_name'] = 'OCR Probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['order'] = 'DESC';
   /* Contextual filter: Content: Event Name (field_event_reference) */
   $handler->display->display_options['arguments']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
   $handler->display->display_options['arguments']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
@@ -251,17 +257,17 @@ function photo_search_views_default_views() {
   $handler->display->display_options['arguments']['field_event_reference_nid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['field_event_reference_nid']['break_phrase'] = 0;
   $handler->display->display_options['arguments']['field_event_reference_nid']['not'] = 0;
-  /* Contextual filter: Content: ocr_numbers (ocr_numbers) */
-  $handler->display->display_options['arguments']['ocr_numbers_value']['id'] = 'ocr_numbers_value';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['table'] = 'field_data_ocr_numbers';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['field'] = 'ocr_numbers_value';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['default_argument_skip_url'] = 0;
-  $handler->display->display_options['arguments']['ocr_numbers_value']['summary']['number_of_records'] = '0';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['summary']['format'] = 'default_summary';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['summary_options']['items_per_page'] = '25';
-  $handler->display->display_options['arguments']['ocr_numbers_value']['break_phrase'] = 0;
-  $handler->display->display_options['arguments']['ocr_numbers_value']['not'] = 0;
+  /* Contextual filter: Content: Runner Numbers (field_ocr_numbers) */
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['id'] = 'field_ocr_numbers_value';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['table'] = 'field_data_field_ocr_numbers';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['field'] = 'field_ocr_numbers_value';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['not'] = 0;
 
   $handler->display->display_options['path'] = 'search-result/%/%';
 

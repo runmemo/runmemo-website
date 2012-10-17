@@ -49,14 +49,14 @@ class OcrProductSaverTest extends DrupalWebTestCase {
     $numbers_rem   = array(15, 1000, 100000);
     // Save numbers to the node.
     foreach ($numbers as $number) {
-      $productSaver->AddNumber($number);
+      $productSaver->AddNumber(array('value' => $number, 'probability' => 1, 'manual' => 1));
     }
     $productSaver->Save();
      
     // Load the node and check that we can get same numbers.
     $node = node_load($this->testNode->nid);
 
-    $saved_ocr_numbers = field_get_items('node', $node, 'ocr_numbers', $node->language);
+    $saved_ocr_numbers = field_get_items('node', $node, 'field_ocr_numbers', $node->language);
      
     $count_matches = 0;
     $count_saved_numbers = 0;
@@ -78,7 +78,7 @@ class OcrProductSaverTest extends DrupalWebTestCase {
     // Load the node and check that we can get same numbers.
     $node = node_load($this->testNode->nid);
 
-    $saved_ocr_numbers = field_get_items('node', $node, 'ocr_numbers', $node->language);
+    $saved_ocr_numbers = field_get_items('node', $node, 'field_ocr_numbers', $node->language);
      
     $count_matches = 0;
     $count_saved_numbers = 0;
@@ -112,16 +112,10 @@ class OcrProductSaverTest extends DrupalWebTestCase {
     $productSaver->Save();
 
     $node = node_load($this->testNode->nid);
-   // debug($node, 'node');
     // get the value of the field
     $saved_ocr_status = field_get_items('node', $node, 'ocr_success', $node->language);
-    // $saved_ocr_status = $productSave->GetOcrStatus();
-    debug($saved_ocr_status[0]['value']);
+
     $this->assertEqual($saved_ocr_status[0]['value'], $ocr_status, 'OCR Success=True is saved to the database.');
 
-
   }
-
- 
-
 }

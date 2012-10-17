@@ -106,11 +106,11 @@
   
   <div class="product_content">
     <?php 
-      print render($content); 
       if (node_access("update", $node)) { 
         print get_rendered_slider();
-        print get_rendered_runner_number_box($node->nid);
       }
+      print render($content); 
+     
     ?>
     <div id="product-nice-message-container" class="message" ><?php echo "photo by $name"; ?></div>
 

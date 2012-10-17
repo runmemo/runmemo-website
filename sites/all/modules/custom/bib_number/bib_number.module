@@ -1,0 +1,125 @@
+<?php
+
+function bib_number_field_info() {
+  return array(
+        'bib_number' => array(
+            'label' => t('Bib Number'),
+            'description' => t('Stores bib numbers.'),
+            'default_widget' => 'bib_number_widget',
+            'default_formatter' => 'bib_number_default',
+            'settings' => array(),
+            'instance_settings' => array(),
+  )
+  );
+}
+
+function bib_number_field_formatter_info() {
+  return array(
+    'bib_number_default' => array(
+      'label' => 'Default',
+      'field types' => array('bib_number'),
+  )
+  );
+}
+
+function bib_number_field_formatter_view($entity_type, $entity, $field, $instance, $lang, $items, $display) {
+  $element = array();
+  switch ($display['type']) {
+    case 'bib_number_default':
+      $numbers_str = '';
+      foreach ($items as $delta => $item) {
+        if ($numbers_str == '') {
+          $numbers_str = $item['value'];
+        }
+        else {
+          $numbers_str = $numbers_str . ',' . $item['value'];
+
+        }
+      }
+
+      $numbers_box =
+            '<input name="' . $entity_type . '-'. $entity->type . '-tags-input" id="tags-input" value="'
+            . $numbers_str
+            . '"/>';
+            // @todo  - make a propper output for the numbers.
+            $element[0] = array (
+              '#markup' => $numbers_box,
+              '#attached' => array (
+            		'css' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css'), 
+            		'js' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js',    
+            drupal_get_path('module', 'bib_number') . '/bib_number.js'),
+            ),
+            );
+            break;
+  }
+  return $element;
+}
+/**
+ * In this hook we add NULL item to the element, to make Drupal show input box.
+ *
+ * Implements hook_field_attach_view_alter
+ * @param object $output
+ * @param object $context
+ */
+function bib_number_field_attach_view_alter(&$output, $context) {
+  //print_nice(&$output);
+  foreach (element_children($output) as $field_name) {
+    $element = &$output[$field_name];
+    if ($element['#formatter'] == 'bib_number_default') {
+      if(empty($element['#items'])) {
+        $element['#items'][0] = NULL;
+      }
+    }
+  }
+}
+
+function bib_number_field_widget_info() {
+  return array(
+        'bib_number_widget' => array(
+            'label' => t('Bib number field'),
+            'field types' => array('bib_number'),
+            'settings' => array(),
+            'behaviors' => array(
+                'default value' => FIELD_BEHAVIOR_NONE,
+  //      'default value' => FIELD_BEHAVIOR_NONE,
+                 'multiple values' => FIELD_BEHAVIOR_DEFAULT, 
+  )
+  )
+  );
+}
+
+function bib_number_field_is_empty($item, $field)
+{
+  if($field['type'] == 'bib_number') {
+    if(empty($item['number'])){
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+function bib_number_field_widget_form(&$form, &$form_state, $field, $instance, $lang, $items, $delta, $element) {
+
+  switch ($instance['widget']['type']) {
+    case 'bib_number_widget':
+      $element['value']= array(
+                '#type' => 'textfield',
+                '#size' => '10',
+                '#title' => t('Bib Number'),
+                '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : null,
+                '#attributes' => array ('class' => array('form-text-bib-value')),
+      );
+      $element['probability'] = array(
+                '#type' => 'textfield',
+                '#size' => '5',
+                '#title' => t('Probability'),
+                '#default_value' => isset($items[$delta]['probability']) ? $items[$delta]['probability'] : 0,
+                '#attributes' => array ('class' => array('form-text-bib-probability')),
+      );
+      break;
+  }
+
+  return $element;
+}
+
+

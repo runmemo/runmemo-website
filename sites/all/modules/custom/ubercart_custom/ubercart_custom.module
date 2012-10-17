@@ -71,7 +71,6 @@ function ubercart_custom_init() {
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
 
   drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
-  drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/jquery.tagsinput.js');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
 
   //for redirect the cart page
@@ -533,35 +532,6 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
     if ($status_of_image != 0) {
       $form['base']['prices']['sell_price']['#disabled'] = 'TRUE';
     }
-    /*
-     $xyobject = new ubercart_custom_model();
-     $xyvalues = $xyobject->getxyvalues($nid);
-     $header = array(
-     array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
-     );
-     $rows = array();
-     $xycount = 0;
-     foreach($xyvalues as $xyvalue){
-
-     $xycount++;
-     $rows[] = array(
-     array('data' => $xycount),
-     array('data' => $xyvalue->runner_number),
-     array('data' => $xyvalue->xvalue),
-     array('data' => $xyvalue->yvalue),
-     array('data' => $xyvalue->probability)
-     );
-
-     }
-
-     if($xycount>0){
-     $form['ocr_xydetails'] = array(
-     '#markup' => theme('table', array('header' => $header, 'rows'=> $rows))
-     );
-     }
-
-     */
-
   }
 
   //alter the checkout form
@@ -595,13 +565,12 @@ function ubercart_custom_form_alter(&$form, $form_state, $form_id) {
   //alter for review order page
   if ($form['#form_id'] == 'uc_cart_checkout_review_form') {
     $form['actions']['back']= '';
-    $form['actions']['back']['#markup'] = l("", "cart/checkout", array(
+ /*   $form['actions']['back']['#markup'] = l("", "cart/checkout", array(
                                           'attributes' => array(
                                             'id' => 'edit-back',
 
     )));
-
-
+ */
     $form['actions']['submit']['#value'] = t('');
 
   }
@@ -699,7 +668,8 @@ function save_numbers() {
 
   switch ($option) {
     case "add":
-      $productSaver->AddNumber($number);
+      $arr_number = array('value' => $number, 'manual' => 1, 'probability' => 1);
+      $productSaver->AddNumber($arr_number);
       $productSaver->SetVerifiedBy($uid);
       break;
 

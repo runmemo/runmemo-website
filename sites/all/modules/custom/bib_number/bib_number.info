@@ -1,0 +1,6 @@
+name = Bib Number Field
+description = Module that defines field to store OCR results.
+core = 7.x
+package = Runmemo Custom Modules
+
+dependencies[] = ctools

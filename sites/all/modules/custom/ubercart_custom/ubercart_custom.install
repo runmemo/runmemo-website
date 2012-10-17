@@ -35,7 +35,7 @@ function create_product_field($field) {
    }
    if (isset($field['field_instance'])) {
      $field_info = field_info_instance('node', $field['field_instance']['field_name'], 'event');
-     if(is_null($field_info)) { // field does not exist
+     if(!isset($field_info)) { // field does not exist
        field_create_instance($field['field_instance']);
      }
      else { // field instance exists, no need to create, log message

@@ -26,24 +26,6 @@ function get_rendered_slider() {
   return $slider;
 }
 
-/**
- * Returns rendered runners number box
- * @return rendered array
- */
-function get_rendered_runner_number_box($nid) {
-  
-  $productSaver = new ProductNodeSaver($nid);
-  $numbers_str = $productSaver->GetNumbersStr(); 
-        
-  $numbers_box =
-    '<label for="product-node-runner-number" class="field-label">' . t('Runner numbers') . ':</label>
-    <input name="product-node-runner-number" id="product-node-runner-number" value="'
-    . $numbers_str     
-    . '"/>';
-  
-  return $numbers_box;
-  
-}
 
 /**
  * Gets event title by product node ID

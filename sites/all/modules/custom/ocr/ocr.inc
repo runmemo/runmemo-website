@@ -31,8 +31,17 @@ class OcrResultsSaver {
     // convert success to boolean
     $this->success = $response->Success;
     if ($this->success) {
-      foreach ($response->Numbers as $number) {
-        $this->numbers[] = new OcrResponceNumber($this->nid, $number);
+     foreach ($response->Numbers as $number) {
+        $this->numbers[] = array(
+          		 // 'nid' => $this->nid, 
+                  'value' => $number->Number,
+                  'top' => $number->Y,
+                  'left' => $number->X,
+                  'width' => $number->Width,
+                  'height' => $number->Height,
+                  'probability' => $number->Probability,
+                  'manual' => 0,
+                );
       }
     }
     else {
@@ -53,8 +62,8 @@ class OcrResultsSaver {
 
       // adding runner's numbers
       foreach ($this->numbers as $number) {
-        $this->product->AddNumber($number->number);
-        //    $number->Save();
+        $this->product->AddNumber($number);
+     
       }
       $this->product->SetOcrStatus($this->success);
       $this->product->Save();
@@ -74,49 +83,5 @@ class OcrResultsSaver {
       // @todo - maybe need to save this on the Product Node.
       watchdog('OCR Message Error', $this->error_message, array(), WATCHDOG_WARNING);
     }
-  }
-}
-
-
-/**
- * Contains attributes of runner's number on the photo.
- */
-class OcrResponceNumber {
-  // Id of the product node that contains image
-  private $nid;
-  // Number of the Runner
-  public $number;
-  private $probability;
-  private $top;
-  private $left;
-  private $width;
-  private $height;
-
-  public function __construct($nid, $number) {
-    $this->nid    = $nid;
-    $this->number = $number->Number;
-    $this->left   = $number->X;
-    $this->top    = $number->Y;
-    $this->width  = $number->Width;
-    $this->height = $number->Height;
-    $this->probability = $number->Probability;
-  }
-
-  /**
-   * Saves response from OCR to ocr_response
-   */
-  public function Save() {
-    // @todo write insert query that will add OCR results to DB table.
-    db_insert('ocr_numbers')->fields(
-    array(  'nid'    => $this->nid,
-            'number' => $this->number,
-            'position_left'   => $this->left,
-            'position_top'    => $this->top,
-            'width'  => $this->width,
-            'height' => $this->height,
-            'probability' => $this->probability,
-            'received' => REQUEST_TIME,
-    ))
-    ->execute();
   }
 }
