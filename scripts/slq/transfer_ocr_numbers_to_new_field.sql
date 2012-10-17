@@ -1,0 +1,28 @@
+INSERT INTO field_data_field_ocr_numbers
+(
+    entity_type,
+    bundle,
+    deleted,
+    entity_id,
+    revision_id,
+    language,
+    delta,
+    field_ocr_numbers_value,
+    field_ocr_numbers_probability,
+    field_ocr_numbers_manual,
+    field_ocr_numbers_created
+)
+SELECT
+    'node',
+    'product',
+    deleted,
+    entity_id,
+    revision_id,
+    'und',
+    delta,
+    ocr_numbers_value,
+    0,
+    0,
+    current_timestamp
+FROM
+    field_data_ocr_numbers;
