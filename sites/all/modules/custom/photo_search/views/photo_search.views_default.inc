@@ -203,12 +203,13 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['field_first_name']['empty_zero'] = 0;
   $handler->display->display_options['fields']['field_first_name']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['field_first_name']['field_api_classes'] = 0;
-  /* Sort criterion: Content: Post date */
-  $handler->display->display_options['sorts']['created']['id'] = 'created';
-  $handler->display->display_options['sorts']['created']['table'] = 'node';
-  $handler->display->display_options['sorts']['created']['field'] = 'created';
-  $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-  /* Contextual filter: Content: Event Name (field_event_reference) */
+  /* Sort criterion: OCR Probability */
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['id'] = 'field_ocr_numbers_probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['table'] = 'field_data_field_ocr_numbers';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['field'] = 'field_ocr_numbers_probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['ui_name'] = 'OCR Probability';
+  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['order'] = 'DESC';
+  /* Contextual filter: Content: Event Name */
   $handler->display->display_options['arguments']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
   $handler->display->display_options['arguments']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
   $handler->display->display_options['arguments']['field_event_reference_nid']['field'] = 'field_event_reference_nid';
@@ -221,12 +222,18 @@ function photo_search_views_default_views() {
   $handler->display->display_options['arguments']['field_event_reference_nid']['summary_options']['items_per_page'] = '25';
   $handler->display->display_options['arguments']['field_event_reference_nid']['break_phrase'] = 0;
   $handler->display->display_options['arguments']['field_event_reference_nid']['not'] = 0;
-  /* Contextual filter: Broken/missing handler */
-  $handler->display->display_options['arguments']['field_runner_number_value']['id'] = 'field_runner_number_value';
-  $handler->display->display_options['arguments']['field_runner_number_value']['table'] = 'field_data_field_runner_number';
-  $handler->display->display_options['arguments']['field_runner_number_value']['field'] = 'field_runner_number_value';
-  $handler->display->display_options['arguments']['field_runner_number_value']['default_argument_type'] = 'fixed';
-  $handler->display->display_options['arguments']['field_runner_number_value']['summary']['format'] = 'default_summary';
+  /* Contextual filter: Content: OCR Numbers */
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['id'] = 'field_ocr_numbers_value';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['table'] = 'field_data_field_ocr_numbers';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['field'] = 'field_ocr_numbers_value';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['break_phrase'] = 0;
+  $handler->display->display_options['arguments']['field_ocr_numbers_value']['not'] = 0;
+  
   /* Filter criterion: Content: Published */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'node';
@@ -238,12 +245,6 @@ function photo_search_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Default Page', 'page');
   $handler->display->display_options['defaults']['arguments'] = FALSE;
-  /* Sort criterion: OCR Probability */
-  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['id'] = 'field_ocr_numbers_probability';
-  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['table'] = 'field_data_field_ocr_numbers';
-  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['field'] = 'field_ocr_numbers_probability';
-  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['ui_name'] = 'OCR Probability';
-  $handler->display->display_options['sorts']['field_ocr_numbers_probability']['order'] = 'DESC';
   /* Contextual filter: Content: Event Name (field_event_reference) */
   $handler->display->display_options['arguments']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
   $handler->display->display_options['arguments']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
