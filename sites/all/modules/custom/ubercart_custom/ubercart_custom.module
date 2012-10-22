@@ -459,7 +459,7 @@ function uc_cart_remove_items_new_search($cid, $event, $number) {
   foreach ($items as $item) {
     $nid = $item->nid;
     $node = node_load($nid);
-    $item_numbers = field_get_items('node', $node, 'ocr_numbers', $node->language);
+    $item_numbers = field_get_items('node', $node, 'field_ocr_numbers', $node->language);
     $item_event = field_get_items('node', $node, 'field_event_reference', $node->language);
    
     if ($item_event[0]['nid'] == $event) {

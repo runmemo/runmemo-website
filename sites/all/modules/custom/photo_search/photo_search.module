@@ -397,7 +397,7 @@ function product_exists($nid, $number, $expire = 0) {
       ->propertyCondition('status', 1)
       ->propertyCondition('changed', $expire, '>=')
       ->fieldCondition('field_event_reference', 'nid', $nid, '=')
-      ->fieldCondition('ocr_numbers', 'value', $number, '=');
+      ->fieldCondition('field_ocr_numbers', 'value', $number, '=');
 
    $count = $query->count()->execute();
 

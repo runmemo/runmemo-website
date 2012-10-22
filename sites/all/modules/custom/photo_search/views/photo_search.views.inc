@@ -23,7 +23,7 @@ function photo_search_views_data() {
   // join requests to event
   // @todo: test that this works
    $data['node']['table']['join']['photo_requests'] = array(
-      'left_field' => 'ocr_numbers', 
+      'left_field' => 'field_s', 
       'field' => 'number',
    );
   
@@ -111,39 +111,8 @@ function photo_search_views_data() {
     ),
   );
   
-   // OCR Numbers table
-  $data['ocr_numbers']['table']['group'] = t('Photo Requests');
-  
-   // Runner's number.
-  $data['ocr_numbers']['nid'] = array(
-    'title' => t('Number'), 
-    'help' => t('Node id of the product.'), 
-    'field' => array(
-      'handler' => 'views_handler_field_numeric', 
-      'click sortable' => TRUE,
-    ), 
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-  );
-    // Runner's number.
-  $data['ocr_numbers']['number'] = array(
-    'title' => t('Number'), 
-    'help' => t('Number of the runner.'), 
-    'field' => array(
-      'handler' => 'views_handler_field_numeric', 
-      'click sortable' => TRUE,
-    ), 
-    'filter' => array(
-      'handler' => 'views_handler_filter_numeric',
-    ), 
-    'sort' => array(
-      'handler' => 'views_handler_sort',
-    ),
-  );
-  
     // @todo: test that this works
-   $data['field_data_ocr_numbers']['table']['join']['ocr_numbers'] = array(
+   $data['field_data_ocr_numbers']['table']['join']['field_ocr_numbers'] = array(
       'left_field' => 'entity_id', 
       'field' => 'nid',
       'extra' => array (
@@ -156,7 +125,7 @@ function photo_search_views_data() {
        ),
    );
     // Runner's number.
-  $data['ocr_numbers']['probability'] = array(
+  $data['field_ocr_numbers']['probability'] = array(
     'title' => t('Number'), 
     'help' => t('Probability that number is correct.'), 
     'field' => array(
@@ -170,7 +139,7 @@ function photo_search_views_data() {
   
   
     // Created On.
-  $data['ocr_numbers']['created'] = array(
+  $data['field_ocr_numbers']['created'] = array(
     'title' => t('Created On'), 
     'help' => t('Timestamp of request.'), 
     'field' => array(
