@@ -23,7 +23,7 @@ function photo_search_views_data() {
   // join requests to event
   // @todo: test that this works
    $data['node']['table']['join']['photo_requests'] = array(
-      'left_field' => 'field_s', 
+      'left_field' => 'field_ocr_numbers', 
       'field' => 'number',
    );
   
