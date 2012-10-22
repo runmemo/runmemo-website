@@ -107,7 +107,7 @@
   <div class="product_content">
     <?php 
       if (node_access("update", $node)) { 
-        print get_rendered_slider();
+        print render(get_slider());
       }
       print render($content); 
      

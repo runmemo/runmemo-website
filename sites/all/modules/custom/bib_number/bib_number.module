@@ -62,7 +62,6 @@ function bib_number_field_formatter_view($entity_type, $entity, $field, $instanc
  * @param object $context
  */
 function bib_number_field_attach_view_alter(&$output, $context) {
-  //print_nice(&$output);
   foreach (element_children($output) as $field_name) {
     $element = &$output[$field_name];
     if ($element['#formatter'] == 'bib_number_default') {
@@ -91,7 +90,7 @@ function bib_number_field_widget_info() {
 function bib_number_field_is_empty($item, $field)
 {
   if($field['type'] == 'bib_number') {
-    if(empty($item['number'])){
+    if(empty($item['value'])){
       return TRUE;
     }
   }

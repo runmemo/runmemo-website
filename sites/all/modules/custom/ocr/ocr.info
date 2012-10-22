@@ -3,6 +3,7 @@ description = OCR integration using amazon sqs
 package = Runmemo Custom Modules
 core = 7.x
 
+dependencies[] = common_tools
 dependencies[] = bib_number
 dependencies[] = ubercart_custom
 

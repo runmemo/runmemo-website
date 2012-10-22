@@ -3,7 +3,7 @@
  * jQuery Behaviors for Product Node page
  */
 (function($) {
-	Drupal.behaviors.runmemoProductNodePage = {
+	Drupal.behaviors.sliderfield = {
 		attach : function(context, settings) {
 
 	  function onSlide( event, ui ) {
@@ -12,7 +12,7 @@
 	  }
 	
 	  function onPriceChange( event, ui ) {
-	    var price = $(".node-type-product #price").slider( "value" );
+	    var price = $(".edit-slider").slider( "value" );
 	    var base_path = Drupal.settings.basePath;
 	    var nid = $('.node-type-product #product_id').val();
 	    //define php info and make ajax call
@@ -24,7 +24,7 @@
 	        cache: false,
 	        success : function(msg) {              
                   if (msg.success) {
-                    $( ".node-type-product #product-nice-message-container" ).text("Price was changed to £" + ui.value);
+                    $( "#product-nice-message-container" ).text("Price was changed to £" + ui.value);
                   }
 	        }
 	    }); 
@@ -33,7 +33,7 @@
 	
 	  var price = $( ".node-type-product #price_val" ).val();
 	 
-	 $(".node-type-product #price").slider({
+	 $(".edit-slider").slider({
 	          range: "min",
 	          value: price,
 	          min: 1,
@@ -43,7 +43,7 @@
 	          change: onPriceChange
 	  }); 
 	
-	  $(".node-type-product #amount").text( "£" + $(".node-type-product #price").slider( "value" ));
+	  $(".node-type-product #amount").text( "£" + $(".edit-slider").slider( "value" ));
 	
 	
 	  }

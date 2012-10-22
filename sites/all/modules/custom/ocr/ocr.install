@@ -5,13 +5,14 @@
  * Install and uninstall functions for the ocr module.
  */
 
+function bib_number_install() {
+  $field = bib_number_field();
+  create_field($field);  
+}
 
-function ocr_update_7001() {
- 
-  // Enable bib_numbers module
-  module_enable(array('bib_number'));
+function bib_number_field() {
   
-  // New Ocr Numbers
+   // New Ocr Numbers
   $field = array(
     'field_config' => array(
       'active' => '1',
@@ -67,8 +68,16 @@ function ocr_update_7001() {
       ),
     ),
   );
-  field_create_field($field['field_config']);  
-  field_create_instance($field['field_instance']);
+  return $field;
+}
+
+function ocr_update_7001() {
+ 
+  // Enable bib_numbers module
+  module_enable(array('bib_number'));
+  
+  $field = bib_number_field();
+  create_field($field);  
   /* transfer values for ocr_numbers to field_ocr_numbers
   $query = db_query("INSERT INTO field_data_field_ocr_numbers
             (
