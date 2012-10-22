@@ -1,0 +1,64 @@
+<?php 
+
+function bib_number_field_schema($field) {
+  if($field['type'] == 'bib_number') {
+    $columns = array(
+        'value' => array(
+         'description' => 'Number of runner.',
+         'type' => 'int',
+         'unsigned' => TRUE,
+         'not null' => TRUE,
+        ),
+        'position_top' => array(
+          'description' => 'Top position of the number on the image.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'position_left' => array(
+          'description' => 'Left postition of the number on the image.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'width' => array(
+          'description' => 'Width of the number.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+        'height' => array(
+          'description' => 'height of the number.',
+          'type' => 'int',
+          'unsigned' => TRUE,
+        ),
+  		'manual' => array(
+          'description' => 'Boolean indicating wether the number was entered manually.',
+          'type' => 'int',
+          'not null' => TRUE,
+		  'default'=> 0,
+        ),
+        'probability' => array(
+           'description' => 'Probability that the number is correct.',
+           'type' => 'numeric',
+	       'precision' => 2,
+           'unsigned' => TRUE,
+           'not null' => TRUE,
+ 		   'default'=> 0.0,
+         ),
+         'created' => array(
+           'description' => 'UNIX timestamp when the number was added.',
+           'type' => 'int',
+           'unsigned' => TRUE,
+           'not null' => TRUE,
+           'default' => 0,
+          ),
+    );
+  }  
+  return array(
+    'columns' => $columns,
+    'indexes' => array(
+      'value' => array('value'),
+    ), 
+  //  'foreign keys' => array(),
+  );
+  
+  
+}

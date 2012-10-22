@@ -23,8 +23,8 @@ function photo_search_views_data() {
   // join requests to event
   // @todo: test that this works
    $data['node']['table']['join']['photo_requests'] = array(
-      'left_field' => 'nid', 
-      'field' => 'eventid',
+      'left_field' => 'field_s', 
+      'field' => 'number',
    );
   
   // Unique Identifier
@@ -110,6 +110,51 @@ function photo_search_views_data() {
       'label' => t('Event'),
     ),
   );
+  
+    // @todo: test that this works
+   $data['field_data_ocr_numbers']['table']['join']['field_ocr_numbers'] = array(
+      'left_field' => 'entity_id', 
+      'field' => 'nid',
+      'extra' => array (
+         array(
+            'field'    => 'ocr_numbers_value',
+            'value'    => 'ocr_numbers.number',
+            'operator' => '=',
+            'numeric'  => true,
+          ),      
+       ),
+   );
+    // Runner's number.
+  $data['field_ocr_numbers']['probability'] = array(
+    'title' => t('Number'), 
+    'help' => t('Probability that number is correct.'), 
+    'field' => array(
+      'handler' => 'views_handler_field_numeric', 
+      'click sortable' => TRUE,
+    ), 
+    'sort' => array(
+      'handler' => 'views_handler_sort',
+    ),
+  );
+  
+  
+    // Created On.
+  $data['field_ocr_numbers']['created'] = array(
+    'title' => t('Created On'), 
+    'help' => t('Timestamp of request.'), 
+    'field' => array(
+      'handler' => 'views_handler_field_date', 
+      'click sortable' => TRUE,
+    ), 
+    'sort' => array(
+      'handler' => 'views_handler_sort_date',
+    ), 
+    'filter' => array(
+      'handler' => 'views_handler_filter_date',
+    ),
+  );
+  
+  
   
   return $data;
 }

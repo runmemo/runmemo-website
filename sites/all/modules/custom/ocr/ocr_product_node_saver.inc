@@ -31,16 +31,18 @@ class ProductNodeSaver {
   }
 
   /**
+   * 
    * Saves runner's number from ocr response to Drupal
+   * @param array $number named array with attributes for bib_number field
    */
   public function AddNumber($number) {
-    // Do NOT add 0
-    if ($number == 0) {
+    // Do NOT add empty array
+    if (empty($number) or $number == 0) {
       return;
     }
   
     // Do NOT add the same number
-    $saved_numbers = field_get_items('node', $this->node, 'ocr_numbers');
+    $saved_numbers = field_get_items('node', $this->node, 'field_ocr_numbers');
     if ($saved_numbers != FALSE) {
       foreach ($saved_numbers as $saved_number) {
         if ($saved_number['value'] == $number) {
@@ -48,23 +50,24 @@ class ProductNodeSaver {
         } 
       }
     }
-    
-    $this->node->ocr_numbers[$this->node->language][]['value'] = $number;
+    $number['created'] = time();
+    $this->node->field_ocr_numbers[$this->node->language][] = $number;
     $this->changed = TRUE;
+    
   }
   
   /**
-   * Remvoe runner's number
+   * Remove runner's number
    */
   public function RemoveNumber($number) {
-    $count_numbers = count($this->node->ocr_numbers[$this->node->language]);
+    $count_numbers = count($this->node->field_ocr_numbers[$this->node->language]);
     for ($i = 0; $i < $count_numbers; $i++) {
-      if (!isset($this->node->ocr_numbers[$this->node->language][$i])) {
+      if (!isset($this->node->field_ocr_numbers[$this->node->language][$i])) {
         $count_numbers++;
         continue;
       }
-      if ($this->node->ocr_numbers[$this->node->language][$i]['value'] === $number) {
-        unset($this->node->ocr_numbers[$this->node->language][$i]);
+      if ($this->node->field_ocr_numbers[$this->node->language][$i]['value'] === $number) {
+        unset($this->node->field_ocr_numbers[$this->node->language][$i]);
         $this->changed = TRUE;
       }
     }
@@ -108,7 +111,7 @@ class ProductNodeSaver {
    */
   public function GetNumbersStr() {
     $runner_numbers = '';
-    $numbers = field_get_items('node', $this->node, 'ocr_numbers');
+    $numbers = field_get_items('node', $this->node, 'field_ocr_numbers');
     
     if (!$numbers) {
       return '';

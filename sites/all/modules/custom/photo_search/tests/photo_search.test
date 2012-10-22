@@ -188,7 +188,7 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
   function setUp() { //'field_sql_storage', 'field', 'options', 'references'
     parent::setUp('photo_search');
       
-    $this->number = 1501;
+    $this->number = array('value' => 1501, 'manual' => 1, 'probability' => 1);
     
     $this->NewProduct =  product_node_creator::getNewProductNode();
     $lang = $this->NewProduct->language;
@@ -214,10 +214,11 @@ class SearchProductsForRequestsTestCase extends DrupalWebTestCase {
 
     
     $ps = new ProductNodeSaver($this->NewProduct->nid);
+    
     $ps->AddNumber($this->number);
     $ps->Save();
     
-    $result = product_exists($this->eventid, $this->number);
+    $result = product_exists($this->eventid, $this->number['value']);
     $this->assertTrue($result, 'New product was found for request.');
 
   }
@@ -236,7 +237,7 @@ function testProductExistsWithExpire() {
     
     $expire = REQUEST_TIME - 3600*24; // 1 day before creation
     
-    $result = product_exists($this->eventid, $this->number, $expire);
+    $result = product_exists($this->eventid, $this->number['value'], $expire);
 
     $this->assertTrue($result, 'New product was found for request.');
 
@@ -254,7 +255,7 @@ function testProductIsAbsentWithExpire() {
     $ps->Save();
     
     $expire = REQUEST_TIME+1; // 1+ second after creation
-    $result = product_exists($this->eventid, $this->number, $expire);
+    $result = product_exists($this->eventid, $this->number['value'], $expire);
     $this->assertFalse($result, 'New product was found for request.');
 
   }
@@ -264,7 +265,7 @@ function testProductIsAbsentWithExpire() {
  */
   function testProductIsAbsent() {
    
-    $result = product_exists($this->eventid, $this->number);
+    $result = product_exists($this->eventid, $this->number['value']);
     $this->assertFalse($result, 'New product was not found for request.');
   }
 
@@ -316,12 +317,12 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
     // 1st product
     $product1 = product_node_creator::getNewProductNode($event1->nid);
     $ps = new ProductNodeSaver($product1->nid);
-    $ps->AddNumber(200);
+    $ps->AddNumber(array('value' => 200, 'manual' => 1, 'probability' => 1, ));
     $ps->Save();
     // 2nd product
     $product2 = product_node_creator::getNewProductNode($event2->nid);
     $ps = new ProductNodeSaver($product2->nid);
-    $ps->AddNumber(300);
+    $ps->AddNumber(array('value' => 300, 'manual' =>1, 'probability' => 1 ));
     $ps->Save();
 
     // run cron - check that M emails were sent

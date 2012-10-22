@@ -107,7 +107,7 @@ class OcrIntegrationTestCase extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('ocr');
+    parent::setUp('bib_number', 'ocr');
 
     $this->testNode = product_node_creator::getNewProductNode();
   }
@@ -147,7 +147,7 @@ class OcrIntegrationTestCase extends DrupalWebTestCase {
     // check numbers field
     // numbers matching numbers in the file with fake message.
     $numbers = array(4745, 500, 5);
-    $setValues = field_get_items('node', $node, 'ocr_numbers', $node->language);
+    $setValues = field_get_items('node', $node, 'field_ocr_numbers', $node->language);
      
     $matches = 0;
     foreach ($setValues as $setValue) {

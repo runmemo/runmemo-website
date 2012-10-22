@@ -5,61 +5,110 @@
  * Install and uninstall functions for the ocr module.
  */
 
-function ocr_schema() {
-  $schema['ocr_numbers'] = array(
-    'description' => 'Stores numbers and their properties from OCR Response',
-    'fields' => array(
-                  'nid' => array(
-                      'description' => 'The ID of the node that contains the image.',
-                      'type' => 'int',
-                      'unsigned' => TRUE,
-                      'not null' => TRUE,
-  ),
-                   'number' => array(
-                     'description' => 'Number of runner.',
-                     'type' => 'int',
-                     'unsigned' => TRUE,
-                     'not null' => TRUE,
-  ),
-                    'position_top' => array(
-                      'description' => 'Top position of the number on the image.',
-                      'type' => 'int',
-                      'unsigned' => TRUE,
-                      'not null' => TRUE,
-  ),
-                    'position_left' => array(
-                      'description' => 'Left postition of the number on the image.',
-                      'type' => 'int',
-                      'unsigned' => TRUE,
-                      'not null' => TRUE,
-  ),
-                    'width' => array(
-                      'description' => 'Width of the number.',
-                      'type' => 'int',
-                      'unsigned' => TRUE,
-                      'not null' => TRUE,
-  ),
-                    'height' => array(
-                      'description' => 'height of the number.',
-                      'type' => 'int',
-                      'unsigned' => TRUE,
-                      'not null' => TRUE,
-  ),
-                     'probability' => array(
-                       'description' => 'Probability that the number is correct.',
-                       'type' => 'double precision (2,5)',
-                       'unsigned' => TRUE,
-                       'not null' => TRUE,
-  ),
-                     'timestamp' => array(
-                       'description' => 'UNIX timestamp for when the number was added.',
-                       'type' => 'int',
-                       'unsigned' => TRUE,
-                       'not null' => TRUE,
-                       'default' => 0,
-  ),
-  ),
-                'primary key' => array('nid', 'number'),
-  );
+function bib_number_install() {
+  $field = bib_number_field();
+  create_field($field);  
 }
 
+function bib_number_field() {
+  
+   // New Ocr Numbers
+  $field = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '10',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_ocr_numbers',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(),
+      'size' => 'normal',
+      'translatable' => '0',
+      'type' => 'bib_number',
+    ),
+    'field_instance' => array(
+      'bundle' => 'product',
+      'cardinality' => 10,
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'bib_number',
+          'settings' => array(
+          ),
+          'type' => 'bib_number',
+          'weight' => '11',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_ocr_numbers',
+      'label' => 'OCR Numbers',
+      'required' => FALSE,
+      'settings' => array(
+        'max' => '99999',
+        'min' => '1',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'size' => 'normal',
+      'type' => 'bib_number',
+      'widget' => array(
+      ),
+    ),
+  );
+  return $field;
+}
+
+function ocr_update_7001() {
+ 
+  // Enable bib_numbers module
+  module_enable(array('bib_number'));
+  
+  $field = bib_number_field();
+  create_field($field);  
+  /* transfer values for ocr_numbers to field_ocr_numbers
+  $query = db_query("INSERT INTO field_data_field_ocr_numbers
+            (
+            	entity_type,
+            	bundle,
+            	deleted,
+            	entity_id,
+            	revision_id,
+            	language,
+            	delta,
+            	field_ocr_numbers_value,
+            	field_ocr_numbers_probability,
+            	field_ocr_numbers_manual,
+            	field_ocr_numbers_created
+            )
+            SELECT
+            	'node',
+            	'product',
+            	deleted,
+            	entity_id,
+            	revision_id,
+            	'und',
+            	delta,
+            	ocr_numbers_value,
+            	0,
+            	0,
+            	current_timestamp
+            FROM
+            	field_data_ocr_numbers;");
+  $query->exectute();
+  */
+  // @todo drop field ocr_numbers
+  
+}

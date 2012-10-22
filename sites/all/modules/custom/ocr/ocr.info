@@ -3,6 +3,8 @@ description = OCR integration using amazon sqs
 package = Runmemo Custom Modules
 core = 7.x
 
+dependencies[] = common_tools
+dependencies[] = bib_number
 dependencies[] = ubercart_custom
 
 files[] = ocr.module
@@ -12,7 +14,6 @@ files[] = ocr_sqs_queues.inc
 files[] = tests/ocr.test
 files[] = tests/ocr_product_saver.test
 files[] = tests/ocr_sqs_queues.test
-
 
 ; Information added by drupal.org packaging script on 2011-11-24
 version = "7.x-1.x-dev"
