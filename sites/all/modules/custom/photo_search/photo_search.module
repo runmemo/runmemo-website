@@ -414,14 +414,17 @@ function product_exists($nid, $number, $expire = 0) {
  * @return renderable array
  */
 function photo_search_request_form($form, &$form_state) {
-    if (arg(0) == 'search-result') {
-      if (is_numeric(arg(1)) && (arg(1) != '')) {
-        $eventid = arg(1);
-      }
-      if (is_numeric(arg(2)) && (arg(2) != '')) {
-        $number = arg(2);
-      }  
+    
+  $number = '';
+  
+  if (arg(0) == 'search-result') {
+    if (is_numeric(arg(1)) && (arg(1) != '')) {
+      $eventid = arg(1);
     }
+    if (is_numeric(arg(2)) && (arg(2) != '')) {
+      $number = arg(2);
+    }
+  }
 
   $event = node_load($eventid);
   
@@ -444,7 +447,7 @@ function photo_search_request_form($form, &$form_state) {
       '#title' => t('Email address'),
       '#size' => 30,
       '#maxlength' => 255,
-      '#description' => t('Enter your email address'),
+      '#description' => t('We will send an email to that address'),
   );
   
   $form['number'] = array(
@@ -452,7 +455,7 @@ function photo_search_request_form($form, &$form_state) {
       '#title' => t('Bib number') . ' ',
       '#size' => 30,
       '#maxlength' => 6,
-      '#description' => t('Enter your bib number'),
+      '#description' => t('Number that you were wearing'),
       '#default_value' => $number,  
   );
   $form['submit'] = array(
