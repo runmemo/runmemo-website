@@ -10,7 +10,7 @@
  * $event_title return event title,nid array
  */
 function get_events() {
-
+  // @todo: replace with field query and give an option to select events from the past only only.
   $events= db_query('SELECT nid, title FROM {node} WHERE type = :type', array(':type' => 'event'));
   return $events;
 }
