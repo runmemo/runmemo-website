@@ -15,34 +15,80 @@ jQuery(document).ready(function() {
 					$(this).css("border", "none");
 				}
 			});
+			
+			$(document).ready(function() {
+				set_preview_area_height();
+			});
 			*/
-			
-			if ($('.view-search-results .views-view-grid').length == 1) {
-				var initial_img = $('.image-thumbnail img').first().attr('src');
-				
-				// select the first thumbnail image 
-				$('.image-thumbnail img').first().addClass('selected-thumbnail');
-
-				var initial_preview = initial_img.replace('search_thumbnail', 'search_preview');
+		
+			function set_preview_area_height(img_height) {
 				var preview = $("#prev_img img");
-				preview.attr('src', initial_preview)
+				var img_height = preview.height();
+				if (img_height == 0) {
+					img_height = 650;
+				};
 				
-				var initial_cost = get_currency_sign() + $('.views-view-grid .node_cost').first().text();
-
-				$("span#photo_cost label").text(initial_cost);
-
-				var initial_authour_name = $('.authour_first_name').first().text();
-				$('.page-search-result span#photo_author label').text(
-						initial_authour_name);
-			
-				// cache nid of the first image in the view
-				var initial_nid = $('.views-view-grid .search-checkbox').first().attr('title');
-				$("#cart_hidden").val(initial_nid);
-			
-				load_selected_products_from_ubercart();
+				var preview_height = $('.search-image-preview').position().top - preview.position().top + img_height + 2; 
+				$('.search-image-preview').height(preview_height);
 				
 			}
+			
+			
+			/**
+			 * Click Event for the thumbnail image.
+			 */
+			$('.image-thumbnail img').bind('click', function() {
 
+						// highlight selected image
+						$('div.field-content img').removeClass('selected-thumbnail').addClass('thumbnail');
+						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
+
+						// change the price of the photo
+						var price_txt = get_currency_sign() + $(this).parents('td').find('span.node_cost').text();
+						$('.page-search-result span#photo_cost label').text(price_txt);
+						// change the autor text
+						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
+						$(".page-search-result span#photo_author label").text(node_author_txt);
+
+						var imgsrc = $(this).attr('src');
+						var replacement_url = imgsrc.replace('search_thumbnail', 'search_preview');
+						
+						// preload image
+						var image = $('<img />').attr('src', replacement_url);
+					
+						var preview = $("#prev_img img");
+					
+						var current_preview_url = preview.attr('src');
+						if (current_preview_url != replacement_url) {
+								// fade out old image and fade in the new one
+								preview.animate({opacity: 0.40}, 200, function() {
+								preview.attr('src', replacement_url);
+								preview.animate({ opacity: 1 }, 200);
+								set_preview_area_height(preview.height());
+							});
+						}
+					
+						// # contains the nid 
+						// of currently selected product
+						var wrap_id1 = $(this).parent().attr('id');
+						var exploded = wrap_id1.split('thumb-');
+						var new_id = exploded[1];
+						$("#cart_hidden").val(new_id);
+
+						// var temp = new Array();
+						if ($('#check_' + new_id).hasClass('checked') == true) {
+							show_remove_button();
+						} else {
+							show_add_button();
+						}
+
+			});
+
+			
+			if ($('.view-search-results .views-view-grid').length == 1) {
+				$('.image-thumbnail img').first().click(); // select first image
+				load_selected_products_from_ubercart();
+			}
 			else { // hide cart details block
 				$(".region-sidebar-second .content").hide();
 			}
@@ -54,7 +100,6 @@ jQuery(document).ready(function() {
 				}
    				
  			});
-			
 
 			if ($('.search-summary-photos .placeholder').length > 0) {
 				if ($(
@@ -420,55 +465,7 @@ jQuery(document).ready(function() {
 				});
 			});
 			
-			/**
-			 * Click Event for the thumbnail image.
-			 */
-			$('div.field-content img').bind('click',function() {
-
-						// highlight selected image
-						$('div.field-content img').removeClass('selected-thumbnail').addClass('thumbnail');
-						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
-
-						// change the price of the photo
-						var price_txt = get_currency_sign() + $(this).parents('td').find('span.node_cost').text();
-						$('.page-search-result span#photo_cost label').text(price_txt);
-						// change the autor text
-						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
-						$(".page-search-result span#photo_author label").text(node_author_txt);
-
-						var imgsrc = $(this).attr('src');
-						var replacement_url = imgsrc.replace('search_thumbnail', 'search_preview');
-						
-						// preload image
-						var image = $('<img />').attr('src', replacement_url);
-					
-						var preview = $("#prev_img img");
-					
-						var current_preview_url = preview.attr('src');
-						if (current_preview_url != replacement_url) {
-								// fade out old image and fade in the new one
-								preview.animate({opacity: 0.40}, 200, function() {
-								preview.attr('src', replacement_url);
-								preview.animate({ opacity: 1 }, 200);
-							});
-						}
-					
-						// # contains the nid 
-						// of currently selected product
-						var wrap_id1 = $(this).parent().attr('id');
-						var exploded = wrap_id1.split('thumb-');
-						var new_id = exploded[1];
-						$("#cart_hidden").val(new_id);
-
-						// var temp = new Array();
-						if ($('#check_' + new_id).hasClass('checked') == true) {
-							show_remove_button();
-						} else {
-							show_add_button();
-						}
-
-				});
-
+			
 			/**
 			 * Mouseover Event for thumbnail image that shows the bubble with
 			 * price (search results page)

@@ -1552,6 +1552,11 @@ a#guide:hover {
 	border: 1px solid #000;
 }
 
+.image-preview-container {
+    position: absolute;
+    margin-top: 30px;
+}
+
 .chzn-container .chzn-results li {
 	line-height: 18px;
 }
