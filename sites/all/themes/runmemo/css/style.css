@@ -1544,14 +1544,13 @@ a#guide:hover {
 	display: none !important;
 }
 
-.region-sidebar-second .content #prev_img {
+.image-preview {
 	clear: both;
 	/*float: left;*/
 	text-align: right;
 	width: 400px;
 	/*height:365px;*/
 	vertical-align: middle;
-	padding-top: 5px;
 }
 
 .chzn-container .chzn-results li {
@@ -1611,11 +1610,6 @@ ul#edit-file_filelist {
 	height: 40px;
 	line-height: 40px;
 	text-align: center;
-}
-
-.page-cart #prev_img_cart {
-	text-align: right;
-	width: 464px;
 }
 
 .page-cart #cart-result {
