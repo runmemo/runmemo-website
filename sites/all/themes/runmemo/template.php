@@ -17,51 +17,12 @@ function runmemo_preprocess_maintenance_page(&$vars) {
  * Override or insert variables into the html template.
  */
 function runmemo_preprocess_html(&$vars) {
-  
-  //print_nice($vars, 7);
   // Toggle fixed or fluid width.
   if (theme_get_setting('runmemo_width') == 'fluid') {
     $vars['classes_array'][] = 'fluid-width';
   }
   // Add conditional CSS for IE6.
   drupal_add_css(path_to_theme() . '/fix-ie.css', array('group' => CSS_THEME, 'browsers' => array('IE' => 'lt IE 7', '!IE' => FALSE), 'preprocess' => FALSE));
-
-
- if (arg(0) == 'search-result') {
-  $open_graph_title = array(
-    '#type' => 'html_tag',
-    '#tag' => 'meta',
-    '#attributes' => array(
-      'property' => 'og:title',
-      'content' =>  t('Photos from event found on Runmemo'),
-    )
-  );
-  
-  // Add header meta tag for IE to head
-  drupal_add_html_head($open_graph_title, 'meta_open_graph_title');
-
-  // Add first image from search results as Open Graph image.
-  $view = $vars['page']['#views_contextual_links_info']['views_ui']['view']->result;
-  if(!empty($view)) {
-    $image_uri = $view[0]->field_uc_product_image[0]['rendered']['#item']['uri'];
-    $image_url = image_style_url('search_thumbnail', $image_uri);
-    
-    $open_graph_image = array(
-      '#type' => 'html_tag',
-      '#tag' => 'meta',
-      '#attributes' => array(
-        'property' => 'og:image',
-        'content' =>  $image_url,
-      )
-    );
-    
-    drupal_add_html_head($open_graph_image, 'meta_open_graph_image');
-  }
-  
- }
-  
- 
- 
 }
 
 /**
