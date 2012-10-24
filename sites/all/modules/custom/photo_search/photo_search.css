@@ -101,7 +101,7 @@ table {
 }
 #photo_author
 {
-   clear:left;
+   clear:both;
    float:left;
    padding:0 0 0px 0;
    height:20px;
@@ -134,6 +134,15 @@ table {
 
 .search-add-button {
 	 width:139px;
+}
+
+.search-fb-like {
+    display: inline;
+    float: left;
+	margin-left: 20px;
+	top: 35px;
+	z-index:20;
+	position: absolute;
 }
 	
 .i18n-en .search-add-button {
@@ -220,12 +229,12 @@ table {
 }
 
 .page-search-result .form-item-runner-number,
-.page-search-result .form-item-events-select-runner {
+.page-search-result .form-item-event {
 	float: left;
 	padding: 20px;
 }
 
-form#select-event-runner-get-photos {
+form#search-photos-form {
 	clear: both;
 	display: block;
 }

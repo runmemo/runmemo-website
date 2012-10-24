@@ -17,27 +17,26 @@ jQuery(document).ready(function() {
 			});
 			*/
 			
-			if ($('.page-search-result #block-system-main table.views-view-grid').length == 1) {
-				var initial_img = $('#block-system-main table.views-view-grid tr.row-first td.col-first img').attr('src');
-				// for highlight the thumbnail image related to the preview
-				// image
-				$('#block-system-main table.views-view-grid tr.row-first td.col-first img').addClass('selected-thumbnail');
+			if ($('.view-search-results .views-view-grid').length == 1) {
+				var initial_img = $('.image-thumbnail img').first().attr('src');
+				
+				// select the first thumbnail image 
+				$('.image-thumbnail img').first().addClass('selected-thumbnail');
 
 				var initial_preview = initial_img.replace('search_thumbnail', 'search_preview');
-
-				$("#prev_img").html('<img src="' + initial_preview + '" />');
-
-				var initial_cost = get_currency_sign() + $('.views-view-grid tr.row-first td.col-first .node_cost').text();
+				var preview = $("#prev_img img");
+				preview.attr('src', initial_preview)
+				
+				var initial_cost = get_currency_sign() + $('.views-view-grid .node_cost').first().text();
 
 				$("span#photo_cost label").text(initial_cost);
 
-				var initial_authour_name = $('.views-view-grid tr.row-first td.col-first .authour_first_name')
-						.text();
+				var initial_authour_name = $('.authour_first_name').first().text();
 				$('.page-search-result span#photo_author label').text(
 						initial_authour_name);
 			
 				// cache nid of the first image in the view
-				var initial_nid = $('.views-view-grid tr.row-first td.col-first .search-checkbox').attr('title');
+				var initial_nid = $('.views-view-grid .search-checkbox').first().attr('title');
 				$("#cart_hidden").val(initial_nid);
 			
 				load_selected_products_from_ubercart();
@@ -276,7 +275,7 @@ jQuery(document).ready(function() {
 						set_cart(msg);
 						
 						// show add/remove button
-						if ($('.row-first .col-first .search-checkbox').hasClass('checked')) {
+						if ($('.search-checkbox').first().hasClass('checked')) {
 							show_remove_button();
 						} else {
 							show_add_button();
@@ -442,8 +441,9 @@ jQuery(document).ready(function() {
 						
 						// preload image
 						var image = $('<img />').attr('src', replacement_url);
-						
+					
 						var preview = $("#prev_img img");
+					
 						var current_preview_url = preview.attr('src');
 						if (current_preview_url != replacement_url) {
 								// fade out old image and fade in the new one
