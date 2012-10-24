@@ -44,7 +44,7 @@ function runmemo_preprocess_html(&$vars) {
   $view = $vars['page']['#views_contextual_links_info']['views_ui']['view']->result;
   if(!empty($view)) {
     $image_uri = $view[0]->field_uc_product_image[0]['rendered']['#item']['uri'];
-    $image_url = file_create_url($image_uri);
+    $image_url = image_style_url('search_thumbnail', $image_uri);
     
     $open_graph_image = array(
       '#type' => 'html_tag',
