@@ -1549,8 +1549,7 @@ a#guide:hover {
 	/*float: left;*/
 	text-align: right;
 	width: 400px;
-	/*height:365px;*/
-	vertical-align: middle;
+	border: 1px solid #000;
 }
 
 .chzn-container .chzn-results li {
