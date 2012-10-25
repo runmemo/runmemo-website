@@ -106,6 +106,7 @@
   
   <div class="product_content">
     <?php 
+      print render($content['field_event_reference']);
       if (node_access("update", $node)) { 
         print render(get_slider());
       }
