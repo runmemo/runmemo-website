@@ -104,7 +104,7 @@
     hide($content['links']);
     print render($content);
   ?>
-  <?php if ($teaser): ?>
+  <?php if (!$teaser): ?>
      <div class="fb-comments" data-href="<?php print $base_url . $node_url; ?>"data-num-posts="4" data-width="552"></div>
   <?php endif; ?>
   
