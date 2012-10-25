@@ -99,19 +99,16 @@
    </h2>	
   <div class="fb-like" data-href="<?php print $base_url . $node_url; ?>" data-send="true" data-width="552" data-show-faces="true" data-font="arial"></div>
   <?php
-  
     // We hide the comments and links now so that we can render them later.
     hide($content['comments']);
     hide($content['links']);
-    
     print render($content);
-    
   ?>
+  <?php if ($teaser): ?>
+     <div class="fb-comments" data-href="<?php print $base_url . $node_url; ?>"data-num-posts="4" data-width="552"></div>
+  <?php endif; ?>
   
-  <div class="fb-comments" data-href="<?php print $base_url . $node_url; ?>" data-num-posts="2" data-width="552"></div>
- 
   <?php //print render($content['links']); ?>
-
   <?php //print render($content['comments']); ?>
 
 </div><!-- /.node -->
