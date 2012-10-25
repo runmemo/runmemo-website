@@ -97,7 +97,7 @@
   <h2<?php print $title_attributes; ?>><a href=<?php print url('node/' . $node->nid); ?>>
     <?php print $title; ?></a>
    </h2>	
-  <div class="fb-like" data-href="<?php print $base_url . $node_url; ?>" data-send="true" data-width="552" data-show-faces="true" data-font="arial"></div>
+  <div class="fb-like" data-href="<?php print $base_url . $node_url; ?>" data-send="true" data-width="552" data-show-faces="false" data-font="arial"></div>
   <?php
     // We hide the comments and links now so that we can render them later.
     hide($content['comments']);
