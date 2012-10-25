@@ -628,7 +628,7 @@ function search_result_cart($form, &$form_state) {
   	'#id' => 'add_to_cart', 
   );
   $form['fb_like'] = array(
-      '#markup' => '<div class="fb-like search-fb-like" data-send="true" data-layout="button_count" data-width="200" data-show-faces="true" data-font="arial"></div>'
+      '#markup' => '<div class="fb-like search-fb-like" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="arial"></div>'
   );
   $form['preview'] = array(
     '#markup' => '<div id="prev_img" class="image-preview-container">
