@@ -84,8 +84,9 @@
  */
 ?>
 <div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
-
+ 
   <?php 
+    global $base_url; 
     $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
     $ev_month = format_date($timestamp, 'custom', 'M');
     $ev_day = format_date($timestamp, 'custom', 'd');
@@ -96,21 +97,18 @@
   <h2<?php print $title_attributes; ?>><a href=<?php print url('node/' . $node->nid); ?>>
     <?php print $title; ?></a>
    </h2>	
-  
+  <div class="fb-like" data-href="<?php print $base_url . $node_url; ?>" data-send="true" data-width="552" data-show-faces="true" data-font="arial"></div>
   <?php
+  
     // We hide the comments and links now so that we can render them later.
-   // hide($content['field_photographers']);
     hide($content['comments']);
     hide($content['links']);
-   // hide($content['field_profile_image']);
-    //print theme('image_style', array('path' => $node->field_profile_image['und']['0']['uri'], 'style_name' => 'search_preview'));
-   // print_r($node);
-   ?>
-   
-   <?php 
+    
     print render($content);
-   
+    
   ?>
+  
+  <div class="fb-comments" data-href="<?php print $base_url . $node_url; ?>" data-num-posts="2" data-width="552"></div>
  
   <?php //print render($content['links']); ?>
 
