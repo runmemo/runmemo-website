@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
 					img_height = 650;
 				};
 				
-				var preview_height = $('.search-image-preview').position().top - preview.position().top + img_height + 2; 
+				var preview_height = 70 + img_height + 2; 
 				$('.search-image-preview').height(preview_height);
 				
 			}
@@ -88,6 +88,7 @@ jQuery(document).ready(function() {
 			if ($('.view-search-results .views-view-grid').length == 1) {
 				$('.image-thumbnail img').first().click(); // select first image
 				load_selected_products_from_ubercart();
+				$('.prev_img').show();
 			}
 			else { // hide cart details block
 				$(".region-sidebar-second .content").hide();
