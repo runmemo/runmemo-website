@@ -138,11 +138,12 @@ table {
 
 .search-fb-like {
     display: inline;
+    clear:both;
     float: left;
-	margin-left: 20px;
-	top: 25px;
-	z-index:20;
-	position: absolute;
+    margin-left: 20px;
+    top: 10px;
+    z-index:20;
+    position: absolute;
 }
 	
 .i18n-en .search-add-button {
