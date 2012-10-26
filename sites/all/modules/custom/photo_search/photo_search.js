@@ -28,7 +28,7 @@ jQuery(document).ready(function() {
 					img_height = 650;
 				};
 				
-				var preview_height = $('.search-image-preview').position().top - preview.position().top + img_height + 2; 
+				var preview_height = 70 + img_height + 2; 
 				$('.search-image-preview').height(preview_height);
 				
 			}
