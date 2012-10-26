@@ -88,6 +88,7 @@ jQuery(document).ready(function() {
 			if ($('.view-search-results .views-view-grid').length == 1) {
 				$('.image-thumbnail img').first().click(); // select first image
 				load_selected_products_from_ubercart();
+				$('.prev_img').show();
 			}
 			else { // hide cart details block
 				$(".region-sidebar-second .content").hide();

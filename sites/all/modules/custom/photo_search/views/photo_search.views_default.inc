@@ -56,6 +56,18 @@ function photo_search_views_default_views() {
   	 <div id='clear-all' class='search-remove-all'>clear all</div>";
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
+  /* Footer: Global: PHP */
+  $handler->display->display_options['footer']['php']['id'] = 'php';
+  $handler->display->display_options['footer']['php']['table'] = 'views';
+  $handler->display->display_options['footer']['php']['field'] = 'php';
+  $handler->display->display_options['footer']['php']['label'] = 'Preview';
+  $handler->display->display_options['footer']['php']['empty'] = FALSE;
+  $handler->display->display_options['footer']['php']['php_output'] =
+  '<?php  
+  	$uri = $view->result[0]->_field_data["nid"]["entity"]->uc_product_image["und"][0]["uri"];
+	
+  	print render(photo_search_preview_area($uri));
+   ?>';
   /* No results behavior: Global: PHP */
   $handler->display->display_options['empty']['php']['id'] = 'php';
   $handler->display->display_options['empty']['php']['table'] = 'views';

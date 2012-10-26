@@ -251,7 +251,8 @@ form#search-photos-form {
 }
 
 .view-footer {
-	float:right;
+	float: right;
+	margin-top: -20px;
 	}
 
 .view-search-results {
