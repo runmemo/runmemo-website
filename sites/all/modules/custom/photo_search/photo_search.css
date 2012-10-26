@@ -241,25 +241,35 @@ form#search-photos-form {
 
 /* *********** View with results ************* */
 .page-search-result .region-content .view-content {
+	float: left;
 	height: 640px;
 	overflow-x: hidden;
 	overflow-y: scroll;
 	width: 550px;
+	border: 1px solid #CCC;
 }
+
+.view-footer {
+	float:right;
+	}
 
 .view-search-results {
 	float: left;
 	clear: left;
 	display: block;
-	border: 1px solid #CCCCCC;
-	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 }
 
 .view-header {
-	border-bottom: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	border-left: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 	height: 30px;
+	width: 550px;
+	float:left;
 }
 
 .search-remove-all,
@@ -295,9 +305,9 @@ p {
 	width: 400px;
 }
 #photo-search-request-form {
-	/*  border:1px solid #cccccc; */
 	padding: 20px;
-	/*  height: 280px;*/
+	border: 1px solid #CCC;
+	border-radius: 5px;
 }
 
 #photo-request-submit-button {
