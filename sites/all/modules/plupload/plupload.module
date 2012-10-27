@@ -371,7 +371,7 @@ function plupload_handle_uploads() {
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
           $file['tmppath'] = $temp_directory . $file_name;
-          _file_uploaded($file);
+          module_invoke_all('file_uploaded', $fileinfo); 
         }
         else {
           
@@ -413,9 +413,6 @@ function plupload_handle_uploads() {
   die('{"jsonrpc" : "2.0", "result" : null, "id" : "id"}');
 }
 
-function _file_uploaded($fileinfo) {
-  module_invoke_all('file_uploaded', $fileinfo); 
-}
 
 /**
  * Returns a file object which can be passed to file_save().

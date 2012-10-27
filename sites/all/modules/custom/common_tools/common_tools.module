@@ -19,8 +19,7 @@ function get_slider() {
     '<div id="price-container" class="price-slider">
       	<label for="amount" class="field-label" style="float: left">My price:</label>
       	<span id="amount" style="margin-left: 10px"></span>    
-      	 <div class = "edit-slider"></div>	
-      
+      	<div id="price" class = "edit-slider"></div>	
     </div>';
   return $slider;
 }

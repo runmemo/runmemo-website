@@ -97,20 +97,17 @@ function select_event_function() {
 
   //get the event name from content type 'event'
   $events = get_events();
-  foreach ($events as $event_item) {
-    $event_title = $event_item->title;
-    $nid = $event_item->nid;
-    $form['events_select']['#options'][$nid] = $event_title;
+  foreach ($events as $event) {
+    $form['events_select']['#options'][$event['nid']] = $event['title'];
   }
-
+ 
   if (is_numeric(arg(2)) && arg(2) != '') {
     $default = arg(2);
     $form['events_select']['#default_value'] = $default;
   }
   
-  $form['price_slider'] = array(
-    '#markup' => get_rendered_slider(),
-  );
+  $form['price_slider'] =  get_slider();
+   
   
   return $form;
 }
