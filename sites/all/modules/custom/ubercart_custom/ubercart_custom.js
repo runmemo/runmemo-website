@@ -12,7 +12,7 @@
 	  }
 	
 	  function onPriceChange( event, ui ) {
-	    var price = $(".edit-slider").slider( "value" );
+	    var price = $("#price").slider( "value" );
 	    var base_path = Drupal.settings.basePath;
 	    var nid = $('.node-type-product #product_id').val();
 	    //define php info and make ajax call
@@ -31,9 +31,9 @@
             
 	  }
 	
-	  var price = $( ".node-type-product #price_val" ).val();
+	 var price = $( ".node-type-product #price_val" ).val();
 	 
-	 $(".edit-slider").slider({
+	 $(".node-type-product #price").slider({
 	          range: "min",
 	          value: price,
 	          min: 1,

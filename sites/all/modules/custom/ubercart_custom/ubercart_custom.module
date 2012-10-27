@@ -85,6 +85,7 @@ function ubercart_custom_init() {
   variable_set('max_order_value', 12);
 }
 
+
 function get_max_order_value() {
   return variable_get('max_order_value', 12);
 }
