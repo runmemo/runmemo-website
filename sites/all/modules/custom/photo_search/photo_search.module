@@ -132,13 +132,11 @@ function search_photos_form($form, &$form_state) {
   //select event options from content type 'event'
 
   //get the event name from content type 'event'
-  $event_name = get_events();
-  foreach ($event_name as $event_name_value) {
-    $event_title_nid = $event_name_value->nid;
-    $event_title = $event_name_value->title;
-    $form['search_filter']['event']['#options'][$event_title_nid]=$event_title;
+  $events = get_events();
+  foreach ($events as $nid => $event) {
+    $form['search_filter']['event']['#options'][$event['nid']] = $event['title'];
   }
-
+ 
   if ((is_numeric(arg(1))) && (arg(1) != '')) {
     $default=arg(1);
     $form['search_filter']['event']['#default_value']=$default;
@@ -230,8 +228,8 @@ function sell_photos_form($form, &$form_state) {
   //get the event name from content type 'event'
   $events = get_events();
   foreach ($events as $event) {
-    $event_title = $event->title;
-    $event_nid   = $event->nid;
+    $event_title = $event['title'];
+    $event_nid   = $event['nid'];
     $form['sellfield']['event']['#options'][$event_nid] = $event_title;
   }
   $form['sellfield']['get_started'] = array('#type' => 'submit', '#value' => t('Uploader'));

@@ -11,11 +11,36 @@
  */
 function get_events() {
   // @todo: replace with field query and give an option to select events from the past only only.
-  $events= db_query(
-  			'SELECT nid, title FROM {node} 
-  			 WHERE type = :type', 
-            array(':type' => 'event'));
-  return $events;
+  
+  $query = new EntityFieldQuery();
+  
+  $result = $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'event')
+        ->propertyCondition('status', 1, '=')
+		->execute();
+  global $language;
+  $titles = array();
+  if (!empty($result['node'])) {
+     $nodes = entity_load('node', array_keys($result['node']));
+    
+     foreach($nodes as $nid => $node) {
+       
+       if($node->title_field[$language->language] == NULL) {
+         $lang = $node->language;
+       } 
+       else 
+       {
+         $lang = $language->language;
+       }
+       $title  = $node->title_field[$lang][0]['value'];
+       $titles[] = array('nid' => $node->nid, 'title' => $title);
+     }
+     return $titles;
+  } 
+  else 
+  { 
+    return FALSE;
+  }
 }
 
 /**
