@@ -371,7 +371,7 @@ function plupload_handle_uploads() {
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
           $file['tmppath'] = $temp_directory . $file_name;
-          module_invoke_all('file_uploaded', $fileinfo); 
+          module_invoke_all('file_uploaded', $file); 
         }
         else {
           
