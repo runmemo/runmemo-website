@@ -590,10 +590,9 @@ function photo_search_preprocess_html(&$vars) {
 
   if (arg(0) == 'search-result') {
     $event = get_event(arg(1));
-
     // Add Open Graph title meta tag
     if ($event) {
-      $og_title = t('Photos from @event on Runmemo.com', array('@event' => $event->title));
+      $og_title = t('Photos from @event on Runmemo.com', array('@event' => $event['title']));
     } 
     else {
       $og_title = t('Photos on Runmemo.com');
