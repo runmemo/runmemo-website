@@ -24,8 +24,7 @@ function get_events() {
      $nodes = entity_load('node', array_keys($result['node']));
     
      foreach($nodes as $nid => $node) {
-       
-       if($node->title_field[$language->language] == NULL) {
+       if(!isset($node->title_field[$language->language])) {
          $lang = $node->language;
        } 
        else 
