@@ -167,7 +167,6 @@ it
 .node-type-page .page-title {
 	display: block;
 	float: left;
-	clear: both;
 }
 
 .page-title {
@@ -2885,3 +2884,42 @@ label.option {
 .fb-like {
 	margin-bottom: 15px;
 }
+
+/* Webform for landing pages */
+
+.webform-client-form {
+	border: 1px solid #AAA;
+	padding: 10px 30px;
+}
+
+.webform-client-form #edit-actions { 
+	float:none;
+	width:100%;
+	height:60px;
+}
+
+.sidebar-second #block-system-main .content {
+	width:550px;
+}
+
+.webform-client-form .form-text {
+	width: 300px;
+	height: 30xp;
+	padding-left: 10px;
+	}
+.form-textarea-wrapper textarea {
+	width: 300px;
+	border: 1px solid #DEE4E7;
+	}
+
+.form-textarea-wrapper textarea:focus {
+	border-color: #6AD0E8;
+	box-shadow: 0px 0px 7px #6AD0e8;
+}
+
+.one-sidebar .region-content {
+	clear:left;
+	}
+.page-node .node { 
+	padding:0;
+	}
