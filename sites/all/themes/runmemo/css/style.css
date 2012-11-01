@@ -2903,16 +2903,30 @@ label.option {
 }
 
 .webform-client-form .form-text {
-	width: 300px;
-	height: 30xp;
+	width: 250px;
+	height: 30px;
 	padding-left: 10px;
-	}
+	background-color: #FFC;
+}
+
+
+.webform-client-form .form-submit {
+	background-color: #06F;
+	width: 200px;
+	border: none;
+	
+}
 .form-textarea-wrapper textarea {
-	width: 300px;
+	width: 260px;
 	border: 1px solid #DEE4E7;
-	}
+	max-width:260px;
+	max-height:400px;
+	background-color: #FFC;
+	border-radius: 5px;
+}
 
 .form-textarea-wrapper textarea:focus {
+	color: black;
 	border-color: #6AD0E8;
 	box-shadow: 0px 0px 7px #6AD0e8;
 }
@@ -2922,4 +2936,8 @@ label.option {
 	}
 .page-node .node { 
 	padding:0;
+	}
+
+.page-node .region-sidebar-second {
+	margin-top:-35px;
 	}
