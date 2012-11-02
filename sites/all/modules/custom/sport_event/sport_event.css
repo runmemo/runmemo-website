@@ -8,10 +8,15 @@
 .node-event {
 	margin:0;
 	border-top: 		1px solid #d2d2d2;
-	border-bottom: 		1px solid #333;
+	border-bottom: 		1px solid #999;
 	border-left: 		1px solid #d2d2d2;
-	border-right: 		1px solid #333;
-	}
+	border-right: 		1px solid #999;
+	padding: 24px;
+	width:550px;	
+	border-radius: 20px 0px 0px 0px;
+	-moz-border-radius: 20px 0px 0px 0px;
+	-webkit-border-radius: 20px 0px 0px 0px;
+}
 .field {
 	margin-bottom: 5px;
 	}
@@ -128,13 +133,6 @@
 
 
 /* ********* Date styled as calendar ************* */
-
-.node-event {
-	border-radius: 20px 0px 0px 0px;
-	-moz-border-radius: 20px 0px 0px 0px;
-	-webkit-border-radius: 20px 0px 0px 0px;
-}
-
 .node-event .date {
 	float:left;
 	display:block;

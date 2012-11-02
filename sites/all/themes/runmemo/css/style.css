@@ -2927,14 +2927,8 @@ label.option {
 
 .form-textarea-wrapper textarea:focus {
 	color: black;
-	border-color: #6AD0E8;
-	box-shadow: 0px 0px 7px #6AD0e8;
 }
-
-.one-sidebar .region-content {
-	clear:left;
-	}
-.page-node .node { 
+.node-page { 
 	padding:0;
 	}
 
