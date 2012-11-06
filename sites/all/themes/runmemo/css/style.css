@@ -2934,7 +2934,48 @@ label.option {
 
 .node-type-page .region-sidebar-second {
 	margin-top:-35px;
-	}
+}
 .node-type-page .region-content {
 	clear:left;
-	} 
+} 
+
+/*.node-type-event .event-gallery {
+        float: left;
+        width: 600px;
+}*/
+
+
+.node-type-event .jcarousel-skin-default {
+        height: 150px;
+}
+
+.node-type-event .jcarousel-skin-default .jcarousel-container-horizontal {
+        width: 985px;
+        margin-left: -45px;
+        padding-top: 0px;
+     
+}
+
+.node-type-event .jcarousel-skin-default  .jcarousel-clip-horizontal {
+        width: 985px;
+        float: left;
+}
+
+
+.node-type-event .jcarousel-skin-default .jcarousel-next-horizontal {
+        top: 55px;
+}
+
+.node-type-event .jcarousel-skin-default .jcarousel-prev-horizontal {
+        top: 55px;
+}
+
+.node-type-event .jcarousel-skin-default .jcarousel-item {
+        height: 150px;
+        width: 100px;
+        
+}
+
+.node-type-event .jcarousel-skin-default img {
+        margin: 0;
+}
