@@ -1,0 +1,29 @@
+--- jcarousel_style_plugin.inc
++++ jcarousel_style_plugin.inc
+@@ -21,6 +21,7 @@
+     $options['autoPause'] = array('default' => '1');
+     $options['animation'] = array('default' => '');
+     $options['start'] = array('default' => '1');
++    $options['start_css'] = array('default' => '');
+     $options['easing'] = array('default' => NULL);
+     $options['vertical'] = array('default' => FALSE);
+     $options['navigation'] = array('default' => '');
+@@ -135,9 +136,17 @@
+       '#type' => 'select',
+       '#title' => t('Start position'),
+       '#description' => t('The item that will be shown as the first item in the list upon loading. Useful for starting a list in the middle of a set.'),
+-      '#options' => $range,
++      '#options' => $range + array('css' => t('Use a CSS Selector')),
+       '#default_value' => $this->options['start'],
+     );
++    $form['advanced']['start_css'] = array(
++      '#type' => 'textfield',
++      '#title' => t('Start CSS Selector'),
++      '#size' => 16,
++      '#maxlength' => 128,
++      '#default_value' => $this->options['start_css'],
++      '#description' => t('If starting the carousel based on a CSS selector, enter the selector here. Any jQuery-compatible selector may be used.'),
++    );
+     $form['advanced']['autoPause'] = array(
+       '#type' => 'checkbox',
+       '#title' => t('Pause auto-scroll on hover'),

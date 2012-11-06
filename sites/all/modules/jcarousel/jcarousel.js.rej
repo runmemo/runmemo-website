@@ -1,0 +1,164 @@
+--- jcarousel.js
++++ jcarousel.js
+@@ -66,8 +66,28 @@
+       options.buttonPrevHTML = Drupal.theme('jCarouselButton', 'previous');
+     }
+ 
++    // Before we instantiate the carousel we need to make options.start an
++    // integer.
++    if (options.start == 'css') {
++      // Find the element matching the supplied selector and return it's parent
++      // list element.
++      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
++      var scrollTarget = Math.ceil(($(options.selector + ' li').index($current) + 1) / options.scroll);
++      options.start = 1;
++    }
++
+     // Initialize the jcarousel.
+     $carousel.addClass('jcarousel-processed').jcarousel(options);
++
++    // Using options.start as normal causes the carousel to change page
++    // numbering. That's very confusing since the carousel indexes wouldn't be
++    // consistent for different states of the current node. Instead, we
++    // initialize the carousel above, then manually scroll to the selected
++    // item.
++    if (scrollTarget) {
++      Drupal.jcarousel.updatePager($carousel.data('jcarousel'), scrollTarget, false);
++    }
++
+   });
+ };
+ 
+@@ -183,16 +203,8 @@
+ 
+     // Scroll to the correct page when a pager is clicked.
+     pagerItem.bind('click', function() {
+-      // We scroll to the new page based on item offsets. This works with
+-      // circular carousels that do not divide items evenly, making it so that
+-      // going back or forward in pages will not skip or repeat any items.
+       var newPageNumber = $(this).parent().attr('jcarousel-page');
+-      var itemOffset = (newPageNumber - carousel.pageNumber) * carousel.pageSize;
+-
+-      if (itemOffset) {
+-        carousel.scroll(carousel.first + itemOffset);
+-      }
+-
++      Drupal.jcarousel.updatePager(carousel, newPageNumber, false);
+       return false;
+     });
+   }
+@@ -201,6 +213,28 @@
+ }
+ 
+ /**
++ * Move the pager to a specific page in the carousel.
++ *
++ * @param carousel
++ *   The carousel instance to scroll.
++ * @param newPageNumber
++ *   The page number to scroll to.
++ * @param animate
++ *   Boolean to indicate if the transition to the new page should be animated
++ *   or not.
++ */
++Drupal.jcarousel.updatePager = function(carousel, newPageNumber, animate) {
++  // We scroll to the new page based on item offsets. This works with
++  // circular carousels that do not divide items evenly, making it so that
++  // going back or forward in pages will not skip or repeat any items.
++  var itemOffset = (newPageNumber - carousel.pageNumber) * carousel.pageSize;
++
++  if (itemOffset) {
++    carousel.scroll(carousel.first + itemOffset, animate);
++  }
++}
++
++/**
+  * itemVisibleInCallback for jCarousel. Update the navigation after page change.
+  */
+ Drupal.jcarousel.updateNavigationActive = function(carousel, item, idx, state) {
+--- jcarousel.js
++++ jcarousel.js
+@@ -72,7 +72,7 @@
+       // Find the element matching the supplied selector and return it's parent
+       // list element.
+       var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
+-      var scrollTarget = Math.ceil(($(options.selector + ' li').index($current) + 1) / options.scroll);
++      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
+       options.start = 1;
+     }
+ 
+@@ -85,7 +85,8 @@
+     // initialize the carousel above, then manually scroll to the selected
+     // item.
+     if (scrollTarget) {
+-      Drupal.jcarousel.updatePager($carousel.data('jcarousel'), scrollTarget, false);
++      $carousel = $carousel.data('jcarousel');
++      Drupal.jcarousel.updatePager($carousel, Math.ceil(scrollTarget / $carousel.pageSize), false);
+     }
+ 
+   });
+--- jcarousel.js
++++ jcarousel.js
+@@ -46,6 +46,16 @@
+       };
+     }
+ 
++    // Before we instantiate the carousel we need to make options.start an
++    // integer.
++    if (options.start == 'css') {
++      // Find the element matching the supplied selector and return it's parent
++      // list element.
++      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
++      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
++      options.start = 1;
++    }
++
+     // Add navigation to the carousel if enabled.
+     if (!options.setupCallback) {
+       options.setupCallback = function(carousel) {
+@@ -53,6 +63,15 @@
+         if (options.navigation) {
+           Drupal.jcarousel.addNavigation(carousel, options.navigation);
+         }
++
++        // Using options.start as normal causes the carousel to change page
++        // numbering. That's very confusing since the carousel indexes wouldn't be
++        // consistent for different states of the current node. Instead, we
++        // initialize the carousel above, then manually scroll to the selected
++        // item.
++        if (scrollTarget) {
++          Drupal.jcarousel.updatePager(carousel, Math.ceil(scrollTarget / carousel.pageSize), false);
++        }
+       };
+       if (options.navigation && !options.itemVisibleInCallback) {
+         options.itemLastInCallback = {
+@@ -66,29 +85,9 @@
+       options.buttonPrevHTML = Drupal.theme('jCarouselButton', 'previous');
+     }
+ 
+-    // Before we instantiate the carousel we need to make options.start an
+-    // integer.
+-    if (options.start == 'css') {
+-      // Find the element matching the supplied selector and return it's parent
+-      // list element.
+-      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
+-      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
+-      options.start = 1;
+-    }
+-
+     // Initialize the jcarousel.
+     $carousel.addClass('jcarousel-processed').jcarousel(options);
+ 
+-    // Using options.start as normal causes the carousel to change page
+-    // numbering. That's very confusing since the carousel indexes wouldn't be
+-    // consistent for different states of the current node. Instead, we
+-    // initialize the carousel above, then manually scroll to the selected
+-    // item.
+-    if (scrollTarget) {
+-      $carousel = $carousel.data('jcarousel');
+-      Drupal.jcarousel.updatePager($carousel, Math.ceil(scrollTarget / $carousel.pageSize), false);
+-    }
+-
+   });
+ };
+ 

@@ -1,0 +1,243 @@
+From ee456bb9b63266efc51ab7506feabdb997046181 Mon Sep 17 00:00:00 2001
+From: Andrew Berry <deviantintegral@gmail.com>
+Date: Thu, 12 Jan 2012 10:57:08 -0500
+Subject: [PATCH 1/3] Issue #1401652: Add support to automatically scroll to
+ an element based on a selector.
+
+---
+ includes/jcarousel_style_plugin.inc |   11 +++++++-
+ js/jcarousel.js                     |   52 +++++++++++++++++++++++++++++------
+ 2 files changed, 53 insertions(+), 10 deletions(-)
+
+diff --git a/includes/jcarousel_style_plugin.inc b/includes/jcarousel_style_plugin.inc
+index 23fe069..db8615d 100644
+--- a/includes/jcarousel_style_plugin.inc
++++ b/includes/jcarousel_style_plugin.inc
+@@ -21,6 +21,7 @@ class jcarousel_style_plugin extends views_plugin_style {
+     $options['autoPause'] = array('default' => '1');
+     $options['animation'] = array('default' => '');
+     $options['start'] = array('default' => '1');
++    $options['start_css'] = array('default' => '');
+     $options['easing'] = array('default' => NULL);
+     $options['vertical'] = array('default' => FALSE);
+     $options['navigation'] = array('default' => '');
+@@ -135,9 +136,17 @@ class jcarousel_style_plugin extends views_plugin_style {
+       '#type' => 'select',
+       '#title' => t('Start position'),
+       '#description' => t('The item that will be shown as the first item in the list upon loading. Useful for starting a list in the middle of a set.'),
+-      '#options' => $range,
++      '#options' => $range + array('css' => t('Use a CSS Selector')),
+       '#default_value' => $this->options['start'],
+     );
++    $form['advanced']['start_css'] = array(
++      '#type' => 'textfield',
++      '#title' => t('Start CSS Selector'),
++      '#size' => 16,
++      '#maxlength' => 128,
++      '#default_value' => $this->options['start_css'],
++      '#description' => t('If starting the carousel based on a CSS selector, enter the selector here. Any jQuery-compatible selector may be used.'),
++    );
+     $form['advanced']['autoPause'] = array(
+       '#type' => 'checkbox',
+       '#title' => t('Pause auto-scroll on hover'),
+diff --git a/js/jcarousel.js b/js/jcarousel.js
+index ac1a5b8..c017ddf 100644
+--- a/js/jcarousel.js
++++ b/js/jcarousel.js
+@@ -66,8 +66,28 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+       options.buttonPrevHTML = Drupal.theme('jCarouselButton', 'previous');
+     }
+ 
++    // Before we instantiate the carousel we need to make options.start an
++    // integer.
++    if (options.start == 'css') {
++      // Find the element matching the supplied selector and return it's parent
++      // list element.
++      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
++      var scrollTarget = Math.ceil(($(options.selector + ' li').index($current) + 1) / options.scroll);
++      options.start = 1;
++    }
++
+     // Initialize the jcarousel.
+     $carousel.addClass('jcarousel-processed').jcarousel(options);
++
++    // Using options.start as normal causes the carousel to change page
++    // numbering. That's very confusing since the carousel indexes wouldn't be
++    // consistent for different states of the current node. Instead, we
++    // initialize the carousel above, then manually scroll to the selected
++    // item.
++    if (scrollTarget) {
++      Drupal.jcarousel.updatePager($carousel.data('jcarousel'), scrollTarget, false);
++    }
++
+   });
+ };
+ 
+@@ -183,16 +203,8 @@ Drupal.jcarousel.addNavigation = function(carousel, position) {
+ 
+     // Scroll to the correct page when a pager is clicked.
+     pagerItem.bind('click', function() {
+-      // We scroll to the new page based on item offsets. This works with
+-      // circular carousels that do not divide items evenly, making it so that
+-      // going back or forward in pages will not skip or repeat any items.
+       var newPageNumber = $(this).parent().attr('jcarousel-page');
+-      var itemOffset = (newPageNumber - carousel.pageNumber) * carousel.pageSize;
+-
+-      if (itemOffset) {
+-        carousel.scroll(carousel.first + itemOffset);
+-      }
+-
++      Drupal.jcarousel.updatePager(carousel, newPageNumber, false);
+       return false;
+     });
+   }
+@@ -201,6 +213,28 @@ Drupal.jcarousel.addNavigation = function(carousel, position) {
+ }
+ 
+ /**
++ * Move the pager to a specific page in the carousel.
++ *
++ * @param carousel
++ *   The carousel instance to scroll.
++ * @param newPageNumber
++ *   The page number to scroll to.
++ * @param animate
++ *   Boolean to indicate if the transition to the new page should be animated
++ *   or not.
++ */
++Drupal.jcarousel.updatePager = function(carousel, newPageNumber, animate) {
++  // We scroll to the new page based on item offsets. This works with
++  // circular carousels that do not divide items evenly, making it so that
++  // going back or forward in pages will not skip or repeat any items.
++  var itemOffset = (newPageNumber - carousel.pageNumber) * carousel.pageSize;
++
++  if (itemOffset) {
++    carousel.scroll(carousel.first + itemOffset, animate);
++  }
++}
++
++/**
+  * itemVisibleInCallback for jCarousel. Update the navigation after page change.
+  */
+ Drupal.jcarousel.updateNavigationActive = function(carousel, item, idx, state) {
+-- 
+1.7.9
+
+
+From abd7035ece8ddac089429e87f4dcff157c1f584c Mon Sep 17 00:00:00 2001
+From: Andrew Berry <deviantintegral@gmail.com>
+Date: Thu, 12 Jan 2012 11:14:02 -0500
+Subject: [PATCH 2/3] Issue #1401652: Change to use the carousel pageSize for
+ compatibility with automatic page sizing.
+
+---
+ js/jcarousel.js |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/js/jcarousel.js b/js/jcarousel.js
+index c017ddf..c3b66fb 100644
+--- a/js/jcarousel.js
++++ b/js/jcarousel.js
+@@ -72,7 +72,7 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+       // Find the element matching the supplied selector and return it's parent
+       // list element.
+       var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
+-      var scrollTarget = Math.ceil(($(options.selector + ' li').index($current) + 1) / options.scroll);
++      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
+       options.start = 1;
+     }
+ 
+@@ -85,7 +85,8 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+     // initialize the carousel above, then manually scroll to the selected
+     // item.
+     if (scrollTarget) {
+-      Drupal.jcarousel.updatePager($carousel.data('jcarousel'), scrollTarget, false);
++      $carousel = $carousel.data('jcarousel');
++      Drupal.jcarousel.updatePager($carousel, Math.ceil(scrollTarget / $carousel.pageSize), false);
+     }
+ 
+   });
+-- 
+1.7.9
+
+
+From 106aa51aa9aaa3cc67e3ad929ff5962c62168ab6 Mon Sep 17 00:00:00 2001
+From: Andrew Berry <deviantintegral@gmail.com>
+Date: Wed, 8 Feb 2012 18:12:42 -0500
+Subject: [PATCH 3/3] Issue #1401652: Move scrolling to the setup callback to
+ fix scrolling in Chrome.
+
+---
+ js/jcarousel.js |   39 +++++++++++++++++++--------------------
+ 1 files changed, 19 insertions(+), 20 deletions(-)
+
+diff --git a/js/jcarousel.js b/js/jcarousel.js
+index c3b66fb..cd00281 100644
+--- a/js/jcarousel.js
++++ b/js/jcarousel.js
+@@ -46,6 +46,16 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+       };
+     }
+ 
++    // Before we instantiate the carousel we need to make options.start an
++    // integer.
++    if (options.start == 'css') {
++      // Find the element matching the supplied selector and return it's parent
++      // list element.
++      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
++      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
++      options.start = 1;
++    }
++
+     // Add navigation to the carousel if enabled.
+     if (!options.setupCallback) {
+       options.setupCallback = function(carousel) {
+@@ -53,6 +63,15 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+         if (options.navigation) {
+           Drupal.jcarousel.addNavigation(carousel, options.navigation);
+         }
++
++        // Using options.start as normal causes the carousel to change page
++        // numbering. That's very confusing since the carousel indexes wouldn't be
++        // consistent for different states of the current node. Instead, we
++        // initialize the carousel above, then manually scroll to the selected
++        // item.
++        if (scrollTarget) {
++          Drupal.jcarousel.updatePager(carousel, Math.ceil(scrollTarget / carousel.pageSize), false);
++        }
+       };
+       if (options.navigation && !options.itemVisibleInCallback) {
+         options.itemLastInCallback = {
+@@ -66,29 +85,9 @@ Drupal.behaviors.jcarousel.attach = function(context, settings) {
+       options.buttonPrevHTML = Drupal.theme('jCarouselButton', 'previous');
+     }
+ 
+-    // Before we instantiate the carousel we need to make options.start an
+-    // integer.
+-    if (options.start == 'css') {
+-      // Find the element matching the supplied selector and return it's parent
+-      // list element.
+-      var $current = $carousel.find(options.start_css).parents(options.selector + ' li');
+-      var scrollTarget = ($(options.selector + ' li').index($current) + 1);
+-      options.start = 1;
+-    }
+-
+     // Initialize the jcarousel.
+     $carousel.addClass('jcarousel-processed').jcarousel(options);
+ 
+-    // Using options.start as normal causes the carousel to change page
+-    // numbering. That's very confusing since the carousel indexes wouldn't be
+-    // consistent for different states of the current node. Instead, we
+-    // initialize the carousel above, then manually scroll to the selected
+-    // item.
+-    if (scrollTarget) {
+-      $carousel = $carousel.data('jcarousel');
+-      Drupal.jcarousel.updatePager($carousel, Math.ceil(scrollTarget / $carousel.pageSize), false);
+-    }
+-
+   });
+ };
+ 
+-- 
+1.7.9
+
