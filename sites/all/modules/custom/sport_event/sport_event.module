@@ -28,6 +28,7 @@ function sport_event_block_info() {
   $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
   $blocks['search_by_number'] = array('info' => t('Search photos from an event'), );
+  $blocks['sport_event_create'] = array('info' => t('Form to add new event'), );
   return $blocks;
 }
 
@@ -47,6 +48,8 @@ function sport_event_block_view($delta = '') {
       break;
     case 'search_by_number':
       return search_by_number_block();
+    case 'sport_event_create':
+      return sport_event_create_block();
       break;    
   }
 
@@ -313,4 +316,188 @@ function short_month_names() {
   return array(t('Jan'), t('Feb'), t('Mar'), t('Apr'), 
         t('May'), t('Jun'), t('Jul'), t('Aug'), 
         t('Sep'), t('Oct'), t('Nov'), t('Dec'));
+}
+
+/**
+ * Event creation form
+ */
+function sport_event_create_form($form, &$form_state) {
+
+  $form['#attributes']['class'][] = 'webform-client-form';
+  
+  $form['title'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Event Name'), 
+    '#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );   
+  
+  $form['event_website'] = array(
+  	'#type' => 'textfield', 
+ 	'#title' => t('Website Link'), 
+  	'#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );
+ 
+  $form['date'] = array(
+    '#type' => 'date_popup',
+    '#title' => 'Date',
+    '#date_format' => 'Y-m-d',
+    '#required' => TRUE,
+    '#date_year_range' => '-0:+1',
+    '#default_value' => date('Y-m-d'),
+    //'#title_display' => 'invisible',
+  );
+  
+  global $user;
+  // Contact fields 
+  if ($user->uid == 0) { 
+    // we need collect contact details from anonymous user
+    // to create new user
+    $form['first_name'] = array(
+    	'#type' => 'textfield', 
+   		'#title' => t('First Name'), 
+    	'#size' => 60, 
+      	'#maxlength' => 25, 
+      	'#required' => TRUE,
+    );
+    
+    $form['last_name'] = array(
+    	'#type' => 'textfield', 
+   		'#title' => t('Last Name'), 
+    	'#size' => 60, 
+      	'#maxlength' => 25, 
+      	'#required' => TRUE,
+    );
+   
+    $form['email'] = array(
+   		'#type' => 'textfield', 
+   		'#title' => t('Email'), 
+    	'#size' => 60, 
+        '#maxlength' => 20, 
+        '#required' => TRUE, 
+    );
+    
+    $form['phone'] = array(
+    	'#type' => 'textfield', 
+   		'#title' => t('Phone'), 
+    	'#size' => 60, 
+        '#maxlength' => 20, 
+        '#required' => FALSE,
+    );
+  }
+  $form['event_details'] = array (
+    '#type' => 'textarea',
+    '#title' => 'Event details'
+  );
+  
+  $form['is_director'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('I am race director.'),
+  );
+  
+  $form['actions'] = array('#type' => 'actions');
+  
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#name' => 'Create',
+    '#button_type' => 'submit',
+    '#value' => t('Create Event'),
+  );
+  
+  return $form;
+  
+}
+
+/**
+ * 
+ * Implements hook_form_submit for Event creation form.
+ * 
+ */
+function sport_event_create_form_submit($form, &$form_state) {
+
+  global $user;
+  
+  if ($user->uid == 0) { // anonymous user
+    // create new user
+    $roles = array(user_custom_helper::get_photographer_rid() => 'photographer');
+    if($form_state['values']['is_director'] == 1) {
+      $roles = array(user_custom_helper::get_rid('race director') => 'race director');
+    }
+
+    $new_user = array (
+      'name' =>  $form_state['values']['email'],
+      'email' =>  $form_state['values']['email'],
+      'status' => 1,
+      'roles' => $roles,
+    
+    );
+    
+    $new_user['field_first_name'][LANGUAGE_NONE][0]['value'] = $form_state['values']['first_name'];
+    $new_user['field_last_name'][LANGUAGE_NONE][0]['value'] = $form_state['values']['last_name'];
+    $new_user['field_phone'][LANGUAGE_NONE][0]['value'] = $form_state['values']['phone'];
+    
+    $user = user_save(null, $new_user);
+    
+    drupal_session_regenerate();
+  } 
+  else { // existing user
+    // add role to the user if director was selected
+    
+  }
+  
+  $uid = $user->uid;
+  
+  // Create and save new event
+  $node = new stdClass();
+  
+  $node->type = 'event';
+  $node->title = $form_state['values']['title'];
+  $node->body = $form_state['values']['details'];
+  $node->language = LANGUAGE_NONE;
+  //user id
+  $node->uid = $uid;
+  $node->body[$node->language][0]['value'] = $form_state['values']['event_details'];
+ // $event_date = DateTime::createFromFormat('Y-m-d',$form_state['values']['date']);
+  $node->field_date[$node->language][0]['value']['date'] = $form_state['values']['date'];
+  
+  
+  
+  if($form_state['values']['is_director'] == 1) { 
+    // user checked that he is race director of this event
+    $node->field_director[$node->language][]['uid'] = $user->uid;
+  } 
+  else { // Not race director so we assume its a photographer
+    if (!in_array('Photographer', $user->roles)) { 
+      // user does not have photographer role yet
+      // @todo add photogrpaher role to this user
+    }
+    $node->field_photographers[$node->language][]['uid'] = $user->uid; 
+  }
+  
+  node_object_prepare($node); // set default values
+  $node = node_submit($node);
+  
+  node_save($node);
+  // redirect user to new
+  $node_url = 'node/' . $node->nid;
+  $form_state['redirect'] = array( 
+      $node_url,    // http_path
+      array(),  // $options
+      302,      // $http_response_code
+  );
+}
+
+function sport_event_create_block() {
+
+  $block = array();
+  $block['subject'] = t('Add Event');
+  // add form to search products from same event
+
+  $block['content'][] = drupal_get_form('sport_event_create_form');
+
+  return $block;
+  
 }
