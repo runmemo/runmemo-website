@@ -763,8 +763,6 @@ it
 }
 
 #edit-actions {
-	float: right;
-	width: 152px;
 	margin-top: 0px;
 }
 
@@ -2546,12 +2544,13 @@ table.cart-block-summary tbody tr td {
 	display: inline-block;
 	position: relative;
 	width: 150px;
-	height: 44px;
+	height: 43px;
 	float: right;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	margin-top: 15px;
+	border:none;
 	/* effects */
 	-webkit-transition: background .2s ease-in-out;
 	-moz-transition: background .2s ease-in-out;
@@ -2607,6 +2606,11 @@ table.cart-block-summary tbody tr td {
 .ajax-progress {
 	float: left;
 	height: 5px;
+}
+
+/* Form checkbox */
+.form-type-checkbox {
+	margin-bottom: 20px;	
 }
 
 /* -------------- THE Nice Message -------------- */
@@ -2898,6 +2902,21 @@ label.option {
 	height:60px;
 }
 
+.webform-client-form .form-actions {
+	float: none;
+	width: 100%;
+	height: 60px;
+}
+
+.webform-client-form textarea {
+	width: 260px;
+	border: 1px solid #DEE4E7;
+	max-width:260px;
+	max-height:400px;
+	background-color: #FFC;
+	border-radius: 5px;
+}
+
 .sidebar-second #block-system-main .content {
 	width:550px;
 }
@@ -2917,10 +2936,7 @@ label.option {
 	
 }
 .form-textarea-wrapper textarea {
-	width: 260px;
 	border: 1px solid #DEE4E7;
-	max-width:260px;
-	max-height:400px;
 	background-color: #FFC;
 	border-radius: 5px;
 }
