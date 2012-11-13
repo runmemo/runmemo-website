@@ -266,3 +266,37 @@ function create_field($field) {
      }
    }
 }
+
+
+/**
+ * 
+ * from http://stackoverflow.com/questions/1639932/get-vocabulary-id-by-name
+ * 
+ * This function will return a vocabulary object which matches the
+ * given machine name. Will return null if no such vocabulary exists.
+ *
+ * @param String $vocabulary_name
+ *   This is the machine name of the section which is required
+ * @return Object
+ *   This is the vocabulary object with the name
+ *   or null if no such vocabulary exists
+ */
+function get_vocabulary_by_name($vocabulary_name) {
+  $vocabs = taxonomy_get_vocabularies(NULL);
+  foreach ($vocabs as $vocab_object) {
+    if ($vocab_object->machine_name == $vocabulary_name) {
+      return $vocab_object;
+    }
+  }
+  return NULL;
+}
+
+function get_vocabulary_terms_by_name($vocabulary_name) {
+  $vocabulary = get_vocabulary_by_name($vocabulary_name);
+  $terms = taxonomy_get_tree($vocabulary->vid);
+  $options = array();
+  foreach ($terms as $data) {
+    $options[$data->tid] = $data->name;
+  }
+  return $options;
+}

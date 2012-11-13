@@ -6,7 +6,16 @@ function sport_event_init() {
 
 
 function sport_event_menu() {
+  $items['director/event/add'] = array(
+    'title' => t('Add event'),
+    'description' => 'Page with a form that allows users to create events.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('sport_event_create_form'),
+    'access arguments' => array('search photos'),
+    'type' => MENU_CALLBACK
+  );
 
+  return $items;
 }
 
 /**
@@ -324,39 +333,21 @@ function short_month_names() {
 function sport_event_create_form($form, &$form_state) {
 
   $form['#attributes']['class'][] = 'webform-client-form';
-  
-  $form['title'] = array(
-    '#type' => 'textfield', 
-    '#title' => t('Event Name'), 
-    '#size' => 60, 
-    '#maxlength' => 128, 
-    '#required' => TRUE,
-  );   
-  
-  $form['event_website'] = array(
-  	'#type' => 'textfield', 
- 	'#title' => t('Website Link'), 
-  	'#size' => 60, 
-    '#maxlength' => 128, 
-    '#required' => TRUE,
-  );
- 
-  $form['date'] = array(
-    '#type' => 'date_popup',
-    '#title' => 'Date',
-    '#date_format' => 'Y-m-d',
-    '#required' => TRUE,
-    '#date_year_range' => '-0:+1',
-    '#default_value' => date('Y-m-d'),
-    //'#title_display' => 'invisible',
-  );
+  $form['#attributes']['class'][] = 'event-add-form';
   
   global $user;
   // Contact fields 
   if ($user->uid == 0) { 
+    $form['contact'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Contact details'), 
+      '#weight' => 0, 
+      '#collapsible' => TRUE, 
+      '#collapsed' => FALSE,
+    );
     // we need collect contact details from anonymous user
     // to create new user
-    $form['first_name'] = array(
+    $form['contact']['first_name'] = array(
     	'#type' => 'textfield', 
    		'#title' => t('First Name'), 
     	'#size' => 60, 
@@ -364,7 +355,7 @@ function sport_event_create_form($form, &$form_state) {
       	'#required' => TRUE,
     );
     
-    $form['last_name'] = array(
+    $form['contact']['last_name'] = array(
     	'#type' => 'textfield', 
    		'#title' => t('Last Name'), 
     	'#size' => 60, 
@@ -372,7 +363,7 @@ function sport_event_create_form($form, &$form_state) {
       	'#required' => TRUE,
     );
    
-    $form['email'] = array(
+    $form['contact']['email'] = array(
    		'#type' => 'textfield', 
    		'#title' => t('Email'), 
     	'#size' => 60, 
@@ -380,22 +371,90 @@ function sport_event_create_form($form, &$form_state) {
         '#required' => TRUE, 
     );
     
-    $form['phone'] = array(
+    $form['contact']['phone'] = array(
     	'#type' => 'textfield', 
    		'#title' => t('Phone'), 
     	'#size' => 60, 
         '#maxlength' => 20, 
         '#required' => FALSE,
     );
+    
+     $form['contact']['username'] = array(
+    	'#type' => 'textfield', 
+   		'#title' => t('Username'), 
+    	'#size' => 60, 
+        '#maxlength' => 20, 
+        '#required' => TRUE,
+    );
+    
+     $form['contact']['password'] = array(
+    	'#type' => 'password', 
+   		'#title' => t('Password'), 
+    	'#size' => 60, 
+        '#maxlength' => 20, 
+        '#required' => TRUE,
+    );
   }
-  $form['event_details'] = array (
-    '#type' => 'textarea',
-    '#title' => 'Event details'
+  $form['event'] = array(
+    '#type' => 'fieldset', 
+    '#title' => t('Event details'), 
+    '#weight' => 2, 
+    '#collapsible' => TRUE, 
+    '#collapsed' => FALSE,
   );
   
+  $form['event']['title'] = array(
+    '#type' => 'textfield', 
+    '#title' => t('Name'), 
+    '#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );   
+  
+  $form['event']['date'] = array(
+    '#type' => 'date_popup',
+    '#title' => 'Date',
+    '#date_format' => 'Y-m-d',
+    '#required' => TRUE,
+    '#date_year_range' => '-0:+1',
+    '#default_value' => date('Y-m-d'),
+    '#wrapper_attributes' => array('class' => array('container-popup-date')),
+    //'#title_display' => 'invisible',
+  );
+  
+  $form['event']['website'] = array(
+  	'#type' => 'textfield', 
+ 	'#title' => t('Website'), 
+  	'#size' => 60, 
+    '#maxlength' => 128, 
+    '#required' => TRUE,
+  );
+  
+  $form['event']['distance'] = array(
+    '#type' => 'select',
+    '#title' => 'Distance',
+    '#options' => get_vocabulary_terms_by_name('distance'),
+    '#empty_option' => 'Select distance', 
+    
+  );
+  
+  $form['event']['country'] = array (
+    '#type' => 'select',
+    '#title' => 'Country',
+    '#options' => country_get_list(),
+   	'#empty_option' => 'Select country', 
+  
+  );
+  
+  $form['event']['summary'] = array (
+    '#type' => 'textarea',
+    '#title' => 'Description'
+  );
+
   $form['is_director'] = array(
     '#type' => 'checkbox',
     '#title' => t('I am race director.'),
+    '#weight' => 3, 
   );
   
   $form['actions'] = array('#type' => 'actions');
@@ -407,8 +466,7 @@ function sport_event_create_form($form, &$form_state) {
     '#value' => t('Create Event'),
   );
   
-  return $form;
-  
+  return $form; 
 }
 
 /**
@@ -420,24 +478,29 @@ function sport_event_create_form_submit($form, &$form_state) {
 
   global $user;
   
+ 
+  if($form_state['values']['is_director'] == 1) {
+    $roles = array(user_custom_helper::get_rid('race director') => 'race director');
+  } 
+  else 
+  { 
+     $roles = array(user_custom_helper::get_photographer_rid() => 'photographer');
+  }
+  
   if ($user->uid == 0) { // anonymous user
     // create new user
-    $roles = array(user_custom_helper::get_photographer_rid() => 'photographer');
-    if($form_state['values']['is_director'] == 1) {
-      $roles = array(user_custom_helper::get_rid('race director') => 'race director');
-    }
-
+    
     $new_user = array (
-      'name' =>  $form_state['values']['email'],
+      'name' =>  $form_state['values']['username'],
       'email' =>  $form_state['values']['email'],
       'status' => 1,
+      'pass' => $form_state['values']['password'],
       'roles' => $roles,
-    
     );
     
     $new_user['field_first_name'][LANGUAGE_NONE][0]['value'] = $form_state['values']['first_name'];
     $new_user['field_last_name'][LANGUAGE_NONE][0]['value'] = $form_state['values']['last_name'];
-    $new_user['field_phone'][LANGUAGE_NONE][0]['value'] = $form_state['values']['phone'];
+    $new_user['field_phone_number'][LANGUAGE_NONE][0]['value'] = $form_state['values']['phone'];
     
     $user = user_save(null, $new_user);
     
@@ -445,7 +508,15 @@ function sport_event_create_form_submit($form, &$form_state) {
   } 
   else { // existing user
     // add role to the user if director was selected
-    
+   if (!in_array('Photographer', $user->roles)) { 
+      // user does not have photographer role yet
+      // @todo add photogrpaher role to this user
+      $new_user = array (
+       	'roles' => $roles,
+      );
+      $user = user_save($user, $new_user);
+      drupal_session_regenerate();
+    }
   }
   
   $uid = $user->uid;
@@ -455,14 +526,19 @@ function sport_event_create_form_submit($form, &$form_state) {
   
   $node->type = 'event';
   $node->title = $form_state['values']['title'];
-  $node->body = $form_state['values']['details'];
-  $node->language = LANGUAGE_NONE;
+  $node->body = $form_state['values']['summary'];
+  $node->language = LANGUAGE_NONE; // @todo posibly need to set language depending on the country
   //user id
   $node->uid = $uid;
-  $node->body[$node->language][0]['value'] = $form_state['values']['event_details'];
+ // $node->body[$node->language][0]['value'] = $form_state['values']['summary'];
  // $event_date = DateTime::createFromFormat('Y-m-d',$form_state['values']['date']);
   $node->field_date[$node->language][0]['value']['date'] = $form_state['values']['date'];
   
+  $node->field_distance[$node->language][0]['tid'] = $form_state['values']['distance'];
+  $node->field_address[$node->language][0]['country'] = $form_state['values']['country'];
+  
+  $node->field_website[$node->language][0]['title'] = t("Event's home page");
+  $node->field_website[$node->language][0]['url'] = $form_state['values']['website'];
   
   
   if($form_state['values']['is_director'] == 1) { 
@@ -470,10 +546,6 @@ function sport_event_create_form_submit($form, &$form_state) {
     $node->field_director[$node->language][]['uid'] = $user->uid;
   } 
   else { // Not race director so we assume its a photographer
-    if (!in_array('Photographer', $user->roles)) { 
-      // user does not have photographer role yet
-      // @todo add photogrpaher role to this user
-    }
     $node->field_photographers[$node->language][]['uid'] = $user->uid; 
   }
   

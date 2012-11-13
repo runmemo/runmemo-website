@@ -258,3 +258,74 @@ width: 108px!important;
   float: left;
   width: 100%;
 }
+
+.event-add-form {
+	width: 550px;
+}
+
+.event-add-form fieldset {
+	padding: 0;
+	}
+
+.event-add-form .form-item {
+	float: left;
+}
+
+.event-add-form .form-item-last-name {
+	margin-left: 20px;
+}
+	
+.event-add-form .form-item-email {
+	clear: left;
+}
+
+.event-add-form .form-item-phone {
+	margin-left: 20px;
+}
+
+.event-add-form .form-item-password {
+	margin-left: 20px;
+}
+
+
+.event-add-form .form-item-title {
+}
+.event-add-form .form-item-date {
+	margin-left:20px;
+}
+
+.event-add-form .form-item-website {
+	clear:left;
+}
+
+.event-add-form .form-item-country {
+	margin-left: 20px;
+}
+
+.webform-client-form.event-add-form textarea {
+	width: 540px;
+	max-width: 540px;
+	}
+	
+.event-add-form .form-actions {
+	width:540px;
+	}
+
+.event-add-form .form-item-distance {
+	clear:left;
+}
+
+
+
+.event-add-form .form-item-summary {
+	clear: left;	
+}
+
+.form-item-distance .chzn-container {
+	width:260px!important;
+		
+}
+.form-item-country .chzn-container {
+	width:260px!important;
+		
+}
