@@ -340,10 +340,11 @@ function sport_event_create_form($form, &$form_state) {
   if ($user->uid == 0) { 
     $form['contact'] = array(
       '#type' => 'fieldset', 
-      '#title' => t('Contact details'), 
+      '#title' => t('Your details'), 
       '#weight' => 0, 
       '#collapsible' => TRUE, 
       '#collapsed' => FALSE,
+   //   '#description' => 'this information will help us to keep in touch',
     );
     // we need collect contact details from anonymous user
     // to create new user
@@ -377,6 +378,7 @@ function sport_event_create_form($form, &$form_state) {
     	'#size' => 60, 
         '#maxlength' => 20, 
         '#required' => FALSE,
+        '#description' => t('let\'s stay in touch'),
     );
     
      $form['contact']['username'] = array(
@@ -385,6 +387,10 @@ function sport_event_create_form($form, &$form_state) {
     	'#size' => 60, 
         '#maxlength' => 20, 
         '#required' => TRUE,
+      //'#description' => t(''),
+      //  '#ajax' => array(
+      //     'callback' => 'sport_event_create_form_username_callback'
+      //   ),
     );
     
      $form['contact']['password'] = array(
@@ -409,11 +415,12 @@ function sport_event_create_form($form, &$form_state) {
     '#size' => 60, 
     '#maxlength' => 128, 
     '#required' => TRUE,
+    '#description' => t('e.g. London Marathon 2013'),
   );   
   
   $form['event']['date'] = array(
     '#type' => 'date_popup',
-    '#title' => 'Date',
+    '#title' => t('Date'),
     '#date_format' => 'Y-m-d',
     '#required' => TRUE,
     '#date_year_range' => '-0:+1',
@@ -428,27 +435,32 @@ function sport_event_create_form($form, &$form_state) {
   	'#size' => 60, 
     '#maxlength' => 128, 
     '#required' => TRUE,
+    '#description' => t('preferably the home page')
   );
   
   $form['event']['distance'] = array(
     '#type' => 'select',
-    '#title' => 'Distance',
+    '#title' => t('Distance'),
     '#options' => get_vocabulary_terms_by_name('distance'),
-    '#empty_option' => 'Select distance', 
-    
+    '#empty_option' => t('Select distance'), 
   );
   
   $form['event']['country'] = array (
     '#type' => 'select',
     '#title' => 'Country',
     '#options' => country_get_list(),
-   	'#empty_option' => 'Select country', 
-  
+   	'#empty_option' => t('Select country'), 
   );
+  
+  $ip = ip_address();
+  $country_code = ip2country_get_country($ip);
+  if($country_code) {
+    $form['event']['country']['#default_value'] = $country_code;
+  } 
   
   $form['event']['summary'] = array (
     '#type' => 'textarea',
-    '#title' => 'Description'
+    '#title' => t('Description')
   );
 
   $form['is_director'] = array(
@@ -465,9 +477,26 @@ function sport_event_create_form($form, &$form_state) {
     '#button_type' => 'submit',
     '#value' => t('Create Event'),
   );
-  
-  return $form; 
+  return $form;
 }
+
+function sport_event_create_form_validate($form, &$form_state) {
+  
+  $user = user_load_by_name($form_state['values']['username']);
+  if(!$user){
+      // User doesn't exist
+  } 
+  else {
+      // User exists
+      form_set_error('username', 'User name already exists');
+  }
+  
+}
+/*
+function sport_event_create_form_username_callback($form, &$form_state) {
+   
+ 
+} */
 
 /**
  * 

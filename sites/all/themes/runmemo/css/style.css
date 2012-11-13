@@ -2893,7 +2893,7 @@ label.option {
 
 .webform-client-form {
 	border: 1px solid #AAA;
-	padding: 10px 30px;
+	padding: 20px 30px;
 }
 
 .webform-client-form .form-actions {
@@ -2908,7 +2908,8 @@ label.option {
 	max-width:260px;
 	max-height:400px;
 	background-color: #FFC;
-	border-radius: 5px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 }
 
 .sidebar-second #block-system-main .content {
@@ -2950,7 +2951,6 @@ label.option {
 .form-textarea-wrapper textarea {
 	border: 1px solid #DEE4E7;
 	background-color: #FFC;
-	border-radius: 5px;
 }
 
 .form-textarea-wrapper textarea:focus {

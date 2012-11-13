@@ -260,9 +260,12 @@ width: 108px!important;
 }
 
 .event-add-form {
-	width: 550px;
+	width: 750px;
 }
-
+.event-add-form .fieldset-wrapper {
+	width: 550px;
+	float:right;
+	}
 .event-add-form fieldset {
 	padding: 0;
 	}
@@ -308,7 +311,7 @@ width: 108px!important;
 	}
 	
 .event-add-form .form-actions {
-	width:540px;
+	width:740px;
 	}
 
 .event-add-form .form-item-distance {
@@ -321,6 +324,11 @@ width: 108px!important;
 	clear: left;	
 }
 
+.event-add-form .form-type-checkbox {
+	margin-left: 350px;
+	margin-top: 25px;
+}
+
 .form-item-distance .chzn-container {
 	width:260px!important;
 		
@@ -328,4 +336,27 @@ width: 108px!important;
 .form-item-country .chzn-container {
 	width:260px!important;
 		
+}
+
+.event-add-form .description {
+	margin-bottom: 0;
+	line-height: inherit;
+}
+ 
+html.js .event-add-form fieldset.collapsible .fieldset-legend {
+	padding-left: 1.2em;
+	
+	}
+.event-add-form .fieldset-title {
+		color: #94BB17
+}
+
+.event-add-form .collapsible legend {
+	float: left;
+    margin-top: 20px;
+    clear:left;
+}
+
+.event-add-form fieldset.collapsible {	
+	clear: both; 
 }
