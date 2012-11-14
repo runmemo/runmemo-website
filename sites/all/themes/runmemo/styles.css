@@ -330,11 +330,7 @@ span.form-required {
  * Layout
  */
 .header {
- margin-top: 20px;
- }
-.region-header {
-  min-height: 1em;
- /* background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;*/
+ 	margin-top: 20px;
 }
 
 

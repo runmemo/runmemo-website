@@ -332,17 +332,31 @@ function short_month_names() {
  */
 function sport_event_create_form($form, &$form_state) {
 
+  $form['#attached']['css'] = array(
+    
+    drupal_get_path('module', 'sport_event') . '/sport_event_create_form.css',
+  );
   $form['#attributes']['class'][] = 'webform-client-form';
   $form['#attributes']['class'][] = 'event-add-form';
+    
+  
   
   global $user;
+
   // Contact fields 
   if ($user->uid == 0) { 
+    
+    $form['disclaimer'] = array (
+      '#type' => 'markup',
+      '#markup' => '<p>' . t('Let\'s get your event listed for runners and photographers') . '</p>',
+      '#weight' => -1, 
+    );
+  
     $form['contact'] = array(
       '#type' => 'fieldset', 
       '#title' => t('Your details'), 
       '#weight' => 0, 
-      '#collapsible' => TRUE, 
+      '#collapsible' => FALSE, 
       '#collapsed' => FALSE,
    //   '#description' => 'this information will help us to keep in touch',
     );
@@ -370,6 +384,7 @@ function sport_event_create_form($form, &$form_state) {
     	'#size' => 60, 
         '#maxlength' => 20, 
         '#required' => TRUE, 
+        
     );
     
     $form['contact']['phone'] = array(
@@ -400,12 +415,21 @@ function sport_event_create_form($form, &$form_state) {
         '#maxlength' => 20, 
         '#required' => TRUE,
     );
+  } 
+  else { // existing user
+    $form['disclamer'] = array (
+      '#type' => 'markup',
+      '#markup' => '<p>' . t('Time to add a new event, we are ready!') . '</p>',
+      '#weight' => -1, 
+    );
   }
+  
+  
   $form['event'] = array(
     '#type' => 'fieldset', 
     '#title' => t('Event details'), 
     '#weight' => 2, 
-    '#collapsible' => TRUE, 
+    '#collapsible' => FALSE, 
     '#collapsed' => FALSE,
   );
   
@@ -420,7 +444,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['date'] = array(
     '#type' => 'date_popup',
-    '#title' => t('Date'),
+    '#title' => t('When'),
     '#date_format' => 'Y-m-d',
     '#required' => TRUE,
     '#date_year_range' => '-0:+1',
@@ -434,7 +458,7 @@ function sport_event_create_form($form, &$form_state) {
  	'#title' => t('Website'), 
   	'#size' => 60, 
     '#maxlength' => 128, 
-    '#required' => TRUE,
+    '#required' => FALSE,
     '#description' => t('preferably the home page')
   );
   
@@ -442,6 +466,7 @@ function sport_event_create_form($form, &$form_state) {
     '#type' => 'select',
     '#title' => t('Distance'),
     '#options' => get_vocabulary_terms_by_name('distance'),
+    '#empty_value' => -1, 
     '#empty_option' => t('Select distance'), 
   );
   
@@ -449,6 +474,7 @@ function sport_event_create_form($form, &$form_state) {
     '#type' => 'select',
     '#title' => 'Country',
     '#options' => country_get_list(),
+    '#empty_value' => 'NONE',
    	'#empty_option' => t('Select country'), 
   );
   
@@ -460,7 +486,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['summary'] = array (
     '#type' => 'textarea',
-    '#title' => t('Description')
+    '#title' => t('Details')
   );
 
   $form['is_director'] = array(
@@ -554,6 +580,7 @@ function sport_event_create_form_submit($form, &$form_state) {
   $node = new stdClass();
   
   $node->type = 'event';
+  $node->status = 0; // we don't want event to be published yet
   $node->title = $form_state['values']['title'];
   $node->body = $form_state['values']['summary'];
   $node->language = LANGUAGE_NONE; // @todo posibly need to set language depending on the country
@@ -563,8 +590,15 @@ function sport_event_create_form_submit($form, &$form_state) {
  // $event_date = DateTime::createFromFormat('Y-m-d',$form_state['values']['date']);
   $node->field_date[$node->language][0]['value']['date'] = $form_state['values']['date'];
   
-  $node->field_distance[$node->language][0]['tid'] = $form_state['values']['distance'];
-  $node->field_address[$node->language][0]['country'] = $form_state['values']['country'];
+  
+  $tid = $form_state['values']['distance'];
+  if ($tid != -1) {
+    $node->field_distance[$node->language][0]['tid'] = $tid;
+  }
+  $country = $form_state['values']['country'];
+  if ($country != 'NONE') {
+    $node->field_address[$node->language][0]['country'] = $country;
+  }
   
   $node->field_website[$node->language][0]['title'] = t("Event's home page");
   $node->field_website[$node->language][0]['url'] = $form_state['values']['website'];
