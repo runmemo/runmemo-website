@@ -504,8 +504,6 @@ function sport_event_create_form($form, &$form_state) {
     '#value' => t('Create Event'),
   );
   
-  $node = node_load(1157);
-  print_nice($node->body);
   return $form;
 }
 
