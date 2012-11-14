@@ -93,6 +93,77 @@ function entity_translation_install() {
 
   // Make translation use the content language type.
   variable_set('translation_language_type', LANGUAGE_TYPE_CONTENT);
+
+  // Grant the 'edit original values' permission, so we don't break editing on
+  // existing sites.
+  $msg = _entity_translation_grant_edit_permissions();
+  drupal_set_message($msg);
+}
+
+/**
+ * Grant 'edit $type original values' permission to existing roles.
+ */
+function _entity_translation_grant_edit_permissions() {
+  $permissions = array();
+
+  // Nodes.
+  $permissions['node'][] = 'bypass node access';
+  foreach (node_permissions_get_configured_types() as $type) {
+    $permissions['node'][] = "edit own $type content";
+    $permissions['node'][] = "edit any $type content";
+  }
+
+  // Comments.
+  if (module_exists('comment')) {
+    $permissions['comment'][] = 'administer comments';
+    $permissions['comment'][] = 'edit own comments';
+  }
+
+  // Taxonomy terms.
+  if (module_exists('taxonomy')) {
+    $permissions['taxonomy_term'][] = 'administer taxonomy';
+    foreach (taxonomy_get_vocabularies() as $vocabulary) {
+      $permissions['taxonomy_term'][] = "edit terms in {$vocabulary->vid}";
+    }
+  }
+
+  $assignments = array();
+  foreach ($permissions as $entity_type => $permissions_filter) {
+    if (entity_translation_enabled($entity_type)) {
+      $permission = "edit $entity_type original values";
+      $assignments[] = _entity_translation_grant_permission($permission, $permissions_filter);
+      $permission = "edit $entity_type translation shared fields";
+      $assignments[] = _entity_translation_grant_permission($permission, $permissions_filter);
+    }
+  }
+  $assignments = '<ul><li>' . implode('</li><li>', $assignments) . '</li></ul>';
+
+  $t = get_t();
+  return $t('The following permissions have been assigned to existing roles: !assignments', array('!assignments' => $assignments));
+}
+
+/**
+ * Grant the given permission to all roles which already have any of the
+ * permissions specified in the $permissions_filter parameter.
+ *
+ * @param $permission
+ *   The new permission which to grant.
+ * @param $permissions_filter
+ *   List of permissions used for loading roles.
+ *
+ * @return
+ *   A message describing permission changes.
+ */
+function _entity_translation_grant_permission($permission, $permissions_filter = NULL) {
+  $roles = user_roles(FALSE, $permissions_filter);
+  foreach ($roles as $rid => $role) {
+    user_role_grant_permissions($rid, array($permission));
+  }
+  $t = get_t();
+  return $t('%permission was assigned to %roles', array(
+    '%permission' => $permission,
+    '%roles' => implode(', ', $roles)
+  ));
 }
 
 /**
@@ -128,7 +199,6 @@ function entity_translation_disable() {
   // translation again if the module is later re-enabled, unless they have been
   // changed by the user in the meantime.
   $entity_translation_types = array();
-  $entity_translation_type_names = array();
   foreach (node_type_get_types() as $type => $object) {
     if (variable_get("language_content_type_$type", 0) == ENTITY_TRANSLATION_ENABLED) {
       $entity_translation_types[] = $type;
@@ -145,16 +215,12 @@ function entity_translation_disable() {
  * Implements hook_uninstall().
  */
 function entity_translation_uninstall() {
+  db_delete('variable')
+    ->condition('name', db_like('entity_translation_') . '%', 'LIKE')
+    ->execute();
+
   variable_del('translation_language_type');
   variable_del('locale_field_language_fallback');
-  variable_del('entity_translation_edit_form_info');
-  variable_del('entity_translation_entity_types');
-  variable_del('entity_translation_disabled_content_types');
-
-  foreach (node_type_get_types() as $type => $object) {
-    variable_del("entity_translation_node_metadata_$type");
-    variable_del("entity_translation_comment_filter_$type");
-  }
 }
 
 /**
@@ -165,4 +231,28 @@ function entity_translation_update_7001() {
     ->fields(array('weight' => 11))
     ->condition('name', 'entity_translation')
     ->execute();
+}
+
+/**
+ * Grant 'edit original values' and 'edit shared field' permissions to roles which have entity editing permissions.
+ */
+function entity_translation_update_7002() {
+  return _entity_translation_grant_edit_permissions();
+}
+
+/**
+ * Configure node and comment language settings to the prior default behavior.
+ */
+function entity_translation_update_7003() {
+  module_load_include('inc', 'entity_translation', 'entity_translation.admin');
+  foreach (array_keys(entity_get_info()) as $entity_type) {
+    entity_translation_settings_init($entity_type);
+  }
+}
+
+/**
+ * Enable translation workflow.
+ */
+function entity_translation_update_7004() {
+  variable_set('entity_translation_workflow_enabled', TRUE);
 }
