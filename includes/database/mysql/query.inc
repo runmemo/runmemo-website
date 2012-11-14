@@ -10,7 +10,7 @@
  * Query code for MySQL embedded database engine.
  */
 
-if (!class_exists('InsertQuery_mysql')) {
+
 class InsertQuery_mysql extends InsertQuery {
 
   public function execute() {
@@ -85,8 +85,7 @@ class InsertQuery_mysql extends InsertQuery {
     return $query;
   }
 }
-}
-if (!class_exists('TruncateQuery_mysql')) {
+
 class TruncateQuery_mysql extends TruncateQuery {
   public function __toString() {
     // TRUNCATE is actually a DDL statement on MySQL, and DDL statements are
@@ -101,7 +100,6 @@ class TruncateQuery_mysql extends TruncateQuery {
       return parent::__toString();
     }
   }
-}
 }
 
 /**
