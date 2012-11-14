@@ -104,6 +104,7 @@ function entity_translation_install() {
  * Grant 'edit $type original values' permission to existing roles.
  */
 function _entity_translation_grant_edit_permissions() {
+  variable_set('entity_translation_workflow_enabled', TRUE);
   $permissions = array();
 
   // Nodes.
