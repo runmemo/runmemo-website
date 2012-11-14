@@ -506,15 +506,19 @@ function sport_event_create_form($form, &$form_state) {
   return $form;
 }
 
+
 function sport_event_create_form_validate($form, &$form_state) {
-  
-  $user = user_load_by_name($form_state['values']['username']);
-  if(!$user){
-      // User doesn't exist
-  } 
-  else {
-      // User exists
-      form_set_error('username', 'User name already exists');
+ 
+  if (isset($form_state['values']['username'])) {
+    // check whether user with this user name exists  
+    $user = user_load_by_name($form_state['values']['username']);
+    if(!$user){
+        // User doesn't exist
+    } 
+    else {
+        // User exists
+        form_set_error('username', 'User name already exists');
+    }
   }
   
 }
@@ -600,7 +604,7 @@ function sport_event_create_form_submit($form, &$form_state) {
     $node->field_address[$node->language][0]['country'] = $country;
   }
   
-  $node->field_website[$node->language][0]['title'] = t("Event's home page");
+  $node->field_website[$node->language][0]['title'] = t('Event\'s home page');
   $node->field_website[$node->language][0]['url'] = $form_state['values']['website'];
   
   
