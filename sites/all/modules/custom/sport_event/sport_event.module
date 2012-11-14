@@ -503,6 +503,9 @@ function sport_event_create_form($form, &$form_state) {
     '#button_type' => 'submit',
     '#value' => t('Create Event'),
   );
+  
+  $node = node_load(1157);
+  print_nice($node->body);
   return $form;
 }
 
@@ -585,35 +588,38 @@ function sport_event_create_form_submit($form, &$form_state) {
   
   $node->type = 'event';
   $node->status = 0; // we don't want event to be published yet
-  $node->title = $form_state['values']['title'];
-  $node->body = $form_state['values']['summary'];
   $node->language = LANGUAGE_NONE; // @todo posibly need to set language depending on the country
+  
+  $node->title_field[$node->language][0]['value'] = $form_state['values']['title'];
+  $node->body[$node->language][0]['format'] = 'plain_text';
+  $node->body[$node->language][0]['value'] = $form_state['values']['summary'];
+  
   //user id
   $node->uid = $uid;
  // $node->body[$node->language][0]['value'] = $form_state['values']['summary'];
  // $event_date = DateTime::createFromFormat('Y-m-d',$form_state['values']['date']);
-  $node->field_date[$node->language][0]['value']['date'] = $form_state['values']['date'];
+  $node->field_date[LANGUAGE_NONE][0]['value']['date'] = $form_state['values']['date'];
   
   
   $tid = $form_state['values']['distance'];
   if ($tid != -1) {
-    $node->field_distance[$node->language][0]['tid'] = $tid;
+    $node->field_distance[LANGUAGE_NONE][0]['tid'] = $tid;
   }
   $country = $form_state['values']['country'];
   if ($country != 'NONE') {
-    $node->field_address[$node->language][0]['country'] = $country;
+    $node->field_address[LANGUAGE_NONE][0]['country'] = $country;
   }
   
   $node->field_website[$node->language][0]['title'] = t('Event\'s home page');
-  $node->field_website[$node->language][0]['url'] = $form_state['values']['website'];
+  $node->field_website[LANGUAGE_NONE][0]['url'] = $form_state['values']['website'];
   
   
   if($form_state['values']['is_director'] == 1) { 
     // user checked that he is race director of this event
-    $node->field_director[$node->language][]['uid'] = $user->uid;
+    $node->field_director[LANGUAGE_NONE][]['uid'] = $user->uid;
   } 
   else { // Not race director so we assume its a photographer
-    $node->field_photographers[$node->language][]['uid'] = $user->uid; 
+    $node->field_photographers[LANGUAGE_NONE][]['uid'] = $user->uid; 
   }
   
   node_object_prepare($node); // set default values
