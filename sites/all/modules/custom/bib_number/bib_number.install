@@ -1,7 +1,7 @@
 <?php 
 
 function bib_number_field_schema($field) {
-  if($field['type'] == 'bib_number') {
+  if ($field['type'] == 'bib_number') {
     $columns = array(
         'value' => array(
          'description' => 'Number of runner.',
@@ -29,19 +29,19 @@ function bib_number_field_schema($field) {
           'type' => 'int',
           'unsigned' => TRUE,
         ),
-  		'manual' => array(
+        'manual' => array(
           'description' => 'Boolean indicating wether the number was entered manually.',
           'type' => 'int',
           'not null' => TRUE,
-		  'default'=> 0,
+          'default' => 0,
         ),
         'probability' => array(
            'description' => 'Probability that the number is correct.',
            'type' => 'numeric',
-	       'precision' => 2,
+           'precision' => 2,
            'unsigned' => TRUE,
            'not null' => TRUE,
- 		   'default'=> 0.0,
+           'default' => 0.0,
          ),
          'created' => array(
            'description' => 'UNIX timestamp when the number was added.',

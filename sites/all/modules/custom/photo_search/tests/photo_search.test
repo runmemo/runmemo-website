@@ -322,7 +322,7 @@ class PhotoSearchCronTestCase extends DrupalWebTestCase {
     // 2nd product
     $product2 = product_node_creator::getNewProductNode($event2->nid);
     $ps = new ProductNodeSaver($product2->nid);
-    $ps->AddNumber(array('value' => 300, 'manual' =>1, 'probability' => 1 ));
+    $ps->AddNumber(array('value' => 300, 'manual' => 1, 'probability' => 1, ));
     $ps->Save();
 
     // run cron - check that M emails were sent

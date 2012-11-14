@@ -17,7 +17,7 @@ function get_events($nids = array()) {
   $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'event')
         ->propertyCondition('status', 1, '=');
-  if(!empty($nids)) {
+  if (!empty($nids)) {
     $query->propertyCondition('nid', $nids, '=');
   }
   $result = $query->execute();
@@ -27,12 +27,11 @@ function get_events($nids = array()) {
   if (!empty($result['node'])) {
      $nodes = entity_load('node', array_keys($result['node']));
     
-     foreach($nodes as $nid => $node) {
-       if(!isset($node->title_field[$language->language])) {
+     foreach ($nodes as $nid => $node) {
+       if (!isset($node->title_field[$language->language])) {
          $lang = $node->language;
        } 
-       else 
-       {
+       else {
          $lang = $language->language;
        }
        $title  = $node->title_field[$lang][0]['value'];
@@ -40,8 +39,7 @@ function get_events($nids = array()) {
      }
      return $titles;
   } 
-  else 
-  { 
+  else { 
     return FALSE;
   }
 }
@@ -54,8 +52,8 @@ function get_events($nids = array()) {
 function get_event($nid) {
   $nids = array('nid' => $nid);
   $events = get_events($nids);
-  if($events) {
-    return($events[0]);
+  if ($events) {
+    return $events[0];
   }
   return FALSE;
 }
