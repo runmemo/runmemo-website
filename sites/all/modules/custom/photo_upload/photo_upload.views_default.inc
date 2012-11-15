@@ -106,7 +106,7 @@ $handler->display->display_options['defaults']['exposed_form'] = FALSE;
 $handler->display->display_options['exposed_form']['type'] = 'basic';
 $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = FALSE;
 $handler->display->display_options['defaults']['pager'] = FALSE;
-$handler->display->display_options['pager']['type'] = 'mini';
+$handler->display->display_options['pager']['type'] = 'full';
 $handler->display->display_options['pager']['options']['items_per_page'] = '15';
 $handler->display->display_options['pager']['options']['offset'] = '0';
 $handler->display->display_options['pager']['options']['id'] = '0';
@@ -179,6 +179,7 @@ $handler->display->display_options['fields']['colorbox']['label'] = '';
 $handler->display->display_options['fields']['colorbox']['element_label_colon'] = FALSE;
 $handler->display->display_options['fields']['colorbox']['trigger_field'] = 'uc_product_image';
 $handler->display->display_options['fields']['colorbox']['popup'] = '[uc_product_image_1]';
+$handler->display->display_options['fields']['colorbox']['caption'] = '[title]';
 $handler->display->display_options['fields']['colorbox']['gid'] = 1;
 $handler->display->display_options['fields']['colorbox']['width'] = '';
 $handler->display->display_options['fields']['colorbox']['height'] = '';
@@ -243,8 +244,6 @@ $translatables['myphotos'] = array(
   t('<div id="thumb-[nid]"><a href="http://runmemo.dev/sites/default/files/p17bstrb87heq112k11j5a8pnsh12.jpg" rel="lightbox[gallery]">[uc_product_image]</a></div>'),
 );
 
-  
-    
   
  // (Export ends here.)
 
