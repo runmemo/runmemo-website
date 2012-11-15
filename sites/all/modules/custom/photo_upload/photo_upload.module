@@ -318,9 +318,19 @@ function create_photo_node($file, $event_nid, $price = 0) {
   
   $node->sell_price = $price + variable_get('RUNMEMO_COMMISION', 1);
   $node->list_price = $price;
-    
   $node->field_event_reference[$node->language]['0']['nid'] = $event->nid;
-
+  
+  // Determine currency code for product from country code in event's address
+  $currency = 'GBP'; // default to GBP
+  if ($addresses = field_get_items('node', $event, 'field_address')) { // address field is not empty
+    foreach ($addresses as $address) {
+       $country = $address['country'];
+       $currency = country_currency($country);
+       break;
+    }
+  }
+  $node->field_currency[LANGUAGE_NONE][0]['value'] = $currency;
+  
   node_object_prepare($node); // set default values
   $node = node_submit($node); // set author and creation date
   node_save($node); // After this call we'll get a nid
