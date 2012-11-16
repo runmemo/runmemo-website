@@ -74,7 +74,6 @@ function photo_upload_permission() {
 }
 
 
-
 /**
  * Photo Uploader Page
  * where the photographer can upload the photos by selecting the event
@@ -83,15 +82,15 @@ function photo_upload_permission() {
 function select_event_function() {
 
   $form = array();
-
+  
+  drupal_add_js(array("photo_upload" => get_events()), 'setting');
+  //$form['#attached']['js'] = '';
+  
   $form['events_select'] = array(
     '#type' => 'select',
     '#title' => t('Upload to event:'),
     '#id' => 'event_select',
-    '#attributes' => array(
-      'onchange' => 'return select_event_upload();'),
-      '#prefix' => '<div id="event_drop">',
-      '#suffix' => '</div>');
+  );
 
   $form['events_select']['#options'] = array('All' => 'Select Event');
 
@@ -302,33 +301,26 @@ function create_photo_node($file, $event_nid, $price = 0) {
   $node->uid = $file->uid;
   // Let's add standard body field
 
-  $node->uc_product_image['und'][0] = (array)$file; //associate the file object with the image field:
+  $node->uc_product_image[LANGUAGE_NONE][0] = (array)$file; //associate the file object with the image field:
 
- 
   $event = node_load($event_nid);
-  if ($price == 0) {
-    $field_pricing = field_get_items('node', $event, 'field_pricing');
-    if ($field_pricing[0]['value'] != 0) {
-      $price = $field_pricing[0]['value'];
-    } 
-    else {
-      $price = 3;
-    }
-  }
-  
-  $node->sell_price = $price + variable_get('RUNMEMO_COMMISION', 1);
-  $node->list_price = $price;
-  $node->field_event_reference[$node->language]['0']['nid'] = $event->nid;
-  
   // Determine currency code for product from country code in event's address
-  $currency = 'GBP'; // default to GBP
-  if ($addresses = field_get_items('node', $event, 'field_address')) { // address field is not empty
-    foreach ($addresses as $address) {
-       $country = $address['country'];
-       $currency = country_currency($country);
-       break;
-    }
+  $country = field_get_value($event, 'field_address', 'GB', 'country');
+  $currency = country_currency($country);
+  
+  $defaults = default_currency_prices($currency);
+  
+  if ($price == 0) {
+    $price = field_get_value($event, 'field_recommended_price', $defaults['recommended_price']);
   }
+  // here we get sales fee from event to set sell price
+  
+  $sales_fee = field_get_value($event, 'field_sales_fee', $defaults['sales_fee']);
+  
+  $node->sell_price = $price + $sales_fee;
+  
+  $node->list_price = $price;
+  $node->field_event_reference[LANGUAGE_NONE]['0']['nid'] = $event->nid;
   $node->field_currency[LANGUAGE_NONE][0]['value'] = $currency;
   
   node_object_prepare($node); // set default values
@@ -341,4 +333,13 @@ function create_photo_node($file, $event_nid, $price = 0) {
   $queue->createItem($file);
   return $node;
 
+}
+
+function field_get_value($node, $field_name, $default, $index = 'value') {
+  if ($items = field_get_items('node', $node, $field_name)) {
+    foreach ($items as $item) {
+      return $item[$index];
+    }
+  }
+  return $default;
 }

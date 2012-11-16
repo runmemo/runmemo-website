@@ -37,7 +37,7 @@ margin-top:20px;
 display:block;
         }
         
-.page-photographer #event_drop {
+.page-photographer-upload .form-item-events-select {
    float:left;
 }
 
@@ -277,15 +277,6 @@ line-height:20px;
  	width:100%;
   float:left;
  }
-
-
-
-
-.page-photographer #event_drop {
-   padding:0 0 16px 0;
-   float:left;
-   height:63px;
-}
 
 .page-photographer #edit-box {
 
