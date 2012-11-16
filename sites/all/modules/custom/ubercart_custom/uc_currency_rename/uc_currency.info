@@ -1,6 +1,0 @@
-name = uc_currency
-description = allow user to setting multiple rate to ubercart
-core = 7.x
-
-dependencies[] = uc_store
-dependencies[] = currency_api
