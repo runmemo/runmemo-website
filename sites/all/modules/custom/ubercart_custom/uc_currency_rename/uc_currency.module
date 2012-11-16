@@ -1,0 +1,247 @@
+<?php
+
+/**
+ * @file
+ * Add multiple currency configurations features to ubercart
+ */
+
+/**
+ * switcher select list
+ */
+define('UC_CURRENCY_SELECT', '1');
+
+/**
+ * switcher radio button
+ */
+define('UC_CURRENCY_RADIOS', '2');
+
+
+/**
+ * switcher select list
+ */
+define('UC_CURRENCY_RATE_AUTO', '1');
+
+/**
+ * switcher radio button
+ */
+define('UC_CURRENCY_RATE_MANUAL', '2');
+
+/**
+ * switcher radio button
+ */
+define('UC_CURRENCY_DEFAULT_CURRENCY', 'USD');
+
+/**
+ * Implements hook_menu().
+ */
+function uc_currency_menu() {
+  $items = array();
+
+  $items['admin/store/settings/currency'] = array(
+    'title' => 'Currency',
+    'description' => 'Change currency configurations',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_currency_settings_form'),
+    'access arguments' => array('administer currency'),
+    'file' => 'uc_currency.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function uc_currency_permission() {
+  return array(
+    'administer currency' => array(
+      'title' => t('Administer Currency'),
+      'description' => t('Allow administratior to administer currency configurations'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function uc_currency_block_info() {
+
+  $blocks['uc_currency_block'] = array(
+    'info' => t('Currency Switcher'),
+    'cache' => DRUPAL_NO_CACHE,
+    'status' => FALSE,
+    'region' => -1,
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function uc_currency_block_view($delta = '') {
+
+  switch ($delta) {
+    case 'uc_currency_block':
+      $product_count = count(uc_cart_get_contents());
+      if (!variable_get('uc_cart_block_empty_hide', FALSE) || $product_count) {
+        $block['subject'] = '';
+        $block['content'] = drupal_get_form('uc_currency_switcher_form');
+      }
+      break;
+  }
+  return $block;
+}
+
+/**
+ * Implements theme_registry_alter().
+ */
+function uc_currency_theme_registry_alter(&$theme_registry) {
+  unset($theme_registry['uc_price']['includes']);
+
+  $module_path = drupal_get_path('module', 'uc_currency');
+  $theme_registry['uc_price'] = array(
+    'file' => 'uc_currency.module',
+    'type' => 'module',
+    'theme path' => $module_path,
+    'function' => 'theme_uc_price_multiple_currency',
+    'variables' => array('price' => NULL, 'suffixes' => NULL),
+  );
+}
+
+/**
+ * Implements hook_uc_cart_alter().
+ */
+function uc_currency_uc_cart_alter(&$items) {
+  $default_currency_code = variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+
+  foreach ($items as $key => $item) {
+    $items[$key]->order->currency = $code;
+  }
+}
+
+/**
+ * Overrided callback function of theme_uc_price.
+ * @see uc_currency_theme_registry_alter
+ *
+ * @param array $variables
+ *   associative array containing:
+ *   - price = ubercart item price (base price)
+ *   - suffixes = Price suffixes
+ *
+ * @ingroup themeable
+ */
+function theme_uc_price_multiple_currency($variables) {
+
+  $default_currency_code = variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+
+  $symbol = currency_api_get_symbol($code);
+
+  if (variable_get('uc_currency_converter_type') == UC_CURRENCY_RATE_MANUAL) {
+    $price = uc_currency_manual_convertion($code, $variables['price']);
+  }
+  else {
+    $price = currency_api_convert($default_currency_code, $code, $variables['price']);
+  }
+
+
+  $output = '<span class="uc-price">' . uc_currency_format($price['value'], $symbol) . '</span>';
+
+  if (!empty($variables['suffixes'])) {
+    $output .= '<span class="price-suffixes">' . implode(' ', $variables['suffixes']) . '</span>';
+  }
+  return $output;
+}
+
+/**
+ * Implements hook_form_submit().
+ */
+function uc_currency_switcher_form($form, $form_state) {
+  $form = array();
+
+  drupal_add_js('
+    jQuery(document).ready(function($){
+      $("#edit-currency-switcher").change(function(){
+        $("#edit-currency-switcher-submit").click();
+      });
+    });    
+  ', array('type' => 'inline'));
+
+  $default_currency_code = variable_get('uc_currency_base', UC_CURRENCY_DEFAULT_CURRENCY);
+
+
+  $currencies_arr[$default_currency_code] = $default_currency_code;
+
+  $currency_convert = unserialize(variable_get('uc_currency_convert', ''));
+  if (!empty($currency_convert)) {
+    $currencies_arr = array_merge($currencies_arr, $currency_convert);
+  }
+
+  $form['currency_switcher'] = array(
+    '#type' => 'select',
+    '#options' => $currencies_arr,
+    '#default_value' => isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code,
+  );
+
+  $form['currency_switcher_submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+    '#attributes' => array('style' => 'display:none;'),
+  );
+
+  return $form;
+}
+
+/**
+ * Implements uc_currency_switcher_form_submit().
+ */
+function uc_currency_switcher_form_submit(&$form, $form_state) {
+
+  $input = $form_state['input'];
+
+  // Store currencies code to session.
+  $_SESSION['currency_switcher'] = $input['currency_switcher'];
+}
+
+/**
+ * Manually Convert the currency
+ *
+ * @param string $to
+ *   Currency code target
+ *
+ * @param number $value
+ *   value of price
+ *
+ * @return ArrayIterator
+ *   array price
+ */
+function uc_currency_manual_convertion($to, $value) {
+
+  if ($to == variable_get('uc_currency_base')) {
+    $result['code'] = $to;
+    $result['value'] = 1 * $value;
+  }
+  else {
+    $currencies_rate = unserialize(variable_get('uc_currency_rates'));
+
+    $result['value'] = $currencies_rate[$to] * $value;
+    $result['code'] = $to;
+  }
+  return $result;
+}
+
+
+function country_currency($country) {
+  
+  $codes = array(
+    'RU' => 'RUB',
+    'GB' => 'GBP',
+    'DE' => 'EUR',
+    'FR' => 'EUR',
+    'US' => 'USD',
+  );
+  
+  return isset($codes[$country]) ? $codes[$country] : 'GBP'; 
+}
