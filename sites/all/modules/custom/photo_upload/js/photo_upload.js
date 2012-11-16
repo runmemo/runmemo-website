@@ -113,11 +113,15 @@ function drag_drop_upload_validation() {
 		    	        else {
 		    	        	slider.slider("option", "step", 1);
 		    	        }
+		    	      
 	    	            $(".page-photographer-upload #price_val").val(slider.slider( "value" ) );
 	    		        $(".page-photographer-upload #amount").text( event.currency_sign + slider.slider( "value" ) );
+	    		        $("#price-container").show();
 	    	    }
 	    	    else {
 	    	            document.getElementById('upload_section').style.display= 'none';
+	    	            $("#price-container").hide();
+		    	     
 	    	    }
 	    	}
 		}

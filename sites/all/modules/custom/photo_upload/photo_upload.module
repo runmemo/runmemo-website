@@ -84,22 +84,22 @@ function select_event_function() {
   $form = array();
   $events = get_events();
   drupal_add_js(array("photo_upload" => $events), 'setting');
-  //$form['#attached']['js'] = '';
+  
+  $options = array();
+  
+  foreach ($events as $event) {
+    $options[$event['nid']] = $event['title'];
+  }
   
   $form['events_select'] = array(
     '#type' => 'select',
     '#title' => t('Upload to event:'),
     '#id' => 'event_select',
+    '#options' => $options,
+    '#empty_option' => 'Select Event',
+    '#empty_value' => 'All',
   );
 
-  $form['events_select']['#options'] = array('All' => 'Select Event');
-
-  //get the event name from content type 'event'
- 
-  foreach ($events as $event) {
-    $form['events_select']['#options'][$event['nid']] = $event['title'];
-  }
- 
   if (is_numeric(arg(2)) && arg(2) != '') {
     $default = arg(2);
     $form['events_select']['#default_value'] = $default;
