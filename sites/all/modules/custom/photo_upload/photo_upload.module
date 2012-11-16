@@ -82,8 +82,8 @@ function photo_upload_permission() {
 function select_event_function() {
 
   $form = array();
-  
-  drupal_add_js(array("photo_upload" => get_events()), 'setting');
+  $events = get_events();
+  drupal_add_js(array("photo_upload" => $events), 'setting');
   //$form['#attached']['js'] = '';
   
   $form['events_select'] = array(
@@ -95,7 +95,7 @@ function select_event_function() {
   $form['events_select']['#options'] = array('All' => 'Select Event');
 
   //get the event name from content type 'event'
-  $events = get_events();
+ 
   foreach ($events as $event) {
     $form['events_select']['#options'][$event['nid']] = $event['title'];
   }
