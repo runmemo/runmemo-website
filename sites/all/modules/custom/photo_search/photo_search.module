@@ -531,6 +531,11 @@ function photo_search_preview_area($img_uri) {
   $form['cart_hidden']   = array('#type' => 'textfield', '#value' => '', '#id' => 'cart_hidden', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $form['selected_product'] = array('#type' => 'textfield', '#title' => '', '#id' => 'selected_cart_products', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $url = url('cart/checkout');
+  
+  $default_currency_code = variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+  $symbol = currency_api_get_symbol($code);
+  
   // @todo move this html block from here to theme
   $form['cart_summary'] = array('#markup' =>
     "<div class='cart_summ'>
@@ -548,7 +553,7 @@ function photo_search_preview_area($img_uri) {
   . t('Photos') . ':&nbsp;' .
             "<span class='placeholder'></span>
 			</span>
-				<span class='search-summary-cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
+				<span class='search-summary-cost'>" . t('Total') . ":&nbsp;" . $symbol . 
                                       "<span class='placeholder'></span>
 				</span>
 		</div>
