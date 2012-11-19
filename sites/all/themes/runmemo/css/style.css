@@ -2965,19 +2965,19 @@ label.option {
 } 
 
 
-.node-type-event .view-event-gallery .jcarousel-container-horizontal {
+.node-type-event .view-event-carousel .jcarousel-container-horizontal {
   width: 980px;
   height: 152px;
   padding: 0 40px;
   margin-left: -43px;
 }
 
-.node-type-event .view-event-gallery .jcarousel-clip-horizontal {
+.node-type-event .view-event-carousel .jcarousel-clip-horizontal {
   width: 980px;
   overflow: hidden;
 }
 
-.node-type-event .view-event-gallery .jcarousel-item {
+.node-type-event .view-event-carousel .jcarousel-item {
   padding: 0;
   height: 152px;
   width: 102px;
@@ -2987,11 +2987,11 @@ label.option {
   background: #fff none;
 }
 
-.node-type-event .view-event-gallery .jcarousel-item-horizontal {
+.node-type-event .view-event-carousel .jcarousel-item-horizontal {
   margin: 0 4px;
 }
 
-.node-type-event .view-event-gallery .jcarousel-item-placeholder {
+.node-type-event .view-event-carousel .jcarousel-item-placeholder {
   height: 152px;
   width: 102px;
   background: #fff url("../images/throbber.gif") no-repeat center center;
@@ -3001,66 +3001,66 @@ label.option {
 /**
  * Buttons
  */
-.node-type-event .view-event-gallery .jcarousel-next,
-.node-type-event .view-event-gallery .jcarousel-prev {
+.node-type-event .view-event-carousel .jcarousel-next,
+.node-type-event .view-event-carousel .jcarousel-prev {
   display: block;
   width: 32px;
   height: 32px;
   background-image: url("../images/arrows-runmemo.png");
 }
 
-.node-type-event .view-event-gallery .jcarousel-next-disabled,
-.node-type-event .view-event-gallery .jcarousel-prev-disabled {
+.node-type-event .view-event-carousel .jcarousel-next-disabled,
+.node-type-event .view-event-carousel .jcarousel-prev-disabled {
   display: none;
 }
 
 /**
  * Horizontal Buttons
  */
-.node-type-event .view-event-gallery .jcarousel-prev-horizontal {
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal {
   position: absolute;
   top: 55px;
   left: 10px;
   background-position: 0 0;
 }
-.node-type-event .view-event-gallery .jcarousel-prev-horizontal:hover {
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal:hover {
   background-position: -32px 0;
 }
-.node-type-event .view-event-gallery .jcarousel-prev-horizontal:active {
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal:active {
   background-position: -64px 0;
 }
 
-.node-type-event .view-event-gallery .jcarousel-next-horizontal {
+.node-type-event .view-event-carousel .jcarousel-next-horizontal {
   position: absolute;
   top: 55px;
   right: 10px;
   background-position: 0 -32px;
 }
-.node-type-event .view-event-gallery .jcarousel-next-horizontal:hover {
+.node-type-event .view-event-carousel .jcarousel-next-horizontal:hover {
   background-position: -32px -32px;
 }
-.node-type-event .view-event-gallery .jcarousel-next-horizontal:active {
+.node-type-event .view-event-carousel .jcarousel-next-horizontal:active {
   background-position: -64px -32px;
 }
 
-.node-type-event .view-event-gallery .jcarousel-navigation {
+.node-type-event .view-event-carousel .jcarousel-navigation {
   margin: 0;
   padding: 0;
 }
 
-.node-type-event .view-event-gallery .jcarousel-navigation li {
+.node-type-event .view-event-carousel .jcarousel-navigation li {
   display: inline;
   margin: 0 2px 0 0;
   padding: 0;
   background: none;
 }
 
-.node-type-event .view-event-gallery .jcarousel-navigation li.active a {
+.node-type-event .view-event-carousel .jcarousel-navigation li.active a {
   font-weight: bold;
   text-decoration: none;
 }
 
-.node-type-event .view-event-gallery img {
+.node-type-event .view-event-carousel img {
   height: 150px;
   width: 100px;
   overflow: hidden;
