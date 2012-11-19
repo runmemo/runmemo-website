@@ -3086,6 +3086,7 @@ label.option {
 }
 
 .view-myphotos img {
+  padding-top: 1px;    
   padding-left:3px;
   padding-right:3px;
 }
@@ -3099,6 +3100,7 @@ label.option {
 }
 
 .view-event-gallery img {
+  padding-top: 1px;
   padding-left:3px;
   padding-right:3px;
 }
