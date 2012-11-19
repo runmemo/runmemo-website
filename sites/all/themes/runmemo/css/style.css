@@ -2994,7 +2994,7 @@ label.option {
 .node-type-event .view-event-gallery .jcarousel-item-placeholder {
   height: 152px;
   width: 102px;
-  background: #fff url(../images/throbber.gif) no-repeat center center;
+  background: #fff url("../images/throbber.gif") no-repeat center center;
   color: #000;
 }
 
@@ -3006,7 +3006,7 @@ label.option {
   display: block;
   width: 32px;
   height: 32px;
-  background-image: url(../images/arrows-runmemo.png);
+  background-image: url("../images/arrows-runmemo.png");
 }
 
 .node-type-event .view-event-gallery .jcarousel-next-disabled,
@@ -3079,4 +3079,37 @@ label.option {
 .margin10px {
   width: 100%;
   margin-bottom: 10px;
+}
+
+.view-myphotos td, th {
+  padding: 0px;
+}
+
+.view-myphotos img {
+  padding-left:3px;
+  padding-right:3px;
+}
+
+.view-event-gallery {
+  width: 980px;   
+}
+
+.view-event-gallery td, th {
+  padding: 0px;
+}
+
+.view-event-gallery img {
+  padding-left:3px;
+  padding-right:3px;
+}
+
+.view-event-gallery .view-header {
+	border: 1px solid #BFBFBF;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+        margin-top: -20px;
+        padding-top: 10px;
+        padding-bottom: 5px;
+        text-align: center;        
+	
 }
