@@ -34,6 +34,13 @@ $handler->display->display_options['pager']['type'] = 'full';
 $handler->display->display_options['pager']['options']['items_per_page'] = '10';
 $handler->display->display_options['style_plugin'] = 'grid';
 $handler->display->display_options['row_plugin'] = 'fields';
+/* No results behavior: Global: Text area */
+$handler->display->display_options['empty']['area']['id'] = 'area';
+$handler->display->display_options['empty']['area']['table'] = 'views';
+$handler->display->display_options['empty']['area']['field'] = 'area';
+$handler->display->display_options['empty']['area']['empty'] = TRUE;
+$handler->display->display_options['empty']['area']['content'] = '<em>No photos were uploaded yet</em>';
+$handler->display->display_options['empty']['area']['format'] = 'filtered_html';
 /* Relationship: Content: Author */
 $handler->display->display_options['relationships']['uid']['id'] = 'uid';
 $handler->display->display_options['relationships']['uid']['table'] = 'node';
@@ -146,9 +153,6 @@ $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_
 $handler->display->display_options['fields']['uc_product_image']['ui_name'] = 'Gallery Thumbnail';
 $handler->display->display_options['fields']['uc_product_image']['label'] = '';
 $handler->display->display_options['fields']['uc_product_image']['exclude'] = TRUE;
-$handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]"><a href="http://runmemo.dev/sites/default/files/p17bstrb87heq112k11j5a8pnsh12.jpg" rel="lightbox[gallery]">[uc_product_image]</a></div>';
-$handler->display->display_options['fields']['uc_product_image']['alter']['path'] = '[uc_product_image]';
-$handler->display->display_options['fields']['uc_product_image']['alter']['rel'] = 'lightbox';
 $handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
 $handler->display->display_options['fields']['uc_product_image']['element_default_classes'] = FALSE;
 $handler->display->display_options['fields']['uc_product_image']['hide_empty'] = TRUE;
@@ -236,13 +240,14 @@ $translatables['myphotos'] = array(
   t('‹ previous'),
   t('next ›'),
   t('last »'),
+  t('<em>No photos were uploaded yet</em>'),
   t('author'),
   t('<div id="thumb-[nid]">[uc_product_image]</div>'),
   t('Event Name'),
   t('Page'),
   t('Photos per page'),
-  t('<div id="thumb-[nid]"><a href="http://runmemo.dev/sites/default/files/p17bstrb87heq112k11j5a8pnsh12.jpg" rel="lightbox[gallery]">[uc_product_image]</a></div>'),
 );
+
 
   
  // (Export ends here.)
