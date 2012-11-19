@@ -1331,10 +1331,7 @@ $handler->display->display_options['filters']['type']['field'] = 'type';
 $handler->display->display_options['filters']['type']['value'] = array(
   'product' => 'product',
 );
-$handler->display->display_options['path'] = 'event-gallery';
-$handler->display->display_options['menu']['title'] = 'My Photos';
-$handler->display->display_options['menu']['weight'] = '2';
-$handler->display->display_options['menu']['context'] = 0;
+$handler->display->display_options['path'] = 'event-gallery/%';
 $translatables['event_gallery'] = array(
   t('Master'),
   t('Event Gallery'),
