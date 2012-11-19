@@ -35,13 +35,50 @@ function get_events($nids = array()) {
          $lang = $language->language;
        }
        $title  = $node->title_field[$lang][0]['value'];
-       $titles[] = array('nid' => $node->nid, 'title' => $title);
+       
+       $country = 'GB';
+       if ($field_address = field_get_items('node', $node, 'field_address')) {
+         foreach ($field_address as $address) {
+             $country = $address['country'];
+             break;         
+         } 
+       } 
+       $currency = country_currency($country);
+       $defaults = default_currency_prices($currency);
+       $min_price =         get_price_field_value($node, 'min_price', $defaults);
+       $max_price =         get_price_field_value($node, 'max_price', $defaults);
+       $recommended_price = get_price_field_value($node, 'recommended_price', $defaults);
+       $sales_fee =         get_price_field_value($node, 'sales_fee', $defaults);
+       $events[$node->nid] = array(
+       		'nid' => $node->nid, 
+       		'title' => $title,
+            'country' => $country,
+            'min_price' => $min_price,
+            'max_price' => $max_price,
+            'recommended_price' => $recommended_price,
+            'currency_sign' => $defaults['prefix'],
+            //'sales_fee' => $sales_fee,
+       );
      }
-     return $titles;
+     return $events;
   } 
   else { 
     return FALSE;
   }
+}
+
+function get_price_field_value($node, $field_name, $defaults) {
+
+  if ($items = field_get_items('node', $node, 'field_' . $field_name)) {
+      $value = $items[0]['value'];       
+  }
+  else {
+    $value = $defaults[$field_name];
+  }
+  
+  // @todo apply conversion rate from event's currency to a currency of the viewer
+  
+  return $value;
 }
 
 /**
@@ -129,4 +166,17 @@ function sport_event_unregister_photographer($nid, $uid) {
   
   node_save($node);
   return TRUE;
+}
+
+
+function default_currency_prices($currency) {
+  
+  $defaults = array(
+    'GBP' => array('min_price' => 1, 'max_price' => 10, 'recommended_price' => 4, 'sales_fee' => 1, 'prefix' => '£',),
+    'RUB' => array('min_price' => 25, 'max_price' => 200, 'recommended_price' => 100, 'sales_fee' => 50, 'prefix' => 'Rub.',),
+    'EUR' => array('min_price' => 1, 'max_price' => 15, 'recommended_price' => 5, 'sales_fee' => 1, 'prefix' => '&euro',),
+    'USD' => array('min_price' => 1, 'max_price' => 20, 'recommended_price' => 5, 'sales_fee' => 1, 'prefix' => '$',),
+  );
+  
+  return $defaults[$currency];
 }

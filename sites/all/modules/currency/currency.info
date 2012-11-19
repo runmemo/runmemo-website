@@ -1,0 +1,19 @@
+name = Currency
+description = Provides currency exchange rates.
+dependencies[] = currency_api
+package = Currency 
+core = 7.x
+files[] = currency.module
+configure = admin/config/regional/currency
+
+; Views handlers
+files[] = includes/views/handlers/currency_handler_field_currency.inc
+files[] = includes/views/handlers/currency_handler_argument_currency.inc
+files[] = includes/views/handlers/currency_handler_filter_currency.inc
+
+; Information added by drupal.org packaging script on 2011-03-12
+version = "7.x-1.0"
+core = "7.x"
+project = "currency"
+datestamp = "1299941167"
+

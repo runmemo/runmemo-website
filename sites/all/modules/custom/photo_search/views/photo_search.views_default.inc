@@ -111,26 +111,8 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['sell_price']['label'] = '';
   $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">[sell_price]</span>';
-  $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['html'] = 0;
   $handler->display->display_options['fields']['sell_price']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['sell_price']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['sell_price']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['sell_price']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['sell_price']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
   $handler->display->display_options['fields']['sell_price']['precision'] = '0';
-  $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
-  $handler->display->display_options['fields']['sell_price']['format'] = 'numeric';
   
   /* Field: Content: Nid */
   $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
