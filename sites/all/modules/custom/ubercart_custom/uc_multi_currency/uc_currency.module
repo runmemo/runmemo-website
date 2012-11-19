@@ -284,5 +284,19 @@ function country_currency($country) {
     'US' => 'USD',
   );
   
-  return isset($codes[$country]) ? $codes[$country] : 'GBP'; 
+  return isset($codes[$country]) ? $codes[$country] : default_currency_code(); 
+}
+
+function language_to_currency($language) {
+  $codes = array(
+    'ru' => 'RUB',
+    'en' => 'GBP',
+  );
+  return isset($codes[$language]) ? $codes[$language] : default_currency_code(); 
+}
+
+function uc_currency_language_init() {
+  global $language;
+ // print_nice($language);
+  $_SESSION['currency_switcher'] = language_to_currency($language->language);
 }
