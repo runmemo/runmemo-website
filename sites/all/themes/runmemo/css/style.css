@@ -3113,3 +3113,35 @@ label.option {
         text-align: center;        
 	
 }
+
+.view-event-gallery .pager {
+        width: 980px;
+	border: 1px solid #BFBFBF;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+        margin-left: 0;
+        padding-top: 10px;
+        padding-bottom: 5px;
+        text-align: center;        
+	
+}
+
+.view-event-gallery table {
+        margin-bottom: 0;
+}
+
+.view-myphotos .pager {
+        width: 980px;
+	border: 1px solid #BFBFBF;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+        margin-left: 0;
+        padding-top: 10px;
+        padding-bottom: 5px;
+        text-align: center;        
+	
+}
+
+.view-myphotos table {
+        margin-bottom: 0;
+}
