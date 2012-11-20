@@ -1412,8 +1412,13 @@ $handler->display->display_options['footer']['area']['id'] = 'area';
 $handler->display->display_options['footer']['area']['table'] = 'views';
 $handler->display->display_options['footer']['area']['field'] = 'area';
 $handler->display->display_options['footer']['area']['ui_name'] = 'Grey line';
-$handler->display->display_options['footer']['area']['content'] = '<div class="gray-bdr-bottom20px"></div>';
-$handler->display->display_options['footer']['area']['format'] = 'full_html';
+$handler->display->display_options['footer']['area']['content'] = '<div class="gray-bdr"></div>
+<div class="gallery-link">
+  <a href=<?php print url(\'events/gallery/\' . !1); ?>><?php print t("Go to full gallery"); ?></a>
+</div>
+';
+$handler->display->display_options['footer']['area']['format'] = 'php_code';
+$handler->display->display_options['footer']['area']['tokenize'] = TRUE;
 /* No results behavior: Space */
 $handler->display->display_options['empty']['area']['id'] = 'area';
 $handler->display->display_options['empty']['area']['table'] = 'views';
