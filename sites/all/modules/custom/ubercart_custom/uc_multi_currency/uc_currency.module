@@ -29,7 +29,7 @@ define('UC_CURRENCY_RATE_MANUAL', '2');
 /**
  * switcher radio button
  */
-define('UC_CURRENCY_DEFAULT_CURRENCY', 'USD');
+define('UC_CURRENCY_DEFAULT_CURRENCY', 'GBP');
 
 /**
  * Implements hook_menu().
@@ -58,6 +58,16 @@ function uc_currency_permission() {
       'title' => t('Administer Currency'),
       'description' => t('Allow administratior to administer currency configurations'),
     ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function uc_currency_views_api() {
+  return array(
+    'api' => '2.0',
+    'path' => drupal_get_path('module', 'uc_currency') . '/views',
   );
 }
 
@@ -118,6 +128,28 @@ function uc_currency_uc_cart_alter(&$items) {
 
   foreach ($items as $key => $item) {
     $items[$key]->order->currency = $code;
+  }
+}
+
+
+function uc_currency_formatter_info() {
+  return array(
+    'uc_price_field_converted' => array(
+      'label' => t('Currency converted to currency of user.'),
+      'field types' => array('field_example_rgb'),
+    ),
+  );
+}
+
+
+function uc_currency_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  $element = array();
+
+  switch ($display['type']) {
+    case 'uc_price_field_converted':
+      
+      
+      break;
   }
 }
 
@@ -232,6 +264,15 @@ function uc_currency_manual_convertion($to, $value) {
   return $result;
 }
 
+function current_currency_code() {
+  $default_currency_code = variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+  return $code;
+}
+
+function default_currency_code() {
+  return variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+}
 
 function country_currency($country) {
   
@@ -243,5 +284,19 @@ function country_currency($country) {
     'US' => 'USD',
   );
   
-  return isset($codes[$country]) ? $codes[$country] : 'GBP'; 
+  return isset($codes[$country]) ? $codes[$country] : default_currency_code(); 
+}
+
+function language_to_currency($language) {
+  $codes = array(
+    'ru' => 'RUB',
+    'en' => 'GBP',
+  );
+  return isset($codes[$language]) ? $codes[$language] : default_currency_code(); 
+}
+
+function uc_currency_language_init() {
+  global $language;
+ // print_nice($language);
+  $_SESSION['currency_switcher'] = language_to_currency($language->language);
 }

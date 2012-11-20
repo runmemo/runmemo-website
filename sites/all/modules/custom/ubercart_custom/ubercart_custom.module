@@ -87,7 +87,20 @@ function ubercart_custom_init() {
 
 
 function get_max_order_value() {
-  return variable_get('max_order_value', 12);
+  $currency = current_currency_code();
+  $max_price = package_price($currency);
+  return $max_price;
+}
+
+function package_price($currency) {
+  $defaults = array(
+    'GBP' => 12,
+    'RUB' => 500,
+    'EUR' => 15,
+    'USD' => 20,
+  );
+  
+  return isset($defaults[$currency]) ? $defaults[$currency] : variable_get('max_order_value', 12);
 }
 
 function get_cart_total_with_discount($total) {
@@ -190,7 +203,9 @@ function cart_add_item() {
   
   $count = count_cart_items($cid);
   $total = get_cart_total_with_discount(cart_total_amount($cid));
- 
+  
+  // check whether product currency is different from 
+  
   echo json_message(TRUE, array(
     'message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid,
     'count' => $count,
@@ -372,10 +387,30 @@ function count_cart_items($cid) {
  */
 function cart_total_amount($cid) {
   $subtotal = 0;
+  $code = current_currency_code();
+  
   foreach (uc_cart_get_contents($cid) as $item) {
-    $subtotal += $item->price * $item->qty;
+    
+    $price = 0;
+    $item_currency = isset($item->field_currency[LANGUAGE_NONE])? $item->field_currency[LANGUAGE_NONE][0]['value'] : 'GBP';
+    if ($item_currency != $code) {
+       $result = currency_api_convert($item_currency, $code, $item->price);
+       $price = $result['value'];
+    }
+    else {
+      $price = $item->price;
+    }
+   watchdog('ajax', 'price = ' . $price);
+    $subtotal += $price * $item->qty;
   }
-  return $subtotal;
+  
+  if ($subtotal > 100) {
+    return number_format($subtotal,0);   
+  }
+  else {
+    return number_format($subtotal, 2);   
+  }
+ 
 }
 
 

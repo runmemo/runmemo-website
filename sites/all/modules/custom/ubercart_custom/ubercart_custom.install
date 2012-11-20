@@ -62,11 +62,3 @@ function ubercart_custom_update_7001() {
   create_field($fields['node-product-field-manual-tagging']);
   create_field($fields['node-product-field-verified-by']);
 }
-
-/**
- *	Creates currency field on product content type
- */
-function ubercart_custom_update_7002() {
-  $fields = _product_field_default_fields();
-  create_field($fields['node-product-field-currency']);
-}

@@ -289,6 +289,7 @@ jQuery(document).ready(function() {
 					},
 					error: function(msg) {
 						set_error_message(nid, 'Sorry, we could not add item to the cart...');
+						console.debug(msg);
 					}
 				});
 			}
@@ -326,6 +327,9 @@ jQuery(document).ready(function() {
 						} else {
 							show_add_button();
 						}
+					},
+					error : function(msg) {
+						console.debug(msg);
 					}
 				});
 			}

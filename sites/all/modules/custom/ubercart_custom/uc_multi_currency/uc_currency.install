@@ -1,0 +1,12 @@
+<?php 
+/**
+ *	Creates currency field on product content type
+ */
+function uc_currency_install() {
+  
+  $fields = _uc_currency_field_default_fields();
+  foreach ($fields as $field) {
+    create_field($field);  
+  }
+  
+}
