@@ -1149,7 +1149,7 @@ $handler->display->display_options['header']['php']['field'] = 'php';
 $handler->display->display_options['header']['php']['ui_name'] = 'Event Reference';
 $handler->display->display_options['header']['php']['empty'] = TRUE;
 $handler->display->display_options['header']['php']['php_output'] = '<?php
-  $eventid = arg(1);
+  $eventid = arg(2);
   $event = node_load($eventid);
 ?>
 <h4><em>Photos from
@@ -1331,7 +1331,7 @@ $handler->display->display_options['filters']['type']['field'] = 'type';
 $handler->display->display_options['filters']['type']['value'] = array(
   'product' => 'product',
 );
-$handler->display->display_options['path'] = 'event-gallery/%';
+$handler->display->display_options['path'] = 'events/gallery/%';
 $translatables['event_gallery'] = array(
   t('Master'),
   t('Event Gallery'),
