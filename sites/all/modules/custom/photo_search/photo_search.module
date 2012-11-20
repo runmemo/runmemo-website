@@ -417,21 +417,39 @@ function photo_search_request_form($form, &$form_state) {
   if (arg(0) == 'search-result') {
     if (is_numeric(arg(1)) && (arg(1) != '')) {
       $eventid = arg(1);
+      if($event = node_load($eventid)) {
+        $message = t('Let me know when my photos from @event_name are ready', array('@event_name' => $event->title, ));      
+      } 
+      else { // event does not exist
+        $message = t('Event does not exist. Please try new search.');
+        $eventid = NULL;
+      }
+    }
+    else { // format of event parameter is wrong
+      $message = t('Event parameter is wrong. Please try new search.');
+      $eventid = NULL;
     }
     if (is_numeric(arg(2)) && (arg(2) != '')) {
       $number = arg(2);
     }
+  } 
+  else {
+    return;
   }
 
-  $event = node_load($eventid);
+  
   
   $form['message'] = array(
       '#type' => 'markup',
       '#prefix' => '<p>',
       '#suffix' => '</p>',
       '#id' => 'let-me-know-message',
-      '#markup' => t('Let me know when my photos from @event_name are ready', array('@event_name' => $event->title, )),
+      '#markup' => $message,
   );
+  
+  if ($eventid == NULL) {
+    return $form;
+  }
   
   $form['eventid'] = array(
     '#id' => 'eventid',
