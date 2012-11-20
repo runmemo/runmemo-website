@@ -106,12 +106,15 @@ function package_price($currency) {
 function get_cart_total_with_discount($total) {
   $max_order_value = get_max_order_value();
   if ($total > $max_order_value) {
-    return $max_order_value;
+    $total = $max_order_value;
   } 
-  else {
-    return $total;
-  }
   
+  if ($total > 100) {
+    return number_format($total,0);   
+  }
+  else {
+    return number_format($total, 2);   
+  }
 }
 
 /**
@@ -350,7 +353,9 @@ function cart_remove_item() {
   }
   if ($item_removed) {
     $count = count_cart_items($cid) - 1;
-    $total = get_cart_total_with_discount(cart_total_amount($cid) - $removed_item->price * $removed_item->qty);
+    
+    $price  =uc_cart_item_price_convert($removed_item);
+    $total = get_cart_total_with_discount(cart_total_amount($cid) - $price  * $removed_item->qty);
     
     echo json_message(TRUE,
         array(
@@ -387,32 +392,32 @@ function count_cart_items($cid) {
  */
 function cart_total_amount($cid) {
   $subtotal = 0;
-  $code = current_currency_code();
   
   foreach (uc_cart_get_contents($cid) as $item) {
     
-    $price = 0;
-    $item_currency = isset($item->field_currency[LANGUAGE_NONE])? $item->field_currency[LANGUAGE_NONE][0]['value'] : 'GBP';
-    if ($item_currency != $code) {
-       $result = currency_api_convert($item_currency, $code, $item->price);
-       $price = $result['value'];
-    }
-    else {
-      $price = $item->price;
-    }
-   watchdog('ajax', 'price = ' . $price);
+    $price = uc_cart_item_price_convert($item);
     $subtotal += $price * $item->qty;
   }
   
-  if ($subtotal > 100) {
-    return number_format($subtotal,0);   
-  }
-  else {
-    return number_format($subtotal, 2);   
-  }
+  return $subtotal;
  
 }
 
+function uc_cart_item_price_convert($item) {
+  $currency_to = current_currency_code();
+  watchdog('ajax', 'currency to: ' . $currency_to);
+  
+  $currency_from = isset($item->field_currency[LANGUAGE_NONE])? $item->field_currency[LANGUAGE_NONE][0]['value'] : default_currency_code();
+  watchdog('ajax', 'currency from: ' . $currency_from);
+  if ($currency_from != $currency_to) {
+    $result = currency_api_convert($currency_from, $currency_to, $item->price);
+    $price = $result['value'];
+  }
+  else {
+    $price = $item->price;
+  }
+  return $price;
+}
 
 /**
  *
