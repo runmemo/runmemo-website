@@ -114,6 +114,10 @@ function bib_number_field_widget_form(&$form, &$form_state, $field, $instance, $
                 '#default_value' => isset($items[$delta]['probability']) ? $items[$delta]['probability'] : 0,
                 '#attributes' => array('class' => array('form-text-bib-probability')),
       );
+      
+      $element['manual'] = array('#type' => 'hidden', '#value' => '1', );
+      $element['created'] = array('#type' => 'hidden', '#value' => time() );
+
       break;
   }
 
