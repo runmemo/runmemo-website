@@ -51,7 +51,6 @@ class uc_currency_handler_field_price extends uc_product_handler_field_price {
   function render($values) {
     if ($this->options['convert']) {
       // currency on the product node
-      print_nice($values);
       $currency = $values->field_field_currency[0]['raw']['value'];
       $currency = $currency != NULL ? $currency : default_currency_code(); 
       // value on the node
