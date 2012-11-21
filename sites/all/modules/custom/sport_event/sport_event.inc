@@ -37,7 +37,8 @@ function get_events($nids = array()) {
        $title  = $node->title_field[$lang][0]['value'];
        
        $country = 'GB';
-       if ($field_address = field_get_items('node', $node, 'field_address')) {
+       $field_address = field_get_items('node', $node, 'field_address');
+       if ($field_address) {
          foreach ($field_address as $address) {
              $country = $address['country'];
              break;         
@@ -56,7 +57,7 @@ function get_events($nids = array()) {
             'min_price' => $min_price,
             'max_price' => $max_price,
             'recommended_price' => $recommended_price,
-            'currency_sign' => $defaults['prefix'],
+            'currency_sign' => currency_api_get_symbol($currency),
             //'sales_fee' => $sales_fee,
        );
      }
@@ -68,8 +69,8 @@ function get_events($nids = array()) {
 }
 
 function get_price_field_value($node, $field_name, $defaults) {
-
-  if ($items = field_get_items('node', $node, 'field_' . $field_name)) {
+  $items = field_get_items('node', $node, 'field_' . $field_name);
+  if ($items) {
       $value = $items[0]['value'];       
   }
   else {
@@ -90,7 +91,7 @@ function get_event($nid) {
   $nids = array('nid' => $nid);
   $events = get_events($nids);
   if ($events) {
-    return $events[0];
+    return $events[$nid];
   }
   return FALSE;
 }
@@ -172,10 +173,10 @@ function sport_event_unregister_photographer($nid, $uid) {
 function default_currency_prices($currency) {
   
   $defaults = array(
-    'GBP' => array('min_price' => 1, 'max_price' => 10, 'recommended_price' => 4, 'sales_fee' => 1, 'prefix' => '£',),
-    'RUB' => array('min_price' => 25, 'max_price' => 200, 'recommended_price' => 100, 'sales_fee' => 50, 'prefix' => 'Rub.',),
-    'EUR' => array('min_price' => 1, 'max_price' => 15, 'recommended_price' => 5, 'sales_fee' => 1, 'prefix' => '&euro',),
-    'USD' => array('min_price' => 1, 'max_price' => 20, 'recommended_price' => 5, 'sales_fee' => 1, 'prefix' => '$',),
+    'GBP' => array('min_price' => 1, 'max_price' => 10, 'recommended_price' => 4, 'sales_fee' => 1, ),
+    'RUB' => array('min_price' => 25, 'max_price' => 200, 'recommended_price' => 100, 'sales_fee' => 50, ),
+    'EUR' => array('min_price' => 1, 'max_price' => 15, 'recommended_price' => 5, 'sales_fee' => 1, ),
+    'USD' => array('min_price' => 1, 'max_price' => 20, 'recommended_price' => 5, 'sales_fee' => 1, ),
   );
   
   return $defaults[$currency];
