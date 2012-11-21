@@ -6,9 +6,8 @@
 	Drupal.behaviors.sliderfield = {
 		attach : function(context, settings) {
 
-	  function onSlide( event, ui ) {
+	  function onSlide(event, ui) {
 	      $( ".node-type-product #amount" ).text( "£" + ui.value );
-	
 	  }
 	
 	  function onPriceChange( event, ui ) {

@@ -272,6 +272,7 @@ function ubercart_custom_uc_order($op, &$order, $arg2) {
           return $line_item['amount'];
         }
       }
+     // print_nice($order);
       break;
 
     case 'delete':
@@ -353,8 +354,7 @@ function cart_remove_item() {
   }
   if ($item_removed) {
     $count = count_cart_items($cid) - 1;
-    
-    $price  =uc_cart_item_price_convert($removed_item);
+    $price = $removed_item->price;
     $total = get_cart_total_with_discount(cart_total_amount($cid) - $price  * $removed_item->qty);
     
     echo json_message(TRUE,
@@ -394,29 +394,12 @@ function cart_total_amount($cid) {
   $subtotal = 0;
   
   foreach (uc_cart_get_contents($cid) as $item) {
-    
-    $price = uc_cart_item_price_convert($item);
+    $price = $item->price;
     $subtotal += $price * $item->qty;
   }
   
   return $subtotal;
  
-}
-
-function uc_cart_item_price_convert($item) {
-  $currency_to = current_currency_code();
-  watchdog('ajax', 'currency to: ' . $currency_to);
-  
-  $currency_from = isset($item->field_currency[LANGUAGE_NONE])? $item->field_currency[LANGUAGE_NONE][0]['value'] : default_currency_code();
-  watchdog('ajax', 'currency from: ' . $currency_from);
-  if ($currency_from != $currency_to) {
-    $result = currency_api_convert($currency_from, $currency_to, $item->price);
-    $price = $result['value'];
-  }
-  else {
-    $price = $item->price;
-  }
-  return $price;
 }
 
 /**
