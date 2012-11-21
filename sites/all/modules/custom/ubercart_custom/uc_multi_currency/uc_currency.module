@@ -375,7 +375,8 @@ function uc_currency_get_node_price($node, $currency_to = NULL) {
     return $amount['value'];
   }
   else {
-    return $node->sell_price;
+    $amount = currency_api_convert(default_currency_code(), $currency_to, $node->sell_price);
+    return $amount['value'];
   }
 }
 
