@@ -1149,11 +1149,14 @@ $handler->display->display_options['header']['php']['field'] = 'php';
 $handler->display->display_options['header']['php']['ui_name'] = 'Event Reference';
 $handler->display->display_options['header']['php']['empty'] = TRUE;
 $handler->display->display_options['header']['php']['php_output'] = '<?php
-  $eventid = arg(2);
+  $eventid = arg(1);
   $event = node_load($eventid);
 ?>
-<h4><em>Photos from
-<a href="/node/<?php echo $event->nid; ?>"><?php echo $event->title; ?></a>
+<h4><em>
+<?php
+echo t("Photos from ");
+echo l( $event->title, "node/" . $event->nid);
+?>
 </em></h4>';
 /* No results behavior: Global: Text area */
 $handler->display->display_options['empty']['area']['id'] = 'area';
@@ -1331,7 +1334,7 @@ $handler->display->display_options['filters']['type']['field'] = 'type';
 $handler->display->display_options['filters']['type']['value'] = array(
   'product' => 'product',
 );
-$handler->display->display_options['path'] = 'events/gallery/%';
+$handler->display->display_options['path'] = 'event/%/gallery';
 $translatables['event_gallery'] = array(
   t('Master'),
   t('Event Gallery'),
@@ -1414,7 +1417,7 @@ $handler->display->display_options['footer']['area']['field'] = 'area';
 $handler->display->display_options['footer']['area']['ui_name'] = 'Grey line';
 $handler->display->display_options['footer']['area']['content'] = '<div class="gray-bdr"></div>
 <div class="gallery-link">
-  <a href=<?php print url(\'events/gallery/\' . !1); ?>><?php print t("Go to full gallery"); ?></a>
+  <?php echo l(t("More photos"), "event/" . !1 . "/gallery"); ?>
 </div>
 ';
 $handler->display->display_options['footer']['area']['format'] = 'php_code';

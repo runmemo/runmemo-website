@@ -3070,16 +3070,20 @@ label.option {
   margin: 0;
 }
 .node-type-event .view-event-carousel .gallery-link {
-    margin-top: -6px;
+    margin-top: -5px;
     margin-bottom: 20px;
-    width: 330px;
+    width: 150px;
     float: right;
     text-align: center;
     padding: 3px;
-    border: 1px solid #585858;
-    border-bottom-left-radius: 10px;
+    background-color: #585858;
+/*    border: 1px solid #585858;*/
+    border-bottom-left-radius: 5px;
 /*    border-bottom-right-radius: 5px;*/
 }
+.node-type-event .view-event-carousel .gallery-link a {
+      color: #DDD;
+}  
 
 .node-type-event .gray-bdr {
   margin-bottom: 5px;
