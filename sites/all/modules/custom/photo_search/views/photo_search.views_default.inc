@@ -112,14 +112,6 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['field_currency']['label'] = '';
   $handler->display->display_options['fields']['field_currency']['exclude'] = TRUE;
   $handler->display->display_options['fields']['field_currency']['element_label_colon'] = FALSE;
-  /* Field: Currency */
-  $handler->display->display_options['fields']['field_currency']['id'] = 'field_currency';
-  $handler->display->display_options['fields']['field_currency']['table'] = 'field_data_field_currency';
-  $handler->display->display_options['fields']['field_currency']['field'] = 'field_currency';
-  $handler->display->display_options['fields']['field_currency']['ui_name'] = 'Currency';
-  $handler->display->display_options['fields']['field_currency']['label'] = '';
-  $handler->display->display_options['fields']['field_currency']['exclude'] = TRUE;
-  $handler->display->display_options['fields']['field_currency']['element_label_colon'] = FALSE;
   /* Field: Product: Sell price */
   $handler->display->display_options['fields']['sell_price']['id'] = 'sell_price';
   $handler->display->display_options['fields']['sell_price']['table'] = 'uc_products';
