@@ -57,7 +57,7 @@ class uc_currency_handler_field_price extends uc_product_handler_field_price {
       $value = $this->get_value($values);
       
       //amount in the currency of the session
-      $session_currency = current_currency_code();
+      $session_currency = uc_currency_current_code();
       $converted_value = currency_api_convert($currency, $session_currency, $value);
       $converted_amount = $converted_value['value'];
       
