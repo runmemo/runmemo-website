@@ -44,7 +44,7 @@ function get_events($nids = array()) {
              break;         
          } 
        } 
-       $currency = country_currency($country);
+       $currency = uc_currency_country_currency($country);
        $defaults = default_currency_prices($currency);
        $min_price =         get_price_field_value($node, 'min_price', $defaults);
        $max_price =         get_price_field_value($node, 'max_price', $defaults);

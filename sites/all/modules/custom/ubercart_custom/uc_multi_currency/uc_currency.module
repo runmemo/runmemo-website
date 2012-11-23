@@ -32,6 +32,19 @@ define('UC_CURRENCY_RATE_MANUAL', '2');
 define('UC_CURRENCY_DEFAULT_CURRENCY', 'GBP');
 
 /**
+ * Implements hook_init()
+ */
+function uc_currency_init() {
+   if ('search-result' === arg(0)) {
+     // here we change the currency code of the session based on the 
+     // country of the event
+      $nid = arg(1);
+      $currency = uc_currency_get_event_currency($nid);
+      uc_currency_set($currency);
+   }
+}
+
+/**
  * Implements hook_menu().
  */
 function uc_currency_menu() {
@@ -131,7 +144,10 @@ function uc_currency_uc_cart_alter(&$items) {
   }
 }
 
-
+/**
+ *
+ * Implements hook_formatter_info()
+ */
 function uc_currency_formatter_info() {
   return array(
     'uc_price_field_converted' => array(
@@ -141,7 +157,9 @@ function uc_currency_formatter_info() {
   );
 }
 
-
+/**
+ * Implements hook_field_formater_view()
+ */
 function uc_currency_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
   $element = array();
 
@@ -215,17 +233,6 @@ function uc_currency_switcher_form($form, $form_state) {
     '#attributes' => array('style' => 'display:none;'),
   );
   
-  $node = node_load(11021);
-//  $form['debugging'] = array(
-//       '#type' => 'markup',
-//       '#markup' => uc_currency_get_node_price($node, current_currency_code()),
-//      );
-//   print_nice(array(
-//        'item_currency' => $node->field_currency, 
-//        'currenyt_currency' => current_currency_code(),
-//        'node#price' => $node->price,
-//        'node#sell_price' => $node->sell_price,));
-  
   return $form;
 }
 
@@ -267,18 +274,27 @@ function uc_currency_manual_convertion($to, $value) {
   return $result;
 }
 
+/**
+ * Gets currency code for current user session
+ * @return string ISO currency code of the session
+ */
 function current_currency_code() {
-  $default_currency_code = default_currency_code();
-  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : default_currency_code();
   return $code;
 }
-
+/**
+ * Returns currency code from the settings
+ * @return string ISO currency code set in the setting of Drupal
+ */
 function default_currency_code() {
   return variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
 }
-
-function country_currency($country) {
-  
+/**
+ * Converts country code to corresponding currency code 
+ * @param string $country ISO country code
+ * @return string ISO currency code 
+ */
+function uc_currency_country_currency($country) {
   $codes = array(
     'RU' => 'RUB',
     'GB' => 'GBP',
@@ -286,54 +302,27 @@ function country_currency($country) {
     'FR' => 'EUR',
     'US' => 'USD',
   );
-  
   return isset($codes[$country]) ? $codes[$country] : default_currency_code(); 
-}
-
-function language_to_currency($language) {
-  $codes = array(
-    'ru' => 'RUB',
-    'en' => 'GBP',
-  );
-  return isset($codes[$language]) ? $codes[$language] : default_currency_code(); 
-}
-
-function uc_currency_language_init() {
-  global $language;
- // print_nice($language);
-// watchdog('currency', 'Language = ' . $language->language);
-//  $_SESSION['currency_switcher'] = language_to_currency($language->language);
 }
 
 
 /**
- * Implements hook_cart_item()
- *
- * This lets us change the base price based on the user's current region.
- * 
- * See http://www.ubercart.org/docs/api/hook_cart_item
- * @param String $op     Operation being done
- * @param stdClass $item Cart item - usually a node of some sort.
+ * Sets the currency of the session.
+ * @param string $currency ISO code of the currency to be set
  */
-//function uc_currency_uc_cart_item($op, &$item) {
-//
-//  //dvm('hook_cart_item '. $op);
-//  //dvm($item);
-//  if ($op == 'load') {
-//    $product_node = node_load($item->nid);
-//    if ($product_node) {
-//      $item->price = uc_currency_get_node_price($product_node);
-//      watchdog('cart_item', 'price = ' . $item->price);
-//    }
-//    else {
-//      
-//    }
-//  }
-//}
+function uc_currency_set($currency) {
+  
+  $_SESSION['currency_switcher'] = $currency;
+  variable_set('uc_paypal_wpp_currency', $currency);
+}
 
-
+/**
+ *
+ * Implements hook_module_implements_alter
+ */
 function uc_currency_module_implements_alter(&$implementations, $hook){
   if ($hook === "load") {
+    // here we move execution of hook_load in this module to the end
     $group = $implementations['uc_currency'];
     unset($implementations['uc_currency']);
     $implementations['uc_currency'] = $group;
@@ -347,17 +336,27 @@ function uc_currency_node_load($nodes) {
   foreach ($nodes as $node) {
     $vids[$node->nid] = $node->vid;
   }
-
   $result = db_query('SELECT nid FROM {uc_products} WHERE vid IN (:vids)', array(':vids' => $vids));
   foreach ($result as $node) {
-    //$nodes[$node->nid]->sell_price = uc_currency_get_node_price($nodes[$node->nid]);
     $nodes[$node->nid]->price = uc_currency_get_node_price($nodes[$node->nid]);
-    watchdog('uc node_load', 'Price :' . $nodes[$node->nid]->price . '; Sell price: ' 
-            . $nodes[$node->nid]->sell_price);
   }
-  
 }
 
+/**
+ * Gets currency for the event node based on the country in the address field.
+ * @param integer $nid nid of the node for wich we need to find default currency
+ * @return string currency code that corresponds to the country of the event.
+ */
+function uc_currency_get_event_currency($nid) {
+ 
+  $node = node_load($nid);
+  $items = field_get_items('node', $node, 'field_address');
+  foreach ($items as $address) {
+    $country = $address['country'];
+  }
+  $currency = uc_currency_country_currency($country);
+  return $currency;
+}
 
 
 function uc_currency_get_node_price($node, $currency_to = NULL) {
@@ -378,17 +377,4 @@ function uc_currency_get_node_price($node, $currency_to = NULL) {
     $amount = currency_api_convert(default_currency_code(), $currency_to, $node->sell_price);
     return $amount['value'];
   }
-}
-
-function uc_cart_item_price_convert($item) {
-  $currency_to = current_currency_code();
-  $currency_from = isset($item->field_currency[LANGUAGE_NONE])? $item->field_currency[LANGUAGE_NONE][0]['value'] : default_currency_code();
-  if ($currency_from != $currency_to) {
-    $result = currency_api_convert($currency_from, $currency_to, $item->price);
-    $price = $result['value'];
-  }
-  else {
-    $price = $item->price;
-  }
-  return $price;
 }

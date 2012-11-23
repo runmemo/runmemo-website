@@ -306,7 +306,7 @@ function create_photo_node($file, $event_nid, $price = 0) {
   $event = node_load($event_nid);
   // Determine currency code for product from country code in event's address
   $country = field_get_value($event, 'field_address', 'GB', 'country');
-  $currency = country_currency($country);
+  $currency = uc_currency_country_currency($country);
   
   $defaults = default_currency_prices($currency);
   
@@ -336,7 +336,8 @@ function create_photo_node($file, $event_nid, $price = 0) {
 }
 
 function field_get_value($node, $field_name, $default, $index = 'value') {
-  if ($items = field_get_items('node', $node, $field_name)) {
+  $items = field_get_items('node', $node, $field_name);
+  if ($items) {
     foreach ($items as $item) {
       return $item[$index];
     }
