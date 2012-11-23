@@ -3130,7 +3130,6 @@ label.option {
 	border-bottom-right-radius: 5px;
         margin-top: -20px;
         padding-top: 10px;
-        padding-bottom: 5px;
         text-align: center;        
 	
 }
@@ -3165,4 +3164,21 @@ label.option {
 
 .view-myphotos table {
         margin-bottom: 0;
+}
+
+.view-event-gallery #link-to-unmatched {
+    float: right;
+    width: 190px;
+    padding: 3px;
+    background-color: #585858;
+    margin-right: -1px;
+    margin-bottom: -1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;    
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.view-event-gallery #link-to-unmatched a {
+    color: #DDD;
 }
