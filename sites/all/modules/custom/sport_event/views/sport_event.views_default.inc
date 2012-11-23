@@ -1142,19 +1142,6 @@ $handler->display->display_options['pager']['type'] = 'full';
 $handler->display->display_options['pager']['options']['items_per_page'] = '10';
 $handler->display->display_options['style_plugin'] = 'grid';
 $handler->display->display_options['row_plugin'] = 'fields';
-/* Header: Event Reference */
-$handler->display->display_options['header']['php']['id'] = 'php';
-$handler->display->display_options['header']['php']['table'] = 'views';
-$handler->display->display_options['header']['php']['field'] = 'php';
-$handler->display->display_options['header']['php']['ui_name'] = 'Event Reference';
-$handler->display->display_options['header']['php']['empty'] = TRUE;
-$handler->display->display_options['header']['php']['php_output'] = '<?php
-  $eventid = arg(2);
-  $event = node_load($eventid);
-?>
-<h4><em>Photos from
-<a href="/node/<?php echo $event->nid; ?>"><?php echo $event->title; ?></a>
-</em></h4>';
 /* No results behavior: Global: Text area */
 $handler->display->display_options['empty']['area']['id'] = 'area';
 $handler->display->display_options['empty']['area']['table'] = 'views';
@@ -1190,7 +1177,7 @@ $handler->display->display_options['sorts']['created']['id'] = 'created';
 $handler->display->display_options['sorts']['created']['table'] = 'node';
 $handler->display->display_options['sorts']['created']['field'] = 'created';
 $handler->display->display_options['sorts']['created']['order'] = 'DESC';
-/* Contextual filter: Content: Event Name (field_event_reference) */
+/* Contextual filter: Content: Event (field_event_reference) */
 $handler->display->display_options['arguments']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
 $handler->display->display_options['arguments']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
 $handler->display->display_options['arguments']['field_event_reference_nid']['field'] = 'field_event_reference_nid';
@@ -1219,7 +1206,7 @@ $handler->display->display_options['filters']['uid_current']['table'] = 'users';
 $handler->display->display_options['filters']['uid_current']['field'] = 'uid_current';
 $handler->display->display_options['filters']['uid_current']['relationship'] = 'uid';
 $handler->display->display_options['filters']['uid_current']['value'] = '1';
-/* Filter criterion: Content: Event Name (field_event_reference) */
+/* Filter criterion: Content: Event (field_event_reference) */
 $handler->display->display_options['filters']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
 $handler->display->display_options['filters']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
 $handler->display->display_options['filters']['field_event_reference_nid']['field'] = 'field_event_reference_nid';
@@ -1257,6 +1244,29 @@ $handler->display->display_options['row_plugin'] = 'fields';
 $handler->display->display_options['row_options']['hide_empty'] = TRUE;
 $handler->display->display_options['row_options']['default_field_elements'] = FALSE;
 $handler->display->display_options['defaults']['row_options'] = FALSE;
+$handler->display->display_options['defaults']['header'] = FALSE;
+/* Header: Event Reference */
+$handler->display->display_options['header']['php']['id'] = 'php';
+$handler->display->display_options['header']['php']['table'] = 'views';
+$handler->display->display_options['header']['php']['field'] = 'php';
+$handler->display->display_options['header']['php']['ui_name'] = 'Event Reference';
+$handler->display->display_options['header']['php']['empty'] = TRUE;
+$handler->display->display_options['header']['php']['php_output'] = '<?php
+  $eventid = arg(1);
+  $event = node_load($eventid);
+?>
+<h4><em>
+<?php
+echo t("Photos from ");
+echo l( $event->title, "node/" . $event->nid);
+?>
+</em></h4>
+
+<div id="link-to-unmatched">
+<?php
+echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
+?>
+</div>';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Content: Title */
 $handler->display->display_options['fields']['title']['id'] = 'title';
@@ -1331,7 +1341,150 @@ $handler->display->display_options['filters']['type']['field'] = 'type';
 $handler->display->display_options['filters']['type']['value'] = array(
   'product' => 'product',
 );
-$handler->display->display_options['path'] = 'events/gallery/%';
+$handler->display->display_options['path'] = 'event/%/gallery';
+
+/* Display: Page */
+$handler = $view->new_display('page', 'Page', 'page_1');
+$handler->display->display_options['defaults']['use_ajax'] = FALSE;
+$handler->display->display_options['use_ajax'] = TRUE;
+$handler->display->display_options['defaults']['hide_admin_links'] = FALSE;
+$handler->display->display_options['defaults']['exposed_form'] = FALSE;
+$handler->display->display_options['exposed_form']['type'] = 'basic';
+$handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = FALSE;
+$handler->display->display_options['defaults']['pager'] = FALSE;
+$handler->display->display_options['pager']['type'] = 'full';
+$handler->display->display_options['pager']['options']['items_per_page'] = '20';
+$handler->display->display_options['pager']['options']['offset'] = '0';
+$handler->display->display_options['pager']['options']['id'] = '0';
+$handler->display->display_options['pager']['options']['quantity'] = '9';
+$handler->display->display_options['pager']['options']['expose']['items_per_page_label'] = 'Photos per page';
+$handler->display->display_options['pager']['options']['tags']['first'] = '';
+$handler->display->display_options['pager']['options']['tags']['previous'] = '‹ prev';
+$handler->display->display_options['pager']['options']['tags']['last'] = '';
+$handler->display->display_options['defaults']['style_plugin'] = FALSE;
+$handler->display->display_options['style_plugin'] = 'grid';
+$handler->display->display_options['style_options']['columns'] = '5';
+$handler->display->display_options['defaults']['style_options'] = FALSE;
+$handler->display->display_options['defaults']['row_plugin'] = FALSE;
+$handler->display->display_options['row_plugin'] = 'fields';
+$handler->display->display_options['row_options']['hide_empty'] = TRUE;
+$handler->display->display_options['row_options']['default_field_elements'] = FALSE;
+$handler->display->display_options['defaults']['row_options'] = FALSE;
+$handler->display->display_options['defaults']['header'] = FALSE;
+/* Header: Event Reference */
+$handler->display->display_options['header']['php']['id'] = 'php';
+$handler->display->display_options['header']['php']['table'] = 'views';
+$handler->display->display_options['header']['php']['field'] = 'php';
+$handler->display->display_options['header']['php']['ui_name'] = 'Event Reference';
+$handler->display->display_options['header']['php']['empty'] = TRUE;
+$handler->display->display_options['header']['php']['php_output'] = '<?php
+  $eventid = arg(1);
+  $event = node_load($eventid);
+?>
+<h4><em>
+<?php
+echo t("Photos from ");
+echo l( $event->title, "node/" . $event->nid);
+?>
+</em></h4>
+
+<div id="link-to-unmatched">
+<?php
+echo l( t("All photos"), "event/" . $event->nid . "/gallery");
+?>
+</div>';
+$handler->display->display_options['defaults']['fields'] = FALSE;
+/* Field: Content: Title */
+$handler->display->display_options['fields']['title']['id'] = 'title';
+$handler->display->display_options['fields']['title']['table'] = 'node';
+$handler->display->display_options['fields']['title']['field'] = 'title';
+$handler->display->display_options['fields']['title']['label'] = '';
+$handler->display->display_options['fields']['title']['exclude'] = TRUE;
+$handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
+$handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+$handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+/* Field: nid */
+$handler->display->display_options['fields']['nid']['id'] = 'nid';
+$handler->display->display_options['fields']['nid']['table'] = 'node';
+$handler->display->display_options['fields']['nid']['field'] = 'nid';
+$handler->display->display_options['fields']['nid']['ui_name'] = 'nid';
+$handler->display->display_options['fields']['nid']['label'] = '';
+$handler->display->display_options['fields']['nid']['exclude'] = TRUE;
+$handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
+/* Field: Gallery Thumbnail */
+$handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
+$handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
+$handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
+$handler->display->display_options['fields']['uc_product_image']['ui_name'] = 'Gallery Thumbnail';
+$handler->display->display_options['fields']['uc_product_image']['label'] = '';
+$handler->display->display_options['fields']['uc_product_image']['exclude'] = TRUE;
+$handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['uc_product_image']['element_default_classes'] = FALSE;
+$handler->display->display_options['fields']['uc_product_image']['hide_empty'] = TRUE;
+$handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
+$handler->display->display_options['fields']['uc_product_image']['settings'] = array(
+  'image_style' => 'gallery_thumbnail',
+  'image_link' => '',
+);
+$handler->display->display_options['fields']['uc_product_image']['delta_offset'] = '0';
+/* Field: Search Preview */
+$handler->display->display_options['fields']['uc_product_image_1']['id'] = 'uc_product_image_1';
+$handler->display->display_options['fields']['uc_product_image_1']['table'] = 'field_data_uc_product_image';
+$handler->display->display_options['fields']['uc_product_image_1']['field'] = 'uc_product_image';
+$handler->display->display_options['fields']['uc_product_image_1']['ui_name'] = 'Search Preview';
+$handler->display->display_options['fields']['uc_product_image_1']['label'] = '';
+$handler->display->display_options['fields']['uc_product_image_1']['exclude'] = TRUE;
+$handler->display->display_options['fields']['uc_product_image_1']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['uc_product_image_1']['click_sort_column'] = 'fid';
+$handler->display->display_options['fields']['uc_product_image_1']['settings'] = array(
+  'image_style' => 'search_preview',
+  'image_link' => '',
+);
+/* Field: Colorbox: Colorbox trigger */
+$handler->display->display_options['fields']['colorbox']['id'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['table'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['field'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['label'] = '';
+$handler->display->display_options['fields']['colorbox']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['colorbox']['trigger_field'] = 'uc_product_image';
+$handler->display->display_options['fields']['colorbox']['popup'] = '[uc_product_image_1]';
+$handler->display->display_options['fields']['colorbox']['gid'] = 1;
+$handler->display->display_options['fields']['colorbox']['width'] = '';
+$handler->display->display_options['fields']['colorbox']['height'] = '';
+$handler->display->display_options['defaults']['filter_groups'] = FALSE;
+$handler->display->display_options['defaults']['filters'] = FALSE;
+/* Filter criterion: Content: Published */
+$handler->display->display_options['filters']['status']['id'] = 'status';
+$handler->display->display_options['filters']['status']['table'] = 'node';
+$handler->display->display_options['filters']['status']['field'] = 'status';
+$handler->display->display_options['filters']['status']['value'] = 1;
+$handler->display->display_options['filters']['status']['group'] = 0;
+$handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+/* Filter criterion: Content: Type */
+$handler->display->display_options['filters']['type']['id'] = 'type';
+$handler->display->display_options['filters']['type']['table'] = 'node';
+$handler->display->display_options['filters']['type']['field'] = 'type';
+$handler->display->display_options['filters']['type']['value'] = array(
+  'product' => 'product',
+);
+/* Filter criterion: Content: OCR Numbers (field_ocr_numbers) */
+$handler->display->display_options['filters']['field_ocr_numbers_value']['id'] = 'field_ocr_numbers_value';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['table'] = 'field_data_field_ocr_numbers';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['field'] = 'field_ocr_numbers_value';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['operator'] = 'empty';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['expose']['operator_id'] = 'field_ocr_numbers_value_op';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['expose']['label'] = 'OCR Numbers (field_ocr_numbers)';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['expose']['operator'] = 'field_ocr_numbers_value_op';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['expose']['identifier'] = 'field_ocr_numbers_value';
+$handler->display->display_options['filters']['field_ocr_numbers_value']['expose']['remember_roles'] = array(
+  2 => '2',
+  1 => 0,
+  3 => 0,
+  4 => 0,
+  5 => 0,
+  6 => 0,
+);
+$handler->display->display_options['path'] = 'event/%/gallery/unmatched';
 $translatables['event_gallery'] = array(
   t('Master'),
   t('Event Gallery'),
@@ -1355,7 +1508,9 @@ $translatables['event_gallery'] = array(
   t('Page'),
   t('Photos per page'),
   t('‹ prev'),
+  t('OCR Numbers (field_ocr_numbers)'),
 );
+
 
 
 
@@ -1414,7 +1569,7 @@ $handler->display->display_options['footer']['area']['field'] = 'area';
 $handler->display->display_options['footer']['area']['ui_name'] = 'Grey line';
 $handler->display->display_options['footer']['area']['content'] = '<div class="gray-bdr"></div>
 <div class="gallery-link">
-  <a href=<?php print url(\'events/gallery/\' . !1); ?>><?php print t("Go to full gallery"); ?></a>
+  <?php echo l(t("More photos"), "event/" . !1 . "/gallery"); ?>
 </div>
 ';
 $handler->display->display_options['footer']['area']['format'] = 'php_code';
