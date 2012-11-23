@@ -195,7 +195,7 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
       'METHOD' => 'DoCapture',
       'AUTHORIZATIONID' => $data['auth_id'],
       'AMT' => uc_currency_format($amount, FALSE, FALSE, '.'),
-      'CURRENCYCODE' => variable_get('uc_paypal_wpp_currency', 'USD'),
+      'CURRENCYCODE' => uc_currency_current_code(),
       'COMPLETETYPE' => 'Complete',
     );
   }
@@ -263,7 +263,7 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
       'STATE' => uc_get_zone_code($order->billing_zone),
       'ZIP' => $order->billing_postal_code,
       'COUNTRYCODE' => $billing_country[0]['country_iso_code_2'],
-      'CURRENCYCODE' => variable_get('uc_paypal_wpp_currency', 'USD'),
+      'CURRENCYCODE' => uc_currency_current_code(),
       'DESC' => substr($desc, 0, 127),
       'INVNUM' => $order_id . '-' . REQUEST_TIME,
       'BUTTONSOURCE' => 'Ubercart_ShoppingCart_DP_US',
@@ -631,7 +631,7 @@ function uc_paypal_ec_checkout($form, &$form_state) {
     'RETURNURL' => url('cart/echeckout/selected', array('absolute' => TRUE)),
     'CANCELURL' => url('uc_paypal/wps/cancel', array('absolute' => TRUE)),
     'AMT' => uc_currency_format($order->order_total, FALSE, FALSE, '.'),
-    'CURRENCYCODE' => variable_get('uc_paypal_wpp_currency', 'USD'),
+    'CURRENCYCODE' => uc_currency_current_code(),
     'PAYMENTACTION' => variable_get('uc_paypal_wpp_payment_action', 'Sale'),
     'DESC' => substr($desc, 0, 127),
     'INVNUM' => $order->order_id . '-' . REQUEST_TIME,
@@ -712,7 +712,7 @@ function uc_paypal_ec_form_submit($form, &$form_state) {
     'RETURNURL' => url('cart/echeckout/review', array('absolute' => TRUE)),
     'CANCELURL' => url('uc_paypal/wps/cancel', array('absolute' => TRUE)),
     'AMT' => uc_currency_format($subtotal, FALSE, FALSE, '.'),
-    'CURRENCYCODE' => variable_get('uc_paypal_wpp_currency', 'USD'),
+    'CURRENCYCODE' => uc_currency_current_code(),
     'PAYMENTACTION' => variable_get('uc_paypal_wpp_payment_action', 'Sale'),
     'DESC' => substr($desc, 0, 127),
     'INVNUM' => $order->order_id . '-' . REQUEST_TIME,
@@ -790,7 +790,7 @@ function uc_paypal_ec_submit_form_submit($form, &$form_state) {
     'ITEMAMT' => uc_currency_format($subtotal, FALSE, FALSE, '.'),
     'SHIPPINGAMT' => uc_currency_format($shipping, FALSE, FALSE, '.'),
     'TAXAMT' => uc_currency_format($tax, FALSE, FALSE, '.'),
-    'CURRENCYCODE' => variable_get('uc_paypal_wpp_currency', 'USD'),
+    'CURRENCYCODE' => uc_currency_current_code(),
   );
 
   $nvp_response = uc_paypal_api_request($nvp_request, variable_get('uc_paypal_wpp_server', 'https://api-3t.sandbox.paypal.com/nvp'));
@@ -870,7 +870,7 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
     'rm' => 2,
 
     // Transaction information.
-    'currency_code' => variable_get('uc_paypal_wps_currency', 'USD'),
+    'currency_code' => uc_currency_current_code(),// variable_get('uc_paypal_wps_currency', 'USD'),
     'handling_cart' => uc_currency_format($shipping, FALSE, FALSE, '.'),
     'invoice' => $order->order_id . '-' . uc_cart_get_id(),
     'tax_cart' => uc_currency_format($tax, FALSE, FALSE, '.'),
