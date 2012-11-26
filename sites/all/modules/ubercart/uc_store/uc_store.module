@@ -860,6 +860,12 @@ function uc_currency_format($value, $sign = NULL, $thou = NULL, $dec = NULL) {
 
   $sign_after = variable_get('uc_sign_after_amount', FALSE);
   $prec = variable_get('uc_currency_prec', 2);
+  
+  if(module_exists('uc_currency')) {
+    $code = uc_currency_get_code();
+    $sign = currency_api_get_symbol($code);
+  }
+  
   if (is_null($sign)) {
     $sign = variable_get('uc_currency_sign', '$');
   }
