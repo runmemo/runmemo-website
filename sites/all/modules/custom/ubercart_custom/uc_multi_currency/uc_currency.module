@@ -351,9 +351,11 @@ function uc_currency_get_event_currency($nid) {
  
   $node = node_load($nid);
   $items = field_get_items('node', $node, 'field_address');
-  foreach ($items as $address) {
-    $country = $address['country'];
-    break;
+  if($items) {
+    foreach ($items as $address) {
+      $country = $address['country'];
+      break;
+    }
   }
   $currency = uc_currency_country_currency($country);
   return $currency;
