@@ -39,8 +39,10 @@ function uc_currency_init() {
      // here we change the currency code of the session based on the 
      // country of the event
       $nid = arg(1);
+    
       $currency = uc_currency_get_event_currency($nid);
-      uc_currency_set($currency);
+      print_nice($currency);
+      uc_currency_set_code($currency);
    }
 }
 
@@ -185,7 +187,7 @@ function uc_currency_field_formatter_view($entity_type, $entity, $field, $instan
 function theme_uc_price_multiple_currency($variables) {
 
  
-  $code = uc_currency_current_code();
+  $code = uc_currency_get_code();
   $symbol = currency_api_get_symbol($code);
   $price = $variables['price'];
   
@@ -278,7 +280,7 @@ function uc_currency_manual_convertion($to, $value) {
  * Gets currency code for current user session
  * @return string ISO currency code of the session
  */
-function uc_currency_current_code() {
+function uc_currency_get_code() {
   $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : default_currency_code();
   return $code;
 }
@@ -310,7 +312,7 @@ function uc_currency_country_currency($country) {
  * Sets the currency of the session.
  * @param string $currency ISO code of the currency to be set
  */
-function uc_currency_set($currency) {
+function uc_currency_set_code($currency) {
   
   $_SESSION['currency_switcher'] = $currency;
   //variable_set('uc_paypal_wpp_currency', $currency);
@@ -364,7 +366,7 @@ function uc_currency_get_event_currency($nid) {
 
 function uc_currency_get_node_price($node, $currency_to = NULL) {
   if ($currency_to == NULL) {
-    $currency_to = uc_currency_current_code();
+    $currency_to = uc_currency_get_code();
   }
  
   $items = field_get_items('node', $node, 'field_currency', LANGUAGE_NONE);

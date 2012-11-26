@@ -87,7 +87,7 @@ function ubercart_custom_init() {
 
 
 function get_max_order_value() {
-  $currency = uc_currency_current_code();
+  $currency = uc_currency_get_code();
   $max_price = package_price($currency);
   return $max_price;
 }
