@@ -1255,17 +1255,26 @@ $handler->display->display_options['header']['php']['php_output'] = '<?php
   $eventid = arg(1);
   $event = node_load($eventid);
 ?>
-<h4><em>
+<div id="links-block">
+<div id="link-selected">
+<?php
+echo l( t("All photos"), "event/" . $event->nid . "/gallery");
+?>
+</div>
+<div id="link-other">
+<?php
+echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
+?>
+</div>
+</div>
+
+<div id="photos-from">
+<h4>
 <?php
 echo t("Photos from ");
 echo l( $event->title, "node/" . $event->nid);
 ?>
-</em></h4>
-
-<div id="link-to-unmatched">
-<?php
-echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
-?>
+</h4>
 </div>';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Content: Title */
@@ -1381,17 +1390,26 @@ $handler->display->display_options['header']['php']['php_output'] = '<?php
   $eventid = arg(1);
   $event = node_load($eventid);
 ?>
-<h4><em>
+<div id="links-block">
+<div id="link-other">
+<?php
+echo l( t("All photos"), "event/" . $event->nid . "/gallery");
+?>
+</div>
+<div id="link-selected">
+<?php
+echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
+?>
+</div>
+</div>
+
+<div id="photos-from">
+<h4>
 <?php
 echo t("Photos from ");
 echo l( $event->title, "node/" . $event->nid);
 ?>
-</em></h4>
-
-<div id="link-to-unmatched">
-<?php
-echo l( t("All photos"), "event/" . $event->nid . "/gallery");
-?>
+</h4>
 </div>';
 $handler->display->display_options['defaults']['fields'] = FALSE;
 /* Field: Content: Title */
@@ -1510,8 +1528,6 @@ $translatables['event_gallery'] = array(
   t('‹ prev'),
   t('OCR Numbers (field_ocr_numbers)'),
 );
-
-
 
 
   $views[$view->name] = $view;
