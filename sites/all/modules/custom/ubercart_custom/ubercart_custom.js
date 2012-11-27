@@ -30,9 +30,9 @@
             
 	  }
 	
-	 var price = $( ".node-type-product #price_val" ).val();
-         var min_price = $( ".node-type-product #min_price" ).val();
-         var max_price = $( ".node-type-product #max_price" ).val();
+	 var price = Math.floor($( ".node-type-product #price_val" ).val());
+         var min_price = Math.floor($( ".node-type-product #min_price" ).val());
+         var max_price = Math.floor($( ".node-type-product #max_price" ).val());
          var currency_sign = $( ".node-type-product #currency_sign" ).val();
          var step = 1;
          if (max_price - min_price > 100) {
