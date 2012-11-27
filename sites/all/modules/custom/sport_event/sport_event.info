@@ -4,6 +4,8 @@ package = Runmemo Custom Modules
 core = 7.x
 
 dependencies[] = user_reference
+dependencies[] = link
+dependencies[] = addressfield
 
 files[] = sport_event.module
 files[] = sport_event.inc

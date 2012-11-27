@@ -38,7 +38,7 @@ class Ubercart_Custom_API_TestCase extends DrupalWebTestCase {
 
   function testAddCartItem_Call_Fail_Item_Exists() {
 
-    $user = $this->drupalCreateUser(array('search photos'));
+    $user = $this->drupalCreateUser();
     $this->drupalLogin($user);
     drupal_save_session(TRUE);
     
