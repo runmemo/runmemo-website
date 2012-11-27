@@ -1256,12 +1256,12 @@ $handler->display->display_options['header']['php']['php_output'] = '<?php
   $event = node_load($eventid);
 ?>
 <div id="links-block">
-<div id="link-selected">
+<div id="link-all" class="active-tab">
 <?php
 echo l( t("All photos"), "event/" . $event->nid . "/gallery");
 ?>
 </div>
-<div id="link-other">
+<div id="link-unmatched">
 <?php
 echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
 ?>
@@ -1391,12 +1391,12 @@ $handler->display->display_options['header']['php']['php_output'] = '<?php
   $event = node_load($eventid);
 ?>
 <div id="links-block">
-<div id="link-other">
+<div id="link-all">
 <?php
 echo l( t("All photos"), "event/" . $event->nid . "/gallery");
 ?>
 </div>
-<div id="link-selected">
+<div id="link-unmatched" class="active-tab">
 <?php
 echo l( t("Unmatched photos only"), "event/" . $event->nid . "/gallery/unmatched");
 ?>

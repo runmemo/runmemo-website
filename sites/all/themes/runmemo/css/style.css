@@ -3126,7 +3126,6 @@ label.option {
         float: left;
         width: 978px;
         margin-top: -20px;
-        padding-top: 5px;
         padding-bottom: 20px;
         text-align: center;
         display: block;
@@ -3166,38 +3165,35 @@ label.option {
 }
 
 .view-event-gallery #links-block {
+  display: block;
   float: right;
+  margin-top: -1px;
+  margin-right: -1px;
 }
 
-.view-event-gallery #link-selected {
+.view-event-gallery #link-all, #link-unmatched {
+    float: left;
     width: 190px;
     padding: 3px;
-    background-color: #585858;
     margin-right: -1px;
     margin-bottom: -1px;
-    border: 1px solid #585858;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;    
+    border: 1px solid #384551; 
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.view-event-gallery #link-selected a {
+.view-event-gallery #link-unmatched {
+    float: right;
+}
+
+.view-event-gallery .active-tab {
+    background-color: #384551;
+}
+
+.view-event-gallery .active-tab a {
     color: #DDD;
 }
 
-.view-event-gallery #link-other {
-    width: 190px;
-    padding: 3px;
-    margin-right: -1px;
-    margin-bottom: -1px;
-    border: 1px solid #585858;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;    
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-}
-
 .view-event-gallery #photos-from {
-  padding-top: 25px;
+  padding-top: 45px;
 }
