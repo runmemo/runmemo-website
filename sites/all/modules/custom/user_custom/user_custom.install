@@ -12,9 +12,19 @@ function user_custom_install() {
   ->fields(array('name' => 'Runner', 'weight' => 3))
   ->execute();
   
-  $rid_anonymous = db_insert('role')
+  $rid_photographer = db_insert('role')
     ->fields(array('name' => 'Photographer', 'weight' => 4))
     ->execute();
     
   
+}
+
+/**
+ * 
+ * Adds director role
+ */
+function user_custom_update_7101() {
+  $rid_diretor = db_insert('role')
+    ->fields(array('name' => 'race director', 'weight' => 5))
+    ->execute();
 }

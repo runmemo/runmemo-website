@@ -73,23 +73,23 @@ class entity_translation_handler_field_translate_link extends views_handler_fiel
     $entity_id = $this->get_value($values, 'entity_id');
     $language = $this->get_value($values, 'language');
     $entity = $this->entities[$type][$entity_id];
-    return $this->render_link($type, $entity_id, $language);
+    return $this->render_link($type, $entity_id, $entity, $language);
   }
 
   /**
    * Render the link to the translation overview page of the entity.
    */
-  function render_link($entity_type, $entity_id, $language) {
-    if (!entity_translation_enabled($entity_type) || !entity_translation_tab_access($entity_type) || $language == 'und') {
+  function render_link($entity_type, $entity_id, $entity, $language) {
+    if (!entity_translation_enabled($entity_type) || !entity_translation_tab_access($entity_type, $entity) || $language == 'und') {
       return;
     }
     // We use the entity info here to avoid having to call entity_load() for all
     // the entities.
     $info = entity_get_info($entity_type);
-    $path = $info['translation']['entity_translation']['base path'];
-    $path = str_replace($info['translation']['entity_translation']['path wildcard'], $entity_id, $path);
+    $path = $info['translation']['entity_translation']['path schemes']['default']['translate path'];
+    $path = str_replace($info['translation']['entity_translation']['path schemes']['default']['path wildcard'], $entity_id, $path);
     $this->options['alter']['make_link'] = TRUE;
-    $this->options['alter']['path'] = $path . '/translate';
+    $this->options['alter']['path'] = $path;
     $this->options['alter']['query'] = drupal_get_destination();
     $text = !empty($this->options['text']) ? $this->options['text'] : t('translate');
     return $text;

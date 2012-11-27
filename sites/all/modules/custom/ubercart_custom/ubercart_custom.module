@@ -87,18 +87,34 @@ function ubercart_custom_init() {
 
 
 function get_max_order_value() {
-  return variable_get('max_order_value', 12);
+  $currency = uc_currency_get_code();
+  $max_price = package_price($currency);
+  return $max_price;
+}
+
+function package_price($currency) {
+  $defaults = array(
+    'GBP' => 12,
+    'RUB' => 500,
+    'EUR' => 15,
+    'USD' => 20,
+  );
+  
+  return isset($defaults[$currency]) ? $defaults[$currency] : variable_get('max_order_value', 12);
 }
 
 function get_cart_total_with_discount($total) {
   $max_order_value = get_max_order_value();
-  if($total > $max_order_value) {
-    return $max_order_value;
+  if ($total > $max_order_value) {
+    $total = $max_order_value;
   } 
-  else {
-    return $total;
-  }
   
+  if ($total > 100) {
+    return number_format($total,0);   
+  }
+  else {
+    return number_format($total, 2);   
+  }
 }
 
 /**
@@ -190,11 +206,13 @@ function cart_add_item() {
   
   $count = count_cart_items($cid);
   $total = get_cart_total_with_discount(cart_total_amount($cid));
- 
+  
+  // check whether product currency is different from 
+  
   echo json_message(TRUE, array(
-  		'message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid,
-        'count' => $count,
-        'total' => $total));
+    'message' => 'Added item to cart: ' . $url . '. Node Id: ' . $nid . '. cid:' . $cid,
+    'count' => $count,
+    'total' => $total));
    
 }
 
@@ -202,7 +220,7 @@ function cart_add_item() {
  * Implements hook_uc_order
  * See: http://www.ubercart.org/docs/api/hook_order
  */
-function ubercart_custom_uc_order ($op, &$order, $arg2) {
+function ubercart_custom_uc_order($op, &$order, $arg2) {
   $max_order_value = get_max_order_value();
   
   switch ($op) {
@@ -211,10 +229,8 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
     case 'save':
     
       // The first thing we do is remove the line item if it exists. Since users can go back and forth from the order review page to the checkout page, they may make different selections each time. By defaulting to having the line item removed, we prevent accidentally adding it multiple times, as well as preventing adding it if the user hasn't selected it when reviewing the page. So we loop through the existing line items searching for our specific line item, and removing it if it exists. We will add it afterwards if it needs to be added.
-      foreach($order->line_items as $key => $line_item)
-      {
-        if($line_item['type'] == 'gift_discount') // 'gift_wrap' is the line item ID that will be defined after this loop.
-        {
+      foreach ($order->line_items as $key => $line_item) {
+        if ($line_item['type'] == 'gift_discount') { // 'gift_wrap' is the line item ID that will be defined after this loop.
           unset($order->line_items[$key]);
           db_query('DELETE FROM {uc_order_line_items} WHERE order_id = :oid AND type = :type',  array(':oid' => $order->order_id, ':type' => 'gift_discount'));
           break;
@@ -225,7 +241,7 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
       $subtotal = order_line_amount($order, 'subtotal');
      
       $discount = 0;
-      if($subtotal > $max_order_value) {
+      if ($subtotal > $max_order_value) {
         $discount = $subtotal - $max_order_value;
       }
       else {
@@ -250,14 +266,13 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
     case 'total':
       // Here we return a value that will be added to the order total. For discounts we would return a negative value, for surcharges we return a positive value. We do NOT return the new total, only the change in the total.
       // We loop through each of the line items to see if ours has been added. If it has, we adjust the order total accordingly.
-      foreach($order->line_items as $line_item)
-      {
-        if($line_item['type'] == 'gift_discount') // 'gift_discount' is the ID of the line item as defined when $op equals 'save'
-        {
+      foreach ($order->line_items as $line_item) {
+        if ($line_item['type'] == 'gift_discount') { // 'gift_discount' is the ID of the line item as defined when $op equals 'save'
           // If we enter this, the line item exists, so we need to return the value of the line item. This will adjust the order total.
           return $line_item['amount'];
         }
       }
+     // print_nice($order);
       break;
 
     case 'delete':
@@ -279,7 +294,7 @@ function ubercart_custom_uc_order ($op, &$order, $arg2) {
 function ubercart_custom_uc_checkout_complete($order, $account) {
 
   $discount = order_line_amount($order, 'gift_discount');
-  if($discount == 0) {
+  if ($discount == 0) {
     return;
   }
   
@@ -305,7 +320,7 @@ function order_line_amount($order, $line_type) {
   $amount = 0;
   foreach ($order->line_items as $item) {
     // need to get price from the node in case it was set to 0 already...
-    if($item['type'] == $line_type) {
+    if ($item['type'] == $line_type) {
       $amount += $item['amount'];
     }
   }
@@ -339,15 +354,16 @@ function cart_remove_item() {
   }
   if ($item_removed) {
     $count = count_cart_items($cid) - 1;
-    $total = get_cart_total_with_discount(cart_total_amount($cid) - $removed_item->price * $removed_item->qty);
+    $price = $removed_item->price;
+    $total = get_cart_total_with_discount(cart_total_amount($cid) - $price  * $removed_item->qty);
     
     echo json_message(TRUE,
-      array(
-            		'message' => t('Removed item from the cart.'), 
-      				'nid' => $nid,
-                    'count' => $count,
-                    'total' => $total,
-      )
+        array(
+          'message' => t('Removed item from the cart.'),
+          'nid' => $nid,
+          'count' => $count,
+          'total' => $total,
+        )
       );
       return;
   } 
@@ -376,12 +392,15 @@ function count_cart_items($cid) {
  */
 function cart_total_amount($cid) {
   $subtotal = 0;
+  
   foreach (uc_cart_get_contents($cid) as $item) {
-    $subtotal += $item->price * $item->qty;
+    $price = $item->price;
+    $subtotal += $price * $item->qty;
   }
+  
   return $subtotal;
+ 
 }
-
 
 /**
  *
@@ -391,7 +410,7 @@ function cart_total_amount($cid) {
 function count_cart_photographers($cid) {
   $cart = uc_cart_get_contents($cid);
 
-  foreach ($cart as $index=> $product) {
+  foreach ($cart as $index => $product) {
     $photographer[] = $product->uid;
   }
 
@@ -436,12 +455,13 @@ function cart_list_items() {
   $count = count_cart_items($cid);
   $total = get_cart_total_with_discount(cart_total_amount($cid));
   
-  $result = array('total' => $total, 
-  			  'items' => $items, 
-  			  'event' => $event, 
-  			  'number' => $number, 
-  			  'count' => $count,
-            );
+  $result = array(
+    'total' => $total,
+    'items' => $items,
+    'event' => $event,
+    'number' => $number,
+    'count' => $count,
+  );
   echo json_encode($result);
   
   
@@ -464,7 +484,7 @@ function uc_cart_remove_items_new_search($cid, $event, $number) {
     $item_event = field_get_items('node', $node, 'field_event_reference', $node->language);
    
     if ($item_event[0]['nid'] == $event) {
-    	/* Find a better way to restrict cart items
+/*     Find a better way to restrict cart items
        $same_number = FALSE;
        foreach ($item_numbers as $item_number) {
          if (partial_match($item_number['value'], $number)) {
@@ -492,7 +512,7 @@ function partial_match($val1, $val2) {
   $strval1 = strval($val1);
   $strval2 = strval($val2);
   // check if there is a partial match
-  if(strpos($strval1, $strval2) !== FALSE || strpos($strval2, $strval1) !== FALSE) {
+  if (strpos($strval1, $strval2) !== FALSE || strpos($strval2, $strval1) !== FALSE) {
     return TRUE;
   } 
   else {
@@ -507,11 +527,11 @@ function partial_match($val1, $val2) {
 function cart_clear() {
   uc_cart_empty(uc_cart_get_id());
   echo json_message(TRUE, array(
-  			'message' => 'Cart was cleared.',
-            'count' => 0,
-            'total' => 0,
-          )
-      );
+    'message' => 'Cart was cleared.',
+    'count' => 0,
+    'total' => 0,
+    )
+  );
 }
 
 /**
@@ -687,7 +707,7 @@ function ubercart_custom_uc_store_address_fields() {
   );
   //Just loop and build the fields
   foreach ($fields as $field => $data) {
-    $form['uc_field_'.$field] = array(
+    $form['uc_field_' . $field] = array(
         '#type' => 'textfield',
         '#title' => $data[0],
         '#default_value' => $data[0],//variable_get('uc_field_'.$field, $data),    
@@ -700,7 +720,7 @@ function ubercart_custom_uc_store_address_fields() {
 /**
  * Upserts order product discount
  */ 
-function log_order_product_discount ($order_product_id, $discount) {
+function log_order_product_discount($order_product_id, $discount) {
   $result = db_merge('uc_custom_order_discounts')
       ->key(array('order_product_id' => $order_product_id, ))
       ->fields(array('amount' => $discount, ))

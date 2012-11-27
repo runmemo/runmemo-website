@@ -7,9 +7,9 @@ module_load_include('inc', 'sport_event', 'sport_event');
  */
 function photo_search_views_api() {
   return array(
-  		'api' => 3.0,
-  		'path' => drupal_get_path('module', 'photo_search') . '/views',
-        );
+    'api' => 3.0,
+    'path' => drupal_get_path('module', 'photo_search') . '/views',
+  );
 }
 
 /**
@@ -36,7 +36,7 @@ function photo_search_preprocess_page(&$variables) {
 function photo_search_menu() {
   //url for runner
   $items['runner'] = array(
-    'title' => t('Photo Gallery'),
+    'title' => 'Photo Gallery',
     'description' => 'View the objects in a event on your Amazon S3 account.',
     'page callback' => 'find_trade_section',
     'access arguments' => array('search photos'),
@@ -45,9 +45,9 @@ function photo_search_menu() {
 
 
   $items['search-result/%'] = array(
-    'titile' => t('Search link without number'),
+    'titile' => 'Search link without number',
     'description' => 'Need to redirect to working page',
-  	'page callback' => 'bad_search_event_redirect',
+    'page callback' => 'bad_search_event_redirect',
     'page arguments' => array(1),
     'access arguments' => array('search photos'), 
   );
@@ -71,7 +71,6 @@ function photo_search_permission() {
 }
 
 function bad_search_event_redirect($eventid) {
-  print_r ('redirecting to event ' . $eventid);
   drupal_goto('node/' . $eventid);
 }
  
@@ -120,7 +119,7 @@ function search_photos_form($form, &$form_state) {
   }
   $form['search_filter']['event'] = array(
     '#type' => 'select', 
-    '#title' => t('I ran this event: '), 
+    '#title' => t('I ran this event') . ':', 
     '#id' => 'event_runner',
     '#prefix' => "<div id='field-event'>",
     '#suffix' => '</div>',
@@ -259,7 +258,7 @@ function find_trade_section() {
   $style = "<div id='front-search-photos'>
   				<div>$find_photos</div>
   				<div id='block-photographers'>
-    				<div id='trade'>" . t('Photographers'). "</div>  
+    				<div id='trade'>" . t('Photographers') . "</div>  
     				<div id='taken_picture'>" . t('Sell your photos') . "</div>
     				<div id='front-trade-photos'>
     				$trade_photos
@@ -418,21 +417,39 @@ function photo_search_request_form($form, &$form_state) {
   if (arg(0) == 'search-result') {
     if (is_numeric(arg(1)) && (arg(1) != '')) {
       $eventid = arg(1);
+      if($event = node_load($eventid)) {
+        $message = t('Let me know when my photos from @event_name are ready', array('@event_name' => $event->title, ));      
+      } 
+      else { // event does not exist
+        $message = t('Event does not exist. Please try new search.');
+        $eventid = NULL;
+      }
+    }
+    else { // format of event parameter is wrong
+      $message = t('Event parameter is wrong. Please try new search.');
+      $eventid = NULL;
     }
     if (is_numeric(arg(2)) && (arg(2) != '')) {
       $number = arg(2);
     }
+  } 
+  else {
+    return;
   }
 
-  $event = node_load($eventid);
+  
   
   $form['message'] = array(
       '#type' => 'markup',
       '#prefix' => '<p>',
       '#suffix' => '</p>',
       '#id' => 'let-me-know-message',
-      '#markup' => t('Let me know when my photos from @event_name are ready', array('@event_name' => $event->title, )),
+      '#markup' => $message,
   );
+  
+  if ($eventid == NULL) {
+    return $form;
+  }
   
   $form['eventid'] = array(
     '#id' => 'eventid',
@@ -532,6 +549,11 @@ function photo_search_preview_area($img_uri) {
   $form['cart_hidden']   = array('#type' => 'textfield', '#value' => '', '#id' => 'cart_hidden', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $form['selected_product'] = array('#type' => 'textfield', '#title' => '', '#id' => 'selected_cart_products', '#prefix' => '<div style="display:none;">', '#suffix' => '</div>');
   $url = url('cart/checkout');
+  
+  $default_currency_code = variable_get('uc_currency_code', UC_CURRENCY_DEFAULT_CURRENCY);
+  $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : $default_currency_code;
+  $symbol = currency_api_get_symbol($code);
+  
   // @todo move this html block from here to theme
   $form['cart_summary'] = array('#markup' =>
     "<div class='cart_summ'>
@@ -549,24 +571,24 @@ function photo_search_preview_area($img_uri) {
   . t('Photos') . ':&nbsp;' .
             "<span class='placeholder'></span>
 			</span>
-				<span class='search-summary-cost'>" . t('Total') . ":&nbsp;" . variable_get('uc_currency_sign') . 
+				<span class='search-summary-cost'>" . t('Total') . ":&nbsp;" . $symbol . 
                                       "<span class='placeholder'></span>
 				</span>
 		</div>
 	</div>");
 
   $form['prev_img_det'] = array(
-  	'#markup' =>
- 		'<div class="cost_auth_det">
-  		<span id="photo_cost">' . t('Price') .':<label class="photo_cost"></label>
-  		</span><br/>
-  		<span id="photo_author">' . t('Photo by') . ':<label class="photo_author"></label>
-  		</span></div>', 
-   '#prefix' => '<div class="search-image-preview" style="height: 700px; ">', );
+    '#markup' =>
+      '<div class="cost_auth_det">
+  	  <span id="photo_cost">' . t('Price') . ':<label class="photo_cost"></label>
+  	  </span><br/>
+  	  <span id="photo_author">' . t('Photo by') . ':<label class="photo_author"></label>
+  	  </span></div>', 
+    '#prefix' => '<div class="search-image-preview" style="height: 700px; ">', );
   $form['add_to_cart'] = array(
-  	'#type' => 'submit', 
-  	'#value' => '', 
-  	'#id' => 'add_to_cart', 
+    '#type' => 'submit',
+    '#value' => '',
+    '#id' => 'add_to_cart', 
   );
   $form['fb_like'] = array(
       '#markup' => '<div class="fb-like search-fb-like" data-send="true" data-layout="button_count" data-width="200" data-show-faces="false" data-font="arial"></div>'
@@ -610,7 +632,7 @@ function photo_search_preprocess_html(&$vars) {
     // Add first image from search results as Open Graph image.
     
     $view = $vars['page']['#views_contextual_links_info']['views_ui']['view']->result;
-    if(!empty($view)) {
+    if (!empty($view)) {
       $image_uri = $view[0]->field_uc_product_image[0]['rendered']['#item']['uri'];
       $image_url = image_style_url('search_thumbnail', $image_uri);
 

@@ -91,7 +91,7 @@ class SmtpMailSystem implements MailSystemInterface {
       // If from e-mail address is blank, use smtp_from config option.
       if (($from = variable_get('smtp_from', '')) == '') {
         // If smtp_from config option is blank, use site_email.
-        if (($from = variable_get('site_email', '')) == '') {
+        if (($from = variable_get('site_mail', '')) == '') {
           drupal_set_message(t('There is no submitted from address.'), 'error');
           watchdog('smtp', 'There is no submitted from address.', array(), WATCHDOG_ERROR);
           return FALSE;
@@ -152,20 +152,18 @@ class SmtpMailSystem implements MailSystemInterface {
         case 'content-type':
           // Parse several values on the Content-type header, storing them in an array like
           // key=value -> $vars['key']='value'
-          $vars = explode('; ', $value);
+          $vars = explode(';', $value);
           foreach ($vars as $i => $var) {
             if ($cut = strpos($var, '=')) {
-              $new_var = drupal_strtolower(drupal_substr($var, $cut + 1));
-              $new_key = drupal_substr($var, 0, $cut);
+              $new_var = trim(drupal_strtolower(drupal_substr($var, $cut + 1)));
+              $new_key = trim(drupal_substr($var, 0, $cut));
               unset($vars[$i]);
               $vars[$new_key] = $new_var;
             }
           }
-          // Set the charset based on the provided value, if there is one.
-          $charset = $vars['charset'];
-          if ($charset) {
-            $mailer->CharSet = $charset;
-          }
+          // Set the charset based on the provided value, otherwise set it to UTF-8 (which is Drupals internal default).
+          $mailer->CharSet = isset($vars['charset']) ? $vars['charset'] : 'UTF-8';
+
           switch ($vars[0]) {
             case 'text/plain':
               // The message includes only a plain text part.
@@ -200,8 +198,8 @@ class SmtpMailSystem implements MailSystemInterface {
             break;
             default:
               // Everything else is unsuppored by PHPMailer.
-              drupal_set_message(t('The Content-Type of your message is not supported by PHPMailer and will be sent as text/plain instead.'), 'error');
-              watchdog('smtp', 'The Content-Type of your message is not supported by PHPMailer and will be sent as text/plain instead.', array(), WATCHDOG_ERROR);
+              drupal_set_message(t('The %header of your message is not supported by PHPMailer and will be sent as text/plain instead.', array('%header' => "Content-Type: $value")), 'error');
+              watchdog('smtp', 'The %header of your message is not supported by PHPMailer and will be sent as text/plain instead.', array('%header' => "Content-Type: $value"), WATCHDOG_ERROR);
 
               // Force the Content-Type to be text/plain.
               $mailer->IsHTML(FALSE);

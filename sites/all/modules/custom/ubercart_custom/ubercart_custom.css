@@ -55,7 +55,7 @@
 }
 
 .image-thumbnail img {
-	float:left;
+	float:right;
 	max-height:100%;
 	max-width:100%;
 	}

@@ -4,8 +4,8 @@
  * with information from OCR message
  */
 
-require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/' . 'ocr_test.inc');
-
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/tests/ocr_test.inc');
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr.field.inc');
 /**
  *
  * Test cases for ProductNodeSaver class.
@@ -24,7 +24,11 @@ class OcrProductSaverTest extends DrupalWebTestCase {
   }
 
   function setUp() {
-    parent::setUp('ocr');
+    parent::setUp('bib_number');
+    $fields = _ocr_default_fields();
+    foreach ($fields as $field) {
+      create_field($field); 
+    }
     // create a Product node for testing;
     $this->testNode = product_node_creator::getNewProductNode();
 

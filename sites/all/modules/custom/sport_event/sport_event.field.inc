@@ -320,11 +320,562 @@ function _sport_event_field_default_fields() {
     ),
   );
   
+  $director_rid = user_custom_helper::get_rid('race director');
+  // Field for director of the event
+  $fields['node-event-field-director'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_director',
+      'foreign keys' => array(
+        'uid' => array(
+          'columns' => array(
+            'uid' => 'uid',
+          ),
+          'table' => 'users',
+        ),
+      ),
+      'indexes' => array(
+        'uid' => array(
+          0 => 'uid',
+        ),
+      ),
+      'module' => 'user_reference',
+      'settings' => array(
+        'referenceable_roles' => array(
+          'race director' => (string)$director_rid,
+        ),
+        'referenceable_status' => array(
+          0 => 0,
+          1 => '1',
+        ),
+        'view' => array(
+          'args' => array(),
+          'display_name' => '',
+          'view_name' => '',
+        ),
+      ),
+      'translatable' => '0',
+      'type' => 'user_reference',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'user_reference',
+          'settings' => array(),
+          'type' => 'user_reference_default',
+          'weight' => 7,
+        ),
+        'example_node_list' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_director',
+      'label' => 'Race Director',
+      'required' => 0,
+      'settings' => array(
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'options',
+        'settings' => array(),
+        'type' => 'options_select',
+        'weight' => '3',
+      ),
+    ),
+  );
+  
+   // Exported field: 'node-event-field_website'.
+  $fields['node-event-field-website'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_website',
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'link',
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'entity_translation_sync' => FALSE,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+      ),
+      'translatable' => '0',
+      'type' => 'link_field',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'link',
+          'settings' => array(),
+          'type' => 'link_default',
+          'weight' => 16,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_website',
+      'label' => 'Website',
+      'required' => FALSE,
+      'settings' => array(
+        'attributes' => array(
+          'class' => '',
+          'rel' => '',
+          'target' => 'default',
+        ),
+        'display' => array(
+          'url_cutoff' => 80,
+        ),
+        'enable_tokens' => 1,
+        'entity_translation_sync' => FALSE,
+        'title' => 'optional',
+        'title_maxlength' => 128,
+        'title_value' => '',
+        'url' => 0,
+        'user_register_form' => FALSE,
+        'validate_url' => 1,
+      ),
+      'widget' => array(
+        'module' => 'link',
+        'settings' => array(),
+        'type' => 'link_field',
+        'weight' => '36',
+      ),
+    ),
+  );
+  
+  
+  // Exported field: 'node-event-field_address'.
+  $fields['node-event-field-address'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_address',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'addressfield',
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+      ),
+      'translatable' => '0',
+      'type' => 'addressfield',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => array(
+        0 => array(
+          'element_key' => 'node|event|field_address|und|0',
+          'thoroughfare' => '',
+          'premise' => '',
+          'locality' => '',
+          'administrative_area' => '',
+          'postal_code' => '',
+          'country' => 'GB',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'addressfield',
+          'settings' => array(
+            'format_handlers' => array(
+              0 => 'address',
+            ),
+            'use_widget_handlers' => 1,
+          ),
+          'type' => 'addressfield_default',
+          'weight' => '12',
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_address',
+      'label' => 'Address',
+      'required' => 0,
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'addressfield',
+        'settings' => array(
+          'available_countries' => country_get_list(),
+          'format_handlers' => array(
+            'address' => 'address',
+            'address-hide-country' => 0,
+            'organisation' => 0,
+            'name-full' => 0,
+            'name-oneline' => 0,
+          ),
+        ),
+        'type' => 'addressfield_standard',
+        'weight' => '33',
+      ),
+    ),
+  );
+
+   // Exported field: 'node-event-field_max_price'.
+  $fields['node-event-field-max-price'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_max_price',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(
+        'decimal_separator' => '.',
+        'entity_translation_sync' => FALSE,
+        'precision' => '10',
+        'scale' => '2',
+      ),
+      'translatable' => '0',
+      'type' => 'number_decimal',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => array(
+        0 => array(
+          'value' => '10',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 2,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_decimal',
+          'weight' => 17,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_max_price',
+      'label' => 'Max price',
+      'required' => 0,
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '37',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-event-field_min_price'.
+  $fields['node-event-field-min-price'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_min_price',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(
+        'decimal_separator' => '.',
+        'entity_translation_sync' => FALSE,
+        'precision' => '10',
+        'scale' => '2',
+      ),
+      'translatable' => '0',
+      'type' => 'number_decimal',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => array(
+        0 => array(
+          'value' => '1',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 2,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_decimal',
+          'weight' => 18,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_min_price',
+      'label' => 'Min price',
+      'required' => 0,
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '38',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-event-field_recommended_price'.
+  $fields['node-event-field-recommended-price'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_recommended_price',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(
+        'decimal_separator' => '.',
+        'entity_translation_sync' => FALSE,
+        'precision' => '10',
+        'scale' => '2',
+      ),
+      'translatable' => '0',
+      'type' => 'number_decimal',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => array(
+        0 => array(
+          'value' => '5',
+        ),
+      ),
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 2,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_decimal',
+          'weight' => 19,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_recommended_price',
+      'label' => 'Recommended price',
+      'required' => 0,
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '39',
+      ),
+    ),
+  );
+
+  // Exported field: 'node-event-field_sales_fee'.
+  $fields['node-event-field-sales-fee'] = array(
+    'field_config' => array(
+      'active' => '1',
+      'cardinality' => '1',
+      'deleted' => '0',
+      'entity_types' => array(),
+      'field_name' => 'field_sales_fee',
+      'field_permissions' => array(
+        'type' => '0',
+      ),
+      'foreign keys' => array(),
+      'indexes' => array(),
+      'locked' => '0',
+      'module' => 'number',
+      'settings' => array(
+        'decimal_separator' => '.',
+        'entity_translation_sync' => FALSE,
+        'precision' => '10',
+        'scale' => '2',
+      ),
+      'translatable' => '0',
+      'type' => 'number_decimal',
+    ),
+    'field_instance' => array(
+      'bundle' => 'event',
+      'default_value' => NULL,
+      'deleted' => '0',
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'number',
+          'settings' => array(
+            'decimal_separator' => '.',
+            'prefix_suffix' => TRUE,
+            'scale' => 2,
+            'thousand_separator' => ' ',
+          ),
+          'type' => 'number_decimal',
+          'weight' => 20,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'field_sales_fee',
+      'label' => 'Sales fee',
+      'required' => 0,
+      'settings' => array(
+        'entity_translation_sync' => FALSE,
+        'max' => '',
+        'min' => '',
+        'prefix' => '',
+        'suffix' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 0,
+        'module' => 'number',
+        'settings' => array(),
+        'type' => 'number',
+        'weight' => '40',
+      ),
+    ),
+  );
+  
   // Translatables
   // Included for use with string extractors like potx.
   t('Distance');
   t('Registered Photographers');
   t('Profile Image');
- 
+  t('Website');
+  t('Address');
+  t('Max price');
+  t('Min price');
+  t('Recommended price');
+  t('Sales fee');
+  
   return $fields;
 }

@@ -44,7 +44,7 @@ jQuery(document).ready(function() {
 						$(this).removeClass('thumbnail').addClass('selected-thumbnail');
 
 						// change the price of the photo
-						var price_txt = get_currency_sign() + $(this).parents('td').find('span.node_cost').text();
+						var price_txt = $(this).parents('td').find('span.node_cost').text();
 						$('.page-search-result span#photo_cost label').text(price_txt);
 						// change the autor text
 						var node_author_txt = $(this).parents("td").find("span.authour_first_name").text();
@@ -289,6 +289,7 @@ jQuery(document).ready(function() {
 					},
 					error: function(msg) {
 						set_error_message(nid, 'Sorry, we could not add item to the cart...');
+						console.debug(msg);
 					}
 				});
 			}
@@ -326,6 +327,9 @@ jQuery(document).ready(function() {
 						} else {
 							show_add_button();
 						}
+					},
+					error : function(msg) {
+						console.debug(msg);
 					}
 				});
 			}

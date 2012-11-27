@@ -52,8 +52,8 @@ function photo_search_views_default_views() {
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['empty'] = FALSE;
   $handler->display->display_options['header']['area']['content'] = 
-  	"<div id='select-all' class='search-select-all'>select all</div>
-  	 <div id='clear-all' class='search-remove-all'>clear all</div>";
+    "<div id='select-all' class='search-select-all'>select all</div>
+     <div id='clear-all' class='search-remove-all'>clear all</div>";
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = 0;
   /* Footer: Global: PHP */
@@ -104,6 +104,14 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['nid']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nid']['hide_alter_empty'] = 1;
   $handler->display->display_options['fields']['nid']['link_to_node'] = 0;
+  /* Field: Currency */
+  $handler->display->display_options['fields']['field_currency']['id'] = 'field_currency';
+  $handler->display->display_options['fields']['field_currency']['table'] = 'field_data_field_currency';
+  $handler->display->display_options['fields']['field_currency']['field'] = 'field_currency';
+  $handler->display->display_options['fields']['field_currency']['ui_name'] = 'Currency';
+  $handler->display->display_options['fields']['field_currency']['label'] = '';
+  $handler->display->display_options['fields']['field_currency']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['field_currency']['element_label_colon'] = FALSE;
   /* Field: Product: Sell price */
   $handler->display->display_options['fields']['sell_price']['id'] = 'sell_price';
   $handler->display->display_options['fields']['sell_price']['table'] = 'uc_products';
@@ -111,52 +119,9 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['sell_price']['label'] = '';
   $handler->display->display_options['fields']['sell_price']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['sell_price']['alter']['text'] = '<span id="item-price-[nid]" class="node_cost" style="display:none;">[sell_price]</span>';
-  $handler->display->display_options['fields']['sell_price']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['sell_price']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['sell_price']['alter']['html'] = 0;
   $handler->display->display_options['fields']['sell_price']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['sell_price']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['sell_price']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['sell_price']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['sell_price']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['sell_price']['set_precision'] = 0;
   $handler->display->display_options['fields']['sell_price']['precision'] = '0';
-  $handler->display->display_options['fields']['sell_price']['format_plural'] = 0;
-  $handler->display->display_options['fields']['sell_price']['format'] = 'numeric';
-  
-  /* Field: Content: Nid */
-  $handler->display->display_options['fields']['check_box']['id'] = 'check_box';
-  $handler->display->display_options['fields']['check_box']['table'] = 'node';
-  $handler->display->display_options['fields']['check_box']['field'] = 'nid';
-  $handler->display->display_options['fields']['check_box']['label'] = '';
-  $handler->display->display_options['fields']['check_box']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['text'] = 
-    '<div title="[check_box]" id="check_[check_box]" class="search-checkbox"></div>';                                                                                                              
-  $handler->display->display_options['fields']['check_box']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['external'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['replace_spaces'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['trim_whitespace'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['nl2br'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['word_boundary'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['ellipsis'] = 1;
-  $handler->display->display_options['fields']['check_box']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['check_box']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['check_box']['element_label_colon'] = FALSE;
-  $handler->display->display_options['fields']['check_box']['element_default_classes'] = 1;
-  $handler->display->display_options['fields']['check_box']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['check_box']['empty_zero'] = 0;
-  $handler->display->display_options['fields']['check_box']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['check_box']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['sell_price']['convert'] = 1;
 
   /* Field: Content: Image */
   $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
@@ -164,7 +129,9 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
   $handler->display->display_options['fields']['uc_product_image']['label'] = '';
   $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = '<div id="thumb-[nid]" class="image-thumbnail">[uc_product_image]</div>';
+  $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = 
+  		'<div id="thumb-[nid]" class="image-thumbnail">[uc_product_image]</div>
+  		 <div title="[nid]" id="check_[nid]" class="search-checkbox"></div>';
   $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['external'] = 0;

@@ -330,11 +330,7 @@ span.form-required {
  * Layout
  */
 .header {
- margin-top: 20px;
- }
-.region-header {
-  min-height: 1em;
- /* background: #d2e6f3 url(images/bg-navigation.png) repeat-x 50% 100%;*/
+ 	margin-top: 20px;
 }
 
 
@@ -860,11 +856,11 @@ html.js fieldset.collapsed {
   padding-bottom: .6em;
 }
 
-html.js fieldset.collapsible .fieldset-legend {
+.collapsible .fieldset-legend {
   padding-left: 2em; /* LTR */
   background: url(images/menu-expanded.gif) no-repeat 0% 50%; /* LTR */
 }
-html.js fieldset.collapsed .fieldset-legend {
+.collapsed .fieldset-legend {
   background: url(images/menu-collapsed.gif) no-repeat 0% 50%; /* LTR */
 }
 

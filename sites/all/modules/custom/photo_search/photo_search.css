@@ -17,9 +17,9 @@ table {
 	padding-left:3px;
 	/* position */
 	float: right;
-	position: relative;
-	right: 0;
-	top: 25px;
+	position: absolute;
+	right: -5px;
+	top: -5px;
 	z-index: 1;
 }
 
@@ -31,10 +31,9 @@ table {
 	float: left;
 	display: block;
 	height: 40px;
-	width: 40px;
-	position: relative;
+	min-width: 40px;
+	position: absolute;
 	z-index: 1;
-	top: 30px;
 }
 
 
@@ -190,7 +189,7 @@ table {
 }
 
 .page-search-result #edit-search {
-	margin-top: 44px;
+	margin-top: 42px;
 }
 
 .page-search-result .form-item {
@@ -219,6 +218,7 @@ table {
 .image-thumbnail {
 	height: 150px;
 	width: 150px;
+	margin-top:15px;
 }
 
 .page-search-result .left-corner {
@@ -291,13 +291,14 @@ form#search-photos-form {
 .views-field-uc-product-image {
 	text-align: center;
 	position: relative;
+	max-width: 160px;
 }
 
 .region-content .content td {
 	text-align: center;
 	border: 0 none;
-	padding-right: 10px;
-	padding-left: 10px;
+	padding-right: 5px;
+	padding-left: 20px;
 	width: 30%;
 	position:relative;
 }

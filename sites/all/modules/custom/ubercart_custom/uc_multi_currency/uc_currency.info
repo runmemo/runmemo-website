@@ -1,0 +1,10 @@
+name = uc_currency
+description = allow user to setting multiple rate to ubercart
+core = 7.x
+
+; Views handlers
+files[] = views/uc_currency_handler_field_price.inc
+
+dependencies[] = uc_store
+dependencies[] = currency_api
+

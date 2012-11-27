@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Provide permanent redirects for unavailable node translations.
+ * Provides permanent redirects for unavailable node translations.
  */
 
 /**
@@ -34,7 +34,7 @@ function entity_translation_upgrade_menu_alter(&$items) {
 /**
  * Access callback.
  *
- * Perform a redirect to the corresponding field-based translation if the
+ * Performs a redirect to the corresponding field-based translation if the
  * current user has not the permission to access the requested node translation.
  */
 function entity_translation_upgrade_access($node) {
@@ -76,11 +76,33 @@ function entity_translation_upgrade_form_entity_translation_admin_form_alter(&$f
     '#collapsed' => TRUE,
   );
 
+  $options = array();
+  foreach (node_type_get_types() as $type) {
+    $options[$type->type] = $type->name;
+  }
+
+  $form['entity_translation_upgrade']['types'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Node types'),
+    '#description' => t('Select which node types will be upgraded.'),
+    '#options' => $options,
+  );
+
   $form['entity_translation_upgrade']['upgrade'] = array(
     '#type' => 'submit',
     '#value' => t('Upgrade'),
+    '#validate' => array('entity_translation_upgrade_validate'),
     '#submit' => array('entity_translation_upgrade_submit'),
   );
+}
+
+/**
+ * Validation handler for the entity_translation_admin_form() form.
+ */
+function entity_translation_upgrade_validate($form, &$form_state) {
+  if (!count(array_filter($form_state['values']['types']))) {
+    form_set_error('types', t('Please specify at least one node type.'));
+  }
 }
 
 /**
@@ -88,11 +110,11 @@ function entity_translation_upgrade_form_entity_translation_admin_form_alter(&$f
  */
 function entity_translation_upgrade_submit($form, &$form_state) {
   module_load_include('inc', 'entity_translation_upgrade', 'entity_translation_upgrade.admin');
-  entity_translation_upgrade_start();
+  entity_translation_upgrade_start(array_filter($form_state['values']['types']));
 }
 
 /**
- * Perform the redirect to original node with the given language.
+ * Performs the redirect to original node with the given language.
  */
 function entity_translation_upgrade_redirect($nid, $langcode) {
   $languages = language_list();
@@ -100,7 +122,7 @@ function entity_translation_upgrade_redirect($nid, $langcode) {
 }
 
 /**
- * Check that the requested path might belong to an upgraded translation.
+ * Checks wether the requested path belongs to an upgraded translation.
  */
 function entity_translation_upgrade_check_path() {
   $result = arg(0) == 'node' && ($nid = arg(1)) && is_int($nid) && !node_load($nid);
@@ -108,7 +130,7 @@ function entity_translation_upgrade_check_path() {
 }
 
 /**
- * Load the upgrade history entry for the given nid.
+ * Loads the upgrade history entry for the given nid.
  */
 function entity_translation_upgrade_load($nid) {
   return db_select('entity_translation_upgrade_history', 'etu')

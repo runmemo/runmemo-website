@@ -115,12 +115,12 @@ function photo_search_views_data() {
    $data['field_data_ocr_numbers']['table']['join']['field_ocr_numbers'] = array(
       'left_field' => 'entity_id', 
       'field' => 'nid',
-      'extra' => array (
+      'extra' => array(
          array(
             'field'    => 'ocr_numbers_value',
             'value'    => 'ocr_numbers.number',
             'operator' => '=',
-            'numeric'  => true,
+            'numeric'  => TRUE,
           ),      
        ),
    );

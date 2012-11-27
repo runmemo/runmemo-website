@@ -31,14 +31,19 @@ function entity_translation_upgrade_schema() {
         'not null' => TRUE,
         'default' => '',
       ),
+      'complete' => array(
+        'description' => 'Boolean indicating whether the node migration has completed.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
     ),
-    'indexes' => array('tnid' => array('tnid')),
+    'indexes' => array('tnid' => array('tnid'), 'complete' => array('complete')),
     'primary key' => array('nid'),
   );
 
   return $schema;
 }
-
 
 /**
  * Implements hook_enable().
@@ -46,4 +51,31 @@ function entity_translation_upgrade_schema() {
 function entity_translation_upgrade_enable() {
   $args = array('!url' => url('admin/config/regional/entity_translation'));
   drupal_set_message(t('<em>Entity Translation Upgrade</em> enabled: visit the <a href="!url">entity translation settings</a> page to perform the upgrade.', $args));
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * Adds the 'complete' column to the history table.
+ */
+function entity_translation_upgrade_update_7001() {
+  $table = 'entity_translation_upgrade_history';
+  $name = 'complete';
+
+  // Add the 'complete' field.
+  $spec = array(
+    'description' => 'Boolean indicating whether the node migration has completed.',
+    'type' => 'int',
+    'not null' => TRUE,
+    'default' => 0,
+  );
+  db_add_field($table, $name, $spec);
+
+  // Add the 'complete' index.
+  db_add_index($table, $name, array($name));
+
+  // Existing records are supposed to concern already completed migrations.
+  db_update($table)
+    ->fields(array('complete' => 1))
+    ->execute();
 }

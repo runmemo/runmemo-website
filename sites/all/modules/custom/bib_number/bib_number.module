@@ -38,19 +38,19 @@ function bib_number_field_formatter_view($entity_type, $entity, $field, $instanc
       }
 
       $numbers_box =
-            '<input name="' . $entity_type . '-'. $entity->type . '-tags-input" id="tags-input" value="'
-            . $numbers_str
-            . '"/>';
-            // @todo  - make a propper output for the numbers.
-            $element[0] = array (
-              '#markup' => $numbers_box,
-              '#attached' => array (
-            		'css' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css'), 
-            		'js' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js',    
-            drupal_get_path('module', 'bib_number') . '/bib_number.js'),
-            ),
-            );
-            break;
+        '<input name="' . $entity_type . '-' . $entity->type . '-tags-input" 
+        		id="tags-input" 
+        		value="'. $numbers_str . '"/>';
+        // @todo  - make a propper output for the numbers.
+      $element[0] = array(
+        '#markup' => $numbers_box,
+        '#attached' => array(
+          'css' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css'),
+          'js' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js',    
+                            drupal_get_path('module', 'bib_number') . '/bib_number.js'),
+                      ),
+      );
+    break;
   }
   return $element;
 }
@@ -65,7 +65,7 @@ function bib_number_field_attach_view_alter(&$output, $context) {
   foreach (element_children($output) as $field_name) {
     $element = &$output[$field_name];
     if ($element['#formatter'] == 'bib_number_default') {
-      if(empty($element['#items'])) {
+      if (empty($element['#items'])) {
         $element['#items'][0] = NULL;
       }
     }
@@ -87,10 +87,9 @@ function bib_number_field_widget_info() {
   );
 }
 
-function bib_number_field_is_empty($item, $field)
-{
-  if($field['type'] == 'bib_number') {
-    if(empty($item['value'])){
+function bib_number_field_is_empty($item, $field) {
+  if ($field['type'] == 'bib_number') {
+    if (empty($item['value'])) {
       return TRUE;
     }
   }
@@ -105,16 +104,20 @@ function bib_number_field_widget_form(&$form, &$form_state, $field, $instance, $
                 '#type' => 'textfield',
                 '#size' => '10',
                 '#title' => t('Bib Number'),
-                '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : null,
-                '#attributes' => array ('class' => array('form-text-bib-value')),
+                '#default_value' => isset($items[$delta]['value']) ? $items[$delta]['value'] : NULL,
+                '#attributes' => array('class' => array('form-text-bib-value')),
       );
       $element['probability'] = array(
                 '#type' => 'textfield',
                 '#size' => '5',
                 '#title' => t('Probability'),
                 '#default_value' => isset($items[$delta]['probability']) ? $items[$delta]['probability'] : 0,
-                '#attributes' => array ('class' => array('form-text-bib-probability')),
+                '#attributes' => array('class' => array('form-text-bib-probability')),
       );
+      
+      $element['manual'] = array('#type' => 'hidden', '#value' => '1', );
+      $element['created'] = array('#type' => 'hidden', '#value' => time() );
+
       break;
   }
 

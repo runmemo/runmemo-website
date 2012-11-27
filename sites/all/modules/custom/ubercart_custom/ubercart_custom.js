@@ -6,9 +6,8 @@
 	Drupal.behaviors.sliderfield = {
 		attach : function(context, settings) {
 
-	  function onSlide( event, ui ) {
-	      $( ".node-type-product #amount" ).text( "£" + ui.value );
-	
+	  function onSlide(event, ui) {
+	      $( ".node-type-product #amount" ).text( currency_sign + ui.value );
 	  }
 	
 	  function onPriceChange( event, ui ) {
@@ -24,26 +23,36 @@
 	        cache: false,
 	        success : function(msg) {              
                   if (msg.success) {
-                    $( "#product-nice-message-container" ).text("Price was changed to £" + ui.value);
+                    $( "#product-nice-message-container" ).text("Price was changed to " + currency_sign + ui.value);
                   }
 	        }
 	    }); 
             
 	  }
 	
-	 var price = $( ".node-type-product #price_val" ).val();
+	 var price = Math.floor($( ".node-type-product #price_val" ).val());
+         var min_price = Math.floor($( ".node-type-product #min_price" ).val());
+         var max_price = Math.floor($( ".node-type-product #max_price" ).val());
+         var currency_sign = $( ".node-type-product #currency_sign" ).val();
+         var step = 1;
+         if (max_price - min_price > 100) {
+            step = 10;
+         } 
+         else if (max_price - min_price > 50) {
+            step = 5;
+         }        
 	 
 	 $(".node-type-product #price").slider({
 	          range: "min",
 	          value: price,
-	          min: 1,
-	          max: 10,
-	          step: 1,
+	          min: min_price,
+	          max: max_price,
+	          step: step,
 	          slide: onSlide,
 	          change: onPriceChange
 	  }); 
 	
-	  $(".node-type-product #amount").text( "£" + $(".edit-slider").slider( "value" ));
+	  $(".node-type-product #amount").text( currency_sign + $(".edit-slider").slider( "value" ));
 	
 	
 	  }

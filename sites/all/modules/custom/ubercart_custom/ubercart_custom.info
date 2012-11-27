@@ -6,6 +6,7 @@ core = 7.x
 dependencies[] = common_tools
 dependencies[] = uc_product
 dependencies[] = node_reference
+dependencies[] = user_reference
 
 files[] = ubercart_custom.module
 files[] = ubercart_custom.inc
