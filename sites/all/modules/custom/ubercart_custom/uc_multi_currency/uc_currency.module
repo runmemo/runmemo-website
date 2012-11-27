@@ -146,6 +146,14 @@ function uc_currency_uc_cart_alter(&$items) {
   }
 }
 
+function uc_currency_order($op, &$order, $arg2) {
+  switch ($op) {
+    case 'save':
+      $order->currency = uc_currency_get_code();
+      break;
+  }
+}
+
 /**
  *
  * Implements hook_formatter_info()

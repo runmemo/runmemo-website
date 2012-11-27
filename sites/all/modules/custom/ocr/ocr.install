@@ -5,70 +5,14 @@
  * Install and uninstall functions for the ocr module.
  */
 
-function bib_number_install() {
-  $field = bib_number_field();
-  create_field($field);  
-}
+require_once(DRUPAL_ROOT . '/' . drupal_get_path('module', 'ocr') . '/ocr.field.inc');
 
-function bib_number_field() {
-  
-   // New Ocr Numbers
-  $field = array(
-    'field_config' => array(
-      'active' => '1',
-      'cardinality' => '10',
-      'deleted' => '0',
-      'entity_types' => array(),
-      'field_name' => 'field_ocr_numbers',
-      'foreign keys' => array(),
-      'indexes' => array(),
-      'locked' => '0',
-      'module' => 'number',
-      'settings' => array(),
-      'size' => 'normal',
-      'translatable' => '0',
-      'type' => 'bib_number',
-    ),
-    'field_instance' => array(
-      'bundle' => 'product',
-      'cardinality' => 10,
-      'default_value' => NULL,
-      'deleted' => '0',
-      'description' => '',
-      'display' => array(
-        'default' => array(
-          'label' => 'above',
-          'module' => 'bib_number',
-          'settings' => array(
-          ),
-          'type' => 'bib_number',
-          'weight' => '11',
-        ),
-        'teaser' => array(
-          'label' => 'above',
-          'settings' => array(),
-          'type' => 'hidden',
-          'weight' => 0,
-        ),
-      ),
-      'entity_type' => 'node',
-      'field_name' => 'field_ocr_numbers',
-      'label' => 'OCR Numbers',
-      'required' => FALSE,
-      'settings' => array(
-        'max' => '99999',
-        'min' => '1',
-        'prefix' => '',
-        'suffix' => '',
-        'user_register_form' => FALSE,
-      ),
-      'size' => 'normal',
-      'type' => 'bib_number',
-      'widget' => array(
-      ),
-    ),
-  );
-  return $field;
+function bib_number_install() {
+  $fields = _ocr_default_fields();
+  foreach ($fields as $field) {
+    create_field($field); 
+  }
+   
 }
 
 function ocr_update_7001() {
@@ -76,8 +20,8 @@ function ocr_update_7001() {
   // Enable bib_numbers module
   module_enable(array('bib_number'));
   
-  $field = bib_number_field();
-  create_field($field);  
+  $fields = _ocr_default_fields();
+  create_field($fields['node-product-ocr-numbers']);  
   /* transfer values for ocr_numbers to field_ocr_numbers
   $query = db_query("INSERT INTO field_data_field_ocr_numbers
             (
