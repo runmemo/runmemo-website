@@ -294,15 +294,11 @@ form#search-photos-form {
 	max-width: 160px;
 }
 
-.col-1 .views-field-uc-product-image  {
-	margin-left: 15px;
-	}
-
 .region-content .content td {
 	text-align: center;
 	border: 0 none;
-	padding-right: 10px;
-	padding-left: 10px;
+	padding-right: 5px;
+	padding-left: 20px;
 	width: 30%;
 	position:relative;
 }
