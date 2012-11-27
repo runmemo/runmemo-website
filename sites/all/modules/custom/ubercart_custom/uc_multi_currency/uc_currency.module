@@ -39,9 +39,7 @@ function uc_currency_init() {
      // here we change the currency code of the session based on the 
      // country of the event
       $nid = arg(1);
-    
       $currency = uc_currency_get_event_currency($nid);
-      print_nice($currency);
       uc_currency_set_code($currency);
    }
 }

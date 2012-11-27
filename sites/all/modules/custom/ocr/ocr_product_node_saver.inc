@@ -133,7 +133,16 @@ class ProductNodeSaver {
    * Sets prices on the node 
    */
   public function SetPrice($price) {
-    $this->node->sell_price = $price + variable_get('RUNMEMO_COMMISION', 1);
+    $event_nid = $this->node->field_event_reference[$this->node->language][0]['nid'];
+    $event = node_load($event_nid);
+    // Determine currency code for product from country code in event's address
+    $country = field_get_value($event, 'field_address', 'GB', 'country');
+    $currency = uc_currency_country_currency($country);
+  
+    $defaults = default_currency_prices($currency);
+    $sales_fee = field_get_value($event, 'field_sales_fee', $defaults['sales_fee']);   
+      
+    $this->node->sell_price = $price + $sales_fee;
     $this->node->list_price = $price;
     $this->changed = TRUE;    
   }

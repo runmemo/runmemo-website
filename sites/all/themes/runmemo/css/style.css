@@ -3125,12 +3125,10 @@ label.option {
 .view-event-gallery .view-header {
         float: left;
         width: 978px;
-	border: 1px solid #BFBFBF;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
         margin-top: -20px;
-        padding-top: 10px;
-        text-align: center;        
+        padding-bottom: 20px;
+        text-align: center;
+        display: block;
 	
 }
 
@@ -3166,19 +3164,36 @@ label.option {
         margin-bottom: 0;
 }
 
-.view-event-gallery #link-to-unmatched {
-    float: right;
+.view-event-gallery #links-block {
+  display: block;
+  float: right;
+  margin-top: -1px;
+  margin-right: -1px;
+}
+
+.view-event-gallery #link-all, #link-unmatched {
+    float: left;
     width: 190px;
     padding: 3px;
-    background-color: #585858;
     margin-right: -1px;
     margin-bottom: -1px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;    
+    border: 1px solid #384551; 
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
 
-.view-event-gallery #link-to-unmatched a {
+.view-event-gallery #link-unmatched {
+    float: right;
+}
+
+.view-event-gallery .active-tab {
+    background-color: #384551;
+}
+
+.view-event-gallery .active-tab a {
     color: #DDD;
+}
+
+.view-event-gallery #photos-from {
+  padding-top: 45px;
 }

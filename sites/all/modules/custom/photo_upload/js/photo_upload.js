@@ -105,10 +105,10 @@ function drag_drop_upload_validation() {
 		    	        slider.slider("option", "max", max_price);
 		    	        slider.slider("value", recommended_price);
 		    	        if (max_price - min_price > 100) {
-		    	        	slider.slider("option", "step", 5);
+		    	        	slider.slider("option", "step", 10);
 		    	        } 
 		    	        else if (max_price - min_price > 50) {
-		    	        	slider.slider("option", "step", 10);
+		    	        	slider.slider("option", "step", 5);
 		    	        }
 		    	        else {
 		    	        	slider.slider("option", "step", 1);

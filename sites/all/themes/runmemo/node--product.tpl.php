@@ -117,7 +117,15 @@
 
   </div>
 
+  <?php 
+  $field_event_reference = field_get_items('node', $node, 'field_event_reference');
+  $event_id = $field_event_reference[0]['nid'];
+  $events = get_events($event_id);
+  ?>
   <input type="hidden" name="product_id" id="product_id" value="<?php echo $node->nid; ?>">
   <input type="hidden" name="price_val" id="price_val" value="<?php echo $node->list_price; ?>"> 
-   
+  <input type="hidden" name="min_price" id="min_price" value="<?php echo $events[$event_id]['min_price']; ?>"> 
+  <input type="hidden" name="max_price" id="max_price" value="<?php echo $events[$event_id]['max_price']; ?>"> 
+  <input type="hidden" name="currency_sign" id="currency_sign" value="<?php echo $events[$event_id]['currency_sign']; ?>"> 
+
 </div>
