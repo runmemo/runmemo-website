@@ -3069,9 +3069,9 @@ label.option {
   border: 1px solid #585858;
   margin: 0;
 }
+
 .node-type-event .view-event-carousel .gallery-link {
     margin-top: -5px;
-    margin-bottom: 20px;
     width: 150px;
     float: right;
     text-align: center;
