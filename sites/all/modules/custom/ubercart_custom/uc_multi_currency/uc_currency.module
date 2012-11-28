@@ -364,7 +364,11 @@ function uc_currency_get_event_currency($nid) {
       $country = $address['country'];
       break;
     }
+  } 
+  else {
+    return default_currency_code();
   }
+    
   $currency = uc_currency_country_currency($country);
   return $currency;
 }
