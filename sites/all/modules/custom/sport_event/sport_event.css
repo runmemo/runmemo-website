@@ -3,6 +3,7 @@
 	float:left;
 }
 .node-type-event .region-sidebar-second {
+	margin-top:20px;
 	width: 330px;
 	}
 .node-event {
