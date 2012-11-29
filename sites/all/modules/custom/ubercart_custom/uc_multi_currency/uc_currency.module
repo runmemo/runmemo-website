@@ -499,7 +499,6 @@ function uc_currency_paypal_wps_form($form, &$form_state, $order) {
   global $language;
   $language_code = isset($language->language) ? $language->language : variable_get('uc_paypal_wps_language', 'US');
   $language_code = strtoupper($language_code);
-  watchdog('lang', $language_code);
   $data = array(
     // PayPal command variable.
     'cmd' => '_cart',
