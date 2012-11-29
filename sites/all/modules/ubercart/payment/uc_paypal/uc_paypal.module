@@ -189,13 +189,12 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
   global $user;
 
   $order = uc_order_load($order_id);
-  $currency = uc_currency_get_code();
-  $amount = uc_paypal_convert_amount($amount, $currency);
+  $amount = uc_currency_paypal_convert($amount);
   if ($data['txn_type'] == UC_CREDIT_PRIOR_AUTH_CAPTURE) {
     $nvp_request = array(
       'METHOD' => 'DoCapture',
       'AUTHORIZATIONID' => $data['auth_id'],
-      'AMT' => uc_currency_format($amount['amount'], FALSE, FALSE, '.'),
+      'AMT' => uc_currency_format($amount['value'], FALSE, FALSE, '.'),
       'CURRENCYCODE' => $amount['currency'],
       'COMPLETETYPE' => 'Complete',
     );
@@ -246,13 +245,13 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
     if ($delivery_country === FALSE) {
       $delivery_country = array(0 => array('country_iso_code_2' => 'US'));
     }
-    $currency = uc_currency_get_code();
-    $amt = uc_paypal_convert_amount($amount, $currency);
+   
+    $amount = uc_currency_paypal_convert($amount);
     $nvp_request = array(
       'METHOD' => 'DoDirectPayment',
       'PAYMENTACTION' => $data['txn_type'] == UC_CREDIT_AUTH_ONLY ? 'Authorization' : 'Sale',
       'IPADDRESS' => ip_address(),
-      'AMT' => uc_currency_format($amt['amount'], FALSE, FALSE, '.'),
+      'AMT' => uc_currency_format($amount['value'], FALSE, FALSE, '.'),
       'CREDITCARDTYPE' => $cc_type,
       'ACCT' =>  $order->payment_details['cc_number'],
       'EXPDATE' => $expdate,
@@ -265,7 +264,7 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
       'STATE' => uc_get_zone_code($order->billing_zone),
       'ZIP' => $order->billing_postal_code,
       'COUNTRYCODE' => $billing_country[0]['country_iso_code_2'],
-      'CURRENCYCODE' => $amt['currency'],
+      'CURRENCYCODE' => $amount['currency'],
       'DESC' => substr($desc, 0, 127),
       'INVNUM' => $order_id . '-' . REQUEST_TIME,
       'BUTTONSOURCE' => 'Ubercart_ShoppingCart_DP_US',
@@ -325,6 +324,7 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
       // If this was an authorization only transaction...
       if ($data['txn_type'] == UC_CREDIT_AUTH_ONLY) {
         // Log the authorization to the order.
+        
         uc_credit_log_authorization($order_id, $nvp_response['TRANSACTIONID'], $nvp_response['AMT']);
       }
       elseif ($data['txn_type'] == UC_CREDIT_PRIOR_AUTH_CAPTURE) {
@@ -627,14 +627,14 @@ function uc_paypal_ec_checkout($form, &$form_state) {
   if ($country === FALSE) {
     $country = array(0 => array('country_iso_code_2' => 'US'));
   }
-  $currency = uc_currency_get_code();
-  $amt = uc_paypal_convert_amount($order->order_total, $currency);
+ 
+  $amount = uc_currency_paypal_convert($order->order_total);
   $nvp_request = array(
     'METHOD' => 'SetExpressCheckout',
     'RETURNURL' => url('cart/echeckout/selected', array('absolute' => TRUE)),
     'CANCELURL' => url('uc_paypal/wps/cancel', array('absolute' => TRUE)),
-    'AMT' => uc_currency_format($amt['amount'], FALSE, FALSE, '.'),
-    'CURRENCYCODE' => $amt['currency'],
+    'AMT' => uc_currency_format($amount['value'], FALSE, FALSE, '.'),
+    'CURRENCYCODE' => $amount['currency'],
     'PAYMENTACTION' => variable_get('uc_paypal_wpp_payment_action', 'Sale'),
     'DESC' => substr($desc, 0, 127),
     'INVNUM' => $order->order_id . '-' . REQUEST_TIME,
@@ -709,13 +709,12 @@ function uc_paypal_ec_form_submit($form, &$form_state) {
   list($desc, $subtotal) = _uc_paypal_product_details($items);
 
   $order = uc_order_new($user->uid);
-  $currency = uc_currency_get_code();
-  $amount = uc_paypal_convert_amount($subtotal, $currency);
+  $amount = uc_currency_paypal_convert($subtotal);
   $nvp_request = array(
     'METHOD' => 'SetExpressCheckout',
     'RETURNURL' => url('cart/echeckout/review', array('absolute' => TRUE)),
     'CANCELURL' => url('uc_paypal/wps/cancel', array('absolute' => TRUE)),
-    'AMT' => uc_currency_format($amount['amount'], FALSE, FALSE, '.'),
+    'AMT' => uc_currency_format($amount['value'], FALSE, FALSE, '.'),
     'CURRENCYCODE' => $amount['currency'],
     'PAYMENTACTION' => variable_get('uc_paypal_wpp_payment_action', 'Sale'),
     'DESC' => substr($desc, 0, 127),
@@ -780,14 +779,15 @@ function uc_paypal_ec_submit_form_submit($form, &$form_state) {
   if ($country === FALSE) {
     $country = array(0 => array('country_iso_code_2' => 'US'));
   }
-  $currency = uc_currency_get_code();
-  $amount = uc_paypal_convert_amount($order->order_total, $currency);
+ 
+  $amount = uc_currency_paypal_convert($order->order_total);
+  
   $nvp_request = array(
     'METHOD' => 'DoExpressCheckoutPayment',
     'TOKEN' => $_SESSION['TOKEN'],
     'PAYMENTACTION' => variable_get('uc_paypal_wpp_payment_action', 'Sale'),
     'PAYERID' => $_SESSION['PAYERID'],
-    'AMT' => uc_currency_format($amount['amount'], FALSE, FALSE, '.'),
+    'AMT' => uc_currency_format($amount['value'], FALSE, FALSE, '.'),
     'DESC' => substr($desc, 0, 127),
     'INVNUM' => $order->order_id . '-' . REQUEST_TIME,
     'BUTTONSOURCE' => 'Ubercart_ShoppingCart_EC_US',
@@ -856,6 +856,10 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
   else {
     $phone_a = $phone_b = $phone_c = '';
   }
+  
+  $shipping_amount = uc_currency_paypal_convert($shipping);
+  $tax_amount = uc_currency_paypal_convert($tax);
+  
 
   $data = array(
     // PayPal command variable.
@@ -876,14 +880,14 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
 
     // Transaction information.
     'currency_code' => uc_currency_get_code(),// variable_get('uc_paypal_wps_currency', 'USD'),
-    'handling_cart' => uc_currency_format($shipping, FALSE, FALSE, '.'),
+    'handling_cart' => uc_currency_format($shipping_amount['value'], FALSE, FALSE, '.'),
     'invoice' => $order->order_id . '-' . uc_cart_get_id(),
-    'tax_cart' => uc_currency_format($tax, FALSE, FALSE, '.'),
+    'tax_cart' => uc_currency_format($tax_amount['value'], FALSE, FALSE, '.'),
 
     // Shopping cart specific variables.
     'business' => trim(variable_get('uc_paypal_wps_email', '')),
     'upload' => 1,
-
+ 
     'lc' => variable_get('uc_paypal_wps_language', 'US'),
 
     // Prepopulating forms/address overriding.
@@ -915,7 +919,8 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
     $i = 0;
     foreach ($order->products as $item) {
       $i++;
-      $data['amount_' . $i] = uc_currency_format($item->price, FALSE, FALSE, '.');
+      $item_amount = uc_currency_paypal_convert($item->price);
+      $data['amount_' . $i] = uc_currency_format($item_amount['value'], FALSE, FALSE, '.');
       $data['item_name_' . $i] = $item->title;
       $data['item_number_' . $i] = $item->model;
       $data['quantity_' . $i] = $item->qty;
@@ -941,14 +946,15 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
         $discount -= $item['amount'];
       }
     }
-
+    $discount_amount = uc_currency_paypal_convert($discount);
     if ($discount != 0) {
-      $data['discount_amount_cart'] = $discount;
+      $data['discount_amount_cart'] = $discount_amount['value'];
     }
   }
   else {
     // List the whole cart as a single item to account for fees/discounts.
-    $data['amount_1'] = uc_currency_format($order->order_total - $shipping - $tax, FALSE, FALSE, '.');
+    $total_amount = uc_currency_paypal_convert($order->order_total - $shipping - $tax); 
+    $data['amount_1'] = uc_currency_format($total_amount['value'], FALSE, FALSE, '.');
     $data['item_name_1'] = t('Order @order_id at !store', array('@order_id' => $order->order_id, '!store' => uc_store_name()));
     $data['on0_1'] = t('Product count');
     $data['os0_1'] = count($order->products);
@@ -1205,32 +1211,4 @@ function _uc_paypal_reversal_message($reason) {
  */
 function _uc_paypal_currency_array() {
   return drupal_map_assoc(array('AUD', 'BRL', 'CAD', 'CHF', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'JPY', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'SEK', 'SGD', 'THB', 'TWD', 'USD'));
-}
-
-/**
- * Converts amount to USD if currency is not supported by PayPal
- * @param number $amount
- * @param string $currency
- * @return array 
- *  An associative array that contains the following:
- * result['amount'] - original or converted amount.
- * result['currency'] - currency of the amount.
- * 
- */
-function uc_paypal_convert_amount($amount, $currency) {
-  if (in_array($currency, _uc_paypal_currency_array())) {
-    // Currency is supported by PayPal, do nothing.
-    return array('amount' => $amount, 'currency' => $currency);
-  } 
-  else { // Currency is not supported by PayPal, convert to USD.
-    $new_amount = currency_api_convert($currency, 'USD', $amount);
-    if ($new_amount['status']) {
-      return array('amount' => $new_amount['value'], 'currency' => 'USD');
-    }
-    else { // Failed to convert to USD.
-      watchdog('uc_paypal', 'Failed to convert from ' . $currency . ' to USD.' .
-              $new_amount['message']);
-      return array('amount' => $amount, 'currency' => $currency);
-    }
-  }
 }
