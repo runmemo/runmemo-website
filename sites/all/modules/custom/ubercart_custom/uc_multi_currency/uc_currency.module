@@ -288,6 +288,7 @@ function uc_currency_manual_convertion($to, $value) {
  */
 function uc_currency_get_code() {
   $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : default_currency_code();
+  watchdog('currency', $code);
   return $code;
 }
 /**
@@ -392,4 +393,242 @@ function uc_currency_get_node_price($node, $currency_to = NULL) {
     $amount = currency_api_convert(default_currency_code(), $currency_to, $node->sell_price);
     return $amount['value'];
   }
+}
+
+
+/**
+ * Converts amount to USD if currency is not supported by PayPal
+ * @param number $amount
+ * @param string $currency
+ * @return array 
+ *  An associative array that contains the following:
+ * result['value'] - original or converted amount.
+ * result['currency'] - currency of the amount.
+ * result['status'] - shows whether amount was calculated correctly
+ */
+function uc_currency_paypal_convert($amount, $currency = NULL) {
+  if (is_null($currency)) {
+    $currency = uc_currency_get_code();
+  }
+  watchdog('paypal', 'Amount: ' . $amount . '; current currency: ' . $currency);
+  if (in_array($currency, _uc_paypal_currency_array())) {
+    // Currency is supported by PayPal, do nothing.
+    return array('value' => $amount, 'currency' => $currency, 'status' => TRUE);
+  } 
+  else { // currency is not supported by PayPal, convert to USD.
+    $usd_amount = currency_api_convert($currency, 'USD', $amount);
+    if ($usd_amount['status']) { // successful conversion to USD
+      return array(
+          'value' => $usd_amount['value'], 
+          'currency' => 'USD', 
+          'status' => TRUE);
+    }
+    else { // failed to convert amount in unsupported currency to USD.
+      watchdog('uc_paypal', 'Failed to convert from ' . $currency . ' to USD.' .
+              $usd_amount['message']);
+      return array(
+          'value' => $amount, 
+          'currency' => $currency,
+          'status' => FALSE);
+    }
+  }
+}
+
+/**
+ * Implements hook_uc_payment_method_alter(&$methods).
+ */
+function uc_currency_uc_payment_method_alter(&$methods) {
+  $methods['paypal_wps']['redirect'] = 'uc_currency_paypal_wps_form';
+}
+
+/**
+ * this form is copy of uc_paypal_wps_form with amounts converted
+ * to USD for unsupported currencies
+ */
+function uc_currency_paypal_wps_form($form, &$form_state, $order) {
+  watchdog('form', 'uc_currency_paypal_wps_form');
+  $shipping = 0;
+  foreach ($order->line_items as $item) {
+    if ($item['type'] == 'shipping') {
+      $shipping += $item['amount'];
+    }
+  }
+
+  $tax = 0;
+  if (module_exists('uc_taxes')) {
+    foreach (uc_taxes_calculate($order) as $tax_item) {
+      $tax += $tax_item->amount;
+    }
+  }
+
+  $address = variable_get('uc_paypal_wps_address_selection', 'billing');
+
+  $country = uc_get_country_data(array('country_id' => $order->{$address . '_country'}));
+  if ($country === FALSE) {
+    $country = array(0 => array('country_iso_code_2' => 'US'));
+  }
+
+  $phone = '';
+  for ($i = 0; $i < strlen($order->{$address . '_phone'}); $i++) {
+    if (is_numeric($order->{$address . '_phone'}[$i])) {
+      $phone .= $order->{$address . '_phone'}[$i];
+    }
+  }
+
+  /**
+   * night_phone_a: The area code for U.S. phone numbers, or the country code
+   *                for phone numbers outside the U.S.
+   * night_phone_b: The three-digit prefix for U.S. phone numbers, or the
+   *                entire phone number for phone numbers outside the U.S.,
+   *                excluding country code.
+   * night_phone_c: The four-digit phone number for U.S. phone numbers.
+   *                (Not Used for UK numbers)
+   */
+  if ($country[0]['country_iso_code_2'] == 'US' || $country[0]['country_iso_code_2'] == 'CA') {
+    $phone = substr($phone, -10);
+    $phone_a = substr($phone, 0, 3);
+    $phone_b = substr($phone, 3, 3);
+    $phone_c = substr($phone, 6, 4);
+  }
+  else {
+    $phone_a = $phone_b = $phone_c = '';
+  }
+  
+  $shipping_amount = uc_currency_paypal_convert($shipping);
+  $tax_amount = uc_currency_paypal_convert($tax);
+  
+
+  $data = array(
+    // PayPal command variable.
+    'cmd' => '_cart',
+
+    // Set the correct codepage.
+    'charset' => 'utf-8',
+
+    // IPN control notify URL.
+    'notify_url' => url('uc_paypal/ipn/' . $order->order_id, array('absolute' => TRUE)),
+
+    // Display information.
+    'cancel_return' => url('uc_paypal/wps/cancel', array('absolute' => TRUE)),
+    'no_note' => 1,
+    'no_shipping' => variable_get('uc_paypal_wps_no_shipping', 1),
+    'return' => url('uc_paypal/wps/complete/' . $order->order_id, array('absolute' => TRUE)),
+    'rm' => 2,
+
+    // Transaction information.
+    'currency_code' => uc_currency_get_code(),// variable_get('uc_paypal_wps_currency', 'USD'),
+    'handling_cart' => uc_currency_format($shipping_amount['value'], FALSE, FALSE, '.'),
+    'invoice' => $order->order_id . '-' . uc_cart_get_id(),
+    'tax_cart' => uc_currency_format($tax_amount['value'], FALSE, FALSE, '.'),
+
+    // Shopping cart specific variables.
+    'business' => trim(variable_get('uc_paypal_wps_email', '')),
+    'upload' => 1,
+ 
+    'lc' => variable_get('uc_paypal_wps_language', 'US'),
+
+    // Prepopulating forms/address overriding.
+    'address1' => substr($order->{$address . '_street1'}, 0, 100),
+    'address2' => substr($order->{$address . '_street2'}, 0, 100),
+    'city' => substr($order->{$address . '_city'}, 0, 40),
+    'country' => $country[0]['country_iso_code_2'],
+    'email' => $order->primary_email,
+    'first_name' => substr($order->{$address . '_first_name'}, 0, 32),
+    'last_name' => substr($order->{$address . '_last_name'}, 0, 64),
+    'state' => uc_get_zone_code($order->{$address . '_zone'}),
+    'zip' => $order->{$address . '_postal_code'},
+    'night_phone_a' => $phone_a,
+    'night_phone_b' => $phone_b,
+    'night_phone_c' => $phone_c,
+  );
+
+  if (variable_get('uc_paypal_wps_address_override', TRUE)) {
+    $data['address_override'] = 1;
+  }
+
+  // Account for stores that just want to authorize funds instead of capture.
+  if (variable_get('uc_paypal_wps_payment_action', 'Sale') == 'Authorization') {
+    $data['paymentaction'] = 'authorization';
+  }
+
+  if (variable_get('uc_paypal_wps_submit_method', 'single') == 'itemized') {
+    // List individual items.
+    $i = 0;
+    foreach ($order->products as $item) {
+      $i++;
+      $item_amount = uc_currency_paypal_convert($item->price);
+      $data['amount_' . $i] = uc_currency_format($item_amount['value'], FALSE, FALSE, '.');
+      $data['item_name_' . $i] = $item->title;
+      $data['item_number_' . $i] = $item->model;
+      $data['quantity_' . $i] = $item->qty;
+
+      // PayPal will only display the first two...
+      if (!empty($item->data['attributes']) && count($item->data['attributes']) > 0) {
+        $o = 0;
+        foreach ($item->data['attributes'] as $name => $setting) {
+          $data['on' . $o . '_' . $i] = $name;
+          $data['os' . $o . '_' . $i] = implode(', ', (array)$setting);
+          $o++;
+        }
+      }
+    }
+
+    // Apply discounts (negative amount line items). For example, this handles
+    // line items created by uc_coupon.
+    $discount = 0;
+
+    foreach ($order->line_items as $item) {
+      if ($item['amount'] < 0) {
+        // The minus sign is not an error! The discount amount must be positive.
+        $discount -= $item['amount'];
+      }
+    }
+    $discount_amount = uc_currency_paypal_convert($discount);
+    if ($discount != 0) {
+      $data['discount_amount_cart'] = $discount_amount['value'];
+    }
+  }
+  else {
+    // List the whole cart as a single item to account for fees/discounts.
+    $total_amount = uc_currency_paypal_convert($order->order_total - $shipping - $tax); 
+    $data['amount_1'] = uc_currency_format($total_amount['value'], FALSE, FALSE, '.');
+    $data['item_name_1'] = t('Order @order_id at !store', array('@order_id' => $order->order_id, '!store' => uc_store_name()));
+    $data['on0_1'] = t('Product count');
+    $data['os0_1'] = count($order->products);
+  }
+
+  $form['#action'] = variable_get('uc_paypal_wps_server', 'https://www.sandbox.paypal.com/cgi-bin/webscr');
+
+  foreach ($data as $name => $value) {
+    if (!empty($value)) {
+      $form[$name] = array('#type' => 'hidden', '#value' => $value);
+    }
+  }
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => variable_get('uc_paypal_wps_checkout_button', t('Submit Order')),
+  );
+
+  return $form;
+}
+
+function uc_currency_paypal_convert_back($amount, $currency) {
+  if (in_array($currency, _uc_paypal_currency_array())) {
+    // Currency is supported by PayPal, do nothing.
+    return array('amount' => $amount, 'currency' => $currency);
+  } 
+  else { // Currency is not supported by PayPal, convert back from USD.
+    $new_amount = currency_api_convert('USD', $currency, $amount);
+    if ($new_amount['status']) {
+      return array('amount' => $new_amount['value'], 'currency' => $currency);
+    }
+    else { // Failed to convert to USD.
+      watchdog('uc_paypal', 'Failed to convert from ' . $currency . ' to USD.' .
+              $new_amount['message']);
+      return array('amount' => $amount, 'currency' => $currency);
+    }
+  }
+    
 }
