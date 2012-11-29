@@ -496,7 +496,10 @@ function uc_currency_paypal_wps_form($form, &$form_state, $order) {
   $shipping_amount = uc_currency_paypal_convert($shipping);
   $tax_amount = uc_currency_paypal_convert($tax);
   
-
+  global $language;
+  $language_code = isset($language->language) ? $language->language : variable_get('uc_paypal_wps_language', 'US');
+  $language_code = strtoupper($language_code);
+  watchdog('lang', $language_code);
   $data = array(
     // PayPal command variable.
     'cmd' => '_cart',
@@ -523,8 +526,8 @@ function uc_currency_paypal_wps_form($form, &$form_state, $order) {
     // Shopping cart specific variables.
     'business' => trim(variable_get('uc_paypal_wps_email', '')),
     'upload' => 1,
- 
-    'lc' => variable_get('uc_paypal_wps_language', 'US'),
+    
+    'lc' => $language_code,
 
     // Prepopulating forms/address overriding.
     'address1' => substr($order->{$address . '_street1'}, 0, 100),
