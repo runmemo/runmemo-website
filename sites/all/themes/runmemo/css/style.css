@@ -1372,16 +1372,8 @@ a#guide:hover {
 /* ****************** For Recent event home page ******************* */
 .recent-event {
 	border: 1px solid #dedede;
-	/*height:262px;*/
 	background: url('../images/cont-inner-bg.png') repeat;
-	border-top: 1px solid #dedede;
-	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	margin-top: 10px;
-	margin-bottom: 10px;
-	position: relative;
 }
 
 .col-last .recent-event {
@@ -1424,9 +1416,9 @@ a#guide:hover {
 .recent-events  .event-title {
 	color: #444;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
 	text-align: center;
-	padding-top: 20px;
+  font-weight: bold;
+	padding-top: 10px;
 	padding-bottom: 10px;
 	border-bottom: 1px solid #dedede;
 }
@@ -1434,22 +1426,15 @@ a#guide:hover {
 .recent-events  .event-title a {
 	color: rgb(68, 68, 68);
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 18pt;
 	text-align: center;
-	padding-top: 20px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid rgb(222, 222, 222);
 }
 
 .recent-events img {
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-bottom: 5px;
-	margin-right: 30px;
-	margin-left: 25px;
-	border-bottom: 1px solid #e0e0e0;
-	border-right: 1px solid #e0e0e0;
-	padding-bottom: 2px;
-	padding-right: 2px;
+	margin-left: 10px;
+	border: 1px solid #585858;
 }
 
 .recent-events form {
