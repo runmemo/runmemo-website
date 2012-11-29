@@ -288,7 +288,6 @@ function uc_currency_manual_convertion($to, $value) {
  */
 function uc_currency_get_code() {
   $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : default_currency_code();
-  watchdog('currency', $code);
   return $code;
 }
 /**
@@ -410,7 +409,7 @@ function uc_currency_paypal_convert($amount, $currency = NULL) {
   if (is_null($currency)) {
     $currency = uc_currency_get_code();
   }
-  watchdog('paypal', 'Amount: ' . $amount . '; current currency: ' . $currency);
+ // watchdog('paypal', 'Amount: ' . $amount . '; current currency: ' . $currency);
   if (in_array($currency, _uc_paypal_currency_array())) {
     // Currency is supported by PayPal, do nothing.
     return array('value' => $amount, 'currency' => $currency, 'status' => TRUE);
@@ -446,7 +445,7 @@ function uc_currency_uc_payment_method_alter(&$methods) {
  * to USD for unsupported currencies
  */
 function uc_currency_paypal_wps_form($form, &$form_state, $order) {
-  watchdog('form', 'uc_currency_paypal_wps_form');
+ // watchdog('form', 'uc_currency_paypal_wps_form');
   $shipping = 0;
   foreach ($order->line_items as $item) {
     if ($item['type'] == 'shipping') {
