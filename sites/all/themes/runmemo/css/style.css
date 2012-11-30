@@ -366,7 +366,7 @@ it
 	height: 3px;
 	margin-top: 5px;
 	margin-bottom: 20px;
-	background: #585858;
+	background: #384551;
 	display: block;
 	float: left;
 	clear: both;
@@ -2935,9 +2935,10 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-container-horizontal {
   width: 980px;
-  height: 152px;
+  height: 192px;
   padding: 0 40px;
-  margin-left: -43px;
+  margin-top: -2px;
+  margin-left: -40px;
 }
 
 .node-type-event .view-event-carousel .jcarousel-clip-horizontal {
@@ -2947,8 +2948,8 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-item {
   padding: 0;
-  height: 152px;
-  width: 102px;
+  height: 192px;
+  width: 192px;
   overflow: hidden;
 /*  border: 1px solid #CCC;*/
   list-style: none;
@@ -2956,12 +2957,12 @@ label.option {
 }
 
 .node-type-event .view-event-carousel .jcarousel-item-horizontal {
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
 .node-type-event .view-event-carousel .jcarousel-item-placeholder {
-  height: 152px;
-  width: 102px;
+  height: 192px;
+  width: 192px;
   background: #fff url("../images/throbber.gif") no-repeat center center;
   color: #000;
 }
@@ -2987,7 +2988,7 @@ label.option {
  */
 .node-type-event .view-event-carousel .jcarousel-prev-horizontal {
   position: absolute;
-  top: 55px;
+  top: 75px;
   left: 10px;
   background-position: 0 0;
 }
@@ -3000,7 +3001,7 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-next-horizontal {
   position: absolute;
-  top: 55px;
+  top: 75px;
   right: 10px;
   background-position: 0 -32px;
 }
@@ -3029,20 +3030,20 @@ label.option {
 }
 
 .node-type-event .view-event-carousel img {
-  height: 150px;
-  width: 100px;
+  height: 190px;
+  width: 190px;
   overflow: hidden;
-  border: 1px solid #585858;
+  border: 1px solid #384551;
   margin: 0;
 }
 
 .node-type-event .view-event-carousel .gallery-link {
     margin-top: -5px;
-    width: 150px;
+    width: 190px;
     float: right;
     text-align: center;
     padding: 3px;
-    background-color: #585858;
+    background-color: #384551;
 /*    border: 1px solid #585858;*/
     border-bottom-left-radius: 5px;
 /*    border-bottom-right-radius: 5px;*/
@@ -3052,7 +3053,8 @@ label.option {
 }  
 
 .node-type-event .gray-bdr {
-  margin-bottom: 5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
 .node-type-event #block-system-navigation {
