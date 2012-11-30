@@ -95,7 +95,7 @@ function recent_event_search($nid = 0) {
       '#required' => 'true');
   $form['submit_button'] = array( // search button
       '#type' => 'submit', 
-      '#value' => '', 
+      '#value' => 'Search', 
       '#submit' => array('recent_event_search_submit'), 
     );
 

@@ -366,7 +366,7 @@ it
 	height: 3px;
 	margin-top: 5px;
 	margin-bottom: 20px;
-	background: #585858;
+	background: #384551;
 	display: block;
 	float: left;
 	clear: both;
@@ -1372,16 +1372,8 @@ a#guide:hover {
 /* ****************** For Recent event home page ******************* */
 .recent-event {
 	border: 1px solid #dedede;
-	/*height:262px;*/
 	background: url('../images/cont-inner-bg.png') repeat;
-	border-top: 1px solid #dedede;
-	box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
-	-o-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
 	margin-top: 10px;
-	margin-bottom: 10px;
-	position: relative;
 }
 
 .col-last .recent-event {
@@ -1424,9 +1416,9 @@ a#guide:hover {
 .recent-events  .event-title {
 	color: #444;
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
 	text-align: center;
-	padding-top: 20px;
+  font-weight: bold;
+	padding-top: 10px;
 	padding-bottom: 10px;
 	border-bottom: 1px solid #dedede;
 }
@@ -1434,22 +1426,15 @@ a#guide:hover {
 .recent-events  .event-title a {
 	color: rgb(68, 68, 68);
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 14pt;
 	text-align: center;
-	padding-top: 20px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid rgb(222, 222, 222);
 }
 
 .recent-events img {
-	margin-top: 15px;
+	margin-top: 10px;
 	margin-bottom: 5px;
-	margin-right: 30px;
-	margin-left: 25px;
-	border-bottom: 1px solid #e0e0e0;
-	border-right: 1px solid #e0e0e0;
-	padding-bottom: 2px;
-	padding-right: 2px;
+	margin-left: 10px;
+	border: 1px solid #585858;
 }
 
 .recent-events form {
@@ -1493,21 +1478,19 @@ a#guide:hover {
 }
 
 .recent-events .form-submit {
+  background-color: #06F;
+  font-size: 12pt;
 	margin-top: 0px;
 	cursor: pointer;
-	background: url("../images/find-btn.png") no-repeat scroll 0 0
-		transparent;
 	border: 0 none;
 	cursor: pointer;
 	height: 32px;
-	width: 88px;
+	width: 100px;
 	float: left;
 }
 
 .recent-events .form-submit:hover {
-	background: url("../images/find-btn.png") no-repeat scroll 0 0
-		transparent;
-	background-color: #777;
+	background-color: #39F;
 }
 
 .block .content {
@@ -1580,20 +1563,6 @@ a#guide:hover {
 div.form-item-url-hidden
 {
 	display: none;
-}
-/*
-#overlay-content #block-feedback-form .feedback-message {
-	height: 100%;
-}
-*/
-#overlay .content {
-	box-shadow: none;
-}
-
-ul#edit-file_filelist {
-	*visibility: hidden !important;
-	/* IE 7 (IE6 also uses this, so put it first) */
-	_visibility: hidden !important; /* IE 6 */
 }
 
 .cart-block-icon-empty {
@@ -1709,8 +1678,6 @@ table.cart-block-summary tbody tr td {
 .page-cart #uc-cart-view-form table {
 	padding: 0 0 10px 0;
 	margin: 0px;
-	overflow-x: hidden;
-	overflow-y: scroll;
 }
 
 .page-cart #cart_result_title {
@@ -2538,7 +2505,7 @@ table.cart-block-summary tbody tr td {
 /* -------------- THE button -------------- */
 .form-submit { /* text */
 	text-decoration: none;
-	font-size: 20px;
+	font-size: 14pt;
 	font-weight: bold;
 	-webkit-user-select: none;
 	-moz-user-select: none;
@@ -2969,9 +2936,10 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-container-horizontal {
   width: 980px;
-  height: 152px;
+  height: 192px;
   padding: 0 40px;
-  margin-left: -43px;
+  margin-top: -2px;
+  margin-left: -40px;
 }
 
 .node-type-event .view-event-carousel .jcarousel-clip-horizontal {
@@ -2981,8 +2949,8 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-item {
   padding: 0;
-  height: 152px;
-  width: 102px;
+  height: 192px;
+  width: 192px;
   overflow: hidden;
 /*  border: 1px solid #CCC;*/
   list-style: none;
@@ -2990,12 +2958,12 @@ label.option {
 }
 
 .node-type-event .view-event-carousel .jcarousel-item-horizontal {
-  margin: 0 4px;
+  margin: 0 2px;
 }
 
 .node-type-event .view-event-carousel .jcarousel-item-placeholder {
-  height: 152px;
-  width: 102px;
+  height: 192px;
+  width: 192px;
   background: #fff url("../images/throbber.gif") no-repeat center center;
   color: #000;
 }
@@ -3021,7 +2989,7 @@ label.option {
  */
 .node-type-event .view-event-carousel .jcarousel-prev-horizontal {
   position: absolute;
-  top: 55px;
+  top: 75px;
   left: 10px;
   background-position: 0 0;
 }
@@ -3034,7 +3002,7 @@ label.option {
 
 .node-type-event .view-event-carousel .jcarousel-next-horizontal {
   position: absolute;
-  top: 55px;
+  top: 75px;
   right: 10px;
   background-position: 0 -32px;
 }
@@ -3063,20 +3031,20 @@ label.option {
 }
 
 .node-type-event .view-event-carousel img {
-  height: 150px;
-  width: 100px;
+  height: 190px;
+  width: 190px;
   overflow: hidden;
-  border: 1px solid #585858;
+  border: 1px solid #384551;
   margin: 0;
 }
 
 .node-type-event .view-event-carousel .gallery-link {
     margin-top: -5px;
-    width: 150px;
+    width: 190px;
     float: right;
     text-align: center;
     padding: 3px;
-    background-color: #585858;
+    background-color: #384551;
 /*    border: 1px solid #585858;*/
     border-bottom-left-radius: 5px;
 /*    border-bottom-right-radius: 5px;*/
@@ -3086,7 +3054,8 @@ label.option {
 }  
 
 .node-type-event .gray-bdr {
-  margin-bottom: 5px;
+  margin-top: 3px;
+  margin-bottom: 3px;
 }
 
 .node-type-event #block-system-navigation {
@@ -3196,4 +3165,8 @@ label.option {
 
 .view-event-gallery #photos-from {
   padding-top: 45px;
+}
+
+.front .form-item-event {
+  width: 400px;
 }

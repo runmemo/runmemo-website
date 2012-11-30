@@ -1544,8 +1544,7 @@ $translatables['event_gallery'] = array(
  * Begin of Event Carousel view 
  * =============================================================================
  */
-  
-  $view = new view();
+$view = new view();
 $view->name = 'event_carousel';
 $view->description = '';
 $view->tag = 'default';
@@ -1565,18 +1564,17 @@ $handler->display->display_options['query']['type'] = 'views_query';
 $handler->display->display_options['query']['options']['query_comment'] = FALSE;
 $handler->display->display_options['exposed_form']['type'] = 'basic';
 $handler->display->display_options['pager']['type'] = 'some';
-$handler->display->display_options['pager']['options']['items_per_page'] = '10';
+$handler->display->display_options['pager']['options']['items_per_page'] = '20';
 $handler->display->display_options['pager']['options']['offset'] = '0';
 $handler->display->display_options['style_plugin'] = 'jcarousel';
 $handler->display->display_options['style_options']['wrap'] = 'circular';
 $handler->display->display_options['style_options']['skin'] = '';
 $handler->display->display_options['style_options']['visible'] = '';
 $handler->display->display_options['style_options']['scroll'] = '1';
-$handler->display->display_options['style_options']['auto'] = '7';
+$handler->display->display_options['style_options']['auto'] = '9';
 $handler->display->display_options['style_options']['autoPause'] = 1;
 $handler->display->display_options['style_options']['easing'] = '';
 $handler->display->display_options['style_options']['vertical'] = 0;
-$handler->display->display_options['style_options']['ajax'] = 1;
 $handler->display->display_options['row_plugin'] = 'fields';
 /* Footer: Grey line */
 $handler->display->display_options['footer']['area']['id'] = 'area';
@@ -1605,22 +1603,47 @@ $handler->display->display_options['fields']['nid']['field'] = 'nid';
 $handler->display->display_options['fields']['nid']['label'] = '';
 $handler->display->display_options['fields']['nid']['exclude'] = TRUE;
 $handler->display->display_options['fields']['nid']['element_label_colon'] = FALSE;
-/* Field: Content: Image */
+/* Field: Gallery */
 $handler->display->display_options['fields']['uc_product_image']['id'] = 'uc_product_image';
 $handler->display->display_options['fields']['uc_product_image']['table'] = 'field_data_uc_product_image';
 $handler->display->display_options['fields']['uc_product_image']['field'] = 'uc_product_image';
+$handler->display->display_options['fields']['uc_product_image']['ui_name'] = 'Gallery';
 $handler->display->display_options['fields']['uc_product_image']['label'] = '';
+$handler->display->display_options['fields']['uc_product_image']['exclude'] = TRUE;
 $handler->display->display_options['fields']['uc_product_image']['element_label_colon'] = FALSE;
 $handler->display->display_options['fields']['uc_product_image']['click_sort_column'] = 'fid';
 $handler->display->display_options['fields']['uc_product_image']['settings'] = array(
-  'image_style' => 'search_thumbnail',
+  'image_style' => 'gallery_thumbnail',
   'image_link' => '',
 );
-/* Sort criterion: Content: Post date */
-$handler->display->display_options['sorts']['created']['id'] = 'created';
-$handler->display->display_options['sorts']['created']['table'] = 'node';
-$handler->display->display_options['sorts']['created']['field'] = 'created';
-$handler->display->display_options['sorts']['created']['order'] = 'DESC';
+/* Field: Preview */
+$handler->display->display_options['fields']['uc_product_image_1']['id'] = 'uc_product_image_1';
+$handler->display->display_options['fields']['uc_product_image_1']['table'] = 'field_data_uc_product_image';
+$handler->display->display_options['fields']['uc_product_image_1']['field'] = 'uc_product_image';
+$handler->display->display_options['fields']['uc_product_image_1']['ui_name'] = 'Preview';
+$handler->display->display_options['fields']['uc_product_image_1']['label'] = '';
+$handler->display->display_options['fields']['uc_product_image_1']['exclude'] = TRUE;
+$handler->display->display_options['fields']['uc_product_image_1']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['uc_product_image_1']['click_sort_column'] = 'fid';
+$handler->display->display_options['fields']['uc_product_image_1']['settings'] = array(
+  'image_style' => 'search_preview',
+  'image_link' => '',
+);
+/* Field: Colorbox: Colorbox trigger */
+$handler->display->display_options['fields']['colorbox']['id'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['table'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['field'] = 'colorbox';
+$handler->display->display_options['fields']['colorbox']['label'] = '';
+$handler->display->display_options['fields']['colorbox']['element_label_colon'] = FALSE;
+$handler->display->display_options['fields']['colorbox']['trigger_field'] = 'uc_product_image';
+$handler->display->display_options['fields']['colorbox']['popup'] = '[uc_product_image_1]';
+$handler->display->display_options['fields']['colorbox']['gid'] = 1;
+$handler->display->display_options['fields']['colorbox']['width'] = '';
+$handler->display->display_options['fields']['colorbox']['height'] = '';
+/* Sort criterion: Global: Random */
+$handler->display->display_options['sorts']['random']['id'] = 'random';
+$handler->display->display_options['sorts']['random']['table'] = 'views';
+$handler->display->display_options['sorts']['random']['field'] = 'random';
 /* Contextual filter: Content: Event (field_event_reference) */
 $handler->display->display_options['arguments']['field_event_reference_nid']['id'] = 'field_event_reference_nid';
 $handler->display->display_options['arguments']['field_event_reference_nid']['table'] = 'field_data_field_event_reference';
@@ -1667,13 +1690,16 @@ $translatables['event_carousel'] = array(
   t('Sort by'),
   t('Asc'),
   t('Desc'),
-  t('<div class="gray-bdr-bottom20px"></div>'),
+  t('<div class="gray-bdr"></div>
+<div class="gallery-link">
+  <?php echo l(t("More photos"), "event/" . !1 . "/gallery"); ?>
+</div>
+'),
   t('<div class="margin10px"></div>'),
   t('All'),
   t('Block'),
 );
 
-  
   $views[$view->name] = $view;
 
 /**

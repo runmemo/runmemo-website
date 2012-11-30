@@ -114,8 +114,8 @@ function search_photos_form($form, &$form_state) {
   if (arg('0') != 'search-result') {
     $form['search_filter']['find'] =
     array(
-    '#markup' => "<div id='find'>" . t('Runners') . "</div>
-    <div id='great_photos'>" . t('Find great photos of you') . "</div>");
+    '#markup' => "<div id='find'>" . t('Find me') . "</div>");
+   //div id='great_photos'>" . t('Find great photos of you') . "</div>");
   }
   $form['search_filter']['event'] = array(
     '#type' => 'select', 
@@ -258,9 +258,9 @@ function find_trade_section() {
   $style = "<div id='front-search-photos'>
   				<div>$find_photos</div>
   				<div id='block-photographers'>
-    				<div id='trade'>" . t('Photographers') . "</div>  
-    				<div id='taken_picture'>" . t('Sell your photos') . "</div>
-    				<div id='front-trade-photos'>
+    				<div id='trade'>" . t('Upload photos') . "</div>" .  
+    			//	<div id='taken_picture'>" . t('Sell your photos') . "</div>
+    				"<div id='front-trade-photos'>
     				$trade_photos
     				</div>
     			</div>	
