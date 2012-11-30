@@ -140,19 +140,21 @@
 	margin-right:10px;
 	margin-left:-26px;
 	margin-top:-25px;
-	width: 60px; height: 40px;
+	width: 60px;
+  height: 36px;
 	padding:0px;
 	background: #fcfcfc; 
-	background: linear-gradient(top, #fcfcfc 0%,#dad8d8 100%); 
+	/* background: linear-gradient(top, #fcfcfc 0%,#dad8d8 100%); 
 	background: -moz-linear-gradient(top, #fcfcfc 0%, #dad8d8 100%); 
-	background: -webkit-linear-gradient(top, #fcfcfc 0%,#dad8d8 100%); 
-	border: 1px solid #d2d2d2;
-	border-radius: 10px 0 10px 0px;
+	background: -webkit-linear-gradient(top, #fcfcfc 0%,#dad8d8 100%);  */
+	border: 1px solid #d2d2d2; 
+	border-top-left-radius: 10px;
+/*  border-bottom-right-radius: 10px;
 	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px 0 10px 0px;
-	box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+	-webkit-border-radius: 10px 0 10px 0px; */
+	/* box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
 	-moz-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-	-webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
+	-webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1); */
 }
 .node-event .date p {
 		margin:0px;
@@ -162,16 +164,15 @@
 	
 .node-event .date p span {
 		background: #FF6600; 
-		background: linear-gradient(top, #FF6600 0%, #A32900 100%);
+	/*	background: linear-gradient(top, #FF6600 0%, #A32900 100%);
 		background: -moz-linear-gradient(top, #FF6600 0%, #A32900 100%);
-		background: -webkit-linear-gradient(top, #FF6600 0%, #A32900 100%);
-		font-size: 10px; font-weight: bold; color: #fff; text-transform: uppercase; 	
+		background: -webkit-linear-gradient(top, #FF6600 0%, #A32900 100%); */
+		font-size: 10px; font-weight: bold; color: #fff; text-transform: uppercase;  	
 		display: block;
 		border-top: 3px solid #a13838;
-		border-radius: 0 0 10px 0px;
-		-moz-border-radius: 0 0 10px 10px;
-		-webkit-border-radius: 0 0 10px 0px;
 		padding: 6px 0 6px 0;
+    border-bottom-right-radius: 10px;
+    border-right: 1px solid #FF6600;
 	}
 
 /* ******** Events List View ********* */
