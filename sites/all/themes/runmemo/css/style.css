@@ -1469,7 +1469,6 @@ a#guide:hover {
 	font-size: 13px;
 	-webkit-box-shadow: none !important;
 	-moz-box-shadow: none !important;
-	box-shadow: none !important;
 	padding-left: 7px;
 	padding-top: 2px;
 	padding-bottom: 2px;
@@ -1490,7 +1489,7 @@ a#guide:hover {
 }
 
 .recent-events .form-submit:hover {
-	background-color: #39F;
+	background-color: #04F;
 }
 
 .block .content {
