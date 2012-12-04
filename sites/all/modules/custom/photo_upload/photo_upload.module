@@ -82,7 +82,7 @@ function photo_upload_permission() {
 function select_event_function() {
 
   $form = array();
-  $events = get_events();
+  $events = get_events_upload();
   drupal_add_js(array("photo_upload" => $events), 'setting');
   
   $options = array();

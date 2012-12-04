@@ -5,18 +5,20 @@
  */
 
 /**
- * Get the event name from content type 'event'
+ * Get the event name from content type 'event' for event drop down
+ * for photographers to upload photos
  * @return
- * $event_title return event title,nid array
+ * $events return array of event details (nid, title and default prices)
  */
-function get_events($nids = array()) {
+function get_events_upload($nids = array()) {
   // @todo: replace with field query and give an option to select events from the past only only.
   
   $query = new EntityFieldQuery();
   
   $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'event')
-        ->propertyCondition('status', 1, '=');
+        ->propertyCondition('status', 1, '=')
+        ->fieldCondition('field_date', 'value', date('Y-m-d'), '<'); 
   if (!empty($nids)) {
     $query->propertyCondition('nid', $nids, '=');
   }
@@ -28,13 +30,8 @@ function get_events($nids = array()) {
      $nodes = entity_load('node', array_keys($result['node']));
     
      foreach ($nodes as $nid => $node) {
-       if (!isset($node->title_field[$language->language])) {
-         $lang = $node->language;
-       } 
-       else {
-         $lang = $language->language;
-       }
-       $title  = $node->title_field[$lang][0]['value'];
+       
+       $title  = get_node_translated_title($node);
        
        $country = 'GB';
        $field_address = field_get_items('node', $node, 'field_address');
@@ -68,6 +65,42 @@ function get_events($nids = array()) {
   }
 }
 
+/**
+ * Get the event name from content type 'event' for event drop down
+ * for runners to search photos
+ * @return
+ * $events return array of events (nid, title).
+ */
+function get_events_search($nids = array()) {
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'event')
+        ->propertyCondition('status', 1, '=')
+        ->fieldCondition('field_date', 'value', date('Y-m-d'), '<')
+        ->fieldCondition('field_count_photos', 'value', 0, '>');
+  if (!empty($nids)) {
+    $query->propertyCondition('nid', $nids, '=');
+  }
+  $result = $query->execute();
+  
+  if (!empty($result['node'])) {
+     $nodes = entity_load('node', array_keys($result['node']));
+     
+     foreach ($nodes as $nid => $node) {      
+       $title  = get_node_translated_title($node);
+       $events[$node->nid] = array(
+       		'nid' => $node->nid, 
+       		'title' => $title,
+       );
+     }
+     return $events;
+  } 
+  else { 
+    return FALSE;
+  }
+}
+
+
 function get_price_field_value($node, $field_name, $defaults) {
   $items = field_get_items('node', $node, 'field_' . $field_name);
   if ($items) {
@@ -88,10 +121,14 @@ function get_price_field_value($node, $field_name, $defaults) {
  * @param integer $nid - node id of event
  */
 function get_event($nid) {
-  $nids = array('nid' => $nid);
-  $events = get_events($nids);
-  if ($events) {
-    return $events[$nid];
+  
+  $node = node_load($nid);
+  if ($node) {
+    $event = array (
+      'nid' => $nid,
+      'title' => get_node_translated_title($node),
+    );
+    return $event;
   }
   return FALSE;
 }

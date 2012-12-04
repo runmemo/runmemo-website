@@ -131,7 +131,7 @@ function search_photos_form($form, &$form_state) {
   //select event options from content type 'event'
 
   //get the event name from content type 'event'
-  $events = get_events();
+  $events = get_events_search();
   foreach ($events as $nid => $event) {
     $form['search_filter']['event']['#options'][$event['nid']] = $event['title'];
   }
@@ -225,7 +225,7 @@ function sell_photos_form($form, &$form_state) {
   //select event options from content type 'event'
 
   //get the event name from content type 'event'
-  $events = get_events();
+  $events = get_events_upload();
   foreach ($events as $event) {
     $event_title = $event['title'];
     $event_nid   = $event['nid'];
