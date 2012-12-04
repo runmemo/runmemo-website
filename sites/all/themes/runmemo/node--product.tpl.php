@@ -118,9 +118,9 @@
   </div>
 
   <?php 
-  $field_event_reference = field_get_items('node', $node, 'field_event_reference');
-  $event_id = $field_event_reference[0]['nid'];
-  $events = get_events($event_id);
+    $field_event_reference = field_get_items('node', $node, 'field_event_reference');
+    $event_id = $field_event_reference[0]['nid'];
+    $events = get_events_upload($event_id);
   ?>
   <input type="hidden" name="product_id" id="product_id" value="<?php echo $node->nid; ?>">
   <input type="hidden" name="price_val" id="price_val" value="<?php echo $node->list_price; ?>"> 

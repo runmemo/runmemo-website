@@ -71,16 +71,13 @@ function get_events_upload($nids = array()) {
  * @return
  * $events return array of events (nid, title).
  */
-function get_events_search($nids = array()) {
+function get_events_search() {
   $query = new EntityFieldQuery();
   $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'event')
         ->propertyCondition('status', 1, '=')
         ->fieldCondition('field_date', 'value', date('Y-m-d'), '<')
         ->fieldCondition('field_count_photos', 'value', 0, '>');
-  if (!empty($nids)) {
-    $query->propertyCondition('nid', $nids, '=');
-  }
   $result = $query->execute();
   
   if (!empty($result['node'])) {
