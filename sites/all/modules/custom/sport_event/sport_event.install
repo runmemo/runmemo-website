@@ -58,5 +58,5 @@ function sport_event_update_7001() {
  */
 function sport_event_update_7002() {
   $fields = _sport_event_field_default_fields();
-  creat_field($fields['node-event-field-count-photos']);
+  create_field($fields['node-event-field-count-photos']);
 }
