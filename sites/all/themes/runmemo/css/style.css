@@ -173,6 +173,11 @@ it
 	display: none
 }
 
+.page-user-register input.password-confirm {
+	margin-bottom: 1em;
+	
+}
+
 .page-user-edit .page-title,.page-user-register .page-title {
 	display: inline;
 	width: 500px;
