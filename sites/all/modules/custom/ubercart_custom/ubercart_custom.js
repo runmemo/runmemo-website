@@ -13,7 +13,7 @@
 	  function onPriceChange( event, ui ) {
 	    var price = $("#price").slider( "value" );
 	    var base_path = Drupal.settings.basePath;
-	    var nid = $('.node-type-product #product_id').val();
+	    var nid = Drupal.settings.product['nid'];
 	    //define php info and make ajax call
 	    $.ajax({
 	        url : base_path + "ajax/change_price",
@@ -30,10 +30,11 @@
             
 	  }
 	
-	 var price = Math.floor($( ".node-type-product #price_val" ).val());
-         var min_price = Math.floor($( ".node-type-product #min_price" ).val());
-         var max_price = Math.floor($( ".node-type-product #max_price" ).val());
-         var currency_sign = $( ".node-type-product #currency_sign" ).val();
+         var product = Drupal.settings.product;
+	 var price = Math.floor(product.price);
+         var min_price = Math.floor(product.min_price);
+         var max_price = Math.floor(product.max_price);
+         var currency_sign = product.currency_sign;
          var step = 1;
          if (max_price - min_price > 100) {
             step = 10;
