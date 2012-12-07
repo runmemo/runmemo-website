@@ -128,6 +128,9 @@
     $product['min_price'] = $events[$event_id]['min_price'];
     $product['max_price'] = $events[$event_id]['max_price']; 
     $product['currency_sign'] = $events[$event_id]['currency_sign'];
+    
+    $path = drupal_get_path('module', 'ubercart_custom');
+    drupal_add_js($path . '/product_slider.js');    
     drupal_add_js(array('product' => $product), 'setting');
   
   ?>
