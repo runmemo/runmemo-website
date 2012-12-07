@@ -82,7 +82,7 @@ function photo_upload_permission() {
 function select_event_function() {
 
   $form = array();
-  $events = get_events();
+  $events = get_events_upload();
   drupal_add_js(array("photo_upload" => $events), 'setting');
   
   $options = array();
@@ -190,6 +190,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
       form_set_error('pud', "Upload of {$uploaded_file['name']} failed");
     }
   }
+  
+  $event_nid = $form_state['values']['selected_event'];
+  sport_event_fill_field_count_photos($event_nid);
   
   $form_state['redirect'] = "photographer/myphotos";   
   

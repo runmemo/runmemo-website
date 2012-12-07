@@ -306,3 +306,23 @@ function get_vocabulary_terms_by_name($vocabulary_name) {
   }
   return $options;
 }
+
+/**
+ * Gets the title from the provided node in language of the user
+ * @param object $node node from wich we want to get the title in the 
+ * current language of the user
+ * @return string title of the node in current language
+ */
+function get_node_translated_title($node) {
+   global $language;
+   if (!isset($node->title_field[$language->language])) {
+     $lang = $node->language;
+   } 
+   else {
+     $lang = $language->language;
+   }
+   $title  = $node->title_field[$lang][0]['value'];
+   return $title;
+}
+      
+       

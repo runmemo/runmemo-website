@@ -173,6 +173,11 @@ it
 	display: none
 }
 
+.page-user-register input.password-confirm {
+	margin-bottom: 1em;
+	
+}
+
 .page-user-edit .page-title,.page-user-register .page-title {
 	display: inline;
 	width: 500px;
@@ -1459,11 +1464,10 @@ a#guide:hover {
 }
 
 .recent-events .form-text {
-	width: 100px;
+	width: 93px;
 	line-height: 25px;
 	height: 25px;
 	border: 1px solid #DEE4E7;
-	border-radius: 5px 5px 5px 5px;
 	color: #1A253C;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;
@@ -1472,8 +1476,13 @@ a#guide:hover {
 	padding-left: 7px;
 	padding-top: 2px;
 	padding-bottom: 2px;
+  margin-left: 6px;
 	margin-right: 10px;
 	float: left;
+}
+
+.event-thumbnails {
+  margin-left:11px;
 }
 
 .recent-events .form-submit {
@@ -1483,9 +1492,10 @@ a#guide:hover {
 	cursor: pointer;
 	border: 0 none;
 	cursor: pointer;
-	height: 32px;
+	height: 30px;
 	width: 100px;
 	float: left;
+  border-radius: 3px;
 }
 
 .recent-events .form-submit:hover {
@@ -2929,7 +2939,8 @@ label.option {
 	margin-top:-35px;
 }
 .node-type-page .region-content {
-	clear:left;
+  float: left;
+	clear: left;
 } 
 
 
