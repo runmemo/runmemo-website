@@ -36,7 +36,8 @@ function sport_event_views_api() {
 function sport_event_block_info() {
   $blocks['registration_link'] = array('info' => t('Register to join our team link'), );
   $blocks['registration_button'] = array('info' => t('Event Registration Button'), );
-  $blocks['search_by_number'] = array('info' => t('Search photos from an event'), );
+  $blocks['search_by_number'] = array('info' => t('Search photos from an event'),
+                                      'cache' => DRUPAL_NO_CACHE);
   $blocks['sport_event_create'] = array('info' => t('Form to add new event'), );
   return $blocks;
 }
@@ -152,13 +153,16 @@ function registration_button_block() {
 }
 
 function search_by_number_block() {
+  $event = menu_get_object();
+  if (isset($event)) {
+    if ($event->field_count_photos[LANGUAGE_NONE][0]['value'] > 0) {
+      $block = array();
+      $block['subject'] = t('Search photos from an event');
+      $block['content'][] = drupal_get_form('search_by_number_form');
 
-
-  $block = array();
-  $block['subject'] = t('Search photos from an event');
-  $block['content'][] = drupal_get_form('search_by_number_form');
-
-  return $block;
+      return $block;
+    }
+  }
 
 }
 
@@ -250,25 +254,25 @@ function search_by_number_form($form, &$form_state) {
     return;
   }
   
-  $form['number'] = array(
-      '#id' => 'field-number',
-      '#type' => 'textfield',
-      '#size' => 20,
-      '#required' => TRUE,
-  );
-  $form['submit'] = array( // search button
-      '#type' => 'submit', 
-      '#value' => t('Search'), 
-      '#prefix' => '<div id="search-by-number-button">',
-      '#suffix' => '</div>',
-      '#submit' => array('search_by_number_form_submit'), 
-  );
+    $form['number'] = array(
+        '#id' => 'field-number',
+        '#type' => 'textfield',
+        '#size' => 20,
+        '#required' => TRUE,
+    );
+    $form['submit'] = array( // search button
+        '#type' => 'submit', 
+        '#value' => t('Search'), 
+        '#prefix' => '<div id="search-by-number-button">',
+        '#suffix' => '</div>',
+        '#submit' => array('search_by_number_form_submit'), 
+    );
 
-  // cache nid in the form as it will not be available in the callback overwise
-  $form['event_id'] = array(
-    '#type' => 'hidden',
-    '#value' =>  $nid,   
-  );
+    // cache nid in the form as it will not be available in the callback overwise
+    $form['event_id'] = array(
+      '#type' => 'hidden',
+      '#value' =>  $nid,   
+    );
   return $form;
 }
 

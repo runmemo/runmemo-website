@@ -121,11 +121,18 @@
     $field_event_reference = field_get_items('node', $node, 'field_event_reference');
     $event_id = $field_event_reference[0]['nid'];
     $events = get_events_upload($event_id);
+    
+    $product = array();
+    $product['nid'] = $node->nid;
+    $product['price'] = $node->list_price;
+    $product['min_price'] = $events[$event_id]['min_price'];
+    $product['max_price'] = $events[$event_id]['max_price']; 
+    $product['currency_sign'] = $events[$event_id]['currency_sign'];
+    
+    $path = drupal_get_path('module', 'ubercart_custom');
+    drupal_add_js($path . '/product_slider.js');    
+    drupal_add_js(array('product' => $product), 'setting');
+  
   ?>
-  <input type="hidden" name="product_id" id="product_id" value="<?php echo $node->nid; ?>">
-  <input type="hidden" name="price_val" id="price_val" value="<?php echo $node->list_price; ?>"> 
-  <input type="hidden" name="min_price" id="min_price" value="<?php echo $events[$event_id]['min_price']; ?>"> 
-  <input type="hidden" name="max_price" id="max_price" value="<?php echo $events[$event_id]['max_price']; ?>"> 
-  <input type="hidden" name="currency_sign" id="currency_sign" value="<?php echo $events[$event_id]['currency_sign']; ?>"> 
 
 </div>
