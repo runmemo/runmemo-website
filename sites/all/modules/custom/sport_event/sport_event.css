@@ -101,20 +101,21 @@
     padding: 5px;
     margin-left: auto;
     margin-right: auto;
-        
+    margin-bottom:20px    
 }
 
 /* Registration Button */
 .node-type-event #center form {
   margin-bottom: 0;
 }
-#block-sport-event-registration-button #registration-button{
+#block-sport-event-registration-button #registration-button {
   height: 60px;
   margin-bottom: 20px;
 }
 
 #block-sport-event-registration-button #registration-button .form-submit {
   width: 200px;
+  margin-bottom:20px;
  }
 
 #block-sport-event-registration-button h2.title {
@@ -195,6 +196,7 @@ width: 108px!important;
 }
 
 .node-type-event .region-sidebar-second h2 {
+  clear:both;
   color: #94BB17;
   padding: 0px;
   font-size: 20px;
@@ -235,24 +237,16 @@ width: 108px!important;
   text-decoration: underline;
 }
 
-#block-views-upcoming-events-upcoming-events  .date-display-single {
+#block-views-upcoming-events-upcoming-events .date-display-single {
+  color:#1A253C;
+  font-weight: bold;
   float: left;
   display: block;
-  width: 58px;
+  width: 75px;
   margin-right: 10px;
-  padding: 2px;
-  background: #FCFCFC;
-  background: linear-gradient(top, #FCFCFC 0%,#DAD8D8 100%);
-  background: -moz-linear-gradient(top, #FCFCFC 0%, #DAD8D8 100%);
-  background: -webkit-linear-gradient(top, #FCFCFC 0%,#DAD8D8 100%);
   border: 1px solid #D2D2D2;
-  border-radius: 10px 0 10px 0px;
-  -moz-border-radius: 10px;
-  -webkit-border-radius: 10px 0 10px 0px;
-  box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-  -moz-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-  -webkit-box-shadow: 0px 0px 15px rgba(0,0,0,0.1);
-  
+  border-radius: 5px 0 5px 0px;
+  padding: 0 10px 0 10px; 
 }
 
 .node-event .field-name-field-geolocation {
