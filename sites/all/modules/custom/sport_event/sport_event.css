@@ -2,10 +2,13 @@
 	width:600px;
 	float:left;
 }
+.event-has-photos .region-sidebar-second {
+  margin-top:20px;
+}
 .node-type-event .region-sidebar-second {
-	margin-top:20px;
 	width: 330px;
-	}
+}
+
 .node-event {
 	margin:0;
 	border-top: 		1px solid #d2d2d2;
@@ -212,13 +215,13 @@ width: 108px!important;
 }
 
 .node-type-event .region-sidebar-second #field-number {
-  width: 150px;
+  width: 130px;
   padding-left: 10px;
-  margin: 1px;
+  margin: 20px 0 0 0;
 }
 
 .block-sport-event .form-submit {
-  margin: 0px;
+  /*margin: 0px;*/
 }
 
 .node-type-event .region-sidebar-second .username{
@@ -254,3 +257,45 @@ width: 108px!important;
   float: left;
   width: 100%;
 }
+
+#search-by-number-form {
+  height: 70px;
+}
+
+#photo-search-request-form {
+  margin-top: 15px;
+  height: 160px;
+}
+
+.node-type-event .form-item-number .form-text {
+  width: 110px;
+}
+.node-type-event .form-item-number {
+  float: left;
+}
+
+.block-photo-search .form-text {
+  width: 90%;
+}
+
+.node-type-event .block-photo-search .form-item {
+  margin-top: 0;  
+}
+
+
+.block-photo-search .form-submit {
+  margin-top: 20px;
+  width: 130px;
+}
+
+.block-photo-search {
+  padding: 20px;
+  background-color: #EEE;
+  margin-bottom: 20px;
+}
+
+.block-photo-search .form-item-number  .description {
+ /* display:none; */
+ width: 130px;
+}
+

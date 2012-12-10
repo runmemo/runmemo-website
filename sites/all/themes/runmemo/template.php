@@ -21,6 +21,9 @@ function runmemo_preprocess_html(&$vars) {
   if (theme_get_setting('runmemo_width') == 'fluid') {
     $vars['classes_array'][] = 'fluid-width';
   }
+  if (search_event_has_photos()) {
+    $vars['classes_array'][] = 'event-has-photos';
+  }
   // Add conditional CSS for IE6.
   drupal_add_css(path_to_theme() . '/fix-ie.css', array('group' => CSS_THEME, 'browsers' => array('IE' => 'lt IE 7', '!IE' => FALSE), 'preprocess' => FALSE));
 }
