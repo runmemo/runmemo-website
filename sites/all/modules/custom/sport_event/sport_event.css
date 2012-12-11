@@ -262,7 +262,7 @@ width: 108px!important;
   height: 70px;
 }
 
-#photo-search-request-form {
+.node-type-event #photo-search-request-form {
   margin-top: 15px;
   height: 160px;
 }
@@ -289,6 +289,7 @@ width: 108px!important;
 }
 
 .block-photo-search {
+  border: solid 1px #69A;
   padding: 20px;
   background-color: #EEE;
   margin-bottom: 20px;

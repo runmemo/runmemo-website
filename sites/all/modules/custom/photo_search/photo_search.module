@@ -484,7 +484,7 @@ function photo_search_request_form($form, &$form_state) {
       '#submit' => array('event_registration_form_submit'), 
       '#ajax' => array(
           'callback' => 'photo_request_form_js',
-          'wrapper' => 'photo-request-form',
+          'wrapper' => 'photo-search-request-form',
           'effect' => 'fade',
       ),
   );
