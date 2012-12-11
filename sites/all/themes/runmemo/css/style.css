@@ -942,15 +942,6 @@ it
 	padding: 8px !important;
 }
 
-.views-slideshow-cycle-main-frame {
-	top: 6px;
-	z-index: 0;
-}
-
-.views-slideshow-cycle-main-frame .img {
-	z-index: -1;
-}
-
 .page-user .block-nodeblock {
 	width: 400px;
 }
