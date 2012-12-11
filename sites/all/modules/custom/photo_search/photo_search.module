@@ -413,7 +413,7 @@ function product_exists($nid, $number, $expire = 0) {
 function photo_search_request_form($form, &$form_state) {
     
   $number = '';
-  
+  $is_event = FALSE;
   if (arg(0) == 'search-result') {
     if (is_numeric(arg(1)) && (arg(1) != '')) {
       $eventid = arg(1);
@@ -432,20 +432,20 @@ function photo_search_request_form($form, &$form_state) {
     if (is_numeric(arg(2)) && (arg(2) != '')) {
       $number = arg(2);
     }
-  } 
-  else {
-    return;
-  }
-
-  
-  
-  $form['message'] = array(
+    
+    $form['message'] = array(
       '#type' => 'markup',
       '#prefix' => '<p>',
       '#suffix' => '</p>',
       '#id' => 'let-me-know-message',
       '#markup' => $message,
-  );
+    );
+    
+  } 
+  else { // we are on the event's content type page
+    $is_event = TRUE;
+    $eventid = arg(1);
+  }
   
   if ($eventid == NULL) {
     return $form;
@@ -459,7 +459,7 @@ function photo_search_request_form($form, &$form_state) {
   
   $form['email'] = array(
       '#type' => 'textfield',
-      '#title' => t('Email address'),
+      '#title' => t('Email'),
       '#size' => 30,
       '#maxlength' => 255,
       '#description' => t('We will send an email to that address'),
@@ -473,6 +473,9 @@ function photo_search_request_form($form, &$form_state) {
       '#description' => t('Number that you were wearing'),
       '#default_value' => $number,  
   );
+  if ($is_event) {
+     $form['number']['#description'] = '';
+  }
   $form['submit'] = array(
       '#type' => 'submit', 
       '#prefix' => '<div id="photo-request-submit-button">',
@@ -481,7 +484,7 @@ function photo_search_request_form($form, &$form_state) {
       '#submit' => array('event_registration_form_submit'), 
       '#ajax' => array(
           'callback' => 'photo_request_form_js',
-          'wrapper' => 'photo-request-form',
+          'wrapper' => 'photo-search-request-form',
           'effect' => 'fade',
       ),
   );
@@ -650,3 +653,101 @@ function photo_search_preprocess_html(&$vars) {
   }
 }
 
+
+/**
+ *
+ * implements hook_block_info()
+ */
+function photo_search_block_info() {
+  $blocks['photo_search_from_event'] = 
+    array('info' => t('Search block for Event page.'), 
+          'cache' => DRUPAL_NO_CACHE);
+  return $blocks;
+}
+
+/**
+ *
+ * implements hook_block_view()
+ */
+function photo_search_block_view($delta = '') {
+  // The $delta parameter tells us which block is being requested.
+  switch ($delta) {
+    case 'photo_search_from_event':
+      return photo_search_event_search_block();
+      break;
+  }
+}
+
+
+/**
+ * Block that allows users to search for their photo if photos where uploaded.
+ * Otherwise users can leave request to be notified of their photos.
+ * @return array 
+ */
+function photo_search_event_search_block() {
+ 
+  $block = array();
+  if (!search_event_has_photos()) { // show form for requests
+    $block['subject'] = t('Leave Request');
+    $block['content'][] = drupal_get_form('photo_search_request_form');
+  }
+  else { // show search form
+    $block['subject'] = t('Find me by number');
+    $block['content'][] = drupal_get_form('search_by_number_form');
+  }
+  
+  return $block;
+}
+
+/**
+ * Search photos from an event form implementation
+ * @param array $form
+ * @param array $form_state
+ */
+function search_by_number_form($form, &$form_state) {
+  $nid = -1;
+  $node = menu_get_object();
+  if (isset($node)) {
+    $nid = $node->nid;
+  }
+  else {
+    watchdog('Callback', 'search_by_number_form is visible in a wrong place.', array($form), WATCHDOG_ERROR);    
+    return;
+  }
+  
+    $form['number'] = array(
+        '#id' => 'field-number',
+        //'#title' => t('Bib number'),
+        '#type' => 'textfield',
+        '#size' => 20,
+        '#required' => TRUE,
+    );
+    $form['submit'] = array( // search button
+        '#type' => 'submit', 
+        '#value' => t('Search'), 
+        '#prefix' => '<div id="search-by-number-button">',
+        '#suffix' => '</div>',
+        '#submit' => array('search_by_number_form_submit'), 
+    );
+
+    // cache nid in the form as it will not be available in the callback overwise
+    $form['event_id'] = array(
+      '#type' => 'hidden',
+      '#value' =>  $nid,   
+    );
+  return $form;
+}
+
+
+function search_by_number_form_submit($form, &$form_state) {
+  // get event id and number
+  $eid = $form['event_id']['#value'];
+  $number = $form['number']['#value'];
+  // build path to the search page
+  $path = 'search-result/' . $eid . '/' . $number;
+  $form_state['redirect'] = array( 
+      $path,    // http_path
+      array(),  // $options
+      302,      // $http_response_code
+  );
+}
