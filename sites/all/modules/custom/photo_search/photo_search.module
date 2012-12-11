@@ -256,8 +256,10 @@ function find_trade_section() {
     $trade_photos = drupal_render(drupal_get_form('sell_photos_form'));
   }
   $style = "<div id='front-search-photos'>
-  				<div>$find_photos</div>
-  				<div id='block-photographers'>
+  				<div class='front-block-search'>
+            $find_photos
+          </div>
+  				<div class='front-block-upload'>
     				<div id='trade'>" . t('Upload photos') . "</div>" .  
     			//	<div id='taken_picture'>" . t('Sell your photos') . "</div>
     				"<div id='front-trade-photos'>

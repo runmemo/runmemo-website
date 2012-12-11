@@ -1,15 +1,13 @@
-.page-photographer #center form {
-	margin:0;
-	
-	}
+
 .page-photographer #select-event-function {
 	height:80px;
 	padding:20px;
-	border-style:solid;
-	border-width:1px;
-	border-bottom-left-radius:5px;
-	border-bottom-right-radius:5px;
-	border-color:#999;
+	margin-top: 2px;
+  background-color: #384551;
+}
+
+.page-photographer #select-event-function label {
+  color: #FFF;
 }
 
 .page-photographer .select_event_title {
@@ -28,8 +26,9 @@ font-family:'Walkway Bold',sans-serif;
   padding:15px 0 15px 0;
 }
 .plupload {
-	width:100%;
-	}
+	width:978px;
+}
+
 .photographer-drag-and-drop-form .form-type-plupload 
 {
 margin-top:20px;
@@ -48,9 +47,10 @@ display:block;
    display:block;
    clear:both;
    position:relative;
-   margin-left:0px;
-	padding-left:0px;
+  margin-left:0px;
 	margin-right:0px;
+  padding-top: 0;
+	padding-left:0px;
 	padding-right:0px;
 	width:100%;
 }
