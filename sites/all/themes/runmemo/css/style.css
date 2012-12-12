@@ -623,7 +623,6 @@ it
   width: 500px;
   border:none;
   border-radius: 0;
-  background-color: #EEE;
 }
 
 #user-register-form label, 
@@ -2116,6 +2115,10 @@ table.cart-block-summary tbody tr td {
   margin-bottom: 0;
 }
 
+.page-user-register .region-sidebar-second h2 {
+  text-align: left;
+  border-bottom: none;
+}
 
 #user-register-form .form-submit {
 	width: 150px;
@@ -2852,7 +2855,6 @@ label.option {
 	border: 1px solid #DEE4E7;
 	max-width:260px;
 	max-height:400px;
-	background-color: #FFC;
 	border-top-left-radius: 5px;
 	border-top-right-radius: 5px;
 }
@@ -2865,7 +2867,6 @@ label.option {
 	width: 250px;
 	height: 30px;
 	padding-left: 10px;
-	background-color: #FFC;
 }
 
 
@@ -2895,7 +2896,6 @@ label.option {
 
 .form-textarea-wrapper textarea {
 	border: 1px solid #DEE4E7;
-	background-color: #FFC;
 }
 
 .form-textarea-wrapper textarea:focus {

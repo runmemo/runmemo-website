@@ -98,6 +98,9 @@ html.js .event-add-form fieldset.collapsible .fieldset-legend {
 	font-size: 20px;
 }
 
+.event-add-form #edit-event .fieldset-legend {
+  color: #4AB0F8;
+}
 .event-add-form fieldset legend {
 	float: left;
     clear:left;
@@ -107,12 +110,12 @@ html.js .event-add-form fieldset.collapsible .fieldset-legend {
 
 .event-add-form fieldset {	
 	clear: both; 
-	border-top: dashed 1px #E60;
+	border-top: solid 1px #DDD;
 }
 
 .event-add-form .form-actions {
-	border-top: dashed 1px #E60;
-	border-bottom: dashed 1px #E60;
+	border-top: solid 1px #DDD;
+	border-bottom: solid 1px #DDD;
 	padding-bottom:15px;
 }
 
