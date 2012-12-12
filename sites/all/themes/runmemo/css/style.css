@@ -545,6 +545,8 @@ it
 
 .page-user #user-login {
 	margin-top: 20px;
+  margin-left: 290px;
+  width: 400px;
 }
 
 .page-user h1 {
@@ -1172,11 +1174,6 @@ ul.nice-menu, ul.nice-menu ul
 
 .views-exposed-form .views-exposed-widget .form-submit {
 	margin-top: 19px;
-}
-
-.page-user #user-login {
-	height: 200px;
-	width: 400px;
 }
 
 .page-login #user-login {
