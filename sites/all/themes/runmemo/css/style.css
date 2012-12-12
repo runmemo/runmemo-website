@@ -890,7 +890,7 @@ it
 .front-block-upload {
   padding: 20px 50px 20px 65px;
   height: 220px;
- /* background-color: #384551; */
+
 }
 .logged-in .front-block-upload {
   height: 169px;
@@ -899,15 +899,6 @@ it
   padding-top: 30px;
   height: 210px;
 }
-/*
-.front-block-upload .form-submit {
-  color: #384551;
-  background-color: white;
-}
-
-.front-block-upload .form-submit:hover {
-  background-color: #EEE;
-} */
 
 .page-search-result .chzn-container-single .chzn-single {
 	width: 450px !important;
@@ -1159,10 +1150,18 @@ ul.nice-menu, ul.nice-menu ul
 	border-radius: 5px;
 }
 
-.page-user form,.view-filters form {
+.view-filters form {
 	float: left;
 	width: 100%;
 }
+.page-user form {
+  float: left;
+  width: 500px;
+}
+.page-user #edit-locale {
+  display: none;
+}
+
 
 .views-exposed-form {
 	border: 1px solid #BFBFBF;
