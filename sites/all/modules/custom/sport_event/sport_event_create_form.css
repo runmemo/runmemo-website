@@ -70,7 +70,8 @@
 }
 
 .event-add-form .form-type-checkbox {
-	margin-left: 350px;
+	margin-right: 200px;
+  margin-left: 20px;
 	margin-top: 25px;
 }
 
@@ -114,3 +115,17 @@ html.js .event-add-form fieldset.collapsible .fieldset-legend {
 	border-bottom: dashed 1px #E60;
 	padding-bottom:15px;
 }
+
+#edit-captcha-response {
+  width:auto;
+}
+
+.form-item-captcha-response {
+  margin-top: 20px;
+}
+
+.form-item-captcha-response label {
+  display:none;
+}
+
+
