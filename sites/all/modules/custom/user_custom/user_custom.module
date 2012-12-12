@@ -150,15 +150,38 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
  * implements hook_form_alter for user_register_form 
  */  
 function user_custom_form_user_register_form_alter(&$form, $form_state) {
+  //print_nice($form);
+  // remove page title and add title inside the form
+  drupal_set_title('');
+  $form['title'] = array (
+    '#type' => 'markup',
+    '#markup' => '<h1>' . t('Sign Up') . '</h1><br><h2>'. t('And share your photos with runners') . '</h2>',
+    '#weight' => -10,
+  );
   
-  drupal_set_title(t('New photographer account'));
+  // this removes password confirmation field
+  $form['account']['pass']['#type'] = 'password';
+  $form['account']['pass']['#title'] = 'Password';
+  
+  $form['actions']['submit']['#value'] = t('Sign Up');
   
   $form['#submit']['set_photographer_role_submit'] = 'user_set_photographer_role'; 
  
 }
 
 function user_custom_form_user_profile_form_alter(&$form, $form_state) {
-   drupal_set_title(t('Edit account details'));
+   drupal_set_title(t(''));
+    $form['title'] = array (
+    '#type' => 'markup',
+    '#markup' => '<h1>' . t('Edit Account Details') . '</h1><br><h2>'. t('') . '</h2>',
+    '#weight' => -10,
+  );
+   
+    // this removes password confirmation field
+  $form['account']['pass']['#type'] = 'password';
+  $form['account']['pass']['#title'] = 'Password';
+    
+   //print_nice($form);
   
 }
 
