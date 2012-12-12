@@ -559,6 +559,14 @@ it
 	font-weight: normal;
 }
 
+.page-user h2 {
+	color: #4AB0F8;
+	font-family: walkway-bold, sans-serif;
+	font-size: 20px;
+	font-weight: normal;
+}
+
+
 .page-user .region-sidebar-second h2 {
 	color: #94BB17;
 	font-size: 26px;
@@ -614,11 +622,15 @@ it
 
 #user-register-form {
 	float: left;
-	margin-top: 20px;
 	padding: 20px;
+  width: 500px;
+  border:none;
+  border-radius: 0;
+  background-color: #EEE;
 }
 
-#user-register-form label,#user-login label {
+#user-register-form label, 
+#user-login label {
 	color: #1A253C;
 	float: left;
 	font-family: arial;
@@ -635,6 +647,7 @@ it
 }
 
 #user-register-form .form-text {
+  margin-right: 30px;
 	float: right;
 	width: 300px;
 	clear: right;
@@ -2109,12 +2122,14 @@ table.cart-block-summary tbody tr td {
 	font-style: italic;
 }
 
-#user-register-form {
-	width: 450px;
+.page-user-register .gray-bdr {
+  margin-bottom: 0;
 }
 
+
 #user-register-form .form-submit {
-	width: 250px;
+	width: 150px;
+  margin-right:30px;
 }
 
 .page-login #forgot_pwd {
