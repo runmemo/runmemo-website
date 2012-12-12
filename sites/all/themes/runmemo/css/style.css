@@ -876,25 +876,23 @@ it
 }
 
 .front-block-search {
-    padding: 10px 40px 20px 75px;
+    padding: 20px 50px 20px 65px;
     background-color: #EEE;
+    height: 169px;
 }
 .front-block-upload {
-  padding: 10px 40px 20px 75px;
+  padding: 20px 50px 20px 65px;
+  height: 220px;
   background-color: #384551;
 }
 .logged-in .front-block-upload {
-  height: 179px;
+  height: 169px;
 }
 .logged-in .front-block-search {
-  height: 230px;
+  padding-top: 30px;
+  height: 210px;
 }
-.not-logged-in .front-block-upload {
-  height: 230px;
-}
-.not-logged-in .front-block-search {
-  height: 179px;
-}
+
 .front-block-upload .form-submit {
   color: #384551;
   background-color: white;
@@ -2490,31 +2488,25 @@ table.cart-block-summary tbody tr td {
 	margin-bottom: 0px;
 }
 /* -------------- THE button -------------- */
-.form-submit { /* text */
+.form-submit { 
+  /* text */
 	text-decoration: none;
 	font-size: 14pt;
 	font-weight: bold;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	/* layout */
+	/* position */
 	display: inline-block;
 	position: relative;
-	width: 150px;
-	height: 43px;
 	float: right;
+	margin-top: 15px;
+	/* layout */
+  width: 150px;
+	height: 43px;
+	border:none;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	margin-top: 15px;
-	border:none;
 	/* effects */
-	-webkit-transition: background .2s ease-in-out;
-	-moz-transition: background .2s ease-in-out;
-	transition: background .2s ease-in-out;
-	/* color 
-	color: 				hsl(0, 0%, 0%) !important; 
-	background-color: 	hsl(0, 0%, 75%);
-	*/
+	/* color */
 	color: #EEE;
 	background-color: #EE6600;
 }
@@ -2541,7 +2533,7 @@ table.cart-block-summary tbody tr td {
 	text-shadow: rgba(0, 0, 0, 0.2) 0 1px 2px;
 }
 
-.button[disabled],.button[disabled]:hover,.button.disabled,.button.disabled:hover
+.form-submit[disabled],.form-submit[disabled]:hover,.form-submit.disabled,.form-submit.disabled:hover
 	{
 	opacity: .5;
 	cursor: default;
