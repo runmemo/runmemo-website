@@ -113,8 +113,9 @@
 
 #block-sport-event-registration-button #registration-button .form-submit {
   width: 200px;
-  margin-bottom:20px;
- }
+  margin-top: 0;
+  margin-bottom: 20px;
+}
 
 #block-sport-event-registration-button h2.title {
 	display:none;
@@ -261,7 +262,7 @@ width: 108px!important;
 
 .node-type-event #photo-search-request-form {
   margin-top: 15px;
-  height: 150px;
+  height: 170px;
 }
 
 .node-type-event .form-item-number .form-text {
