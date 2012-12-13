@@ -239,6 +239,10 @@ width: 108px!important;
   padding: 20px;
 }
 
+#block-views-event-carousel-block {
+  padding: 0;
+}
+
 #block-views-upcoming-events-upcoming-events .date-display-single {
   color:#1A253C;
   float: left;
