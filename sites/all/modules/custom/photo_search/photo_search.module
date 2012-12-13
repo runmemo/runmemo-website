@@ -453,7 +453,8 @@ function photo_search_request_form($form, &$form_state) {
       '#prefix' => '<p>',
       '#suffix' => '</p>',
       '#id' => 'let-me-know-message',
-      '#markup' => 'No photos were uploaded to this event yet, but we\'d like to let you know once we find a photo of you',
+      '#markup' => t('No photos were uploaded to this event yet, 
+                    but we\'d like to let you know once we find your photos'),
     );
   }
   
