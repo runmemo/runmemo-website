@@ -2495,8 +2495,7 @@ table.cart-block-summary tbody tr td {
 .form-submit { 
   /* text */
 	text-decoration: none;
-	font-size: 14pt;
-	font-weight: bold;
+	font-size: 16pt;
 	/* position */
 	display: inline-block;
 	position: relative;
@@ -2511,7 +2510,7 @@ table.cart-block-summary tbody tr td {
 	border-radius: 5px;
 	/* effects */
 	/* color */
-	color: #EEE;
+	color: #FFF;
 	background-color: #EE6600;
 }
 
@@ -2913,135 +2912,6 @@ label.option {
 	clear: left;
 } 
 
-
-.node-type-event .view-event-carousel .jcarousel-container-horizontal {
-  width: 980px;
-  height: 192px;
-  padding: 0 40px;
-  margin-top: -2px;
-  margin-left: -40px;
-}
-
-.node-type-event .view-event-carousel .jcarousel-clip-horizontal {
-  width: 980px;
-  overflow: hidden;
-}
-
-.node-type-event .view-event-carousel .jcarousel-item {
-  padding: 0;
-  height: 192px;
-  width: 192px;
-  overflow: hidden;
-/*  border: 1px solid #CCC;*/
-  list-style: none;
-  background: #fff none;
-}
-
-.node-type-event .view-event-carousel .jcarousel-item-horizontal {
-  margin: 0 2px;
-}
-
-.node-type-event .view-event-carousel .jcarousel-item-placeholder {
-  height: 192px;
-  width: 192px;
-  background: #fff url("../images/throbber.gif") no-repeat center center;
-  color: #000;
-}
-
-/**
- * Buttons
- */
-.node-type-event .view-event-carousel .jcarousel-next,
-.node-type-event .view-event-carousel .jcarousel-prev {
-  display: block;
-  width: 32px;
-  height: 32px;
-  background-image: url("../images/arrows-runmemo.png");
-}
-
-.node-type-event .view-event-carousel .jcarousel-next-disabled,
-.node-type-event .view-event-carousel .jcarousel-prev-disabled {
-  display: none;
-}
-
-/**
- * Horizontal Buttons
- */
-.node-type-event .view-event-carousel .jcarousel-prev-horizontal {
-  position: absolute;
-  top: 75px;
-  left: 10px;
-  background-position: 0 0;
-}
-.node-type-event .view-event-carousel .jcarousel-prev-horizontal:hover {
-  background-position: -32px 0;
-}
-.node-type-event .view-event-carousel .jcarousel-prev-horizontal:active {
-  background-position: -64px 0;
-}
-
-.node-type-event .view-event-carousel .jcarousel-next-horizontal {
-  position: absolute;
-  top: 75px;
-  right: 10px;
-  background-position: 0 -32px;
-}
-.node-type-event .view-event-carousel .jcarousel-next-horizontal:hover {
-  background-position: -32px -32px;
-}
-.node-type-event .view-event-carousel .jcarousel-next-horizontal:active {
-  background-position: -64px -32px;
-}
-
-.node-type-event .view-event-carousel .jcarousel-navigation {
-  margin: 0;
-  padding: 0;
-}
-
-.node-type-event .view-event-carousel .jcarousel-navigation li {
-  display: inline;
-  margin: 0 2px 0 0;
-  padding: 0;
-  background: none;
-}
-
-.node-type-event .view-event-carousel .jcarousel-navigation li.active a {
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.node-type-event .view-event-carousel img {
-  height: 190px;
-  width: 190px;
-  overflow: hidden;
-  border: 1px solid #384551;
-  margin: 0;
-}
-
-.node-type-event .view-event-carousel .gallery-link {
-    margin-top: -5px;
-    width: 190px;
-    float: right;
-    text-align: center;
-    padding: 3px;
-    background-color: #384551;
-/*    border: 1px solid #585858;*/
-    border-bottom-left-radius: 5px;
-/*    border-bottom-right-radius: 5px;*/
-}
-.node-type-event .view-event-carousel .gallery-link a {
-      color: #DDD;
-}  
-
-.node-type-event .gray-bdr {
-  margin-top: 3px;
-  margin-bottom: 3px;
-}
-
-.node-type-event #block-system-navigation {
-  margin-bottom: 5px;
-}
-
 .margin10px {
   width: 100%;
   margin-bottom: 10px;
@@ -3149,4 +3019,8 @@ label.option {
 
 .front .form-item-event {
   width: 400px;
+}
+
+label {
+  font-weight: normal;
 }

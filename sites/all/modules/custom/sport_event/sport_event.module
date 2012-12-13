@@ -1,9 +1,7 @@
 <?php
 
 function sport_event_init() {
-  drupal_add_css(drupal_get_path('module', 'sport_event') . '/sport_event.css');
 }
-
 
 function sport_event_menu() {
   $items['director/event/add'] = array(
@@ -355,7 +353,7 @@ function sport_event_create_form($form, &$form_state) {
     // to create new user
     $form['contact']['first_name'] = array(
       '#type' => 'textfield',
-      '#title' => t('First Name'), 
+      '#title' => t('First Name') . ':', 
       '#size' => 60,
       '#maxlength' => 25,
       '#required' => TRUE,
@@ -363,7 +361,7 @@ function sport_event_create_form($form, &$form_state) {
     
     $form['contact']['last_name'] = array(
       '#type' => 'textfield',
-      '#title' => t('Last Name'),
+      '#title' => t('Last Name') . ':',
       '#size' => 60,
       '#maxlength' => 25,
       '#required' => TRUE,
@@ -371,7 +369,7 @@ function sport_event_create_form($form, &$form_state) {
    
     $form['contact']['email'] = array(
       '#type' => 'textfield',
-      '#title' => t('Email'),
+      '#title' => t('Email') . ':',
       '#size' => 60,
       '#maxlength' => 20,
       '#required' => TRUE,  
@@ -379,7 +377,7 @@ function sport_event_create_form($form, &$form_state) {
     
     $form['contact']['phone'] = array(
       '#type' => 'textfield',
-      '#title' => t('Phone'),
+      '#title' => t('Phone') . ':',
       '#size' => 60,
       '#maxlength' => 20,
       '#required' => FALSE,
@@ -388,7 +386,7 @@ function sport_event_create_form($form, &$form_state) {
     
      $form['contact']['username'] = array(
        '#type' => 'textfield',
-       '#title' => t('Username'),
+       '#title' => t('Username') . ':',
        '#size' => 60,
        '#maxlength' => 20,
        '#required' => TRUE,
@@ -400,7 +398,7 @@ function sport_event_create_form($form, &$form_state) {
     
      $form['contact']['password'] = array(
        '#type' => 'password',
-       '#title' => t('Password'),
+       '#title' => t('Password') . ':',
        '#size' => 60,
        '#maxlength' => 20,
        '#required' => TRUE,
@@ -424,7 +422,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['title'] = array(
     '#type' => 'textfield', 
-    '#title' => t('Name'), 
+    '#title' => t('Name') . ':', 
     '#size' => 60, 
     '#maxlength' => 128, 
     '#required' => TRUE,
@@ -433,7 +431,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['date'] = array(
     '#type' => 'date_popup',
-    '#title' => t('When'),
+    '#title' => t('When') . ':',
     '#date_format' => 'Y-m-d',
     '#required' => TRUE,
     '#date_year_range' => '-0:+1',
@@ -444,7 +442,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['website'] = array(
     '#type' => 'textfield',
-    '#title' => t('Website'), 
+    '#title' => t('Website') . ':', 
     '#size' => 60, 
     '#maxlength' => 128,
     '#required' => FALSE,
@@ -453,7 +451,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['distance'] = array(
     '#type' => 'select',
-    '#title' => t('Distance'),
+    '#title' => t('Distance') . ':',
     '#options' => get_vocabulary_terms_by_name('distance'),
     '#empty_value' => -1, 
     '#empty_option' => t('Select distance'), 
@@ -461,7 +459,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['country'] = array(
     '#type' => 'select',
-    '#title' => 'Country',
+    '#title' => 'Country' . ':',
     '#options' => country_get_list(),
     '#empty_value' => 'NONE',
     '#empty_option' => t('Select country'), 
@@ -475,7 +473,7 @@ function sport_event_create_form($form, &$form_state) {
   
   $form['event']['summary'] = array(
     '#type' => 'textarea',
-    '#title' => t('Details')
+    '#title' => t('Details') . ':'
   );
 
   $form['captcha'] = array(

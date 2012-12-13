@@ -170,7 +170,7 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
   
   // this removes password confirmation field
   $form['account']['pass']['#type'] = 'password';
-  $form['account']['pass']['#title'] = 'Password';
+  $form['account']['pass']['#title'] = t('Password');
   
   $form['actions']['submit']['#value'] = t('Sign Up');
   
