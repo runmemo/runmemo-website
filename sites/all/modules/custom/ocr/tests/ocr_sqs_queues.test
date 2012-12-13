@@ -20,19 +20,21 @@ class OcrSQSIntegrationTestCase extends DrupalWebTestCase {
   
  function setUp() {
     parent::setUp();
-  }
   
- /**
-   * Test that message that is sent to the queue is the same as the one that is read from the queue.
-   */
-  function testQueueSendsMessage() {
     variable_set('aws_account_id', '374933304004');
     variable_set('ocr_results_queue_url', 'https://eu-west-1.queue.amazonaws.com/374933304004/dev-ocr-results');
     variable_set('ocr_requests_queue_url',  'https://eu-west-1.queue.amazonaws.com/374933304004/dev-ocr-requests');
   
     variable_set('aws_access_key', 'AKIAJ77I2DG2NPHMNDIQ');
     variable_set('aws_secret_key', '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');
-
+    
+  }
+  
+ /**
+   * Test that message that is sent to the queue is the same as the one that is read from the queue.
+   */
+  function testQueueSendsMessage() {
+    
     $queue_url= 'https://eu-west-1.queue.amazonaws.com/374933304004/drupal-tests-queue';
     $q = new SqsQueue($queue_url);
     
