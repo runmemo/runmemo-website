@@ -385,8 +385,9 @@ function send_notifications($expire) {
 /**
  * 
  * Checks whether new photos with specified number were added to the system.
- * @param integer $nid
- * @param integer $number
+ * @param integer $nid nid of the event
+ * @param integer $number bib number of the runner
+ * @param integer $expire timestamp after which the product was changed
  */
 function product_exists($nid, $number, $expire = 0) {
   
@@ -447,6 +448,14 @@ function photo_search_request_form($form, &$form_state) {
   else { // we are on the event's content type page
     $is_event = TRUE;
     $eventid = arg(1);
+    $form['message'] = array(
+      '#type' => 'markup',
+      '#prefix' => '<p>',
+      '#suffix' => '</p>',
+      '#id' => 'let-me-know-message',
+      '#markup' => t('No photos were uploaded to this event yet, 
+                    but we\'d like to let you know once we find your photos'),
+    );
   }
   
   if ($eventid == NULL) {
@@ -461,7 +470,7 @@ function photo_search_request_form($form, &$form_state) {
   
   $form['email'] = array(
       '#type' => 'textfield',
-      '#title' => t('Email'),
+      '#title' => t('Email') . ':',
       '#size' => 30,
       '#maxlength' => 255,
       '#description' => t('We will send an email to that address'),
@@ -469,7 +478,7 @@ function photo_search_request_form($form, &$form_state) {
   
   $form['number'] = array(
       '#type' => 'textfield',
-      '#title' => t('Bib number') . ' ',
+      '#title' => t('Bib number') . ':',
       '#size' => 30,
       '#maxlength' => 6,
       '#description' => t('Number that you were wearing'),

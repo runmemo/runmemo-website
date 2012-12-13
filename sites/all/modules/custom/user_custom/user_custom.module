@@ -117,31 +117,40 @@ function anonymous_menu_menu_default_menu_links() {
  * $form_id is the form id
  */
 function user_custom_form_user_login_alter(&$form, $form_state) {
-      $form['fake-password'] = array(
-         '#id' => 'edit-pass-fake', 
-         '#type' => 'textfield',
-         '#default_value' => 'Password',    
-         '#title' => t('Password'),
-         '#maxlength' => 60,
-         '#size' => 15,
-         '#required' => FALSE ,
-        ); 
+  $form['fake-password'] = array(
+     '#id' => 'edit-pass-fake', 
+     '#type' => 'textfield',
+     '#default_value' => 'Password',    
+     '#title' => t('Password'),
+     '#maxlength' => 60,
+     '#size' => 15,
+     '#required' => FALSE ,
+    ); 
        
-       if(drupal_is_front_page()) {
-        // hide the real password field
-        $form['pass']["#attributes"]['style'] = 'display: none;';
-       }
-      $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
-      
-      $form['join-link'] = array(
-        '#markup' => l(t('Join us!'), 'user/register',
-        array('attributes' => array('id' => 'user-login-register'))));
+  if(drupal_is_front_page()) {
+  // hide the real password field
+    $form['pass']["#attributes"]['style'] = 'display: none;';
+  } 
+  else {
+     $form['title'] = array(
+         '#type' => 'markup',
+         '#markup' => '<h1>' . t('Log In') . '</h1>',
+         '#weight' => -10,
+     );
+  }
     
-       //  $form['#validate'][] = 'cookie_check_validate';
-      //  $form['new-password-text'] = array('#markup' => '<span id="new-password-text">' . t('Forgot your password? ') . '</span>', );
-        $form['new-password-link'] = array(
-        '#markup' => l(t('Request new password.'), 'user/password', 
-         array('attributes' => array('id' => 'new-password-link'))));
+  
+  $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
+
+  $form['join-link'] = array(
+    '#markup' => l(t('Join us!'), 'user/register',
+    array('attributes' => array('id' => 'user-login-register'))));
+
+   //  $form['#validate'][] = 'cookie_check_validate';
+  //  $form['new-password-text'] = array('#markup' => '<span id="new-password-text">' . t('Forgot your password? ') . '</span>', );
+  $form['new-password-link'] = array(
+  '#markup' => l(t('Request new password.'), 'user/password', 
+   array('attributes' => array('id' => 'new-password-link'))));
         
 }
 
@@ -161,7 +170,7 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
   
   // this removes password confirmation field
   $form['account']['pass']['#type'] = 'password';
-  $form['account']['pass']['#title'] = 'Password';
+  $form['account']['pass']['#title'] = t('Password');
   
   $form['actions']['submit']['#value'] = t('Sign Up');
   

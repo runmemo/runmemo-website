@@ -6,7 +6,7 @@
   margin-top:20px;
 }
 .node-type-event .region-sidebar-second {
-	width: 330px;
+	width: 360px;
 }
 
 .node-event {
@@ -94,11 +94,6 @@
 	margin-left: 10px;
 	}
 
-.node-type-event .view-empty {
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
 .node-type-event .region-sidebar-second #user-register {
   	float: right;
     padding: 5px;
@@ -112,14 +107,14 @@
   margin-bottom: 0;
 }
 #block-sport-event-registration-button #registration-button {
-  height: 60px;
-  margin-bottom: 20px;
+  height: 50px;
 }
 
 #block-sport-event-registration-button #registration-button .form-submit {
   width: 200px;
-  margin-bottom:20px;
- }
+  margin-top: 0;
+  margin-bottom: 20px;
+}
 
 #block-sport-event-registration-button h2.title {
 	display:none;
@@ -220,18 +215,17 @@ width: 108px!important;
   margin: 20px 0 0 0;
 }
 
-.block-sport-event .form-submit {
-  /*margin: 0px;*/
+.block-sport-event {
+  padding: 20px;
 }
 
 .node-type-event .region-sidebar-second .username{
-  font-style: italic;
-  color: #777;
+  color: #898989;
 }
 
 .node-type-event .region-sidebar-second p {
-  font-style: italic;
-  color: #777;
+  font-size: 0.85em;
+  color: #898989;
 }
 
 #block-sport-event-registration-link {
@@ -240,9 +234,16 @@ width: 108px!important;
   text-decoration: underline;
 }
 
+.node-type-event .block-views {
+  padding: 20px;
+}
+
+#block-views-event-carousel-block {
+  padding: 0;
+}
+
 #block-views-upcoming-events-upcoming-events .date-display-single {
   color:#1A253C;
-  font-weight: bold;
   float: left;
   display: block;
   width: 75px;
@@ -264,17 +265,18 @@ width: 108px!important;
 
 .node-type-event #photo-search-request-form {
   margin-top: 15px;
-  height: 160px;
+  height: 170px;
 }
 
 .node-type-event .form-item-number .form-text {
-  width: 110px;
+  width: 150px;
 }
 .node-type-event .form-item-number {
   float: left;
 }
 
 .block-photo-search .form-text {
+  height: 30px;
   width: 90%;
 }
 
@@ -283,16 +285,18 @@ width: 108px!important;
 }
 
 
-.block-photo-search .form-submit {
+.node-type-event .form-submit {
   margin-top: 20px;
   width: 130px;
+  height: 33px;
+  font-weight: normal;
 }
 
 .block-photo-search {
-  border: solid 1px #69A;
-  padding: 20px;
-  background-color: #EEE;
   margin-bottom: 20px;
+  padding: 20px;
+  /*background-color: #EEE;
+  border: solid 1px #69A; */
 }
 
 .block-photo-search .form-item-number  .description {
@@ -300,3 +304,131 @@ width: 108px!important;
  width: 130px;
 }
 
+
+.node-type-event .view-event-carousel .jcarousel-container-horizontal {
+  width: 980px;
+  height: 192px;
+  padding: 0 40px;
+  margin-top: -2px;
+  margin-left: -40px;
+}
+
+.node-type-event .view-event-carousel .jcarousel-clip-horizontal {
+  width: 980px;
+  overflow: hidden;
+}
+
+.node-type-event .view-event-carousel .jcarousel-item {
+  padding: 0;
+  height: 192px;
+  width: 192px;
+  overflow: hidden;
+/*  border: 1px solid #CCC;*/
+  list-style: none;
+  background: #fff none;
+}
+
+.node-type-event .view-event-carousel .jcarousel-item-horizontal {
+  margin: 0 2px;
+}
+
+.node-type-event .view-event-carousel .jcarousel-item-placeholder {
+  height: 192px;
+  width: 192px;
+  background: #fff url("../images/throbber.gif") no-repeat center center;
+  color: #000;
+}
+
+/**
+ * Buttons
+ */
+.node-type-event .view-event-carousel .jcarousel-next,
+.node-type-event .view-event-carousel .jcarousel-prev {
+  display: block;
+  width: 32px;
+  height: 32px;
+  background-image: url("../images/arrows-runmemo.png");
+}
+
+.node-type-event .view-event-carousel .jcarousel-next-disabled,
+.node-type-event .view-event-carousel .jcarousel-prev-disabled {
+  display: none;
+}
+
+/**
+ * Horizontal Buttons
+ */
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal {
+  position: absolute;
+  top: 75px;
+  left: 10px;
+  background-position: 0 0;
+}
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal:hover {
+  background-position: -32px 0;
+}
+.node-type-event .view-event-carousel .jcarousel-prev-horizontal:active {
+  background-position: -64px 0;
+}
+
+.node-type-event .view-event-carousel .jcarousel-next-horizontal {
+  position: absolute;
+  top: 75px;
+  right: 10px;
+  background-position: 0 -32px;
+}
+.node-type-event .view-event-carousel .jcarousel-next-horizontal:hover {
+  background-position: -32px -32px;
+}
+.node-type-event .view-event-carousel .jcarousel-next-horizontal:active {
+  background-position: -64px -32px;
+}
+
+.node-type-event .view-event-carousel .jcarousel-navigation {
+  margin: 0;
+  padding: 0;
+}
+
+.node-type-event .view-event-carousel .jcarousel-navigation li {
+  display: inline;
+  margin: 0 2px 0 0;
+  padding: 0;
+  background: none;
+}
+
+.node-type-event .view-event-carousel .jcarousel-navigation li.active a {
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.node-type-event .view-event-carousel img {
+  height: 190px;
+  width: 190px;
+  overflow: hidden;
+  border: 1px solid #384551;
+  margin: 0;
+}
+
+.node-type-event .view-event-carousel .gallery-link {
+    margin-top: -5px;
+    width: 190px;
+    float: right;
+    text-align: center;
+    padding: 3px;
+    background-color: #384551;
+/*    border: 1px solid #585858;*/
+    border-bottom-left-radius: 5px;
+/*    border-bottom-right-radius: 5px;*/
+}
+.node-type-event .view-event-carousel .gallery-link a {
+      color: #DDD;
+}  
+
+.node-type-event .gray-bdr {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.node-type-event #block-system-navigation {
+  margin-bottom: 5px;
+}

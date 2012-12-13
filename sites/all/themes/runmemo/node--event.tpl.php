@@ -86,6 +86,7 @@
 <div class="node-<?php print $node->nid; ?> <?php print $classes; ?> clearfix"<?php print $attributes; ?>>
  
   <?php 
+    drupal_add_css(drupal_get_path('module', 'sport_event') . '/sport_event.css');
     global $base_url; 
     $timestamp = strtotime($node->field_date[LANGUAGE_NONE][0]['value']);
     $ev_month = format_date($timestamp, 'custom', 'M');
