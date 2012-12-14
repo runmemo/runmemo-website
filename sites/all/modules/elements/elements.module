@@ -64,6 +64,7 @@ function elements_element_info_alter(&$types) {
     switch ($type) {
       case 'textfield':
       case 'textarea':
+      case 'password':
         $types[$type]['#process'][] = 'form_process_placeholder';
         break;
     }
