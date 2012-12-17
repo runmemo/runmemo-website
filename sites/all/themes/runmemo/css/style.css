@@ -620,13 +620,14 @@ it
 #user-register-form {
 	float: left;
 	padding: 20px;
-  width: 500px;
+  width: 400px;
   border:none;
   border-radius: 0;
 }
 
 #user-register-form label, 
 #user-login label {
+  display:none;
 	color: #1A253C;
 	float: left;
 	font-family: arial;
@@ -645,7 +646,7 @@ it
 #user-register-form .form-text {
   margin-right: 30px;
 	float: right;
-	width: 300px;
+	width: 350px;
 	clear: right;
 }
 
@@ -659,7 +660,7 @@ it
 
 .page-user .form-text {
 	float: right;
-	width: 300px;
+	width: 380px;
 	clear: right;
 }
 
@@ -1339,7 +1340,7 @@ a#guide:hover {
 
 /* ************ Footer Region ********** */
 .region-footer {
-	float: right;
+	float: left;
 	width: 100%;
 	margin-top: 20px;
 	clear: both;
@@ -3023,4 +3024,16 @@ label.option {
 
 label {
   font-weight: normal;
+}
+
+input::-webkit-input-placeholder {
+  color: #666;
+}
+
+input:-moz-placeholder {
+  color: #666;
+}
+
+input:-ms-input-placeholder {
+  color: #666;
 }

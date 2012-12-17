@@ -117,31 +117,16 @@ function anonymous_menu_menu_default_menu_links() {
  * $form_id is the form id
  */
 function user_custom_form_user_login_alter(&$form, $form_state) {
-  $form['fake-password'] = array(
-     '#id' => 'edit-pass-fake', 
-     '#type' => 'textfield',
-     '#default_value' => 'Password',    
-     '#title' => t('Password'),
-     '#maxlength' => 60,
-     '#size' => 15,
-     '#required' => FALSE ,
-    ); 
-       
-  if(drupal_is_front_page()) {
-  // hide the real password field
-    $form['pass']["#attributes"]['style'] = 'display: none;';
-  } 
-  else {
+  
+  if(!drupal_is_front_page()) {
      $form['title'] = array(
          '#type' => 'markup',
          '#markup' => '<h1>' . t('Log In') . '</h1>',
          '#weight' => -10,
      );
-  }
-    
+  }  
   
   $form['join-text'] = array('#markup' => '<span id="join-us-text">' . t('Not a member?') . ' ' . '</span>', );
-
   $form['join-link'] = array(
     '#markup' => l(t('Join us!'), 'user/register',
     array('attributes' => array('id' => 'user-login-register'))));
@@ -151,7 +136,8 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
   $form['new-password-link'] = array(
   '#markup' => l(t('Request new password.'), 'user/password', 
    array('attributes' => array('id' => 'new-password-link'))));
-        
+  $form['name']['#placeholder'] = 'Username';
+  $form['pass']['#placeholder'] = 'Password';
 }
 
 
@@ -172,10 +158,19 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
   $form['account']['pass']['#type'] = 'password';
   $form['account']['pass']['#title'] = t('Password');
   
+  // add placeholder attribute
+  foreach($form['account'] as $key => $item) {
+    if (in_array($item['#type'], array('textfield', 'password'))) {
+      $form['account'][$key]['#placeholder'] = $item['#title'];
+    }
+  }
+  $form['field_phone_number'][LANGUAGE_NONE][0]['value']['#attributes']['placeholder'] = 'Phone';
+  //print_nice($form['field_phone_number']);
+  // change text on submit button
   $form['actions']['submit']['#value'] = t('Sign Up');
-  
   $form['#submit']['set_photographer_role_submit'] = 'user_set_photographer_role'; 
  
+  
 }
 
 function user_custom_form_user_profile_form_alter(&$form, $form_state) {

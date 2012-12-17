@@ -5,7 +5,7 @@ version = VERSION
 core = 7.x
 stylesheets[all][] = styles.css
 stylesheets[print][] = print.css
-scripts[] = js/home_page.js
+scripts[]=jquery-placeholder.js
 settings[garland_width] = fluid
 
 regions[menu] = Main menu

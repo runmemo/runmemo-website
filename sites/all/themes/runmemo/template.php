@@ -100,6 +100,10 @@ function runmemo_preprocess_page(&$vars) {
   $slogan_text = $vars['site_slogan'];
   $site_name_text = $vars['site_name'];
   $vars['site_name_and_slogan'] = $site_name_text . ' ' . $slogan_text;
+
+  drupal_add_js('jQuery("input[placeholder], textarea[placeholder]").placeholder();',
+    array('type' => 'inline', 'scope' => 'footer', 'weight' => 5)
+  );
 }
 
 /**

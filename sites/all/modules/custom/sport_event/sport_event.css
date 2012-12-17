@@ -162,32 +162,16 @@
 	}
 	
 .node-event .date p span {
-		background: #FF6600; 
-	/*	background: linear-gradient(top, #FF6600 0%, #A32900 100%);
-		background: -moz-linear-gradient(top, #FF6600 0%, #A32900 100%);
-		background: -webkit-linear-gradient(top, #FF6600 0%, #A32900 100%); */
-		font-size: 10px; font-weight: bold; color: #fff; text-transform: uppercase;  	
-		display: block;
-		border-top: 3px solid #a13838;
-		padding: 6px 0 6px 0;
-    border-bottom-right-radius: 10px;
-    border-right: 1px solid #FF6600;
-	}
-
-/* ******** Events List View ********* */
-
-.view-events .views-exposed-widget .form-submit {
-	margin-top:1.4em;
-	}
-
-.view-events .views-exposed-widget .form-submit input {
-background: url("../images/search.png") no-repeat scroll 0 0 !important;
-border: 0 none!important;
-cursor: pointer!important;
-height: 40px!important;
-width: 108px!important;
+  background: #FF6600; 
+  font-size: 10px; font-weight: bold; color: #fff; text-transform: uppercase;  	
+  display: block;
+  border-top: 3px solid #a13838;
+  padding: 6px 0 6px 0;
+  border-bottom-right-radius: 10px;
+  border-right: 1px solid #FF6600;
 }
 
+/* ******** Events List View ********* */
 .node-type-event .region-sidebar-second #block-sport-event-search-by-number {
   height: 100px;
   margin-bottom: 20px;

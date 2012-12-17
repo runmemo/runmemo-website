@@ -149,8 +149,11 @@ function registration_button_block() {
 function search_event_has_photos() {
   $event = menu_get_object();
   if (isset($event)) {
-    if ($event->field_count_photos[LANGUAGE_NONE][0]['value'] > 0) {
-      return TRUE;    
+    $photos = field_get_items('node', $event, 'field_count_photos');
+    if ($photos) {
+      if($photos[0]['value'] > 0) {
+        return TRUE;    
+      }
     }
   }
   return FALSE;

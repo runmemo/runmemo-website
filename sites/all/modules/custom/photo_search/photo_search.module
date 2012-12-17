@@ -148,7 +148,10 @@ function search_photos_form($form, &$form_state) {
     '#id' => 'runner_number',
     '#prefix' => "<div id='field-number'>",
     '#suffix' => '</div>',
-    '#required' => 'true');
+    '#required' => 'true',
+    
+  );
+  
   //text field for get the runner number
   if (arg('0') == 'search-result') {
      
@@ -159,6 +162,7 @@ function search_photos_form($form, &$form_state) {
   }
   else {
     $form['search_filter']['runner_number']['#title'] = t('Runner Number');
+    $form['search_filter']['runner_number']['#attributes']['placeholder'] = t('My Number');
   }
 
   //submit get my photo in the runner side
