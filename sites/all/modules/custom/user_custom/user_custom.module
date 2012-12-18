@@ -164,7 +164,7 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
       $form['account'][$key]['#placeholder'] = $item['#title'];
     }
   }
-  $form['field_phone_number'][LANGUAGE_NONE][0]['value']['#attributes']['placeholder'] = 'Phone';
+  $form['field_phone_number'][LANGUAGE_NONE][0]['value']['#attributes']['placeholder'] = t('Phone');
   //print_nice($form['field_phone_number']);
   // change text on submit button
   $form['actions']['submit']['#value'] = t('Sign Up');
