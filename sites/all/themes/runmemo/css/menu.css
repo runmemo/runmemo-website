@@ -30,7 +30,6 @@ ul.main-menu li, ul.menu-main-menu-rus li, ul.sf-menu li
 
 ul.main-menu li a:visited, ul.menu-main-menu-rus li a:visited {
   color:rgb(88, 149, 190);
-  background: transparent url(images/bg-navigation-item.png) no-repeat 50% 0;
 }
 ul.sf-menu li a, 
 ul.sf-menu li a,
@@ -47,8 +46,9 @@ ul.sf-menu li.sf-depth-1 {
 	}
 
 ul.sf-menu li.sf-depth-1 a{ 
-  font-size:20px;
-  margin:11px 13px 0px 13px;
+  font-size: 16px;
+  font-weight: 800;
+  margin: 8px 13px 0px 13px;
 }
 
 ul.sf-menu  {
@@ -197,17 +197,17 @@ ul.user-menu.sf-menu.sf-style-default li:hover {
 	float:right;
 	
 }
-#block-menu-menu-anonymous-menu a {
+#block-menu-menu-anonymous-menu li a {
 	color:black;
+  font-size: 16px;
+  text-decoration: none;
 }
 
 #block-menu-menu-anonymous-menu * {
 	list-style:none;	
 }
 
-#block-menu-menu-anonymous-menu li a {
-	text-decoration:underline;
-}
+
 #block-menu-menu-anonymous-menu li.active-trail a {
 	text-decoration:none;
 }
