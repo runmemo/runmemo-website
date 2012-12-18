@@ -368,8 +368,8 @@ it
 
 .gray-bdr, .gray-bdr-bottom20px {
 	width: 100%;
-	height: 3px;
-	margin-top: 5px;
+	height: 2px;
+	margin-top: 2px;
 	margin-bottom: 20px;
 	background: #384551;
 	display: block;

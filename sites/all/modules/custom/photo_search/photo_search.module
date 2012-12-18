@@ -264,8 +264,8 @@ function find_trade_section() {
             $find_photos
           </div>
   				<div class='front-block-upload'>
-    				<div id='trade'>" . t('Upload photos') . "</div>" .  
-    			//	<div id='taken_picture'>" . t('Sell your photos') . "</div>
+    				<div id='trade'>" . t('Sell your photos') . "</div>" .
+    				//"<div id='taken_picture'>" . t('Sell your photos') . "</div>
     				"<div id='front-trade-photos'>
     				$trade_photos
     				</div>
