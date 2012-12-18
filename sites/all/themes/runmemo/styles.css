@@ -2,9 +2,14 @@
 /**
  * Generic elements
  */
+ html {
+   height: 100%;
+ }
+ 
 body {
   margin: 0;
   padding: 0;
+  height: 100%;
   background: #edf5fa;
   font-family: Arial,Helvetica,sans-serif;
   color: #494949;
@@ -367,10 +372,6 @@ span.form-required {
 }
 
 
-#wrapper {
-  background: #edf5fa url(images/body.png) repeat-x 50% 0;
-}
-
 /* Set container widths when we are using the "fixed width" option. */
 #wrapper #container {
   width: 560px;
@@ -500,7 +501,6 @@ body.two-sidebars #squeeze {
 }
 
 #wrapper #container .region-footer {
-  float: none;
   clear: both;
   text-align: center;
   margin: 4em 0 -3em;
