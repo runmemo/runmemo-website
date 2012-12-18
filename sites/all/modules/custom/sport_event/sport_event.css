@@ -213,9 +213,8 @@
 }
 
 #block-sport-event-registration-link {
-  height: 28px;
-  margin-bottom: 10px;
   text-decoration: underline;
+  padding-top: 0;
 }
 
 .node-type-event .block-views {
@@ -224,6 +223,10 @@
 
 #block-views-event-carousel-block {
   padding: 0;
+}
+
+.event-has-photos #search-by-number-form {
+  height: 50px;
 }
 
 #block-views-upcoming-events-upcoming-events .date-display-single {
@@ -271,16 +274,13 @@
 
 .node-type-event .form-submit {
   margin-top: 20px;
-  width: 130px;
+  width: 150px;
   height: 33px;
   font-weight: normal;
 }
 
 .block-photo-search {
-  margin-bottom: 20px;
   padding: 20px;
-  /*background-color: #EEE;
-  border: solid 1px #69A; */
 }
 
 .block-photo-search .form-item-number  .description {
