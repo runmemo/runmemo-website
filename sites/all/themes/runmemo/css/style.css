@@ -36,7 +36,9 @@ input {
 }
 
 #wrapper {
+  position: relative;
 	width: 100%;
+  min-height: 100%;
 	min-width: 980px;
 	background: none !important;
 }
@@ -44,6 +46,7 @@ input {
 #inner-wrapper {
 	width: 980px;
 	margin: 0 auto;
+  padding-bottom: 88px; /* height of the footer element */
 }
 
 .header {
@@ -458,8 +461,8 @@ it
 	background: url('../images/footer-bg-new.png') repeat;
 	margin-top: 20px;
 	border-top: 1px solid #d5d5d5;
-	position: relative;
-	float: left;
+	position: absolute;
+	bottom: 0;
 }
 
 .footer-inner {
@@ -772,9 +775,9 @@ it
 	display: none !important;
 }
 
-.page-runner #inner-wrapper #center,.page-runner #inner-wrapper #center #squeeze
+.page-runner #inner-wrapper #center,
+.page-runner #inner-wrapper #center #squeeze
 	{
-	float: left;
 	margin: 0;
 	width: 980px;
 }
@@ -1341,7 +1344,6 @@ a#guide:hover {
 
 /* ************ Footer Region ********** */
 .region-footer {
-	float: left;
 	width: 100%;
 	margin-top: 20px;
 	clear: both;
