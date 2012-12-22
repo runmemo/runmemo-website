@@ -44,8 +44,9 @@ input {
 }
 
 #inner-wrapper {
-	width: 980px;
-	margin: 0 auto;
+  width: 980px;
+  overflow: auto;
+  margin: 0 auto;
   padding-bottom: 88px; /* height of the footer element */
 }
 
