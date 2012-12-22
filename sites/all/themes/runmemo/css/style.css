@@ -524,27 +524,12 @@ it
 }
 
 /**************************************Login Page********************************/
-.page-user #center {
-	width: 980px;
-	float: left;
-	margin: 0 !important;;
-	padding: 0;
-}
+
 
 .page-user #squeeze {
 	margin: 0 !important;
 	padding: 0;
 	width: 980px;
-}
-
-.page-user .right-corner {
-	float: left;
-	width: 980px;
-}
-
-.page-user .left-corner {
-	width: 980px;
-	float: left;
 }
 
 .page-user #user-login {
@@ -642,9 +627,13 @@ it
 }
 
 .page-user .form-item {
+  height:45px;
 	clear: both;
 	display: block;
-	height: 45px;
+}
+
+#user-profile-form .form-item {
+  height:50px;
 }
 
 #user-register-form .form-text {
@@ -663,7 +652,6 @@ it
 }
 
 .page-user .form-text {
-	float: right;
 	width: 380px;
 	clear: right;
 }
@@ -1305,7 +1293,6 @@ a#guide:hover {
 	font-size: 13px;
 	font-weight: 300;
 	margin-top: 14px;
-	text-align: right;
 	width: 136px;
 }
 

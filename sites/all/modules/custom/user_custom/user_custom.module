@@ -177,7 +177,7 @@ function user_custom_form_user_profile_form_alter(&$form, $form_state) {
    drupal_set_title(t(''));
     $form['title'] = array (
     '#type' => 'markup',
-    '#markup' => '<h1>' . t('Edit Account Details') . '</h1><br><h2>'. t('') . '</h2>',
+    '#markup' => '<h1>' . t('Edit Account Details') . '</h1>',
     '#weight' => -10,
   );
    
