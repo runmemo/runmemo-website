@@ -136,8 +136,8 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
   $form['new-password-link'] = array(
   '#markup' => l(t('Request new password.'), 'user/password', 
    array('attributes' => array('id' => 'new-password-link'))));
-  $form['name']['#placeholder'] = 'Username';
-  $form['pass']['#placeholder'] = 'Password';
+  $form['name']['#placeholder'] = t('Username');
+  $form['pass']['#placeholder'] = t('Password');
 }
 
 
@@ -177,7 +177,7 @@ function user_custom_form_user_profile_form_alter(&$form, $form_state) {
    drupal_set_title(t(''));
     $form['title'] = array (
     '#type' => 'markup',
-    '#markup' => '<h1>' . t('Edit Account Details') . '</h1><br><h2>'. t('') . '</h2>',
+    '#markup' => '<h1>' . t('Edit Account Details') . '</h1>',
     '#weight' => -10,
   );
    
