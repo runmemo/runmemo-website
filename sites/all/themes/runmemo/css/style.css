@@ -589,6 +589,7 @@ it
 	font-size: 20px;
 	color: #4AB0F8;
 	font-family: walkway-bold, sans-serif;
+  letter-spacing: 2px;
 }
 
 .page-user .region-sidebar-second .node-block-content {
