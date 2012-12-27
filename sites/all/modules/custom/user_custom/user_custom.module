@@ -136,8 +136,10 @@ function user_custom_form_user_login_alter(&$form, $form_state) {
   $form['new-password-link'] = array(
   '#markup' => l(t('Request new password.'), 'user/password', 
    array('attributes' => array('id' => 'new-password-link'))));
-  $form['name']['#placeholder'] = t('Username');
-  $form['pass']['#placeholder'] = t('Password');
+  if(drupal_is_front_page()) {  
+    $form['name']['#placeholder'] = t('Username');
+    $form['pass']['#placeholder'] = t('Password');
+  }
 }
 
 
@@ -150,7 +152,7 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
   drupal_set_title('');
   $form['title'] = array (
     '#type' => 'markup',
-    '#markup' => '<h1>' . t('Sign Up') . '</h1><br><h2>'. t('And share your photos with runners') . '</h2>',
+    '#markup' => '<h1>' . t('Sign Up') . '</h1><br><h2>'. t('and sell your photos to runners') . '</h2>',
     '#weight' => -10,
   );
   
@@ -159,12 +161,12 @@ function user_custom_form_user_register_form_alter(&$form, $form_state) {
   $form['account']['pass']['#title'] = t('Password');
   
   // add placeholder attribute
-  foreach($form['account'] as $key => $item) {
-    if (in_array($item['#type'], array('textfield', 'password'))) {
-      $form['account'][$key]['#placeholder'] = $item['#title'];
-    }
-  }
-  $form['field_phone_number'][LANGUAGE_NONE][0]['value']['#attributes']['placeholder'] = t('Phone');
+//  foreach($form['account'] as $key => $item) {
+//    if (in_array($item['#type'], array('textfield', 'password'))) {
+//      $form['account'][$key]['#placeholder'] = $item['#description'];
+//    }
+//  }
+  $form['field_phone_number'][LANGUAGE_NONE][0]['value']['#attributes']['placeholder'] = t('it will help us to stay in touch');
   //print_nice($form['field_phone_number']);
   // change text on submit button
   $form['actions']['submit']['#value'] = t('Sign Up');
