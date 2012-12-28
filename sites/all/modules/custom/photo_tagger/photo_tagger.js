@@ -72,7 +72,7 @@
     // function loads data for next N images
     function extend_image_pool(after_nid) {
       
-      if(settings.PhotoTagger.complete = true) {
+      if(settings.PhotoTagger.complete == true) {
         console.debug('Pool is fully loaded.')
         return;
       }
@@ -102,6 +102,7 @@
             }
             settings.PhotoTagger.size = i;
             settings.PhotoTagger.extending = false;
+          
             if (new_image_pool.length == 0) {
               settings.PhotoTagger.complete = true;
             }
