@@ -35,6 +35,14 @@ function photo_tagger_menu() {
     'type' => MENU_CALLBACK
   );
   
+   $items['ajax/tagger_save_numbers'] = array(
+    'title' => '',
+    'description' => 'api point that saves numbers on product',
+    'page callback' => 'tagger_save_numbers',
+    'access arguments' => array('edit own product content'),
+    'type' => MENU_CALLBACK
+  );
+  
   return $items;
 
 }
@@ -81,3 +89,50 @@ function photographer_tag_page() {
  
 }
 
+
+/**
+ * AJAX call
+ * Function that adds/removes runners' numbers from product node
+ * @return
+ * JSON message that can be returned for AJAX call
+ */
+function tagger_save_numbers() {
+  $nid = $_POST['nid'];
+  $numbers = $_POST['tags'];
+ 
+  global $user;
+  $uid = $user->uid;
+
+  if (empty($nid) || empty($numbers)) {
+    echo json_message(FALSE, array('message' => t('Required parameter is not set')));
+    return;
+  }
+
+  foreach($numbers as $number) {
+    $number_int = (int) $number;
+
+      if ((string)$number_int != $number) {
+        echo json_message(FALSE, array('message' => t('Number is not int')));
+        return;
+      }
+
+      //check permission
+      $node = node_load($nid);
+      if (!node_access("update", $node)) {
+        echo json_message(FALSE, array('message' => t('Has no permissions')));
+        return;
+      }
+
+      $productSaver = new ProductNodeSaver($nid);
+
+
+      $arr_number = array('value' => $number, 'manual' => 1, 'probability' => 1);
+      $productSaver->AddNumber($arr_number);
+      $productSaver->SetVerifiedBy($uid);
+      $productSaver->Save();
+  }
+  
+
+  echo json_message(TRUE, array('message' => 'saved numbers to node: ' . $nid . '.'));
+  return;
+}

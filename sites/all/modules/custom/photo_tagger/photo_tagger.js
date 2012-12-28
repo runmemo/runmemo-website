@@ -34,10 +34,6 @@
          preload_next_image();
         
       }
-      var img_pool = settings.PhotoTagger.image_pool;
-      var img = img_pool[img_pool.length-1];
-      extend_image_pool(img.nid);
-      
     });
     
     function preload_next_image() {
@@ -121,28 +117,41 @@
        var current = settings.PhotoTagger.current;
        var pool_size = settings.PhotoTagger.size;
        var next = current + 1; // @todo check that item exists
-
-       // need to extend if we are close to the end
-       var images_left = pool_size - 1 - current;
-       console.debug('Images to the end of array: '+ images_left);
-       if(images_left < 10) {
-          var img_pool = settings.PhotoTagger.image_pool;
-          var img = img_pool[img_pool.length-1];
-          extend_image_pool(img.nid);
-       }
-
+       
+       // leave if we reached the end
        if(next >= pool_size) {
          console.debug('last image.');
          return;
        } 
        
-      //  var img = image_pool[next]; 
-     //  console.debug(img);
-     //  var src = img.url;
-     
-         $('#image-' + current).removeClass('active').addClass('inactive');
-         $('#image-' + next).removeClass('inactive').addClass('active');
-         settings.PhotoTagger.current = next;
+       var img_pool = settings.PhotoTagger.image_pool;
+       
+       // need to extend if we are close to the end
+       var images_left = pool_size - 1 - current;
+       console.debug('Images to the end of array: '+ images_left);
+       if(images_left < 10) {
+          var img = img_pool[img_pool.length-1];
+          extend_image_pool(img.nid);
+       }
+       
+       // save numbers to the current image
+       var img = img_pool[current];
+       var nid = img.nid;
+       
+       var tagsinput = $("#tagsinput").siblings(".tagsinput").children(".tag");  
+        var tags = [];  
+        for (var i = tagsinput.length; i--;) {  
+            tags.push($(tagsinput[i]).text().substring(0, $(tagsinput[i]).text().length -  1).trim());    
+      }       
+      img_pool[current].tags = tags; // here we cache tags
+      save_numbers(nid, tags); 
+      
+      $('#tagsinput').importTags(''); // clear tags
+      
+       // hide current image and show the next one
+       $('#image-' + current).removeClass('active').addClass('inactive');
+       $('#image-' + next).removeClass('inactive').addClass('active');
+       settings.PhotoTagger.current = next;
          
         
        // here we save the numbers from the current image
@@ -150,11 +159,38 @@
    
         // on sucess we can preload another image
        preload_next_image(); 
-       
-
         
        // at some point start removing old ones
    
+    }
+    
+    function count_tags() {
+      var tagsinput = $("#tagsinput").siblings(".tagsinput").children(".tag");  
+      var tags = [];  
+      for (var i = tagsinput.length; i--;) {  
+            tags.push($(tagsinput[i]).text().substring(0, $(tagsinput[i]).text().length -  1).trim());    
+      } 
+      return tags.length;
+    }
+    
+    function save_numbers(nid, tags) {
+      var base_path = Drupal.settings.basePath;
+				$.ajax({
+					// type : "POST",
+					url : base_path + "ajax/tagger_save_numbers",
+					type: "POST",
+					data: {nid: nid, tags: tags},
+					dataType: 'json',
+				  cache: false,
+					success : function(msg) {
+            console.debug(msg);
+          },
+					error: function(msg) {
+						console.debug(msg);
+           
+					}
+				});
+      
     }
     
     function previous_image() {
@@ -178,10 +214,28 @@
        
     }
     
+    function get_tags_from_previous() {
+      
+      // load values from previous image
+        previous = settings.PhotoTagger.current-1;
+        if('tags' in settings.PhotoTagger.image_pool[previous]) {
+          var tags = settings.PhotoTagger.image_pool[previous].tags
+          console.debug(tags.join());
+          $('#tagsinput').importTags(tags.join());
+        }
+        
+    }
+    
     $('#tagsinput_tag').bind('keydown', function(e) {    
       if(this.value == '') {
-        if (e.keyCode == 13 ) { // enter
-              console.debug('enter key on empty value');
+        if (e.keyCode == 13 ) { // key enter
+          console.debug(count_tags());
+          if(count_tags() == 0) { // no values provided
+            get_tags_from_previous()
+          } else {
+            next_image();
+          }
+              
         } 
         else if (e.keyCode == 39) { // arrow right
            next_image();
