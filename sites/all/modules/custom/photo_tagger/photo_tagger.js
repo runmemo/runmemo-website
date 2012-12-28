@@ -28,6 +28,7 @@
      
       settings.PhotoTagger.loaded = 0;
       settings.PhotoTagger.extending = false;
+      settings.PhotoTagger.complete = false;
       var nid = 0;
       for(var i= 0; i < settings.PhotoTagger.size; i++) {
          preload_next_image();
@@ -41,7 +42,6 @@
     
     function preload_next_image() {
       i = settings.PhotoTagger.loaded;
-      console.debug(i);
       var test = $('#image-' + i);
       if (test.length) {
         console.debug('image node already exists.')
@@ -59,12 +59,19 @@
       else {
         console.debug('failed to preload image. possibly end of array.')
       }
+      
+      // @todo here we can remove img nodes of old images
     
       return 
     }
     
     // function loads data for next N images
     function extend_image_pool(after_nid) {
+      
+      if(settings.PhotoTagger.complete = true) {
+        console.debug('Pool is fully loaded.')
+        return;
+      }
       
        if (settings.PhotoTagger.extending) {
          console.debug('Already extending the pool.')
@@ -91,6 +98,9 @@
             }
             settings.PhotoTagger.size = i;
             settings.PhotoTagger.extending = false;
+            if (new_image_pool.length == 0) {
+              settings.PhotoTagger.complete = true;
+            }
           },
 					error: function(msg) {
 						console.debug(msg);
@@ -146,7 +156,13 @@
        console.debug('Now image is supposed to change to the previous one.');
        
        var current = settings.PhotoTagger.current;
-       var previous = current - 1; // @todo check that item exists
+       
+       if (current == 0) { // @todo check that item exists
+         console.debug('Back to first image.')
+         return;
+       }
+       
+       var previous = current - 1; 
        
        $('#image-' + current).removeClass('active').addClass('inactive');
        $('#image-' + previous).removeClass('inactive').addClass('active');
