@@ -19,6 +19,7 @@
 	        'removeWithBackspace' : false,
 	         'minChars' : 1,
 	         'maxChars' : 6 //if not provided there is no limit,
+          // 'placeholder' : 'add number',
 	  //   'placeholderColor' : '#666666'
 	  });
 
@@ -219,9 +220,10 @@
       // load values from previous image
         previous = settings.PhotoTagger.current-1;
         if('tags' in settings.PhotoTagger.image_pool[previous]) {
-          var tags = settings.PhotoTagger.image_pool[previous].tags
+          var tags = settings.PhotoTagger.image_pool[previous].tags;
           console.debug(tags.join());
           $('#tagsinput').importTags(tags.join());
+          $('#tagsinput_tag').focus();
         }
         
     }
