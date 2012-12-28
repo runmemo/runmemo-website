@@ -57,7 +57,11 @@
           settings.PhotoTagger.loaded++;
       }
       else {
-        console.debug('failed to preload image. possibly end of array.')
+        if(settings.PhotoTagger.complete) {
+           console.debug('No images left to load.')
+        } else {
+            console.debug('failed to preload image. possibly end of array.');
+        }
       }
       
       // @todo here we can remove img nodes of old images
@@ -118,7 +122,7 @@
        var next = current + 1; // @todo check that item exists
 
        // need to extend if we are close to the end
-       var images_left = settings.PhotoTagger.size - 1 - settings.PhotoTagger.current;
+       var images_left = pool_size - 1 - current;
        console.debug('Images to the end of array: '+ images_left);
        if(images_left < 10) {
           var img_pool = settings.PhotoTagger.image_pool;
