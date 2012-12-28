@@ -1,0 +1,19 @@
+/* 
+    Document   : photo_tagger
+    Created on : Dec 27, 2012, 9:24:55 PM
+    Author     : Bulat
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+.image-pool {
+  max-height: 400px;
+}
+
+.image-pool .active {
+  
+}
+
+.image-pool .inactive {
+  display: none;
+}
