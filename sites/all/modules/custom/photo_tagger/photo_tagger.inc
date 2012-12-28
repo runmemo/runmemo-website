@@ -20,7 +20,7 @@ function photo_tagger_get_photos($nid, $uid, $limit) {
   foreach($result as $row) {
     
     $file = file_load($row->fid);
-    $url = image_style_url('earch_preview', $file->uri);
+    $url = image_style_url('search_preview', $file->uri);
     $pool[$i] = array('nid' => $row->nid, 'url' => $url);
     $i++;
    }
