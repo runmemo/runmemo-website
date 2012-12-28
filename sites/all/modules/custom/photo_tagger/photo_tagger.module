@@ -66,17 +66,16 @@ function photographer_tag_page() {
   $js_data = array('PhotoTagger' => $image_pool);
   drupal_add_js($js_data,'setting');
 
-  return '<form>
-            <input type="radio" name="sex" value="tagged">With numbers<br>
-            <input type="radio" name="sex" value="untagged">Without numbers
-          </form>
-    
-          <div class="main">
+  return '<div class="main">
+            <form id="tagger-scope">
+              <input type="radio" name="sex" value="tagged">With numbers<br>
+              <input type="radio" name="sex" value="untagged">Without numbers
+            </form>
             <div id="image-pool" class="image-pool">
-           <img id="image-0" src="' . $images[0]['url']. '" class="active" />
+              <img id="image-0" src="' . $images[0]['url']. '" class="active" />
             </div>
-            <form>
-            <input id="tagsinput" class="tagsinput" />
+            <form id="tagger-input">
+              <input id="tagsinput" class="tagsinput" />
            </form>
           </div>';
  
