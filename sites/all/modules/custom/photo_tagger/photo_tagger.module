@@ -47,9 +47,9 @@ function photo_tagger_get_list() {
     // field query to select product images.
     global $user;
     $images = photo_tagger_get_photos($nid, $user->uid, $items);
-    
-
-    $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => $items, );
+    $image_pool = array('image_pool' => $images, 
+                        'current'=> 0, 
+                        'size' => count($images), );
   
   // transform results to json  
   echo json_message(TRUE, array(
@@ -62,7 +62,7 @@ function photo_tagger_get_list() {
 function photographer_tag_page() {
   global $user;
   $images = photo_tagger_get_photos(0, $user->uid, 10);
-  $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => 10, );
+  $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
   $js_data = array('PhotoTagger' => $image_pool);
   drupal_add_js($js_data,'setting');
 
