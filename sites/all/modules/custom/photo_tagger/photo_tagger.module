@@ -1,0 +1,179 @@
+<?php
+
+module_load_include('inc', 'photo_tagger', 'photo_tagger');
+
+function photo_tagger_init() {
+  if ('tag' === arg(1)) {
+    drupal_add_js(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.js');
+    drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
+    drupal_add_js(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js');
+    drupal_add_css(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css');
+    drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
+ 
+  }
+}
+
+
+/**
+ * Implements hook_menu
+ */
+function photo_tagger_menu() {
+
+   $items['photographer/tag'] = array(
+      'title' => 'Tag Photos',
+      'menu_name' => 'navigation',
+      'description' => 'View the objects in a bucket on your Amazon S3 account.',
+      'page callback' => 'photographer_tag_page',
+      'access arguments' => array('access_photographer'),
+      'weight' => '1',
+      'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['ajax/tagger_get_list'] = array(
+    'title' => 'api point that gets products for tagging.',
+    'description' => '',
+    'page callback' => 'photo_tagger_get_list',
+    'access arguments' => array('access_photographer'),
+    'type' => MENU_CALLBACK
+  );
+  
+   $items['ajax/tagger_save_numbers'] = array(
+    'title' => '',
+    'description' => 'api point that saves numbers on product',
+    'page callback' => 'tagger_save_numbers',
+    'access arguments' => array('edit own product content'),
+    'type' => MENU_CALLBACK
+  );
+  
+  return $items;
+
+}
+
+function photo_tagger_get_list() {
+    // get the node id to start from.
+    $nid = $_POST['nid'];
+    // get number of items to return.
+    $items = 10;
+    // field query to select product images.
+    global $user;
+    $images = photo_tagger_get_photos($nid, $user->uid, $items);
+    $image_pool = array('image_pool' => $images, 
+                        'current'=> 0, 
+                        'size' => count($images), );
+  
+  // transform results to json  
+  echo json_message(TRUE, array(
+    'message' => 'images for tagging.',
+    'data' => $image_pool,
+   ));
+
+}
+
+function photographer_tag_page() {
+  global $user;
+  $images = photo_tagger_get_photos(0, $user->uid, 10);
+  $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
+  $js_data = array('PhotoTagger' => $image_pool);
+  drupal_add_js($js_data,'setting');
+  
+  if(count($images) == 0) { // no images to tag
+    return '<div class="main">
+              <div id="message-bar">
+                <span id="message">' . t('You don\'t have photos to tag.') . '</span>
+              </div>
+           </div>';
+  } 
+  
+  return '<div class="main">
+            <form id="tagger-scope">
+              <input type="radio" name="sex" value="tagged">With numbers<br>
+              <input type="radio" name="sex" value="untagged">Without numbers
+            </form>
+            <div id="image-pool" class="image-pool">
+              <span id="counter"></span>
+              <img id="image-0" src="' . $images[0]['url']. '" class="active" />
+            </div>
+            <form id="tagger-input">
+              <input id="tagsinput" class="tagsinput" />
+           </form>
+           <div id="helpbar">
+              <span class="shortcut-title">Shortcuts</span>
+              <a class="shortcut" id="previous_key_left">
+                  <span class="key-combo">
+                    <span class="symbol">&larr;</span>
+                  </span>
+                  <span class="key-action">' . t('Previous photo') .'</span>
+              </a>
+              <a class="shortcut" id="next_key_enter">
+                  <span class="key-combo">
+                    <span class="symbol">↵</span>
+                  </span>
+                  <span class="key-action">' . t('Next photo') .'</span>
+               </a>
+                <a class="shortcut" id="next_key_right">
+                  <span class="key-combo">
+                    <span class="symbol">&rarr;</span>
+                  </span>
+                  <span class="key-action">' . t('Next photo') .'</span>
+               </a>
+               <a class="shortcut" id="backspace_key">
+                  <span class="key-combo">
+                    <span class="symbol">BKSP</span>
+                  </span>
+                  <span class="key-action">' . t('Clear numbers') .'</span>
+              </a>
+           </div>
+           <div id="message-bar">
+              <span id="message">' . t('Keyboard shortcuts will help you to tag faster.') . '</span>
+           </div>
+          </div>';
+ 
+}
+
+
+/**
+ * AJAX call
+ * Function that adds/removes runners' numbers from product node
+ * @return
+ * JSON message that can be returned for AJAX call
+ */
+function tagger_save_numbers() {
+  $nid = $_POST['nid'];
+  $numbers = $_POST['tags'];
+ 
+  global $user;
+  $uid = $user->uid;
+
+  if (empty($nid) || empty($numbers)) {
+    echo json_message(FALSE, array('message' => t('Required parameter is not set')));
+    return;
+  }
+
+  foreach($numbers as $number) {
+    $number_int = (int) $number;
+
+      if ((string)$number_int != $number) {
+        echo json_message(FALSE, array('message' => t('Number is not int')));
+        return;
+      }
+
+      //check permission
+      $node = node_load($nid);
+      if (!node_access("update", $node)) {
+        echo json_message(FALSE, array('message' => t('Has no permissions')));
+        return;
+      }
+
+      $productSaver = new ProductNodeSaver($nid);
+
+
+      $arr_number = array('value' => $number, 'manual' => 1, 'probability' => 1);
+      $productSaver->AddNumber($arr_number);
+      $productSaver->SetVerifiedBy($uid);
+      $productSaver->Save();
+  }
+  
+
+  echo json_message(TRUE, array('message' => 'saved numbers to node: ' . $nid . '.'));
+  return;
+}

@@ -1291,6 +1291,10 @@ a#guide:hover {
 	border: 1px solid #CCCCCC;
 	text-align: center;
 }
+.page-user form .form-type-checkbox label {
+  display: none;
+  position: relative;
+}
 
 /* Profile page */
 .page-user form label {

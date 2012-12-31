@@ -1,0 +1,9 @@
+name = Photo tagging tool
+description = Module is used to provide photographers with a supper fast tagging tool
+package = Runmemo Custom Modules
+core = 7.x
+version = 7.1
+
+
+files[] = photo_tagger.inc
+files[] = photo_tagger.css
