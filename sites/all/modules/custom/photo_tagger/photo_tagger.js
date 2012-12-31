@@ -38,7 +38,7 @@
       }
     
       $(document).ready(function() {
-        show_message('Keyboard shortcuts will help you to tag faster.');
+        
         show_current_counter(1);
         settings.PhotoTagger.first = 0;
         settings.PhotoTagger.loaded = 0;

@@ -79,7 +79,7 @@ function photographer_tag_page() {
   if(count($images) == 0) { // no images to tag
     return '<div class="main">
               <div id="message-bar">
-                <span id="message">You don\'t have photos to tag.</span>
+                <span id="message">' . t('You don\'t have photos to tag.') . '</span>
               </div>
            </div>';
   } 
@@ -124,7 +124,7 @@ function photographer_tag_page() {
               </a>
            </div>
            <div id="message-bar">
-              <span id="message"></span>
+              <span id="message">' . t('Keyboard shortcuts will help you to tag faster.') . '</span>
            </div>
           </div>';
  
