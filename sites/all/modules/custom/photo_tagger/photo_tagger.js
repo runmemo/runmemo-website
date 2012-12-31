@@ -40,7 +40,7 @@
       $(document).ready(function() {
         show_message('Keyboard shortcuts will help you to tag faster.');
         show_current_counter(1);
-        
+        settings.PhotoTagger.first = 0;
         settings.PhotoTagger.loaded = 0;
         settings.PhotoTagger.extending = false; // defines whether request was sent
         // to get new items to image buffer
@@ -78,8 +78,15 @@
           }
         }
       
-        // @todo here we can remove img nodes of old images
-    
+        // here we remove img nodes of old images
+        //  don't do that currently as this does not affect memory usage
+        //        current = settings.PhotoTagger.current;
+        //        first = settings.PhotoTagger.first;
+        //        if (current - first > 100) {
+        //          $('#image-' + first).remove();
+        //          first = settings.PhotoTagger.first = first + 1;
+        //        }
+        
         return;
       }
     
@@ -133,9 +140,10 @@
    
       function next_image(step) {
        
-       var current = settings.PhotoTagger.current;
-        if (current == 0 && step == -1) {
-          show_message('back to first image.');
+        var current = settings.PhotoTagger.current;
+        var first = settings.PhotoTagger.first;
+        if (current == first && step == -1) {
+          show_message('You are back to the first available image.');
           return;
         }
         var pool_size = settings.PhotoTagger.size;
