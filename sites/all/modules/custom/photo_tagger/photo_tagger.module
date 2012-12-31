@@ -75,7 +75,15 @@ function photographer_tag_page() {
   $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
   $js_data = array('PhotoTagger' => $image_pool);
   drupal_add_js($js_data,'setting');
-
+  
+  if(count($images) == 0) { // no images to tag
+    return '<div class="main">
+              <div id="message-bar">
+                <span id="message">You don\'t have photos to tag.</span>
+              </div>
+           </div>';
+  } 
+  
   return '<div class="main">
             <form id="tagger-scope">
               <input type="radio" name="sex" value="tagged">With numbers<br>
