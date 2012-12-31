@@ -28,6 +28,13 @@
   min-height: 400px;
 }
 
+.image-pool #counter {
+  border: 1px #666 solid;
+  background: white;
+  padding: 5px;
+  position: absolute;
+}
+
 #tagger-scope {
   display: none;
   margin-bottom: 20px;
@@ -44,6 +51,7 @@
 }
 
 #helpbar {
+  height:200px;
   float: left;
   margin-left: 20px;
   background: #ddd;

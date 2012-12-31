@@ -82,6 +82,7 @@ function photographer_tag_page() {
               <input type="radio" name="sex" value="untagged">Without numbers
             </form>
             <div id="image-pool" class="image-pool">
+              <span id="counter"></span>
               <img id="image-0" src="' . $images[0]['url']. '" class="active" />
             </div>
             <form id="tagger-input">
@@ -116,7 +117,6 @@ function photographer_tag_page() {
            </div>
            <div id="message-bar">
               <span id="message"></span>
-              <span id="counter"></span>
            </div>
           </div>';
  

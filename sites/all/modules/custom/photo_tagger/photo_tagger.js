@@ -9,7 +9,7 @@
       $('#tagsinput').tagsInput({
         //   'autocomplete_url': url_to_autocomplete_api,
         //   'autocomplete': { option: value, option: value},
-        'height':'150px',
+        'height':'188px',
         'width':'100px',
         'interactive': true,
         'defaultText':'add number',
@@ -38,8 +38,9 @@
       }
     
       $(document).ready(function() {
-       show_message('You can use keyboard shortcuts to achieve supper fast tagging speed.');
-     
+        show_message('Keyboard shortcuts will help you to tag faster.');
+        show_current_counter(1);
+        
         settings.PhotoTagger.loaded = 0;
         settings.PhotoTagger.extending = false; // defines whether request was sent
         // to get new items to image buffer
@@ -129,8 +130,6 @@
         });
       
       }
-      
-    
    
       function next_image(step) {
        
@@ -163,13 +162,11 @@
         // save numbers to the current image
         save_tags()
       
-        // $('#tagsinput').importTags(''); // clear tags
-      
         // hide current image and show the next one
         $('#image-' + current).removeClass('active').addClass('inactive');
         $('#image-' + next).removeClass('inactive').addClass('active');
         show_saved_tags(next);
-        show_current_counter(next); 
+        show_current_counter(next+1); 
         settings.PhotoTagger.current = next;
          
         set_enter_shortcut_message('Next photo');
@@ -303,7 +300,6 @@
      */
       $('#next_key_right').bind('click', function() {
         next_image(1);
-        return false;
       });
     
     
@@ -311,19 +307,24 @@
      * Click event for the next arrow right shortcut.
      */
       $('#next_key_enter').bind('click', function() {
-        next_image(1);
-        return false;
+        if($('#tagsinput_tag').value == '') {
+          next_image(1);
+        }
       });
-      
-      
+     
     /**
      * Click event for the previous arrow left shortcut.
      */
       $('#previous_key_left').bind('click', function() {
         next_image(-1);
-        return false;
       });
    
+    /**
+     * Click event for the previous arrow left shortcut.
+     */
+      $('#backspace_key').bind('click', function() {
+        $('#tagsinput').importTags(''); // clear tags
+      });
     }
   }
 })(jQuery);
