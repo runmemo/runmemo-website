@@ -72,7 +72,7 @@
         }
         else {
           if(settings.PhotoTagger.complete) {
-            console.debug('No images left to load.')
+            console.debug('No images left to load.');
           } else {
             console.debug('Failed to preload image. possibly end of array.');
           }
@@ -80,7 +80,7 @@
       
         // @todo here we can remove img nodes of old images
     
-        return 
+        return;
       }
     
       // function loads data for next N images
@@ -135,17 +135,18 @@
        
        var current = settings.PhotoTagger.current;
         if (current == 0 && step == -1) {
-          console.debug('back to first image.');
+          show_message('back to first image.');
           return;
         }
         var pool_size = settings.PhotoTagger.size;
         var next = current + step; // @todo check that item exists
        
-        
+        // save numbers for the current photo
+        save_tags() 
        
         // leave if we reached the end
         if (next >= pool_size) {
-          console.debug('last image.');
+          show_message('Congratulations! You\'ve reached the last image.');
           return;
         } 
        
@@ -158,9 +159,6 @@
           var img = img_pool[img_pool.length-1];
           extend_image_pool(img.nid);
         }
-       
-        // save numbers to the current image
-        save_tags()
       
         // hide current image and show the next one
         $('#image-' + current).removeClass('active').addClass('inactive');
