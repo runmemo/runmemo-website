@@ -98,3 +98,12 @@
   background-color: #666;
 }
 
+
+#message-bar {
+  float: left;
+  margin-left: 20px;
+  padding: 10px 0;
+  width: 200px;
+  font-size: 13px;
+  color: #666;
+}

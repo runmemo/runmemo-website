@@ -38,7 +38,7 @@
       }
     
       $(document).ready(function() {
-        console.debug('photo tagger jQuery(document).ready.');
+       show_message('You can use keyboard shortcuts for supper fast tagging.');
      
         settings.PhotoTagger.loaded = 0;
         settings.PhotoTagger.extending = false; // defines whether request was sent
@@ -57,7 +57,7 @@
         i = settings.PhotoTagger.loaded;
         var test = $('#image-' + i);
         if (test.length) {
-          console.debug('image node already exists.')
+          console.debug('Image node already exists.')
           settings.PhotoTagger.loaded++;
           return;
         }
@@ -73,7 +73,7 @@
           if(settings.PhotoTagger.complete) {
             console.debug('No images left to load.')
           } else {
-            console.debug('failed to preload image. possibly end of array.');
+            console.debug('Failed to preload image. possibly end of array.');
           }
         }
       
