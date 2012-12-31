@@ -38,7 +38,7 @@
       }
     
       $(document).ready(function() {
-       show_message('You can use keyboard shortcuts for supper fast tagging.');
+       show_message('You can use keyboard shortcuts to achieve supper fast tagging speed.');
      
         settings.PhotoTagger.loaded = 0;
         settings.PhotoTagger.extending = false; // defines whether request was sent
