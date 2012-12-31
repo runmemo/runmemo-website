@@ -8,6 +8,8 @@ function photo_tagger_init() {
     drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
     drupal_add_js(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js');
     drupal_add_css(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css');
+    drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
+ 
   }
 }
 
@@ -85,6 +87,37 @@ function photographer_tag_page() {
             <form id="tagger-input">
               <input id="tagsinput" class="tagsinput" />
            </form>
+           <div id="helpbar">
+              <span class="shortcut-title">Shortcuts</span>
+              <a class="shortcut" id="previous_key_left">
+                  <span class="key-combo">
+                    <span class="symbol">&larr;</span>
+                  </span>
+                  <span class="key-action">' . t('Previous photo') .'</span>
+              </a>
+              <a class="shortcut" id="next_key_enter">
+                  <span class="key-combo">
+                    <span class="symbol">↵</span>
+                  </span>
+                  <span class="key-action">' . t('Next photo') .'</span>
+               </a>
+                <a class="shortcut" id="next_key_right">
+                  <span class="key-combo">
+                    <span class="symbol">&rarr;</span>
+                  </span>
+                  <span class="key-action">' . t('Next photo') .'</span>
+               </a>
+               <a class="shortcut" id="backspace_key">
+                  <span class="key-combo">
+                    <span class="symbol">BKSP</span>
+                  </span>
+                  <span class="key-action">' . t('Clear numbers') .'</span>
+              </a>
+           </div>
+           <div id="message-bar">
+              <span id="message"></span>
+              <span id="counter"></span>
+           </div>
           </div>';
  
 }

@@ -20,15 +20,10 @@ function photo_tagger_get_photos($nid, $uid, $limit) {
   foreach($result as $row) {
     
     $file = file_load($row->fid);
-    $url = image_style_url('search_preview', $file->uri);
+    // @todo remove comment
+    // $url = image_style_url('search_preview', $file->uri);
     $pool[$i] = array('nid' => $row->nid, 'url' => $url);
     $i++;
    }
   return $pool;
- $img0 = array('nid' => 10, 'url' => 'http://runmemo-test.s3.amazonaws.com/styles/large/s3/IMG_6327_crop_0_1.jpg');
- $img1 = array('nid' => 20, 'url' => 'http://runmemo.dev/sites/default/files/styles/search_preview/public/RunMoscow_0.JPG');
- $img2 = array('nid' => 30, 'url' => 'http://runmemo.dev/sites/default/files/styles/search_preview/public/2011%2BGreat%2BNorth%2BRun-fd0000x_1.jpg');
- 
- 
- return array(0 => $img0, 1=> $img1, 2=>$img2);
 }

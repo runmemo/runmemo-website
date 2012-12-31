@@ -6,6 +6,10 @@
         Purpose of the stylesheet follows.
 */
 
+.main {
+  margin-top:20px;
+}
+
 .image-pool {
   float: left;
   max-height: 400px;
@@ -18,3 +22,79 @@
 .image-pool .inactive {
   display: none;
 }
+
+.image-pool img {
+  min-width: 400px;
+  min-height: 400px;
+}
+
+#tagger-scope {
+  display: none;
+  margin-bottom: 20px;
+}
+
+
+
+#tagger-input {
+  display: block;
+  float: left;
+  clear: right;
+  margin-left: 20px;
+  min-height: 150px;
+}
+
+#helpbar {
+  float: left;
+  margin-left: 20px;
+  background: #ddd;
+}
+
+#helpbar .active {}
+#helpbar .inactive { 
+  opacity: 0.4;
+}
+
+#helpbar a {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#helpbar .shortcut {
+  float: left;
+  clear: both;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0px 10px;
+  margin: 10px 0px;
+}
+
+
+#helpbar .shortcut .key-action {
+  font-size: 11px;
+  font-weight: 600;
+  color: #114D97;
+}
+
+#helpbar .shortcut .key-combo {
+  font-size: 12px;
+  font-weight: 600;
+  color: #596573;
+  margin-right: 8px;
+}
+
+#helpbar .symbol {
+
+}
+
+.shortcut-title {
+  float: left;
+  width: 100%;
+  display: inline-block;
+  padding: 10px 0 10px 0;
+  text-align: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #FFF;
+  background-color: #666;
+}
+
