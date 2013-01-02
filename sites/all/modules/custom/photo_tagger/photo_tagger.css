@@ -11,8 +11,10 @@
 }
 
 .image-pool {
+  background-color: #DDD;
+  min-height: 400px;
+  min-width: 400px;
   float: left;
-  max-height: 400px;
 }
 
 .image-pool .active {
@@ -50,8 +52,13 @@
   min-height: 150px;
 }
 
+#tagger-input fieldset {
+  padding: 0;
+  margin:0;
+}
+
 #helpbar {
-  height:200px;
+  height:230px;
   float: left;
   margin-left: 20px;
   background: #ddd;
@@ -67,10 +74,14 @@
   text-decoration: none;
 }
 
+#helpbar p {
+  margin: 0;
+  padding: 0;
+}
+
 #helpbar .shortcut {
   float: left;
   clear: both;
-  display: inline-block;
   vertical-align: top;
   padding: 0px 10px;
   margin: 10px 0px;
@@ -94,8 +105,8 @@
 
 }
 
+.tagsinput-title,
 .shortcut-title {
-  float: left;
   width: 100%;
   display: inline-block;
   padding: 10px 0 10px 0;
@@ -108,12 +119,17 @@
 
 
 #message-bar {
-  float: left;
-  margin-left: 20px;
-  padding: 10px 0;
-  width: 200px;
-  font-size: 13px;
-  color: #666;
+  position: fixed;
+  bottom: 0;
+  left:0;
+  padding: 20px;
+  width: 100%;
+  font-size: 15px;
+  color: #FFF;
+  background-color: #333;
+}
+#message {
+  margin-left: 50px;
 }
 
 .page-photographer-tag #inner-wrapper {

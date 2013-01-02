@@ -9,7 +9,7 @@
       $('#tagsinput').tagsInput({
         //   'autocomplete_url': url_to_autocomplete_api,
         //   'autocomplete': { option: value, option: value},
-        'height':'188px',
+        'height':'183px',
         'width':'100px',
         'interactive': true,
         'defaultText':'add number',
@@ -47,10 +47,8 @@
         settings.PhotoTagger.complete = false; // defines whether all images were
         // loaded to the image pool buffer
       
-        var nid = 0;
         for(var i= 0; i < settings.PhotoTagger.size; i++) {
           preload_next_image();
-        
         }
       });
     
@@ -58,7 +56,7 @@
         i = settings.PhotoTagger.loaded;
         var test = $('#image-' + i);
         if (test.length) {
-          console.debug('Image node already exists.')
+          console.debug('Image node already exists.');
           settings.PhotoTagger.loaded++;
           return;
         }
@@ -94,23 +92,20 @@
       function extend_image_pool(after_nid) {
       
         if(settings.PhotoTagger.complete == true) {
-          console.debug('Pool is fully loaded.')
+          console.debug('Pool is fully loaded.');
           return;
         }
       
         if (settings.PhotoTagger.extending) {
-          console.debug('Already extending the pool.')
+          console.debug('Already extending the pool.');
           return;
         }
         settings.PhotoTagger.extending = true;
         var base_path = Drupal.settings.basePath;
         $.ajax({
-          // type : "POST",
           url : base_path + "ajax/tagger_get_list",
           type: "POST",
-          data: {
-            nid: after_nid
-          },
+          data: { nid: after_nid },
           dataType: 'json',
           cache: false,
           success : function(msg) {
@@ -148,18 +143,39 @@
         }
         var pool_size = settings.PhotoTagger.size;
         var next = current + step; // @todo check that item exists
+                
        
         // save numbers for the current photo
-        save_tags() 
+        save_changes();
        
         // leave if we reached the end
         if (next >= pool_size) {
-          show_message('Congratulations! You\'ve reached the last image.');
+          if (settings.PhotoTagger.extending) {
+            show_message('We are loading more images for you.');
+          } else {
+            show_message('Congratulations! You\'ve reached the last image.');
+          }
           return;
         } 
        
         var img_pool = settings.PhotoTagger.image_pool;
-       
+      
+        // hide current image and show the next one
+        if ($('#image-' + current).length > 0) {
+          $('#image-' + current).removeClass('active').addClass('inactive');
+        }
+      
+        settings.PhotoTagger.current = next;
+        
+        console.log('Now at photo [' + (next + 1) +'].');
+        
+        
+        show_current_counter(next + 1);
+        show_message('Now at photo [' + (next + 1) +'].');
+        show_shortcut('key_enter', true, 'Next photo');
+        
+        set_controls_new_photo(next);
+        
         // need to extend if we are close to the end
         var images_left = pool_size - 1 - current;
         console.debug('Images to the end of array: '+ images_left);
@@ -167,21 +183,24 @@
           var img = img_pool[img_pool.length-1];
           extend_image_pool(img.nid);
         }
-      
-        // hide current image and show the next one
-        $('#image-' + current).removeClass('active').addClass('inactive');
-        $('#image-' + next).removeClass('inactive').addClass('active');
-        show_saved_tags(next);
-        show_current_counter(next+1); 
-        settings.PhotoTagger.current = next;
-         
-        set_enter_shortcut_message('Next photo');
-   
-        // on sucess we can preload another image
-        preload_next_image(); 
         
-        // at some point start removing old ones
-   
+        // preload another image
+        preload_next_image();         
+      }
+      
+      function set_controls_new_photo(current) {
+
+        if ('delete_status' in settings.PhotoTagger.image_pool[current]) {
+          console.log('This photo was deleted.');
+          show_message('This photo was deleted.');
+          show_shortcut('key_delete', false, '');
+        } else {
+          $('#image-' + current).removeClass('inactive').addClass('active');
+          show_message('');
+          show_shortcut('key_delete', true, 'Delete photo');
+          show_saved_tags(current); 
+        }
+        return;
       }
     
       function count_tags() {
@@ -193,25 +212,32 @@
         return tags.length;
       }
     
-      function save_tags() {
+      function save_changes() {
         var img_pool = settings.PhotoTagger.image_pool;
-        current = settings.PhotoTagger.current
-      
-      
-        if (!('status' in img_pool[current]) 
-          || img_pool[current].status !== 'saved'
-          || img_pool[current].status !== 'saving') {
-          // numbers were not set or were not saved yet
-          var tagsinput = $("#tagsinput").siblings(".tagsinput").children(".tag");  
-          var tags = [];  
-          for (var i = tagsinput.length; i--;) {  
-            tags.push($(tagsinput[i]).text().substring(0, $(tagsinput[i]).text().length -  1).trim());    
+        var current = settings.PhotoTagger.current
+        var nid = img_pool[current].nid;
+        
+        if ('delete_status' in img_pool[current]) {
+          if(img_pool[current].delete_status == 'delete') {
+             ajax_delete_node(current, nid);
+             console.debug('requested deletion of node: ' + nid);
+             return;
+          }
+          // no need to save anything if image was deleted;
+          return;
+        }
+        
+        if ('status' in img_pool[current]) {
+          if  (img_pool[current].status == 'changed') {
+            // numbers were not set or were not saved yet
+            var tagsinput = $("#tagsinput").siblings(".tagsinput").children(".tag");  
+            var tags = [];  
+            for (var i = tagsinput.length; i--;) {  
+              tags.push($(tagsinput[i]).text().substring(0, $(tagsinput[i]).text().length -  1).trim());    
+            } 
+            img_pool[current].tags = tags; // here we cache tags
+            ajax_save_numbers(current, nid, tags);  
           } 
-          
-          img_pool[current].tags = tags; // here we cache tags
-          var nid = img_pool[current].nid;
-          ajax_save_numbers(current, nid, tags);  
-          
         } else {
           console.debug('numbers did not change, changing photo.')
         }
@@ -219,11 +245,11 @@
     
       function ajax_save_numbers(current, nid, tags) {
         var base_path = Drupal.settings.basePath;
-        img = settings.PhotoTagger.image_pool[current];
+        var img = settings.PhotoTagger.image_pool[current];
         img.status = 'saving';
-        show_message('Saving numbers for image ['+ current + '].');
+        
+        show_message('Saving numbers for image ['+ (current + 1) + '].');
         $.ajax({
-          // type : "POST",
           url : base_path + "ajax/tagger_save_numbers",
           type: "POST",
           data: {
@@ -234,69 +260,134 @@
           cache: false,
           success : function(msg) {
             settings.PhotoTagger.image_pool[current].status = 'saved';
-            show_message('Saved numbers for image ['+ current + '].');
+            show_message('Saved numbers for image ['+ (current + 1) + '].');
           },
           error: function(msg) {
             img.status = 'failed';
-            show_message('Failed to save numbers to image ['+ current + '].');
+            show_message('Failed to save numbers to image ['+ (current + 1) + '].');
             console.debug(msg);     
           }
         });
       
       }
       
+      /**
+       * Shows or hides shortcut for specific id
+       */
+      function show_shortcut(id, show, msg) {
+        if(show) {
+          $('#' + id + ' .key-action').text(msg);
+          $('#' + id).show();
+        } else {
+          //$('#' + id).hide();
+          $('#' + id + ' .key-action').empty();
+        }
+        
+      }
+      
+      /**
+       * Sets delete_status of the current message
+       */
+      function delete_current() {
+        var img_pool = settings.PhotoTagger.image_pool;
+        var current = settings.PhotoTagger.current;
+        if('delete_status' in img_pool[current]) {
+          if(img_pool[current].delete_status == 'delete') {
+            delete img_pool[current].delete_status;
+            show_shortcut('key_delete', true, 'Delete photo');
+            show_message('');
+          } else {
+            show_message('This photo was deleted.')
+          }
+        } else {
+           img_pool[current].delete_status = 'delete';
+           show_shortcut('key_delete', true, 'Undelete');
+           show_message('This photo will be deleted. Press Delete key to undo.');
+        }
+       
+      }
+      
+      /**
+       * AJAX call to delete product node for the image
+       */
+      function ajax_delete_node(current, nid) {
+        var base_path = Drupal.settings.basePath;
+        img = settings.PhotoTagger.image_pool[current];
+        img.delete_status = 'deleting';
+       
+        $.ajax({
+          url : base_path + "ajax/tagger_delete_node",
+          type: "POST",
+          data: { nid: nid },
+          dataType: 'json',
+          cache: false,
+          success : function(msg) {
+            settings.PhotoTagger.image_pool[current].delete_status = 'deleted';
+            settings.PhotoTagger.image_pool[current].url = '';
+            $('#image-' + current).remove();
+            console.debug(msg);
+          },
+          error: function(msg) {
+            img.delete_status = 'failed';
+            show_message('Failed to save numbers to image ['+ current + '].');
+            console.debug(msg);     
+          }
+        });
+      }
+      
       function show_message(msg) {
-        $('#message-bar #message').html(msg);
+        $('#message-bar #message').text(msg);
       }
     
       function show_current_counter(msg) {
-        $('#counter').html(msg);
+        
+        $('#image-pool #counter').text(msg);
       }
     
       function show_saved_tags(i) {
       
         // load values from previous image
-      
         if('tags' in settings.PhotoTagger.image_pool[i]) {
           var tags = settings.PhotoTagger.image_pool[i].tags;
           $('#tagsinput').importTags(tags.join());
           $('#tagsinput_tag').focus();
-          set_enter_shortcut_message('Next photo');
         }    
       }
-    
-      function set_enter_shortcut_message(msg) {
-        $('#next_key_enter .key-action').html(msg);
-      }
-    
+      
+      /**
+       * Here we catch keys for shortcuts.
+       */
       $('#tagsinput_tag').bind('keydown', function(e) {    
         if(this.value == '') {
           if (e.keyCode == 8) { // backspace
             $('#tagsinput').importTags(''); // clear tags
           }
           else if (e.keyCode == 13 ) { // key enter
-            next_image(1);
+            next_image(1);            
           } 
           else if (e.keyCode == 39) { // arrow right
-            next_image(1);
-            return false; 
+            next_image(1);            
           } 
-          else if(e.keyCode == 37) { // arrow left
-            next_image(-1);
-            return false; 
+          else if (e.keyCode == 37) { // arrow left
+            next_image(-1);             
           }
-          else if(e.keyCode == 40) { // arrow down
+          else if (e.keyCode == 40) { // arrow down
             // @todo next value;
-            return false; 
+            return; 
+          }
+          else if (e.keyCode == 46) { // delete key
+            delete_current();
+            return;
           }
           else {
             // @todo may be need to cancel out non numeric chars
+            // console.log(e.keyCode);
           }
         } else {
           if (e.keyCode == 13 ) { // key enter
-            set_enter_shortcut_message('Next photo');
+            show_shortcut('key_enter', true, 'Next photo');
           } else {
-            set_enter_shortcut_message('Add number');
+            show_shortcut('key_enter', true, 'Add number');
           }
         }
       });
@@ -310,9 +401,9 @@
     
     
     /**
-     * Click event for the next arrow right shortcut.
+     * Click event for the enter key shortcut.
      */
-      $('#next_key_enter').bind('click', function() {
+      $('#key_enter').bind('click', function() {
         if($('#tagsinput_tag').value == '') {
           next_image(1);
         }
@@ -326,11 +417,20 @@
       });
    
     /**
-     * Click event for the previous arrow left shortcut.
+     * Click event for the backspace key shortcut.
      */
       $('#backspace_key').bind('click', function() {
         $('#tagsinput').importTags(''); // clear tags
       });
+      
+   
+    /**
+     * Click event for the delete key shortcut.
+     */
+      $('#key_delete').bind('click', function() {
+        delete_current();
+      });
+      
     }
   }
 })(jQuery);
