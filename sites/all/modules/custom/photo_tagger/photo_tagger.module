@@ -94,24 +94,28 @@ function photographer_tag_page() {
   
   return '<div class="main">
             <form id="tagger-scope">
-              <input type="radio" name="sex" value="tagged">With numbers<br>
-              <input type="radio" name="sex" value="untagged">Without numbers
+              <fieldset>
+                <input type="radio" name="sex" value="tagged" />
+                <input type="radio" name="sex" value="untagged" />
+              </fieldset>
             </form>
             <div id="image-pool" class="image-pool">
-              <span id="counter"></span>
-              <img id="image-0" src="' . $images[0]['url']. '" class="active" />
+              <div id="counter"></div>
+              <img id="image-0" src="' . $images[0]['url']. '" class="active" alt="" />
             </div>
-            <form id="tagger-input">
-              <span class="tagsinput-title">' . t('Bib numbers') . '</span>
-              <input id="tagsinput" class="tagsinput" />
+            <form id="tagger-input" action="">
+              <div class="tagsinput-title">' . t('Bib numbers') . '</div>
+              <fieldset>
+                <input id="tagsinput" class="tagsinput" />
+              </fieldset>
             </form>
             <div id="helpbar">
               <span class="shortcut-title">Shortcuts</span>
               <a class="shortcut" id="previous_key_left">
-                  <span class="key-combo">
+                  <p><span class="key-combo">
                     <span class="symbol">&larr;</span>
                   </span>
-                  <span class="key-action">' . t('Previous photo') .'</span>
+                  <span class="key-action">' . t('Previous photo') .'</span></p>
               </a>
               <a class="shortcut" id="key_enter">
                   <span class="key-combo">
@@ -123,23 +127,23 @@ function photographer_tag_page() {
                   <span class="key-combo">
                     <span class="symbol">&rarr;</span>
                   </span>
-                  <span class="key-action">' . t('Next photo') .'</span>
+                  <span class="key-action">' . t('Next photo') .' </span>
                </a>
                <a class="shortcut" id="backspace_key">
                   <span class="key-combo">
                     <span class="symbol">BKSP</span>
                   </span>
-                  <span class="key-action">' . t('Clear numbers') .'</span>
+                  <span class="key-action">' . t('Clear numbers') . '</span>
               </a>
               <a class="shortcut" id="key_delete">
                   <span class="key-combo">
                     <span class="symbol">Del</span>
                   </span>
-                  <span class="key-action">' . t('Delete photo') .'</span>
+                  <span class="key-action">' . t('Delete photo') . '</span>
               </a>
            </div>
            <div id="message-bar">
-              <span id="message">' . t('Keyboard shortcuts will help you to tag faster.') . '</span>
+              <div id="message">' . t('Keyboard shortcuts will help you to tag faster.') . '</div>
            </div>
           </div>';
  

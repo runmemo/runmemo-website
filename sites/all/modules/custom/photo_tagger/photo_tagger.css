@@ -52,6 +52,11 @@
   min-height: 150px;
 }
 
+#tagger-input fieldset {
+  padding: 0;
+  margin:0;
+}
+
 #helpbar {
   height:230px;
   float: left;
@@ -69,10 +74,14 @@
   text-decoration: none;
 }
 
+#helpbar p {
+  margin: 0;
+  padding: 0;
+}
+
 #helpbar .shortcut {
   float: left;
   clear: both;
-  display: inline-block;
   vertical-align: top;
   padding: 0px 10px;
   margin: 10px 0px;
