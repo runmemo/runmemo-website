@@ -168,32 +168,32 @@ function tagger_save_numbers() {
     echo json_message(FALSE, array('message' => t('Required parameter is not set')));
     return;
   }
+  
+  //check permission
+  $node = node_load($nid);
+  if (!node_access("update", $node)) {
+    echo json_message(FALSE, array('message' => t('Has no permissions')));
+    return;
+  }
+
+  
   // @todo remove numbers associated with the node
+  
+  $productSaver = new ProductNodeSaver($nid);
   
   foreach($numbers as $number) {
     $number_int = (int) $number;
 
-      if ((string)$number_int != $number) {
-        echo json_message(FALSE, array('message' => t('Number is not int')));
-        return;
-      }
+    if ((string)$number_int != $number) {
+      echo json_message(FALSE, array('message' => t('Number is not int')));
+      return;
+    }
 
-      //check permission
-      $node = node_load($nid);
-      if (!node_access("update", $node)) {
-        echo json_message(FALSE, array('message' => t('Has no permissions')));
-        return;
-      }
-
-      $productSaver = new ProductNodeSaver($nid);
-
-
-      $arr_number = array('value' => $number, 'manual' => 1, 'probability' => 1);
-      $productSaver->AddNumber($arr_number);
-      $productSaver->SetVerifiedBy($uid);
-      $productSaver->Save();
+    $arr_number = array('value' => $number, 'manual' => 1, 'probability' => 1);
+    $productSaver->AddNumber($arr_number);
   }
-  
+  $productSaver->SetVerifiedBy($uid);
+  $productSaver->Save();
 
   echo json_message(TRUE, array('message' => 'Saved numbers to node: ' . $nid . '.'));
   return;
@@ -204,10 +204,9 @@ function tagger_save_numbers() {
  */
 function photo_tagger_delete_node() {
   $nid = $_POST['nid'];
-  try { // @todo add check for user permissions
-    //node_delete($nid); 
-    
-    db_query("UPDATE {node} SET status = 0 WHERE nid = %d", $nid);
+  try { 
+    // @todo add check for user permissions
+   db_query("UPDATE {node} SET status = 0 WHERE nid = %d", $nid);
     
     echo json_message(TRUE, array('message' => 'Deleted product node with id: ' . $nid . '.'));
   } catch(Exception $e){
