@@ -56,6 +56,16 @@ class ProductNodeSaver {
     
   }
   
+  public function ClearNumbers() {
+    $items = field_get_items('node', $this->node, 'field_ocr_numbers');
+    if ($items) {
+      foreach ($items as $index => $item) {
+        unset($this->node->field_ocr_numbers[$this->node->language][$index]);
+      }   
+    }
+    $this->changed = TRUE;
+  }
+  
   /**
    * Remove runner's number
    */

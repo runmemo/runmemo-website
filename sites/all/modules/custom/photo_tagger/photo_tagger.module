@@ -180,7 +180,7 @@ function tagger_save_numbers() {
   // @todo remove numbers associated with the node
   
   $productSaver = new ProductNodeSaver($nid);
-  
+  $productSaver->ClearNumbers();
   foreach($numbers as $number) {
     $number_int = (int) $number;
 
