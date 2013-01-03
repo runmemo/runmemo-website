@@ -144,6 +144,7 @@ function photographer_tag_page() {
            </div>
            <div id="message-bar">
               <div id="message">' . t('Keyboard shortcuts will help you to tag faster.') . '</div>
+              <div class="icons"></div>
            </div>
           </div>';
  
@@ -204,7 +205,10 @@ function tagger_save_numbers() {
 function photo_tagger_delete_node() {
   $nid = $_POST['nid'];
   try { // @todo add check for user permissions
-    node_delete($nid);
+    //node_delete($nid); 
+    
+    db_query("UPDATE {node} SET status = 0 WHERE nid = %d", $nid);
+    
     echo json_message(TRUE, array('message' => 'Deleted product node with id: ' . $nid . '.'));
   } catch(Exception $e){
     echo json_message(TRUE, array('message' => 'Failed to delete product node with id: ' . $nid . '.'));

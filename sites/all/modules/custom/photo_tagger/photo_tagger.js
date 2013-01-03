@@ -65,7 +65,7 @@
         if (i in img_pool) {
           img = $('<img id="image-' + i + '" class="inactive">');
           img.attr('src', img_pool[i].url);
-          img.appendTo('#image-pool');
+          img.appendTo('#image-pool');         
           settings.PhotoTagger.loaded++;
         }
         else {
@@ -105,7 +105,7 @@
         $.ajax({
           url : base_path + "ajax/tagger_get_list",
           type: "POST",
-          data: { nid: after_nid },
+          data: {nid: after_nid},
           dataType: 'json',
           cache: false,
           success : function(msg) {
@@ -169,9 +169,7 @@
         
         console.log('Now at photo [' + (next + 1) +'].');
         
-        
         show_current_counter(next + 1);
-        show_message('Now at photo [' + (next + 1) +'].');
         show_shortcut('key_enter', true, 'Next photo');
         
         set_controls_new_photo(next);
@@ -248,6 +246,8 @@
         var img = settings.PhotoTagger.image_pool[current];
         img.status = 'saving';
         
+        show_save_icon(nid);
+        
         show_message('Saving numbers for image ['+ (current + 1) + '].');
         $.ajax({
           url : base_path + "ajax/tagger_save_numbers",
@@ -261,10 +261,12 @@
           success : function(msg) {
             settings.PhotoTagger.image_pool[current].status = 'saved';
             show_message('Saved numbers for image ['+ (current + 1) + '].');
+            hide_save_icon(nid);
           },
           error: function(msg) {
             img.status = 'failed';
             show_message('Failed to save numbers to image ['+ (current + 1) + '].');
+            error_save_icon(nid)
             console.debug(msg);     
           }
         });
@@ -314,34 +316,75 @@
         var base_path = Drupal.settings.basePath;
         img = settings.PhotoTagger.image_pool[current];
         img.delete_status = 'deleting';
-       
+        
+        show_delete_icon(nid);
+        
         $.ajax({
           url : base_path + "ajax/tagger_delete_node",
           type: "POST",
-          data: { nid: nid },
+          data: {nid: nid},
           dataType: 'json',
           cache: false,
           success : function(msg) {
             settings.PhotoTagger.image_pool[current].delete_status = 'deleted';
             settings.PhotoTagger.image_pool[current].url = '';
             $('#image-' + current).remove();
+            
+            hide_delete_icon(nid);         
             console.debug(msg);
           },
           error: function(msg) {
             img.delete_status = 'failed';
             show_message('Failed to save numbers to image ['+ current + '].');
+            error_delete_icon(nid)
             console.debug(msg);     
           }
         });
       }
       
+      
+      function show_delete_icon(nid) {
+        icon = $('<div id="delete-icon-' + nid + '" class="icon delete-icon" title="Deleting photo..."></div>');
+        $('.icons').append(icon);
+      }
+      
+      function error_delete_icon(nid) {
+        $('#delete-icon-' + nid).removeClass('delete-icon').addClass('delete-error-icon');
+        $('#delete-icon-' + nid).attr('title', 'Failed to delete photo.')
+      }
+      
+      function hide_delete_icon(nid) {
+        $('#delete-icon-' + nid).remove(); 
+      }
+      
+      function show_save_icon(nid) {
+        icon = $('<div id="save-icon-' + nid + '" class="icon save-icon" title="Saving bib numbers..."></div>');
+        $('.icons').append(icon);
+      }
+      
+      function hide_save_icon(nid) {
+        $('#save-icon-' + nid).remove(); 
+      }
+      
+      function error_save_icon(nid) {
+        $('#save-icon-' + nid).removeClass('save-icon').addClass('save-error-icon'); 
+        $('#save-icon-' + nid).attr('title', 'Failed to save bib numbers.'); 
+      }
+      
       function show_message(msg) {
-        $('#message-bar #message').text(msg);
+        if (msg == '') {
+          $('#message').empty();
+         // $('#message-bar').hide('slow');
+          return;
+        } 
+        else {
+          $('#message').html(msg);
+        //  $('#message-bar').show('slow');
+        }
       }
     
       function show_current_counter(msg) {
-        
-        $('#image-pool #counter').text(msg);
+        $('#counter').text(msg);
       }
     
       function show_saved_tags(i) {
@@ -351,7 +394,12 @@
           var tags = settings.PhotoTagger.image_pool[i].tags;
           $('#tagsinput').importTags(tags.join());
           $('#tagsinput_tag').focus();
-        }    
+        } 
+        else {
+          if(count_tags() > 0) {
+            tagger_numbers_changed();
+          }
+        }
       }
       
       /**

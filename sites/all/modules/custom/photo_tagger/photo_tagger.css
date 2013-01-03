@@ -119,6 +119,7 @@
 
 
 #message-bar {
+  z-index: 1;
   position: fixed;
   bottom: 0;
   left:0;
@@ -129,10 +130,41 @@
   background-color: #333;
 }
 #message {
+  margin-top: 10px;
+  float:left;
   margin-left: 50px;
 }
 
 .page-photographer-tag #inner-wrapper {
   height: 750px;
   
+}
+
+#message-bar .icons {
+  margin-right: 100px;
+  float: right;
+}
+
+#message-bar .icon {
+  margin-left: 5px;
+  display: block;
+  float: left;
+  height: 32px;
+  width: 32px;
+}
+
+#message-bar .delete-icon {
+  background-image: url(images/delete_action.png);
+}
+
+#message-bar .delete-error-icon {
+  background-image: url(images/delete-error.png);
+}
+
+#message-bar .save-icon {
+  background-image: url(images/saving.png);
+}
+
+#message-bar .save-error-icon {
+  background-image: url(images/saving-error.png);
 }
