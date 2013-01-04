@@ -8,7 +8,7 @@ function photo_tagger_init() {
     drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
     drupal_add_js(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js');
     drupal_add_css(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css');
-    drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
+  //  drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
  
   }
 }
@@ -80,6 +80,7 @@ function photo_tagger_get_list() {
 function photographer_tag_page() {
   global $user;
   $images = photo_tagger_get_photos(0, $user->uid, 10);
+  $count_to_tag = photo_tagger_count_photos($user->uid);
   $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
   $js_data = array('PhotoTagger' => $image_pool);
   drupal_add_js($js_data,'setting');
@@ -92,15 +93,20 @@ function photographer_tag_page() {
            </div>';
   } 
   
-  return '<div class="main">
-            <form id="tagger-scope">
-              <fieldset>
-                <input type="radio" name="sex" value="tagged" />
-                <input type="radio" name="sex" value="untagged" />
-              </fieldset>
-            </form>
+//            <form id="tagger-scope" action="">
+//              <fieldset>
+//                <input type="radio" name="sex" value="tagged" />
+//                <input type="radio" name="sex" value="untagged" />
+//              </fieldset>
+//            </form>
+  
+  return '<div class="main">            
             <div id="image-pool" class="image-pool">
-              <div id="counter"></div>
+              <div id="counter-background"></div>
+              <div id="counter">
+                <div id="current">1</div>
+                <div id="total"> &#47; ' . $count_to_tag . '</div>
+              </div>
               <img id="image-0" src="' . $images[0]['url']. '" class="active" alt="" />
             </div>
             <form id="tagger-input" action="">
@@ -112,16 +118,16 @@ function photographer_tag_page() {
             <div id="helpbar">
               <span class="shortcut-title">Shortcuts</span>
               <a class="shortcut" id="previous_key_left">
-                  <p><span class="key-combo">
+                  <span class="key-combo">
                     <span class="symbol">&larr;</span>
                   </span>
-                  <span class="key-action">' . t('Previous photo') .'</span></p>
+                  <span class="key-action">' . t('Previous photo') .'</span>
               </a>
               <a class="shortcut" id="key_enter">
                   <span class="key-combo">
-                    <span class="symbol">↵</span>
+                    <span class="symbol">Enter</span>
                   </span>
-                  <span class="key-action">' . t('Next photo') .'</span>
+                  <span class="key-action">' . t('Next photo') . '</span>
                </a>
                 <a class="shortcut" id="next_key_right">
                   <span class="key-combo">

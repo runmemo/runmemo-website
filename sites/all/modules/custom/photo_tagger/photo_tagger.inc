@@ -27,3 +27,18 @@ function photo_tagger_get_photos($nid, $uid, $limit) {
    }
   return $pool;
 }
+
+function photo_tagger_count_photos($uid) {
+    $sql='select COUNT(*)
+          from {node} n 
+          inner join {field_data_uc_product_image} upi
+            on n.nid = upi.entity_id
+          left join {field_data_field_ocr_numbers} fon 
+            on n.nid = fon.entity_id
+          where fon.field_ocr_numbers_value is null
+            and n.uid = :uid
+            and n.status = 1';
+    
+    $result = db_query($sql, array(':uid'=>$uid))->fetchField();
+    return $result;
+}
