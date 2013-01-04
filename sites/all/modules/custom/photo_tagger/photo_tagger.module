@@ -237,7 +237,8 @@ function photo_tagger_cron() {
  
   $query->entityCondition('entity_type', 'node')
         ->entityCondition('bundle', 'product')
-        ->propertyCondition('status', 0);  
+        ->propertyCondition('status', 0)
+        ->range(0,100);  
   $result = $query->execute();
 
   if (!empty($result['node'])) {
