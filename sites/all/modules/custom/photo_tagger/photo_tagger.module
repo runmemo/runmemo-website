@@ -244,12 +244,12 @@ function photo_tagger_cron() {
   if (!empty($result['node'])) {
      $nodes = entity_load('node', array_keys($result['node']));
      foreach ($nodes as $nid => $node) {
-       watchdog('tagger', 'Deleting node with id: ' . $nid, WATCHDOG_DEBUG);
+       watchdog('tagger', 'Deleting node with id: %nid', array('%nid' => $nid), WATCHDOG_DEBUG);
        if(!uc_product_sold($nid)) {     
          node_delete($nid);
        } 
        else {
-         watchdog('tagger', 'Did not delete product as order with it exists: ' . $nid, WATCHDOG_DEBUG);
+         watchdog('tagger', 'Did not delete product as order with it exists: %nid', array('%nid' => $nid), WATCHDOG_DEBUG);
        }
      }
   } 
