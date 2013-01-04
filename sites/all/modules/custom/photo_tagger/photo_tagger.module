@@ -212,10 +212,10 @@ function photo_tagger_delete_node() {
   $nid = $_POST['nid'];
   try { 
     // @todo add check for user permissions
-   db_query("UPDATE {node} SET status = 0 WHERE nid = %d", $nid);
-    
+    $num_deleted = db_delete('node')->condition('nid', $nid)->execute();
     echo json_message(TRUE, array('message' => 'Deleted product node with id: ' . $nid . '.'));
   } catch(Exception $e){
     echo json_message(TRUE, array('message' => 'Failed to delete product node with id: ' . $nid . '.'));
-  } 
+  }
+  return;
 }
