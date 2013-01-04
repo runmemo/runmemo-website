@@ -210,12 +210,57 @@ function tagger_save_numbers() {
  */
 function photo_tagger_delete_node() {
   $nid = $_POST['nid'];
-  try { 
+  
     // @todo add check for user permissions
-    $num_deleted = db_delete('node')->condition('nid', $nid)->execute();
-    echo json_message(TRUE, array('message' => 'Deleted product node with id: ' . $nid . '.'));
-  } catch(Exception $e){
-    echo json_message(TRUE, array('message' => 'Failed to delete product node with id: ' . $nid . '.'));
+  $num_updated = db_update('node')
+      ->fields(array('status' => 0, ))
+      ->condition('nid', $nid)
+      ->execute();
+  
+  if($num_updated == 0) {
+    echo json_message(FALSE, array('message' => 'Product with this nid does not exist: ' . $nid . '.'));
   }
+  else {
+    echo json_message(TRUE, array('message' => 'Unpublished product node with id: ' . $nid . '.'));
+  }
+  
   return;
 }
+
+/**
+ * Implements hook_cron()
+ */
+function photo_tagger_cron() {
+  // this cron deletes all unpublished products
+  
+  $query = new EntityFieldQuery();
+ 
+  $query->entityCondition('entity_type', 'node')
+        ->entityCondition('bundle', 'product')
+        ->propertyCondition('status', 0)
+        ->range(0,100);  
+  $result = $query->execute();
+
+  if (!empty($result['node'])) {
+     $nodes = entity_load('node', array_keys($result['node']));
+     foreach ($nodes as $nid => $node) {
+       watchdog('tagger', 'Deleting node with id: ' . $nid, WATCHDOG_DEBUG);
+       if(!uc_product_sold($nid)) {     
+         node_delete($nid);
+       } 
+       else {
+         watchdog('tagger', 'Did not delete product as order with it exists: ' . $nid, WATCHDOG_DEBUG);
+       }
+     }
+  } 
+  else {
+    watchdog('tagger', 'No nodes');
+  }
+}
+
+function uc_product_sold($nid) {
+  $sql = 'select COUNT(*) from {uc_order_products} where nid = :nid';
+  $result = db_query($sql, array(':nid' => $nid))->fetchField();
+  return $result == 0 ? FALSE : TRUE;
+}
+
