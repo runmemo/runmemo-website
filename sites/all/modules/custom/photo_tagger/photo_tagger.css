@@ -46,7 +46,7 @@
   position: absolute;
   background-color: #000;
   opacity: 0.2;
-  width: 70px;
+  width: 100px;
   height: 30px;
   z-index: 1;
 }
@@ -116,6 +116,7 @@
 }
 
 #helpbar .shortcut .key-combo {
+  float:left;
   width: 40px;
   font-size: 12px;
   font-weight: 600;
