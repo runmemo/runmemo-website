@@ -29,10 +29,35 @@
 }
 
 .node-type-product .node {
-        width: 100%;
         border: 1px solid #DEE4E7; 
         border-radius: 5px 5px 5px 5px;  
 }
+
+.node-type-product #prev-next-container {
+	margin-left: 3px;
+  position: absolute;
+	background-color: #FFF;
+	opacity: 0.6;
+	padding-left: 10px;
+	padding-right: 10px;
+	width: 380px;
+	height: 25px;
+	border-bottom: 1px solid #333;
+}
+
+.node-type-product #prev-next-container a {
+	color: #000;
+	font-size: 14pt;
+}
+
+.node-type-product #prev-product {
+	float: left;
+}
+
+.node-type-product #next-product {
+	float: right;
+}
+
 
 .node-type-product  .price-slider {
     width: 150px; 

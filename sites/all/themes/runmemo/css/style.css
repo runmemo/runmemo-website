@@ -2685,32 +2685,6 @@ table.cart-block-summary tbody tr td {
 	margin-left: 0.5em;
 }
 
-.node-type-product #prev-next-container {
-	margin-left: 3px;
-	top: 27px;
-	position: relative;
-	background-color: #FFF;
-	opacity: 0.6;
-	padding-left: 10px;
-	padding-right: 10px;
-	width: 380px;
-	height: 25px;
-	border-bottom: 1px solid #333;
-}
-
-.node-type-product #prev-next-container a {
-	color: #000;
-	font-size: 14pt;
-}
-
-.node-type-product #prev-product {
-	float: left;
-}
-
-.node-type-product #next-product {
-	float: right;
-}
-
 .page-user #edit-id-display {
 	display: none;
 }
