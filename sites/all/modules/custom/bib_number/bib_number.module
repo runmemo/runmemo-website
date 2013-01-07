@@ -45,8 +45,8 @@ function bib_number_field_formatter_view($entity_type, $entity, $field, $instanc
       $element[0] = array(
         '#markup' => $numbers_box,
         '#attached' => array(
-          'css' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css'),
-          'js' => array(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js',    
+          'css' => array(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.css'),
+          'js' => array(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.js',    
                             drupal_get_path('module', 'bib_number') . '/bib_number.js'),
                       ),
       );

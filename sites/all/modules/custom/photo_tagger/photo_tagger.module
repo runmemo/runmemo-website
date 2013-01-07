@@ -6,8 +6,8 @@ function photo_tagger_init() {
   if ('tag' === arg(1)) {
     drupal_add_js(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.js');
     drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
-    drupal_add_js(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js');
-    drupal_add_css(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css');
+    drupal_add_js(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.js');
+    drupal_add_css(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.css');
   //  drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
  
   }
