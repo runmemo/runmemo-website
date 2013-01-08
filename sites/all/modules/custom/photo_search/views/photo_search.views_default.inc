@@ -130,7 +130,7 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['uc_product_image']['label'] = '';
   $handler->display->display_options['fields']['uc_product_image']['alter']['alter_text'] = 1;
   $handler->display->display_options['fields']['uc_product_image']['alter']['text'] = 
-  		'<div id="thumb-[nid]" class="image-thumbnail">[uc_product_image]</div>
+  		'<div title="[nid]" id="thumb-[nid]" class="image-thumbnail">[uc_product_image]</div>
   		 <div title="[nid]" id="check_[nid]" class="search-checkbox"></div>';
   $handler->display->display_options['fields']['uc_product_image']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['uc_product_image']['alter']['absolute'] = 0;
@@ -164,7 +164,7 @@ function photo_search_views_default_views() {
   $handler->display->display_options['fields']['field_first_name']['relationship'] = 'uid';
   $handler->display->display_options['fields']['field_first_name']['label'] = '';
   $handler->display->display_options['fields']['field_first_name']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['field_first_name']['alter']['text'] = '<span class="authour_first_name" style="display:none;">[field_first_name]</span>';
+  $handler->display->display_options['fields']['field_first_name']['alter']['text'] = '<span id="item-author-[nid]" class="authour_first_name" style="display:none;">[field_first_name]</span>';
   $handler->display->display_options['fields']['field_first_name']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['field_first_name']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['field_first_name']['alter']['external'] = 0;
