@@ -79,6 +79,10 @@
 	display:block;
 }
 
+.page-cart-checkout .messages.status {
+  display: none;
+}
+
 .image-thumbnail img {
 	float:right;
 	max-height:100%;
