@@ -69,10 +69,20 @@ function ubercart_custom_init() {
 
   drupal_add_css( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/start/jquery-ui.css', 'external');
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
-
+ 
+  // drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
+  
   drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
 
+//  $messages = drupal_get_messages();
+//  print_nice($messages);
+//  foreach($messages as $message) {
+//    print_nice($message);
+//    //print_nice($_SESSION['messages']);
+//    
+//  }
+//    
   //for redirect the cart page
   //when no products in the shopping cart
   if (arg(0) == 'cart' && arg(1) == '') {
@@ -142,7 +152,7 @@ function ubercart_custom_menu() {
   $items['ajax/cart_list_items'] = array(
     'title' => '',
     'description' => 'api point that returns json with list of items in the cart',
-    'page callback' => 'cart_list_items',
+    'page callback' => 'ajax_cart_list_items',
     'access arguments' => array('search photos'),
     'type' => MENU_CALLBACK
   );
@@ -438,9 +448,8 @@ function json_message($success, $attributes = array()) {
  * AJAX call
  * returns json with the list of items in the cart of current user
  */
-function cart_list_items() {
-  $event = $_POST['event'];
-  $number = $_POST['number'];
+function cart_list_items($event, $number) {
+  
   
   $cid = uc_cart_get_id($create = TRUE);
   
@@ -455,16 +464,24 @@ function cart_list_items() {
   $count = count_cart_items($cid);
   $total = get_cart_total_with_discount(cart_total_amount($cid));
   
-  $result = array(
+  $cart = array(
     'total' => $total,
     'items' => $items,
     'event' => $event,
     'number' => $number,
     'count' => $count,
   );
-  echo json_encode($result);
+  return $cart;
   
   
+}
+
+function ajax_cart_list_items() {
+  $event = $_POST['event'];
+  $number = $_POST['number'];
+  
+  $data = cart_list_items($event, $number);
+  echo json_encode($data);
 }
 
 /**

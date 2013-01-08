@@ -76,14 +76,20 @@ table {
 	float: left;
 }
 
+.page-search-result .form-wrapper {
+  padding: 0;
+  margin-left: 0;
+}
+
 .page-search-result .fieldset-wrapper {
-	width: 980px;
+  margin: 0;
+  padding: 0;
+	width: 978px;
 	border: 1px solid #ccc;
 	float: left;
 	border-radius: 5px;
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
-	margin-left: -10px;
 }
 
 #photo_cost {
@@ -205,6 +211,10 @@ table {
 .page-search-result .contextual-links-region {
 	float: left;
 	/*width: 435px;*/
+}
+
+.page-search-result .messages.status {
+  display: none;
 }
 
 .thumbnail {

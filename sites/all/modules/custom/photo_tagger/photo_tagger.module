@@ -2,18 +2,6 @@
 
 module_load_include('inc', 'photo_tagger', 'photo_tagger');
 
-function photo_tagger_init() {
-  if ('tag' === arg(1)) {
-    drupal_add_js(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.js');
-    drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
-    drupal_add_js(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.js');
-    drupal_add_css(drupal_get_path('module', 'bib_number') . '/jquery.tagsinput.css');
-  //  drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
- 
-  }
-}
-
-
 /**
  * Implements hook_menu
  */
@@ -79,13 +67,8 @@ function photo_tagger_get_list() {
 
 function photographer_tag_page() {
   global $user;
-  $images = photo_tagger_get_photos(0, $user->uid, 10);
   $count_to_tag = photo_tagger_count_photos($user->uid);
-  $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
-  $js_data = array('PhotoTagger' => $image_pool);
-  drupal_add_js($js_data,'setting');
-  
-  if(count($images) == 0) { // no images to tag
+  if($count_to_tag == 0) { // no images to tag
     return '<div class="main">
               <div id="message-bar">
                 <span id="message">' . t('You don\'t have photos to tag.') . '</span>
@@ -93,12 +76,24 @@ function photographer_tag_page() {
            </div>';
   } 
   
+  $images = photo_tagger_get_photos(0, $user->uid, 10);
+  $image_pool = array('image_pool' => $images, 'current'=> 0, 'size' => count($images), );
+  $js_data = array('PhotoTagger' => $image_pool);
+  drupal_add_js($js_data,'setting');
+  
+ 
+  
 //            <form id="tagger-scope" action="">
 //              <fieldset>
 //                <input type="radio" name="sex" value="tagged" />
 //                <input type="radio" name="sex" value="untagged" />
 //              </fieldset>
 //            </form>
+  
+  drupal_add_js(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.js');
+  drupal_add_css(drupal_get_path('module', 'photo_tagger') . '/photo_tagger.css');
+  drupal_add_js(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.js');
+  drupal_add_css(libraries_get_path('jquery.tagsinput') . '/jquery.tagsinput.css');
   
   return '<div class="main">            
             <div id="image-pool" class="image-pool">

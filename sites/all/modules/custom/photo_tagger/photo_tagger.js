@@ -1,8 +1,7 @@
 
 (function($) {
-  Drupal.behaviors.runmemoPhotoTagger = {
+  Drupal.behaviors.PhotoTagger = {
     attach : function(context, settings) {
-      
       /**
      * Apply tagsInput.
      */
@@ -24,50 +23,51 @@
       });
 
       function onRemoveTag(elem) {
-        tagger_numbers_changed();
+        tagger.Changed();
       }
     
       function onAddTag(elem) {
-        tagger_numbers_changed();
+        tagger.Changed();
       }
 
-      function tagger_numbers_changed() {
-        var current = settings.PhotoTagger.current;
-        var img_pool = settings.PhotoTagger.image_pool;
-        img_pool[current].status = 'changed';
-      }
-    
-      $(document).ready(function() {
-     
-        settings.PhotoTagger.first = 0;
-        settings.PhotoTagger.loaded = 0;
-        settings.PhotoTagger.extending = false; // defines whether request was sent
-        // to get new items to image buffer
-        settings.PhotoTagger.complete = false; // defines whether all images were
-        // loaded to the image pool buffer
+      var tagger = settings.PhotoTagger;
+      tagger.first = 0;
+      tagger.loaded = 0;      
+      tagger.extending = false; // defines whether request was sent
+                                // to get new items to image buffer
+      tagger.complete = false;  // defines whether all images were
+                                // loaded to the image pool buffer
+      tagger.$images = [];
       
-        for(var i= 0; i < settings.PhotoTagger.size; i++) {
-          preload_next_image();
+      tagger.Changed = function () {
+        img = this.image_pool[this.current]
+        img.status = 'changed';
+      }
+      
+      $(document).ready(function() {
+        for(var i= 0; i < tagger.size; i++) {
+          tagger.PreloadNextImage();
         }
       });
     
-      function preload_next_image() {
-        i = settings.PhotoTagger.loaded;
-        var test = $('#image-' + i); // check whether img element exists
-        if (test.length) {
-          settings.PhotoTagger.loaded++;
+      tagger.PreloadNextImage = function() {
+        i = this.loaded;
+        var $img = $('#image-' + i); // check whether img element exists
+        if ($img.length > 0) {
+          this.$images[i] = $img;
+          this.loaded++;
           return;
         }
        
-        var img_pool = settings.PhotoTagger.image_pool;
-        if (i in img_pool) {
-          img = $('<img id="image-' + i + '" class="inactive">');
-          img.attr('src', img_pool[i].url);
-          img.appendTo('#image-pool');         
-          settings.PhotoTagger.loaded++;
+        if (i in this.image_pool) {
+          $img = $('<img id="image-' + i + '" class="inactive">');
+          $img.attr('src', this.image_pool[i].url);
+          $img.appendTo('#image-pool');
+          this.$images[i] = $img;
+          this.loaded++;
         }
         else {
-          if(settings.PhotoTagger.complete) {
+          if(this.complete) {
             console.debug('No images left to load.');
           } else {
             console.debug('Failed to preload image. possibly end of array.');
@@ -86,20 +86,22 @@
         return;
       }
     
-      // function loads data for next N images
-      function extend_image_pool(after_nid) {
+       // function loads data for next N images
+      tagger.Extend =  function (after_nid) {
       
-        if(settings.PhotoTagger.complete == true) {
+        if(this.complete == true) {
           console.debug('Pool is fully loaded.');
           return;
         }
       
-        if (settings.PhotoTagger.extending) {
+        if (this.extending) {
           console.debug('Already extending the pool.');
           return;
         }
-        settings.PhotoTagger.extending = true;
-        var base_path = Drupal.settings.basePath;
+        
+        this.extending = true;
+        var base_path = settings.basePath;
+        var tagger = this;
         $.ajax({
           url : base_path + "ajax/tagger_get_list",
           type: "POST",
@@ -109,49 +111,47 @@
           success : function(msg) {
             // @todo add new items to buffer
             new_image_pool = msg.data.image_pool;
-            image_pool = settings.PhotoTagger.image_pool;
-            var i = settings.PhotoTagger.size;
+          
+            var i = tagger.size;
              
             for(j in new_image_pool) {
-              image_pool[i]=new_image_pool[j];
+              tagger.image_pool[i]=new_image_pool[j];
               i++;
             }
-            settings.PhotoTagger.size = i;
-            settings.PhotoTagger.extending = false;
+            tagger.size = i;
+            tagger.extending = false;
           
             if (new_image_pool.length == 0) {
-              settings.PhotoTagger.complete = true;
+              tagger.complete = true;
             } 
             else {
-              preload_next_image();
+              tagger.PreloadNextImage();
             }
           },
           error: function(msg) {
             console.debug(msg);
-            settings.PhotoTagger.extending = false;
+            tagger.extending = false;
           }
         });
       
       }
    
-      function next_image(step) {
+      tagger.NextImage = function (step) {
        
-        var current = settings.PhotoTagger.current;
-        var first = settings.PhotoTagger.first;
-        if (current == first && step == -1) {
+       if (this.current == this.first && step == -1) {
           show_message(Drupal.t('You are back to the first available image.'));
           return;
         }
-        var pool_size = settings.PhotoTagger.size;
-        var next = current + step; // @todo check that item exists
+       
+        var next = this.current + step; // @todo check that item exists
                 
        
         // save numbers for the current photo
-        save_changes();
+        this.SaveChanges();
        
         // leave if we reached the end
-        if (next >= pool_size) {
-          if (settings.PhotoTagger.extending) {
+        if (next >= this.size) {
+          if (this.extending) {
             show_message(Drupal.t('We are loading more images for you.'));
           } else {
             show_message(Drupal.t('Congratulations! You\'ve reached the last image.'));
@@ -159,44 +159,38 @@
           return;
         } 
        
-        var img_pool = settings.PhotoTagger.image_pool;
-      
         // hide current image and show the next one
-        if ($('#image-' + current).length > 0) {
-          $('#image-' + current).removeClass('active').addClass('inactive');
+        if (this.current in this.$images) {
+          this.$images[this.current].removeClass('active').addClass('inactive');
         }
       
-        settings.PhotoTagger.current = next;
-        
-        console.log('Now at photo [' + (next + 1) +'].');
-        
-        show_current_counter(next + 1);
-        show_shortcut('key_enter', true, Drupal.t('Next photo'));
-        
-        set_controls_new_photo(next);
+        this.current = next;
+        this.RefreshControls();
         
         // need to extend if we are close to the end
-        var images_left = pool_size - 1 - current;
+        var images_left = this.size - 1 - this.current;
         console.debug('Images to the end of array: '+ images_left);
         if(images_left < 10) {
-          var img = img_pool[img_pool.length-1];
-          extend_image_pool(img.nid);
+          var img = this.image_pool[this.image_pool.length-1];
+          this.Extend(img.nid);
         }
         
         // preload another image
-        preload_next_image();         
+        this.PreloadNextImage();         
       }
       
-      function set_controls_new_photo(current) {
-
-        if ('delete_status' in settings.PhotoTagger.image_pool[current]) {
+      tagger.RefreshControls = function () {
+        show_current_counter(this.current + 1);
+        show_shortcut('key_enter', true, Drupal.t('Next photo'));
+        img = this.image_pool[this.current];
+        if ('delete_status' in img) {
           show_message(Drupal.t('This photo was deleted.'));
           show_shortcut('key_delete', false, '');
         } else {
-          $('#image-' + current).removeClass('inactive').addClass('active');
+          tagger.$images[this.current].removeClass('inactive').addClass('active');
           show_message('');
           show_shortcut('key_delete', true, Drupal.t('Delete photo'));
-          show_saved_tags(current); 
+          show_saved_tags(this.current); 
         }
         return;
       }
@@ -210,30 +204,29 @@
         return tags.length;
       }
     
-      function save_changes() {
-        var img_pool = settings.PhotoTagger.image_pool;
-        var current = settings.PhotoTagger.current
-        var nid = img_pool[current].nid;
+      tagger.SaveChanges = function () {
+        var img = this.image_pool[this.current];
+        var nid = img.nid;
         
-        if ('delete_status' in img_pool[current]) {
-          if(img_pool[current].delete_status == 'delete') {
-             ajax_delete_node(current, nid);
+        if ('delete_status' in img) {
+          if(img.delete_status == 'delete') {
+             ajax_delete_node(this.current, nid);
              return;
           }
           // no need to save anything if image was deleted;
           return;
         }
         
-        if ('status' in img_pool[current]) {
-          if  (img_pool[current].status == 'changed') {
+        if ('status' in img) {
+          if  (img.status == 'changed') {
             // numbers were not set or were not saved yet
             var tagsinput = $("#tagsinput").siblings(".tagsinput").children(".tag");  
             var tags = [];  
             for (var i = tagsinput.length; i--;) {  
               tags.push($(tagsinput[i]).text().substring(0, $(tagsinput[i]).text().length -  1).trim());    
             } 
-            img_pool[current].tags = tags; // here we cache tags
-            ajax_save_numbers(current, nid, tags);  
+            img.tags = tags; // here we cache tags
+            ajax_save_numbers(this.current, nid, tags);  
           } 
         } else {
           console.debug(Drupal.t('Numbers did not change, changing photo.'))
@@ -241,8 +234,8 @@
       }
     
       function ajax_save_numbers(current, nid, tags) {
-        var base_path = Drupal.settings.basePath;
-        var img = settings.PhotoTagger.image_pool[current];
+        var base_path = settings.basePath;
+        var img = tagger.image_pool[current];
         img.status = 'saving';
         
         show_save_icon(nid);
@@ -258,7 +251,7 @@
           dataType: 'json',
           cache: false,
           success : function(msg) {
-            settings.PhotoTagger.image_pool[current].status = 'saved';
+            tagger.image_pool[current].status = 'saved';
             show_message(Drupal.t('Saved numbers for image [!current].', {'!current': current + 1}));
             hide_save_icon(nid);
           },
@@ -286,22 +279,21 @@
         
       }
       
-      /**
+      /** 
        * Sets delete_status of the current message
        */
-      function delete_current() {
-        var img_pool = settings.PhotoTagger.image_pool;
-        var current = settings.PhotoTagger.current;
-        if('delete_status' in img_pool[current]) {
-          if(img_pool[current].delete_status == 'delete') {
-            delete img_pool[current].delete_status;
+      tagger.DeleteCurrent = function () {
+        var img = this.image_pool[this.current];
+        if('delete_status' in img) {
+          if(img.delete_status == 'delete') {
+            delete img.delete_status;
             show_shortcut('key_delete', true, Drupal.t('Delete photo'));
             show_message('');
           } else {
             show_message(Drupal.t('This photo was deleted.'))
           }
         } else {
-           img_pool[current].delete_status = 'delete';
+           img.delete_status = 'delete';
            show_shortcut('key_delete', true, Drupal.t('Undelete'));
            show_message(Drupal.t('This photo will be deleted. Press Delete key to undo.'));
         }
@@ -312,8 +304,8 @@
        * AJAX call to delete product node for the image
        */
       function ajax_delete_node(current, nid) {
-        var base_path = Drupal.settings.basePath;
-        img = settings.PhotoTagger.image_pool[current];
+        var base_path = settings.basePath;
+        img = tagger.image_pool[current];
         img.delete_status = 'deleting';
         
         show_delete_icon(nid);
@@ -325,9 +317,9 @@
           dataType: 'json',
           cache: false,
           success : function(msg) {
-            settings.PhotoTagger.image_pool[current].delete_status = 'deleted';
-            settings.PhotoTagger.image_pool[current].url = '';
-            $('#image-' + current).remove();
+            tagger.image_pool[current].delete_status = 'deleted';
+            tagger.image_pool[current].url = '';
+            tagger.$images[current].remove();
             
             hide_delete_icon(nid);         
             console.debug(msg);
@@ -341,65 +333,71 @@
         });
       }
       
-      
+      var $delete_icons = [];
       function show_delete_icon(nid) {
-        icon = $('<div id="delete-icon-' + nid + '" class="icon delete-icon" title="Deleting photo..."></div>');
-        $('.icons').append(icon);
+        $icon = $('<div id="delete-icon-' + nid + '" class="icon delete-icon" title="Deleting photo..."></div>');
+        $('.icons').append($icon);
+        $delete_icons[nid] = $icon;
       }
       
       function error_delete_icon(nid) {
-        $('#delete-icon-' + nid).removeClass('delete-icon').addClass('delete-error-icon');
-        $('#delete-icon-' + nid).attr('title', Drupal.t('Failed to delete photo.'))
+        $delete_icons[nid].removeClass('delete-icon').addClass('delete-error-icon');
+        $delete_icons[nid].attr('title', Drupal.t('Failed to delete photo.'))
       }
       
       function hide_delete_icon(nid) {
-        $('#delete-icon-' + nid).remove(); 
+        $delete_icons[nid].remove(); 
       }
       
+      var $save_icons = [];
       function show_save_icon(nid) {
-        icon = $('<div id="save-icon-' + nid + '" class="icon save-icon" title="Saving bib numbers..."></div>');
-        $('.icons').append(icon);
+        $icon = $('<div id="save-icon-' + nid + '" class="icon save-icon" title="Saving bib numbers..."></div>');
+        $('.icons').append($icon);
+        $save_icons[nid] = $icon;
       }
       
       function hide_save_icon(nid) {
-        $('#save-icon-' + nid).remove(); 
+         $save_icons[nid].remove(); 
       }
       
       function error_save_icon(nid) {
-        $('#save-icon-' + nid).removeClass('save-icon').addClass('save-error-icon'); 
-        $('#save-icon-' + nid).attr('title', Drupal.t('Failed to save bib numbers.')); 
+         $save_icons[nid].removeClass('save-icon').addClass('save-error-icon'); 
+         $save_icons[nid].attr('title', Drupal.t('Failed to save bib numbers.')); 
       }
       
+      var $msg = $('#message');
       function show_message(msg) {
         if (msg == '') {
-          $('#message').hide('slow');
-          $('#message').empty();
+          $msg.hide('slow');
+          $msg.empty();
          // $('#message-bar').hide('slow');
         } 
         else {
-          $('#message').html(msg);
+          $msg.html(msg);
         //  $('#message-bar').show('slow');
-          $('#message').show("fast");
+          $msg.show("fast");
         }
       }
-    
+      
+      
+      var $current = $('#current');
       function show_current_counter(msg) {      
         var div = document.getElementById('current');
         div.innerHTML = msg;
-        $('#current').show('slow');
+        $current.show('slow');
       }
     
       function show_saved_tags(i) {
       
         // load values from previous image
-        if('tags' in settings.PhotoTagger.image_pool[i]) {
-          var tags = settings.PhotoTagger.image_pool[i].tags;
+        if('tags' in tagger.image_pool[i]) {
+          var tags = tagger.image_pool[i].tags;
           $('#tagsinput').importTags(tags.join());
           $('#tagsinput_tag').focus();
         } 
         else {
           if(count_tags() > 0) {
-            tagger_numbers_changed();
+            tagger.Changed();
           }
         }
       }
@@ -413,20 +411,20 @@
             $('#tagsinput').importTags(''); // clear tags
           }
           else if (e.keyCode == 13 ) { // key enter
-            next_image(1);            
+            tagger.NextImage(1);            
           } 
           else if (e.keyCode == 39) { // arrow right
-            next_image(1);            
+            tagger.NextImage(1);            
           } 
           else if (e.keyCode == 37) { // arrow left
-            next_image(-1);             
+            tagger.NextImage(-1);             
           }
           else if (e.keyCode == 40) { // arrow down
             // @todo next value;
             return; 
           }
           else if (e.keyCode == 46) { // delete key
-            delete_current();
+            tagger.DeleteCurrent();
             return;
           }
           else {
@@ -446,7 +444,7 @@
      * Click event for the next arrow right shortcut.
      */
       $('#next_key_right').bind('click', function() {
-        next_image(1);
+        tagger.NextImage(1);
       });
     
     
@@ -455,7 +453,7 @@
      */
       $('#key_enter').bind('click', function() {
         if(  $('#tagsinput_tag').value == '' ) {
-          next_image(1);
+          tagger.NextImage(1);
         }
       });
      
@@ -463,7 +461,7 @@
      * Click event for the previous arrow left shortcut.
      */
       $('#previous_key_left').bind('click', function() {
-        next_image(-1);
+        tagger.NextImage(-1);
       });
    
     /**
@@ -478,7 +476,7 @@
      * Click event for the delete key shortcut.
      */
       $('#key_delete').bind('click', function() {
-        delete_current();
+        tagger.DeleteCurrent();
       });
       
     }
