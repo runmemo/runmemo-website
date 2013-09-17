@@ -214,12 +214,18 @@ function photo_upload_file_uploaded($fileinfo) {
   // (in file_uri_to_object) while it has a .tmp extension, it horks.
   $destination = file_unmanaged_move($source, $destination, FILE_EXISTS_RENAME);
   $file = plupload_file_uri_to_object($destination);
-  file_save($file);
+  if ($file->uid) {
+    file_save($file);
  
-  $event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
-  $price = isset($_REQUEST["price"]) ? $_REQUEST["price"] : 1;
+    $event = isset($_REQUEST["event"]) ? $_REQUEST["event"] : 0;
+    $price = isset($_REQUEST["price"]) ? $_REQUEST["price"] : 1;
  
-  $node = create_photo_node($file, $event, $price);
+    $node = create_photo_node($file, $event, $price);
+  }
+  else 
+  {
+    watchdog('photo_upload', 'File uploaded from anonymous user.')
+  }
   
 }
 
