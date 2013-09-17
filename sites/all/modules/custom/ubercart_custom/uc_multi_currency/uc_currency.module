@@ -290,6 +290,18 @@ function uc_currency_get_code() {
   $code = isset($_SESSION['currency_switcher']) ? $_SESSION['currency_switcher'] : default_currency_code();
   return $code;
 }
+
+function uc_currency_paypal_code($currency) {
+  if (in_array($currency, _uc_paypal_currency_array())) {
+    // Currency is supported by PayPal, do nothing.
+    return $currency;
+  }
+  else 
+  {
+     return 'USD';
+  }
+}
+
 /**
  * Returns currency code from the settings
  * @return string ISO currency code set in the setting of Drupal
@@ -517,7 +529,7 @@ function uc_currency_paypal_wps_form($form, &$form_state, $order) {
     'rm' => 2,
 
     // Transaction information.
-    'currency_code' => uc_currency_get_code(),// variable_get('uc_paypal_wps_currency', 'USD'),
+    'currency_code' => uc_currency_paypal_code(uc_currency_get_code()),// variable_get('uc_paypal_wps_currency', 'USD'),
     'handling_cart' => uc_currency_format($shipping_amount['value'], FALSE, FALSE, '.'),
     'invoice' => $order->order_id . '-' . uc_cart_get_id(),
     'tax_cart' => uc_currency_format($tax_amount['value'], FALSE, FALSE, '.'),
