@@ -460,7 +460,7 @@ class AmazonS3StreamWrapper implements DrupalStreamWrapperInterface {
           $this->buffer_length += strlen($response->body);
         }
       }
-      $data = substr($response->body, 0, min($count, $this->object_size));
+      $data = substr($this->buffer, $this->position, $count);
       $this->position += strlen($data);
     }
     return $data;
