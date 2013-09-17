@@ -224,7 +224,7 @@ function photo_upload_file_uploaded($fileinfo) {
   }
   else 
   {
-    watchdog('photo_upload', 'File uploaded from anonymous user.')
+    watchdog('photo_upload', 'File uploaded from anonymous user.');
   }
   
 }
