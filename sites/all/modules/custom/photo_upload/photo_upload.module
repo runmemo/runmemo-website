@@ -169,6 +169,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //file_uri_to_object();
   foreach ($form_state['values']['file'] as $uploaded_file) {
     if ($uploaded_file['status'] == 'done') {
+      watchdog('photo_uload', 'File uploaded : %path', array('%file'=> serialize($uploaded_file)));
       /*
       $source = $uploaded_file['tmppath'];
       dvm($source);
