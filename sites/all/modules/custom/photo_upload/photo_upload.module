@@ -205,9 +205,9 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
  * @param unknown_type $fileinfo
  */
 function photo_upload_file_uploaded($fileinfo) {
-  if (isset($fileinfo['tmppath'])) {
-    watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($fileinfo)));
-  }
+  
+  // watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($fileinfo)));
+  
   $source =  $fileinfo['tmppath']; 
   $scheme = 'public://';
   
