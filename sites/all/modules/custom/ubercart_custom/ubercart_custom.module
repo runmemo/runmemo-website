@@ -116,10 +116,16 @@ function package_price($currency) {
 function get_cart_total_with_discount($total, $nid = NULL) {
   $max_order_value = 0;
   if($nid) {
-    $product = entity_metadata_wrapper('node', $nid);
+    $product = node_load( $nid);
     if ($product) {
-      $event = $product->field_event_reference->value();
-      $max_order_value = $event->field_package_price->value();
+      $event_nids = field_get_items('node', $product, 'field_event_reference');
+      if ($event_nids) {
+        $event = node_load($event_nids[0]['nid']);
+        $package_prices = field_get_items('node', $event, 'field_package_price');
+        if ($package_prices) {
+          $max_order_value = $package_prices[0]['value'];
+        }
+      }
     }
   }
   if (!$max_order_value) {
