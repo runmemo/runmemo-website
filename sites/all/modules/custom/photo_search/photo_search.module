@@ -189,13 +189,13 @@ function search_photos_form_validate($form, &$form_state) {
  * Function for runner photo search submit.
  */
 function search_photos_form_submit($form, &$form_state) {
-  $event_id = $form['search_filter']['event']['#value'];
-  $runner_number = $form['search_filter']['runner_number']['#value'];
-  
-  // Clear cart for a new search.
-  if (module_exists('ubercart')) {
+   // Clear cart for a new search.
+  if (module_exists('uc_cart')) {
      uc_cart_empty(uc_cart_get_id());
   }
+  
+  $event_id = $form['search_filter']['event']['#value'];
+  $runner_number = $form['search_filter']['runner_number']['#value'];
  
   if (!empty($runner_number)) {
     $form_state['redirect'] = "search-result/" . $event_id . "/" . $runner_number;
