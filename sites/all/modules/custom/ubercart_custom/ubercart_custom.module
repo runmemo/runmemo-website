@@ -113,6 +113,19 @@ function package_price($currency) {
   return isset($defaults[$currency]) ? $defaults[$currency] : variable_get('max_order_value', 12);
 }
 
+
+/**
+ * Applies package price to the cart total amount if it exeeds it.
+ * 
+ * @param number $total
+ *   Total amount in the cart without discount.
+ * 
+ * @param integer $nid
+ *   Nid of the product within a cart.
+ * 
+ * @return number
+ *   Total amount with package discount applied.
+ */
 function get_cart_total_with_discount($total, $nid = NULL) {
   $max_order_value = 0;
   if($nid) {
@@ -478,7 +491,16 @@ function cart_list_items($event, $number) {
   }
   
   $count = count_cart_items($cid);
-  $total = get_cart_total_with_discount(cart_total_amount($cid));
+ 
+  if (!empty($items)) { // Get nid of first cart item.
+    $nid = $items[0]['nid'];
+  }
+  else 
+  {
+    $nid = NULL;
+  }
+  
+  $total = get_cart_total_with_discount(cart_total_amount($cid), $nid);
   
   $cart = array(
     'total' => $total,
