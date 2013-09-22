@@ -113,8 +113,18 @@ function package_price($currency) {
   return isset($defaults[$currency]) ? $defaults[$currency] : variable_get('max_order_value', 12);
 }
 
-function get_cart_total_with_discount($total) {
-  $max_order_value = get_max_order_value();
+function get_cart_total_with_discount($total, $nid = NULL) {
+  $max_order_value = 0;
+  if($nid) {
+    $product = entity_metadata_wrapper('node', $nid);
+    if ($product) {
+      $event = $product->field_event_reference->value();
+      $max_order_value = $event->field_package_price->value();
+    }
+  }
+  if (!$max_order_value) {
+    $max_order_value = get_max_order_value();
+  }
   if ($total > $max_order_value) {
     $total = $max_order_value;
   } 
@@ -215,7 +225,7 @@ function cart_add_item() {
   $url = uc_cart_add_item($nid, $qty = 1, $data = NULL, $cid);
   
   $count = count_cart_items($cid);
-  $total = get_cart_total_with_discount(cart_total_amount($cid));
+  $total = get_cart_total_with_discount(cart_total_amount($cid), $nid);
   
   // check whether product currency is different from 
   
@@ -365,7 +375,7 @@ function cart_remove_item() {
   if ($item_removed) {
     $count = count_cart_items($cid) - 1;
     $price = $removed_item->price;
-    $total = get_cart_total_with_discount(cart_total_amount($cid) - $price  * $removed_item->qty);
+    $total = get_cart_total_with_discount(cart_total_amount($cid) - $price  * $removed_item->qty, $nid);
     
     echo json_message(TRUE,
         array(
