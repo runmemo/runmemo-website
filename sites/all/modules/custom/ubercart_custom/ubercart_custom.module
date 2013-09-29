@@ -105,7 +105,7 @@ function get_max_order_value() {
 function package_price($currency) {
   $defaults = array(
     'GBP' => 12,
-    'RUB' => 500,
+    'RUB' => 1000,
     'EUR' => 15,
     'USD' => 20,
   );
