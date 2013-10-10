@@ -6,6 +6,16 @@ core = 7.x
 dependencies[] = user_reference
 dependencies[] = link
 dependencies[] = addressfield
+dependencies[] = user_custom
+dependencies[] = date
+dependencies[] = features
+dependencies[] = image
+dependencies[] = link
+dependencies[] = list
+dependencies[] = number
+dependencies[] = options
+dependencies[] = taxonomy
+
 
 files[] = sport_event.module
 files[] = sport_event.inc
@@ -15,3 +25,31 @@ files[] = sport_event.install
 files[] = sport_event.css
 files[] = tests/sport_event.test
 
+features[features_api][] = api:2
+features[node][] = event
+features[field_base][] = field_photographers
+features[field_base][] = field_profile_image
+features[field_base][] = field_distance
+features[field_base][] = field_promoted
+features[field_base][] = field_website
+features[field_base][] = field_address
+features[field_base][] = field_max_price
+features[field_base][] = field_min_price
+features[field_base][] = field_recommended_price
+features[field_base][] = field_sales_fee
+features[field_base][] = field_count_photos
+
+
+features[field_instance][] = node-event-field_photographers
+features[field_instance][] = node-event-field_profile_image
+features[field_instance][] = node-event-field_distance
+features[field_instance][] = node-event-field_promoted
+features[field_instance][] = node-event-field_website
+features[field_instance][] = node-event-field_address
+features[field_instance][] = node-event-field_max_price
+features[field_instance][] = node-event-field_min_price
+features[field_instance][] = node-event-field_recommended_price
+features[field_instance][] = node-event-field_sales_fee
+features[field_instance][] = node-event-field_count_photos
+
+features[taxonomy][] = distance

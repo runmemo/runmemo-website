@@ -319,7 +319,7 @@ function create_photo_node($file, $event_nid, $price = 0) {
   // Determine currency code for product from country code in event's address
   $country = field_get_value($event, 'field_address', 'GB', 'country');
   $currency = uc_currency_country_currency($country);
-  
+   
   $defaults = default_currency_prices($currency);
   
   if ($price == 0) {

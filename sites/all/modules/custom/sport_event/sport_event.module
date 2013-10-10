@@ -23,9 +23,25 @@ function sport_event_views_api() {
   return array(
     'version' => '3.0',
     'path' =>  drupal_get_path('module', 'sport_event') . '/views', 
-  );
+  ); 
 }
 
+/**
+ * Implements hook_node_info().
+ */
+function sport_event_node_info() {
+  $items = array(
+    'event' => array(
+      'name' => t('Event'),
+      'base' => 'node_content',
+      'description' => 'Sport event',
+      'has_title' => '1',
+      'title_label' => t('Title'),
+      'help' => '',
+    ),
+  );
+  return $items;
+}
 
 /**
  *
