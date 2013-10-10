@@ -27,27 +27,6 @@
   margin-right: 2em;
 }
 
-#products-selector table {
-  margin: 0em 0em;
-}
-
-#products-selector td {
-  padding: 0em .5em;
-}
-
-div#products-selector form {
-  margin-bottom: 0em;
-}
-
-#products-selector div.form-item {
-  margin-bottom: .5em;
-  margin-top: .5em;
-}
-
-table.product-list {
-  clear: both;
-}
-
 .uc-product-features td {
   vertical-align: top;
 }
@@ -58,5 +37,24 @@ table.product-list {
 
 .add-feature div,
 .add-feature label {
+  display: inline;
+}
+
+/**
+ * Styles for uc_attribute.
+ */
+.combinations .form-item {
+  margin: 0;
+  padding: 0;
+}
+
+/**
+ * Styles for uc_roles.
+ */
+.expiration {
+  display: inline;
+}
+
+.expiration .form-item {
   display: inline;
 }

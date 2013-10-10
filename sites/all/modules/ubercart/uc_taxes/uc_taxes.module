@@ -119,27 +119,27 @@ function uc_taxes_entity_view_alter(&$build, $entity_type) {
       break;
 
     case 'uc_cart_item':
+      list($amount, $suffixes) = uc_taxes_get_included_tax($build['#entity'], isset($build['#entity']->order) ? $build['#entity']->order : NULL);
+
+      if (!empty($amount) && !empty($build['#total'])) {
+        $build['#total'] += $amount * $build['qty']['#default_value'];
+      }
+
+      if (!empty($suffixes)) {
+        if (empty($build['#suffixes'])) {
+          $build['#suffixes'] = array();
+        }
+        $build['#suffixes'] += $suffixes;
+      }
+      break;
+
     case 'uc_order_product':
       list($amount, $suffixes) = uc_taxes_get_included_tax($build['#entity'], isset($build['#entity']->order) ? $build['#entity']->order : NULL);
-      if ($build['#view_mode'] == 'cart') {
-        if (!empty($build['#total'])) {
-          if (!empty($amount) && !empty($build['#total'])) {
-            $build['#total'] += $amount * $build['qty']['#default_value'];
-          }
-          if (!empty($suffixes)) {
-            if (empty($build['#suffixes'])) {
-              $build['#suffixes'] = array();
-            }
-            $build['#suffixes'] += $suffixes;
-          }
-        }
-      }
-      else {
-        $build['price']['#price'] += $amount;
-        $build['total']['#price'] += $amount * $build['#entity']->qty;
-        $build['price']['#suffixes'] += $suffixes;
-        $build['total']['#suffixes'] += $suffixes;
-      }
+
+      $build['price']['#price'] += $amount;
+      $build['total']['#price'] += $amount * $build['#entity']->qty;
+      $build['price']['#suffixes'] += $suffixes;
+      $build['total']['#suffixes'] += $suffixes;
       break;
   }
 }
@@ -232,6 +232,22 @@ function uc_taxes_uc_order($op, $order, $arg2) {
       }
     break;
   }
+}
+
+/**
+ * Implements hook_node_type_update().
+ *
+ * Ensure taxed product type are synchronised if the content type is updated.
+ */
+function uc_taxes_node_type_update($info) {
+  $existing_type = !empty($info->old_type) ? $info->old_type : $info->type;
+
+  db_update('uc_taxed_product_types')
+    ->fields(array(
+      'type' => $info->type,
+    ))
+    ->condition('type', $existing_type)
+    ->execute();
 }
 
 /**
@@ -333,7 +349,7 @@ function uc_line_item_tax_subtotal($op, $order) {
  */
 function uc_taxes_rate_save($rate, $reset = TRUE) {
   // Save it as a new rate if no ID is specified.
-  if (!$rate->id) {
+  if (empty($rate->id)) {
     drupal_write_record('uc_taxes', $rate);
   }
   // Otherwise update the existing tax rate's data.
@@ -403,7 +419,7 @@ function uc_taxes_filter_rates($order) {
             // Use the rate stored in the line-item.
             $taxes[] = clone $item['data']['tax'];
           }
-          elseif ($tax = uc_taxes_rate_load($item['data']['tax_id'])) {
+          elseif (!empty($item['data']['tax_id']) && $tax = uc_taxes_rate_load($item['data']['tax_id'])) {
             // For old orders that don't have all the tax info, all we can do
             // is preserve the rate.
             $tax = clone $tax;

@@ -248,7 +248,7 @@ function _uc_file_download_validate($file_download, &$user, $ip) {
   }
 
   // Must be a valid file.
-  if (!$file_download || !is_file($file_download->full_path)) {
+  if (!$file_download || !is_readable($file_download->full_path)) {
     cache_set('uc_file_' . $ip, $requests, 'cache', REQUEST_TIME + 86400);
     if ($requests == UC_FILE_REQUEST_LIMIT) {
       // $message_user has already been passed through check_plain()
@@ -308,9 +308,9 @@ function _uc_file_download_validate($file_download, &$user, $ip) {
  */
 function _uc_file_download_transfer($file_user, $ip) {
 
-  // Check if any hook_file_transfer_alter calls alter the download.
-  foreach (module_implements('file_transfer_alter') as $module) {
-    $name = $module . '_file_transfer_alter';
+  // Check if any hook_uc_file_transfer_alter() calls alter the download.
+  foreach (module_implements('uc_file_transfer_alter') as $module) {
+    $name = $module . '_uc_file_transfer_alter';
     $file_user->full_path = $name($file_user, $ip, $file_user->fid, $file_user->full_path);
   }
 

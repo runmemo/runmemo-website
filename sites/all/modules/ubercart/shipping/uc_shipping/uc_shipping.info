@@ -4,9 +4,13 @@ dependencies[] = uc_quote
 package = Ubercart - core (optional)
 core = 7.x
 
-; Information added by drupal.org packaging script on 2012-09-10
-version = "7.x-3.2"
+; Views handlers
+files[] = views/uc_shipping_handler_field_shipment_id.inc
+files[] = views/uc_shipping_handler_field_package_weight.inc
+
+; Information added by drupal.org packaging script on 2013-07-11
+version = "7.x-3.5"
 core = "7.x"
 project = "ubercart"
-datestamp = "1347317679"
+datestamp = "1373562071"
 

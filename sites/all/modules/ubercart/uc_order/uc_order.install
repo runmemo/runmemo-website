@@ -245,8 +245,14 @@ function uc_order_schema() {
     ),
     'primary key' => array('order_id'),
     'foreign keys' => array(
-      'uid' => array('users' => 'uid'),
-      'order_status' => array('uc_order_statuses' => 'order_status_id'),
+      'users' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
+      'uc_order_statuses' => array(
+        'table' => 'uc_order_statuses',
+        'columns' => array('order_status' => 'order_status_id'),
+      ),
     ),
   );
 
@@ -289,8 +295,14 @@ function uc_order_schema() {
     ),
     'primary key' => array('comment_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
-      'uid' => array('users' => 'uid'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+      'users' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
     ),
   );
 
@@ -347,8 +359,14 @@ function uc_order_schema() {
     ),
     'primary key' => array('comment_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
-      'uid' => array('users' => 'uid'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+      'users' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
     ),
   );
 
@@ -408,7 +426,10 @@ function uc_order_schema() {
     ),
     'primary key' => array('line_item_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
     ),
   );
 
@@ -451,8 +472,14 @@ function uc_order_schema() {
     ),
     'primary key' => array('order_log_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
-      'uid' => array('users' => 'uid'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+      'users' => array(
+        'table' => 'users',
+        'columns' => array('uid' => 'uid'),
+      ),
     ),
   );
 
@@ -542,8 +569,14 @@ function uc_order_schema() {
     ),
     'primary key' => array('order_product_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
-      'nid' => array('node' => 'nid'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+      'node' => array(
+        'table' => 'node',
+        'columns' => array('nid' => 'nid'),
+      ),
     ),
   );
 
@@ -664,14 +697,10 @@ function uc_order_install() {
  */
 function uc_order_uninstall() {
   db_delete('variable')
-    ->condition(db_or()
-      ->condition('name', 'uc_order_pane_%', 'LIKE')
-      ->condition('name', 'uc_state_%', 'LIKE')
-    )
+    ->condition('name', 'uc_state_%', 'LIKE')
     ->execute();
 
   variable_del('uc_order_capitalize_addresses');
-  variable_del('uc_cust_view_order_invoices');
   variable_del('uc_cust_order_invoice_template');
 }
 
@@ -789,7 +818,7 @@ function uc_order_update_7004(&$sandbox) {
 
   $limit = 200;
 
-  $result = db_query_range("SELECT n.nid, n.title, p.weight_units FROM {node} AS n JOIN {uc_products} AS p ON n.vid = p.vid WHERE n.nid > :current ORDER BY n.nid", 0, $limit, array(':current' => $sandbox['current_nid']));
+  $result = db_query_range("SELECT n.nid, n.title, p.weight_units FROM {node} n JOIN {uc_products} p ON n.vid = p.vid WHERE n.nid > :current ORDER BY n.nid", 0, $limit, array(':current' => $sandbox['current_nid']));
 
   foreach ($result as $node) {
     db_update('uc_order_products')
@@ -862,4 +891,32 @@ function uc_order_update_7300() {
   }
 
   variable_del('uc_order_cron_last');
+}
+
+/**
+ * Convert view invoices checkbox to permission.
+ */
+function uc_order_update_7301() {
+  if (variable_get('uc_cust_view_order_invoices', TRUE)) {
+    // user_role_grant_permissions() is not allowed during upgrades from D6.
+    db_merge('role_permission')
+      ->key(array(
+        'rid' => DRUPAL_AUTHENTICATED_RID,
+        'permission' => 'view own invoices',
+      ))
+      ->fields(array(
+        'module' => 'uc_order',
+      ))
+      ->execute();
+  }
+  variable_del('uc_cust_view_order_invoices');
+}
+
+/**
+ * Remove unused order pane settings.
+ */
+function uc_order_update_7302() {
+  db_delete('variable')
+    ->condition('name', 'uc_order_pane_%', 'LIKE')
+    ->execute();
 }

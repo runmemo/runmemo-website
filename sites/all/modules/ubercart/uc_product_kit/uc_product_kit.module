@@ -50,7 +50,7 @@ function uc_product_kit_form_uc_product_settings_form_alter(&$form, &$form_state
  */
 function uc_product_kit_form_node_delete_confirm_alter(&$form, &$form_state) {
   if (uc_product_is_product((integer)$form['nid']['#value'])) {
-    $kits = db_query("SELECT COUNT(k.nid) FROM {node} AS n JOIN {uc_product_kits} AS k ON n.vid = k.vid WHERE k.vid IN (SELECT DISTINCT vid FROM {uc_product_kits} WHERE product_id = :nid) GROUP BY k.nid HAVING COUNT(product_id) = 1", array(':nid' => $form['nid']['#value']))->fetchField();
+    $kits = db_query("SELECT COUNT(k.nid) FROM {node} n JOIN {uc_product_kits} k ON n.vid = k.vid WHERE k.vid IN (SELECT DISTINCT vid FROM {uc_product_kits} WHERE product_id = :nid) GROUP BY k.nid HAVING COUNT(product_id) = 1", array(':nid' => $form['nid']['#value']))->fetchField();
 
     if ($kits) {
       $description = $form['description']['#markup'];
@@ -142,7 +142,7 @@ function uc_product_kit_insert(&$node) {
   $obj->sell_price = 0;
   $obj->weight = 0;
   $obj->weight_units = variable_get('uc_weight_unit', 'lb');
-  $obj->default_qty = 0;
+  $obj->default_qty = $node->default_qty;
   $obj->ordering = $node->ordering;
   $obj->shippable = FALSE;
 
@@ -279,9 +279,11 @@ function uc_product_kit_update(&$node) {
       }
 
       $product->qty = $node->items[$nid]['qty'];
+      $product->ordering = isset($node->items[$nid]['ordering']) ? $node->items[$nid]['ordering'] : 0;
     }
     else {
       $product->qty = $node->products[$nid]->qty;
+      $product->ordering = $node->products[$nid]->ordering;
     }
     // Discounts are always saved, but they are only applied if the kit can't
     // be changed by the customer.
@@ -306,7 +308,7 @@ function uc_product_kit_update(&$node) {
         'mutable' => $node->mutable,
         'qty' => $product->qty,
         'discount' => $discount,
-        'ordering' => isset($node->items[$nid]['ordering']) ? $node->items[$nid]['ordering'] : 0,
+        'ordering' => $product->ordering,
         'synchronized' => $override_discounts ? 0 : 1,
       ))
       ->execute();
@@ -339,6 +341,14 @@ function uc_product_kit_update(&$node) {
       ->insertFields(array(
         'unique_hash' => md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . $obj->shippable . REQUEST_TIME),
       ))
+      ->execute();
+  }
+
+  // When a kit is updated, remove matching kits from the cart, as there is no
+  // simple way to handle product addition or removal at this point.
+  if (module_exists('uc_cart')) {
+    db_delete('uc_cart_products')
+      ->condition('data', '%' . db_like('s:6:"kit_id";s:' . strlen($node->nid) . ':"' . $node->nid . '";') . '%', 'LIKE')
       ->execute();
   }
 }
@@ -629,6 +639,9 @@ function uc_product_kit_form(&$node, $form_state) {
     '#default_value' => $node->ordering,
     '#weight' => 30,
   );
+
+  // Disable all shipping related functionality.
+  $form['shipping']['#access'] = FALSE;
 
   return $form;
 }
@@ -1050,7 +1063,7 @@ function uc_product_kit_uc_order_product_alter(&$product, $order) {
  * Implements hook_uc_cart_display().
  *
  * Displays either the kit as a whole, or each individual product based on the
- *       store configuration. Each product in the cart that was added by
+ * store configuration. Each product in the cart that was added by
  * uc_product_kit was also given a unique kit id in order to help prevent
  * collisions. The side effect is that identical product kits are listed
  * separately if added separately. The customer may still change the quantity
@@ -1104,11 +1117,13 @@ function uc_product_kit_uc_cart_display($item) {
       );
     }
 
+    // Build the kit item product variant.
     if (!isset($item->type)) {
       $node = node_load($item->nid);
       $item->type = $node->type;
     }
     $build = node_view($item);
+
     $elements[$unique_id]['#total'] += $build['display_price']['#value'] * $item->qty;
     $elements[$unique_id]['#suffixes'] += $build['display_price']['#suffixes'];
     $elements[$unique_id]['data'][$item->nid] = $item;
@@ -1146,34 +1161,16 @@ function uc_product_kit_uc_cart_display($item) {
 function uc_product_kit_uc_update_cart_item($nid, $data = array(), $qty, $cid = NULL) {
   if (!$nid) return NULL;
   $cid = !(is_null($cid) || empty($cid)) ? $cid : uc_cart_get_id();
-  if ($qty < 1) {
-    foreach ($data as $p_nid => $product) {
-      uc_cart_remove_item($p_nid, $cid, $product->data);
-    }
-  }
-  else {
-    if (isset($data['kit_id'])) {
-      // Product was listed individually.
-      uc_product_uc_update_cart_item($nid, $data, $qty, $cid);
-    }
-    else {
-      $kit = node_load($nid);
-      foreach ($data as $p_nid => $product) {
-        uc_product_uc_update_cart_item($p_nid, $product->data, $qty * $kit->products[$p_nid]->qty, $cid);
-      }
-    }
-  }
-}
 
-/**
- * usort() callback.
- */
-function _uc_product_kit_sort_products($a, $b) {
-  if ($a->ordering == $b->ordering) {
-    return strcmp($a->title, $b->title);
+  if (isset($data['kit_id'])) {
+    // Product was listed individually.
+    uc_product_uc_update_cart_item($nid, $data, $qty, $cid);
   }
   else {
-    return ($a->ordering < $b->ordering) ? -1 : 1;
+    $kit = node_load($nid);
+    foreach ($data as $p_nid => $product) {
+      uc_product_uc_update_cart_item($p_nid, $product->data, $qty * $kit->products[$p_nid]->qty, $cid);
+    }
   }
 }
 

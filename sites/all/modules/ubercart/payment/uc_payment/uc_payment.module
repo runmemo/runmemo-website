@@ -37,13 +37,6 @@ function uc_payment_menu() {
   );
   $items += rules_ui()->config_menu('admin/store/settings/payment');
 
-  $items['admin/store/orders/%uc_order/payments/select/%'] = array(
-    'title' => 'Select payment gateway',
-    'page callback' => 'uc_payment_gateway_select',
-    'access arguments' => array('view all orders'),
-    'type' => MENU_CALLBACK,
-    'file' => 'uc_payment.admin.inc',
-  );
   $items['admin/store/orders/%uc_order/payments'] = array(
     'title' => 'Payments',
     'description' => 'Show payments made against an order.',
@@ -133,7 +126,8 @@ function uc_payment_form_uc_cart_checkout_review_form_alter(&$form, &$form_state
 
   if ($redirect = _uc_payment_method_data($order->payment_method, 'redirect')) {
     unset($form['actions']['submit']);
-    $form['#suffix'] = drupal_render(drupal_get_form($redirect, $order));
+    $suffix = drupal_get_form($redirect, $order);
+    $form['#suffix'] = drupal_render($suffix);
   }
 }
 
@@ -235,6 +229,67 @@ function uc_payment_uc_order_state() {
 }
 
 /**
+ * Implements hook_uc_payment_method().
+ */
+function uc_payment_uc_payment_method() {
+  $methods['free_order'] = array(
+    'name' => t('Free order'),
+    'title' => t('No payment required'),
+    'desc' => t('Allow customers with !zero order totals to checkout without paying.', array('!zero' => uc_currency_format(0))),
+    'callback' => 'uc_payment_method_free_order',
+    'checkout' => TRUE,
+    'no_gateway' => TRUE,
+    'weight' => 0,
+  );
+
+  return $methods;
+}
+
+/**
+ * Implements hook_uc_payment_method_checkout_alter().
+ */
+function uc_payment_uc_payment_method_checkout_alter(&$methods, $order) {
+  if (isset($methods['free_order'])) {
+    if ($order->order_total < 0.01) {
+      // Unset all other payment methods if this is a free order.
+      foreach (array_keys($methods) as $key) {
+        if ($key != 'free_order') {
+          unset($methods[$key]);
+        }
+      }
+    }
+    else {
+      // Disallow this payment method if the order is not free.
+      unset($methods['free_order']);
+    }
+  }
+}
+
+/**
+ * Payment method callback for free orders.
+ *
+ * @see uc_payment_uc_payment_method()
+ */
+function uc_payment_method_free_order($op, &$order) {
+  switch ($op) {
+    case 'cart-details':
+      return array(
+        '#markup' => t('Continue with checkout to complete your order.'),
+      );
+
+    case 'order-submit':
+      if ($order->order_total >= 0.01) {
+        return array(array(
+          'pass' => FALSE,
+          'message' => t('We cannot process your order without payment.'),
+        ));
+      }
+
+      uc_payment_enter($order->order_id, 'free_order', 0, 0, NULL, t('Checkout completed for a free order.'));
+  }
+}
+
+/**
  * Returns a formatted list of line items for an order total preview.
  *
  * @param $return
@@ -248,7 +303,9 @@ function uc_payment_uc_order_state() {
  *   The formatted HTML of the order total preview if $return is set to TRUE.
  */
 function uc_payment_get_totals($form, $form_state) {
-  return $form['panes']['payment']['line_items'];
+  $commands[] = ajax_command_replace('#line-items-div', trim(drupal_render($form['panes']['payment']['line_items'])));
+
+  return array('#type' => 'ajax', '#commands' => $commands);
 }
 
 /**
@@ -354,14 +411,8 @@ function uc_payment_process_payment($method, $order_id, $amount, $data = NULL, $
     $gateway = $gateways[$selected];
   }
   else {
-    // Otherwise store the info that was passed to us in the session and
-    // redirect to a form where we can choose a payment gateway.
-    $_SESSION['uc_payment_method'] = $method;
-    $_SESSION['uc_payment_order_id'] = $order_id;
-    $_SESSION['uc_payment_amount'] = $amount;
-    $_SESSION['uc_payment_data'] = serialize($data);
-
-    drupal_goto('admin/store/orders/' . $order_id . '/payments/select/' . $method);
+    // No gateway available.
+    $gateway = array($method => '');
   }
 
   // Check to see if the function exists and process the payment.
@@ -426,6 +477,9 @@ function uc_payment_process_payment($method, $order_id, $amount, $data = NULL, $
  *   (optional) The comment to enter in the payment log.
  * @param $received
  *   (optional) The timestamp at which the payment was received.
+ *
+ * @return
+ *   A unique ID identifying the payment.
  */
 function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $comment = '', $received = REQUEST_TIME) {
   $method_name = _uc_payment_method_data($method, 'review');
@@ -442,7 +496,7 @@ function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $
   $log_message = t('@method payment for @amount entered.', array('@method' => $method_name, '@amount' => uc_currency_format($amount)));
   uc_order_log_changes($order_id, array($log_message));
 
-  db_insert('uc_payment_receipts')
+  $receipt_id = db_insert('uc_payment_receipts')
     ->fields(array(
       'order_id' => $order_id,
       'method' => $method_name,
@@ -458,10 +512,14 @@ function uc_payment_enter($order_id, $method, $amount, $uid = 0, $data = NULL, $
   $account = user_load($uid);
 
   // Ensure user has an account before payment is made.
-  uc_cart_complete_sale($order);
+  if (module_exists('uc_cart')) {
+    uc_cart_complete_sale($order);
+  }
 
   module_invoke_all('uc_payment_entered', $order, $method, $amount, $account, $data, $comment);
   rules_invoke_event('uc_payment_entered', $order, $account);
+
+  return $receipt_id;
 }
 
 /**
@@ -629,4 +687,14 @@ function uc_payment_method_options_list() {
     $options[$id] = $method['name'];
   }
   return $options;
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function uc_payment_views_api() {
+  return array(
+    'api' => '2.0',
+    'path' => drupal_get_path('module', 'uc_payment') . '/views',
+  );
 }

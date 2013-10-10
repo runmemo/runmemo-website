@@ -221,8 +221,14 @@ function uc_shipping_schema() {
     ),
     'primary key' => array('sid'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
     ),
+    'indexes' => array(
+      'order_id' => array('order_id'),
+     ),
   );
 
   $schema['uc_packages'] = array(
@@ -261,7 +267,7 @@ function uc_shipping_schema() {
         'not null' => FALSE,
       ),
       'width' => array(
-        'description' => 'The pacakge width.',
+        'description' => 'The package width.',
         'type' => 'float',
         'not null' => FALSE,
       ),
@@ -285,7 +291,7 @@ function uc_shipping_schema() {
         'default' => 0.0,
       ),
       'sid' => array(
-        'description' => 'The {uc_shimpents}.sid, if the package has been shipped.',
+        'description' => 'The {uc_shipments}.sid, if the package has been shipped.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => FALSE,
@@ -305,10 +311,26 @@ function uc_shipping_schema() {
     ),
     'primary key' => array('package_id'),
     'foreign keys' => array(
-      'order_id' => array('uc_orders' => 'order_id'),
-      'shipping_type' => array('uc_quote_shipping_types' => 'shipping_type'),
-      'sid' => array('uc_shipments' => 'sid'),
-      'label_image' => array('file' => 'fid'),
+      'uc_orders' => array(
+        'table' => 'uc_orders',
+        'columns' => array('order_id' => 'order_id'),
+      ),
+      'uc_quote_shipping_types' => array(
+        'table' => 'uc_quote_shipping_types',
+        'columns' => array('shipping_type' => 'shipping_type'),
+      ),
+      'uc_shipments' => array(
+        'table' => 'uc_shipments',
+        'columns' => array('sid' => 'sid'),
+      ),
+      'file' => array(
+        'table' => 'file',
+        'columns' => array('label_image' => 'fid'),
+      ),
+    ),
+    'indexes' => array(
+      'order_id' => array('order_id'),
+      'sid' => array('sid'),
     ),
   );
 
@@ -341,6 +363,9 @@ function uc_shipping_schema() {
     'foreign keys' => array(
       'package_id' => array('uc_packages' => 'package_id'),
       'order_product_id' => array('uc_order_products' => 'order_product_id'),
+    ),
+    'indexes' => array(
+      'order_product_id' => array('order_product_id'),
     ),
   );
 
@@ -446,4 +471,50 @@ function uc_shipping_update_7001() {
       'default' => 0,
     ));
   }
+}
+
+/**
+ * Add indexes to package and shipment tables.
+ */
+function uc_shipping_update_7300() {
+  // Alter {uc_shipments} table.
+  if (!db_index_exists('uc_shipments', 'order_id')) {
+    db_add_index('uc_shipments', 'order_id', array('order_id'));
+  }
+
+  // Alter {uc_packages} table.
+  if (!db_index_exists('uc_packages', 'order_id')) {
+    db_add_index('uc_packages', 'order_id', array('order_id'));
+  }
+  if (!db_index_exists('uc_packages', 'sid')) {
+    db_add_index('uc_packages', 'sid', array('sid'));
+  }
+
+  // Alter {uc_packaged_products} table.
+  if (!db_index_exists('uc_packaged_products', 'order_product_id')) {
+    db_add_index('uc_packaged_products', 'order_product_id', array('order_product_id'));
+  }
+}
+
+/**
+ * Remove orphaned package and shipment records.
+ */
+function uc_shipping_update_7301() {
+  $subquery = db_select('uc_orders', 'o')
+    ->fields('o', array('order_id'));
+
+  db_delete('uc_shipments')
+    ->condition('order_id', $subquery, 'NOT IN')
+    ->execute();
+
+  db_delete('uc_packages')
+    ->condition('order_id', $subquery, 'NOT IN')
+    ->execute();
+
+  $subquery = db_select('uc_packages', 'p')
+    ->fields('p', array('package_id'));
+
+  db_delete('uc_packaged_products')
+    ->condition('package_id', $subquery, 'NOT IN')
+    ->execute();
 }
