@@ -79,6 +79,7 @@ function uc_credit_permission() {
   return array(
     'administer credit cards' => array(
       'title' => t('Administer credit cards'),
+      'restrict access' => TRUE,
     ),
     'process credit cards' => array(
       'title' => t('Process credit cards'),
@@ -283,11 +284,17 @@ function uc_credit_uc_payment_method() {
 
   $path = base_path() . drupal_get_path('module', 'uc_credit');
   $title = t('Credit card:');
-  $cc_types = array('visa', 'mastercard', 'discover', 'amex');
-  foreach ($cc_types as $type) {
+  $cc_types = array(
+    'visa' => t('Visa'),
+    'mastercard' => t('MasterCard'),
+    'discover' => t('Discover'),
+    'amex' => t('American Express'),
+  );
+  foreach ($cc_types as $type => $label) {
     if (variable_get('uc_credit_' . $type, TRUE)) {
       $title .= ' ' . theme('image', array(
         'path' => drupal_get_path('module', 'uc_credit') . '/images/' . $type . '.gif',
+        'alt' => $label,
         'attributes' => array('class' => array('uc-credit-cctype', 'uc-credit-cctype-' . $type)),
       ));
     }
@@ -463,7 +470,9 @@ function uc_payment_method_credit($op, &$order, $form = NULL, &$form_state = NUL
           $rows[] = t('Card owner') . ': ' . check_plain($order->payment_details['cc_owner']);
         }
 
-        $rows[] = t('Card number') . ': ' . uc_credit_display_number($order->payment_details['cc_number']);
+        if (!empty($order->payment_details['cc_number'])) {
+          $rows[] = t('Card number') . ': ' . uc_credit_display_number($order->payment_details['cc_number']);
+        }
 
         if (!empty($order->payment_details['cc_start_month']) && !empty($order->payment_details['cc_start_year'])) {
           $rows[] = t('Start date') . ': ' . $order->payment_details['cc_start_month'] . '/' . $order->payment_details['cc_start_year'];
@@ -906,26 +915,14 @@ function _uc_credit_valid_card_issue($issue) {
  *   FALSE if no encryption key is found.
  */
 function uc_credit_encryption_key() {
-  static $key;
+  static $key = FALSE;
 
-  if (!empty($key)) {
-    return $key;
-  }
-
-  $key_dir = variable_get('uc_credit_encryption_path', '');
-  if (is_dir($key_dir)) {
-    $key_file = $key_dir . '/' . UC_CREDIT_KEYFILE_NAME;
-    if (file_exists($key_file)) {
-      if (!$file = @fopen($key_file, 'r')) {
-        return FALSE;
-      }
-
-      $key = fread($file, filesize($key_file));
-      fclose($file);
+  if (empty($key)) {
+    $key_file = variable_get('uc_credit_encryption_path', '') . '/' . UC_CREDIT_KEYFILE_NAME;
+    $contents = @file_get_contents($key_file);
+    if (strlen($contents) == 32) {
+      $key = $contents;
     }
-  }
-  else {
-    return FALSE;
   }
 
   return $key;

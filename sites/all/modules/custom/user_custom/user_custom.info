@@ -1,4 +1,4 @@
-name = user_custom
+name = User custom
 description = A block module that is used to alter form in the core module
 core = 7.x
 

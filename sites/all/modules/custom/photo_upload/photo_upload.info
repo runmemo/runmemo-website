@@ -4,6 +4,7 @@ description = A block module that is used to photo_upload side
 core = 7.x
 
 dependencies[] = common_tools
+dependencies[] = uc_currency
 
 files[] = photo_upload.module
 files[] = photo_upload.inc

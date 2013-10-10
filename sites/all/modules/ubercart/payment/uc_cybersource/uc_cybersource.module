@@ -510,7 +510,7 @@ function uc_cybersource_hop_form($form, $form_state, $order) {
   $form['#action'] = variable_get('uc_cybersource_hop_server', 'https://orderpagetest.ic3.com/hop/orderform.jsp');
   $form['submit'] = array(
     '#type' => 'submit',
-    '#value' => variable_get('uc_cybersource_hop_checkout_button', t('Submit Order')),
+    '#value' => t('Submit order'),
   );
 
   return $form;
@@ -580,7 +580,7 @@ function uc_cybersource_charge($order_id, $amount, $data) {
       }
 
       $request['ccAuthService_run'] = 'true';
-      if (variable_get('uc_cybersource_transaction_type', 'sale') == 'sale') {
+      if (variable_get('uc_cybersource_hop_transaction_type', 'sale') == 'sale') {
         $request['ccCaptureService_run'] = 'true';
       }
       $request['merchantReferenceCode'] = $order_id;
@@ -640,7 +640,7 @@ function _uc_cybersource_post_charge($order, $amount, $data, $cc_type, $country)
   $request['orderPage_signaturePublic'] = $pub_digest;
   $request['orderPage_version'] = '4';
   $request['orderPage_serialNumber'] = $serialNumber;
-  $request['orderPage_transactionType'] = variable_get('uc_cybersource_transaction_type', 'sale');
+  $request['orderPage_transactionType'] = variable_get('uc_cybersource_hop_transaction_type', 'sale');
 
   $data = '';
   while (list($key, $value) = each($request)) {
@@ -661,7 +661,7 @@ function _uc_cybersource_post_charge($order, $amount, $data, $cc_type, $country)
   curl_setopt($ch, CURLOPT_POST, 1);
   curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
   curl_setopt($ch, CURLOPT_NOPROGRESS, 1);
   curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
   $response = curl_exec($ch);
@@ -677,7 +677,7 @@ function _uc_cybersource_post_charge($order, $amount, $data, $cc_type, $country)
     }
 
     // Create the order and payment ledger comments.
-    $o_comment = t('<b>Credit card !type:</b> !amount<br /><b>Decision: @decision</b><br /><b>Reason:</b> !reason', array('!type' => variable_get('uc_cybersource_transaction_type', 'sale'), '!amount' => uc_currency_format($nvp['orderAmount']), '@decision' => $nvp['decision'], '!reason' => _uc_cybersource_parse_reason_code($nvp['reasonCode'])));
+    $o_comment = t('<b>Credit card !type:</b> !amount<br /><b>Decision: @decision</b><br /><b>Reason:</b> !reason', array('!type' => variable_get('uc_cybersource_hop_transaction_type', 'sale'), '!amount' => uc_currency_format($nvp['orderAmount']), '@decision' => $nvp['decision'], '!reason' => _uc_cybersource_parse_reason_code($nvp['reasonCode'])));
     $p_comment = t('!id<br />!decision, Reason: !reason', array('!id' => $nvp['orderPage_serialNumber'], '!decision' => $nvp['decision'], '!reason' => $nvp['reasonCode']));
     if (!empty($nvp['ccAuthReply_avsCode'])) {
       $o_comment .= t('<br /><b>AVS:</b> !avs', array('!avs' => _uc_cybersource_parse_avs_code($nvp['ccAuthReply_avsCode'])));
@@ -839,11 +839,7 @@ function _uc_cybersource_soap_charge($order, $amount, $data, $cc_type, $country)
     // Add the order total information.
     $purchaseTotals = new stdClass();
     $purchaseTotals->currency = $currency;
-
-    // Specify the total to charge if it's less than the order total.
-    if ($amount < $order->order_total) {
-      $purchaseTotals->grandTotalAmount = $amount;
-    }
+    $purchaseTotals->grandTotalAmount = $amount;
     $request->purchaseTotals = $purchaseTotals;
 
     // Separately add products and line item into the request items object if
@@ -1246,7 +1242,7 @@ function uc_cybersource_uc_calculate_tax($order) {
    *   }
    *
    *   $request['ccAuthService_run'] = 'true';
-   *   if (variable_get('uc_cybersource_transaction_type', 'sale') == 'sale') {
+   *   if (variable_get('uc_cybersource_hop_transaction_type', 'sale') == 'sale') {
    *     $request['ccCaptureService_run'] = 'true';
    *   }
    *   $request['merchantReferenceCode'] = $order_id;

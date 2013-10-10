@@ -730,6 +730,7 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
     foreach ($result as $option) {
       $attribute->options[$option->oid] = $option;
     }
+    uc_attribute_translate($attribute);
   }
 
   return $attribute;
@@ -1154,7 +1155,7 @@ function uc_attribute_type_info($type) {
 function uc_product_get_attributes($nid) {
   $attributes = array();
 
-  $result = db_query("SELECT upa.aid FROM {uc_product_attributes} AS upa LEFT JOIN {uc_attributes} AS ua ON upa.aid = ua.aid WHERE upa.nid = :nid ORDER BY upa.ordering, ua.name", array(':nid' => $nid));
+  $result = db_query("SELECT upa.aid FROM {uc_product_attributes} upa LEFT JOIN {uc_attributes} ua ON upa.aid = ua.aid WHERE upa.nid = :nid ORDER BY upa.ordering, ua.name", array(':nid' => $nid));
   foreach ($result as $attribute) {
     $attributes[$attribute->aid] = uc_attribute_load($attribute->aid, $nid, 'product');
   }
@@ -1168,7 +1169,7 @@ function uc_product_get_attributes($nid) {
 function uc_class_get_attributes($pcid) {
   $attributes = array();
 
-  $result = db_query("SELECT uca.aid FROM {uc_class_attributes} AS uca LEFT JOIN {uc_attributes} AS ua ON uca.aid = ua.aid WHERE uca.pcid = :type ORDER BY uca.ordering, ua.name", array(':type' => $pcid));
+  $result = db_query("SELECT uca.aid FROM {uc_class_attributes} uca LEFT JOIN {uc_attributes} ua ON uca.aid = ua.aid WHERE uca.pcid = :type ORDER BY uca.ordering, ua.name", array(':type' => $pcid));
   foreach ($result as $attribute) {
     $attributes[$attribute->aid] = uc_attribute_load($attribute->aid, $pcid, 'class');
   }
@@ -1188,6 +1189,9 @@ function uc_class_get_attributes($pcid) {
  */
 function _uc_cart_product_get_options($item) {
   $options = array();
+  if (empty($item->data)) {
+    return $options;
+  }
   $data = $item->data;
   $node = node_load($item->nid);
 
@@ -1373,7 +1377,7 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
         if ($attribute->display == 1) {
           $options = array('' => t('Please select')) + $options;
         }
-        $attribute->default_option = '';
+        $attribute->default_option = NULL;
       }
       $attr_type = '';
       switch ($attribute->display) {
@@ -1450,7 +1454,7 @@ function _uc_attribute_display_types() {
  *   Array of attribute ids that have price affecting options.
  */
 function uc_attribute_priced_attributes($nid) {
-  $aids = db_query("SELECT DISTINCT (pa.aid) FROM {uc_product_attributes} AS pa INNER JOIN {uc_attribute_options} AS ao ON ao.aid = pa.aid INNER JOIN {uc_product_options} AS po ON (po.oid = ao.oid AND po.nid = pa.nid) WHERE pa.nid = :nid AND po.price <> :price AND pa.display <> :display", array(':nid' => $nid, ':price' => 0, ':display' => 0))->fetchCol();
+  $aids = db_query("SELECT DISTINCT (pa.aid) FROM {uc_product_attributes} pa INNER JOIN {uc_attribute_options} ao ON ao.aid = pa.aid INNER JOIN {uc_product_options} po ON (po.oid = ao.oid AND po.nid = pa.nid) WHERE pa.nid = :nid AND po.price <> :price AND pa.display <> :display", array(':nid' => $nid, ':price' => 0, ':display' => 0))->fetchCol();
 
   return $aids;
 }
@@ -1483,5 +1487,55 @@ function _uc_attribute_get_name($attribute, $title = TRUE) {
   }
   else {
     return (empty($attribute->label) || ($attribute->label == '<none>' && $title) ? $attribute->name : $attribute->label);
+  }
+}
+
+/**
+ * Implements hook_i18n_string_info().
+ */
+function uc_attribute_i18n_string_info() {
+  $groups['uc_attribute'] = array(
+    'title' => t('Ubercart attributes'),
+    'description' => t('Translatable Ubercart attributes'),
+    'format' => FALSE,
+    'list' => TRUE,
+  );
+  return $groups;
+}
+
+/**
+ * Refreshes translated attribute and option strings.
+ */
+function uc_attribute_i18n_string_refresh() {
+  $attributes = db_query("SELECT aid, name, label, description FROM {uc_attributes}");
+  foreach ($attributes as $attribute) {
+    i18n_string_update('uc_attribute:attribute:' . $attribute->aid . ':name', $attribute->name);
+    i18n_string_update('uc_attribute:attribute:' . $attribute->aid . ':label', $attribute->label);
+    i18n_string_update('uc_attribute:attribute:' . $attribute->aid . ':description', $attribute->description);
+
+    $options = db_query("SELECT oid, name FROM {uc_attribute_options} WHERE aid = :aid", array(':aid' => $attribute->aid));
+    foreach ($options as $option) {
+      i18n_string_update('uc_attribute:option:' . $option->oid .':name', $option->name);
+    }
+  }
+
+  return TRUE;
+}
+
+/**
+ * Translates an attribute.
+ *
+ * @param &$attribute
+ *   The attribute object to translate.
+ */
+function uc_attribute_translate(&$attribute) {
+  if (function_exists('i18n_string')) {
+    $attribute->name        = i18n_string('uc_attribute:attribute:' . $attribute->aid . ':name', $attribute->name);
+    $attribute->label       = i18n_string('uc_attribute:attribute:' . $attribute->aid . ':label', $attribute->label);
+    $attribute->description = i18n_string('uc_attribute:attribute:' . $attribute->aid . ':description', $attribute->description);
+
+    foreach ($attribute->options as &$option) {
+      $option->name = i18n_string('uc_attribute:option:' . $option->oid . ':name', $option->name);
+    }
   }
 }

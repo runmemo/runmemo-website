@@ -48,6 +48,21 @@ function uc_cart_view() {
 }
 
 /**
+ * Confirm that the customer wants to empty their cart.
+ */
+function uc_cart_empty_confirm($form, &$form_state) {
+  return confirm_form($form, t('Are you sure you want to empty your shopping cart?'), 'cart');
+}
+
+/**
+ * Submission handler to empty the cart after confirmations.
+ */
+function uc_cart_empty_confirm_submit($form, &$form_state) {
+  uc_cart_empty();
+  $form_state['redirect'] = 'cart';
+}
+
+/**
  * Displays the cart checkout page built of checkout panes from enabled modules.
  */
 function uc_cart_checkout() {
@@ -92,8 +107,8 @@ function uc_cart_checkout() {
       // there has been no activity for 10 minutes (to prevent identity theft).
       if (uc_order_status_data($order->order_status, 'state') != 'in_checkout' ||
           ($user->uid > 0 && $user->uid != $order->uid) ||
-          $order->modified < REQUEST_TIME - 600) {
-        if (uc_order_status_data($order->order_status, 'state') == 'in_checkout' && $order->modified < REQUEST_TIME - 600) {
+          $order->modified < REQUEST_TIME - UC_CART_ORDER_TIMEOUT) {
+        if (uc_order_status_data($order->order_status, 'state') == 'in_checkout' && $order->modified < REQUEST_TIME - UC_CART_ORDER_TIMEOUT) {
           // Mark expired orders as abandoned.
           uc_order_update_status($order->order_id, 'abandoned');
         }
@@ -131,9 +146,14 @@ function uc_cart_checkout() {
     }
     elseif (!empty($_SESSION['uc_cart_order_rebuild'])) {
       // Or, if the cart has changed, then remove old products and line items.
-      db_delete('uc_order_products')
-        ->condition('order_id', $order->order_id)
+      $efq = new EntityFieldQuery();
+      $result = $efq->entityCondition('entity_type', 'uc_order_product')
+        ->propertyCondition('order_id', $order->order_id)
         ->execute();
+      if (!empty($result['uc_order_product'])) {
+        $product_ids = array_keys($result['uc_order_product']);
+        uc_order_product_delete_multiple($product_ids);
+      }
       uc_order_delete_line_item($order->order_id, TRUE);
       $rebuild = TRUE;
     }
@@ -149,6 +169,10 @@ function uc_cart_checkout() {
     }
   }
 
+  // Trigger the "Customer starts checkout" hook and event.
+  module_invoke_all('uc_cart_checkout_start', $order);
+  rules_invoke_event('uc_cart_checkout_start', $order);
+
   return drupal_get_form('uc_cart_checkout_form', $order);
 }
 
@@ -158,8 +182,9 @@ function uc_cart_checkout() {
  * @param $order
  *   The order that is being checked out.
  *
+ * @see uc_cart_checkout_form_process()
  * @see uc_cart_checkout_form_validate()
- * @see uc_cart_checkout_form_review()
+ * @see uc_cart_checkout_form_submit()
  * @see uc_cart_checkout_review()
  * @see theme_uc_cart_checkout_form()
  * @ingroup forms
@@ -278,6 +303,9 @@ function uc_cart_checkout_form($form, &$form_state, $order) {
     '#type' => 'submit',
     '#value' => t('Review order'),
   );
+
+  form_load_include($form_state, 'inc', 'uc_store', 'includes/uc_ajax_attach');
+  $form['#process'][] = 'uc_ajax_process_form';
 
   unset($_SESSION['uc_checkout'][$order->order_id]);
 

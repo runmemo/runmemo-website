@@ -124,16 +124,17 @@ function search_photos_form($form, &$form_state) {
     '#required' => 'true',
     '#default_value' => t('None'));
 
-  $form['search_filter']['event']['#options']['None'] = t('Select Event');
-  //$form['search_filter']['event']['#options'] = array('select_event' => "Select Event");
-  //select event options from content type 'event'
-
-  //get the event name from content type 'event'
+  // Get the event name from content type 'event'.
   $events = get_events_search();
+  if (!$events) {
+    return;
+  }
+  
+  $form['search_filter']['event']['#options']['None'] = t('Select Event');
   foreach ($events as $nid => $event) {
     $form['search_filter']['event']['#options'][$event['nid']] = $event['title'];
   }
- 
+  
   if ((is_numeric(arg(1))) && (arg(1) != '')) {
     $default=arg(1);
     $form['search_filter']['event']['#default_value']=$default;
@@ -189,17 +190,20 @@ function search_photos_form_validate($form, &$form_state) {
  * Function for runner photo search submit.
  */
 function search_photos_form_submit($form, &$form_state) {
-
+   // Clear cart for a new search.
+  if (module_exists('uc_cart')) {
+     uc_cart_empty(uc_cart_get_id());
+  }
+  
   $event_id = $form['search_filter']['event']['#value'];
   $runner_number = $form['search_filter']['runner_number']['#value'];
-
+ 
   if (!empty($runner_number)) {
     $form_state['redirect'] = "search-result/" . $event_id . "/" . $runner_number;
   }
   else {
     $form_state['redirect'] = "search-result/" . $event_id;
   }
-
 }
 
 /**
@@ -228,6 +232,9 @@ function sell_photos_form($form, &$form_state) {
 
   //get the event name from content type 'event'
   $events = get_events_upload();
+  if (!$events) {
+    return;
+  }
   foreach ($events as $event) {
     $event_title = $event['title'];
     $event_nid   = $event['nid'];

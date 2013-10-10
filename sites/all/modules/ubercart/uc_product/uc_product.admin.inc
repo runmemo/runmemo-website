@@ -88,7 +88,7 @@ function uc_product_settings_form($form, &$form_state) {
       '#type' => 'checkbox',
       '#title' => t('Update product display based on customer selections'),
       '#default_value' => variable_get('uc_product_update_node_view', FALSE),
-			'#description' => t('Check this box to dynamically update the display of product information such as display-price or weight based on customer input on the add-to-cart form (e.g. selecting a particular attribute option).'),
+      '#description' => t('Check this box to dynamically update the display of product information such as display-price or weight based on customer input on the add-to-cart form (e.g. selecting a particular attribute option).'),
     );
   }
 
@@ -317,7 +317,7 @@ function uc_product_class_form($form, &$form_state, $class = NULL) {
       '#type' => 'textfield',
       '#title' => t('Class ID'),
       '#required' => TRUE,
-      '#max_length' => 32,
+      '#maxlength' => 32,
       '#description' => t('The machine-readable name of this content type. This text will be used for constructing the URL of the <em>create content</em> page for this content type. This name may consist only of lowercase letters, numbers, and underscores. Dashes are not allowed. Underscores will be converted into dashes when constructing the URL of the <em>create content</em> page. This name must be unique to this content type.'),
     );
   }

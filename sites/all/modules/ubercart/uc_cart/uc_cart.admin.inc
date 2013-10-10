@@ -63,6 +63,12 @@ function uc_cart_cart_settings_form($form, &$form_state) {
     '#field_prefix' => url(NULL, array('absolute' => TRUE)) . (variable_get('clean_url', 0) ? '' : '?q='),
   );
 
+  $form['general']['uc_cart_empty_button'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Show an "Empty cart" button on the cart page.'),
+    '#default_value' => variable_get('uc_cart_empty_button', FALSE),
+  );
+
   $form['general']['uc_minimum_subtotal'] = array(
     '#type' => 'uc_price',
     '#title' => t('Minimum order subtotal'),
@@ -327,6 +333,11 @@ function uc_cart_checkout_settings_form($form, &$form_state) {
     }
   }
 
+  $form['checkout']['uc_cart_default_same_address'] = array(
+    '#type' => 'checkbox',
+    '#title' => t('Use the same address for billing and delivery by default.'),
+    '#default_value' => variable_get('uc_cart_default_same_address', FALSE),
+  );
   $form['checkout']['uc_cart_delivery_not_shippable'] = array(
     '#type' => 'checkbox',
     '#title' => t('Hide delivery information when carts have no shippable items.'),

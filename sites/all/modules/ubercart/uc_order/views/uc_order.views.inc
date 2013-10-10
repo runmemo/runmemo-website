@@ -378,6 +378,17 @@ function uc_order_views_data() {
   }
 
   // Ordered products.
+  // Get the standard EntityAPI Views data table.
+  $data['uc_order_products'] =  entity_views_table_definition('uc_order_product');
+  // Remove undesirable fields
+  foreach(array('data') as $bad_field) {
+    if (isset($data['uc_order_products'][$bad_field])) {
+      unset($data['uc_order_products'][$bad_field]);
+    }
+  }
+  // Fix incomplete fields
+  $data['uc_order_products']['weight_units']['title'] = t('Weight units');
+
   $data['uc_order_products']['table']['group'] = t('Ordered product');
   $data['uc_order_products']['table']['base'] = array(
     'field' => 'order_product_id',
@@ -387,12 +398,6 @@ function uc_order_views_data() {
 
   // Pull in node fields directly.
   $data['node']['table']['join']['uc_order_products'] = array(
-    'left_field' => 'nid',
-    'field' => 'nid',
-  );
-
-  // Pull in product fields directly.
-  $data['uc_products']['table']['join']['uc_order_products'] = array(
     'left_field' => 'nid',
     'field' => 'nid',
   );
@@ -413,6 +418,52 @@ function uc_order_views_data() {
       'base field' => 'order_id',
       'relationship field' => 'order_id',
       'label' => t('products'),
+    ),
+  );
+
+  // Expose nodes to ordered products as a relationship.
+  $data['uc_order_products']['nid'] = array(
+    'title' => t('Nid'),
+    'help' => t('The nid of the ordered product. If you need more fields than the nid: Node relationship'),
+    'relationship' => array(
+      'title' => t('Node'),
+      'help' => t('Relate product to node.'),
+      'handler' => 'views_handler_relationship',
+      'base' => 'node',
+      'field' => 'nid',
+      'label' => t('node'),
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_node_nid',
+    ),
+    'field' => array(
+      'handler' => 'views_handler_field_node',
+    ),
+  );
+
+  // Expose orders to ordered products as a relationship.
+  $data['uc_order_products']['order_id'] = array(
+    'title' => t('Order ID'),
+    'help' => t('The order ID of the ordered product. If you need more fields than the order ID: Order relationship'),
+    'relationship' => array(
+      'title' => t('Order'),
+      'help' => t('Relate product to order.'),
+      'handler' => 'views_handler_relationship',
+      'base' => 'uc_orders',
+      'field' => 'order_id',
+      'label' => t('order'),
+    ),
+    'filter' => array(
+      'handler' => 'views_handler_filter_numeric',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+    ),
+    'field' => array(
+      'handler' => 'uc_order_handler_field_order_id',
     ),
   );
 
@@ -465,6 +516,23 @@ function uc_order_views_data() {
     ),
   );
 
+  $data['uc_order_products']['total_price'] = array(
+    'title' => t('Total price'),
+    'help' => t('The price paid for all the products (price * quantity).'),
+    'real field' => 'price',
+    'field' => array(
+      'handler' => 'uc_order_handler_field_money_total',
+      'click sortable' => TRUE,
+      'float' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'uc_order_handler_sort_total',
+    ),
+    'filter' => array(
+      'handler' => 'uc_order_handler_filter_total',
+    ),
+  );
+
   $data['uc_order_products']['cost'] = array(
     'title' => t('Cost'),
     'help' => t('The cost to the store for one product.'),
@@ -481,6 +549,23 @@ function uc_order_views_data() {
     ),
   );
 
+  $data['uc_order_products']['total_cost'] = array(
+    'title' => t('Total cost'),
+    'help' => t('The cost to the store for all the products (cost * quantity).'),
+    'real field' => 'cost',
+    'field' => array(
+      'handler' => 'uc_order_handler_field_money_total',
+      'click sortable' => TRUE,
+      'float' => TRUE,
+    ),
+    'sort' => array(
+      'handler' => 'uc_order_handler_sort_total',
+    ),
+    'filter' => array(
+      'handler' => 'uc_order_handler_filter_total',
+    ),
+  );
+
   $data['uc_order_products']['weight'] = array(
     'title' => t('Weight'),
     'help' => t('The physical weight of one product.'),
@@ -491,6 +576,21 @@ function uc_order_views_data() {
         ),
       ),
       'handler' => 'uc_product_handler_field_weight',
+      'float' => TRUE,
+    ),
+  );
+
+  $data['uc_order_products']['total_weight'] = array(
+    'title' => t('Total weight'),
+    'help' => t('The physical weight of all the products (weight * quantity).'),
+    'real field' => 'weight',
+    'field' => array(
+      'additional fields' => array(
+        'weight_units' => array(
+          'field' => 'weight_units',
+        ),
+      ),
+      'handler' => 'uc_order_handler_field_weight_total',
       'float' => TRUE,
     ),
   );

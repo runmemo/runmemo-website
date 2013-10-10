@@ -31,7 +31,19 @@ function uc_roles_cron() {
   $reminder_granularity = variable_get('uc_roles_reminder_granularity', 'never');
   $reminder_qty = variable_get('uc_roles_reminder_length', NULL);
 
-  $result = db_query("SELECT * FROM {uc_roles_expirations}");
+  $query = db_select('uc_roles_expirations', 'e')
+    ->fields('e');
+  $condition = db_or()
+    ->condition('e.expiration', REQUEST_TIME, '<=');
+  if ($reminder_granularity != 'never') {
+    $condition->condition(db_and()
+      ->isNull('e.notified')
+      ->condition('e.expiration', _uc_roles_get_expiration($reminder_qty, $reminder_granularity, REQUEST_TIME), '<=')
+    );
+  }
+  $query->condition($condition);
+
+  $result = $query->execute();
   foreach ($result as $expiration) {
     $account = user_load($expiration->uid);
 
@@ -48,22 +60,12 @@ function uc_roles_cron() {
 
     // Remind the user about an upcoming expiration.
     elseif ($reminder_granularity != 'never') {
-      // Only if not already notified.
-      if (intval($expiration->notified) >= 1) {
-        continue;
-      }
-
-      // If we're past the expiration time minus the reminder time.
-      $threshold = _uc_roles_get_expiration(-$reminder_qty, $reminder_granularity, $expiration->expiration);
-      if ($threshold <= REQUEST_TIME) {
-        rules_invoke_event('uc_roles_notify_reminder', $account, $expiration);
-
-        db_update('uc_roles_expirations')
-          ->fields(array('notified' => 1))
-          ->condition('uid', $account->uid)
-          ->condition('rid', $expiration->rid)
-          ->execute();
-      }
+      rules_invoke_event('uc_roles_notify_reminder', $account, $expiration);
+      db_update('uc_roles_expirations')
+        ->fields(array('notified' => 1))
+        ->condition('uid', $account->uid)
+        ->condition('rid', $expiration->rid)
+        ->execute();
     }
   }
 }
@@ -104,14 +106,6 @@ function uc_roles_init() {
   $conf['i18n_variables'][] = 'uc_roles_default_expiration_header';
   $conf['i18n_variables'][] = 'uc_roles_default_expiration_message';
   $conf['i18n_variables'][] = 'uc_roles_default_expiration_title';
-  $conf['i18n_variables'][] = 'uc_roles_grant_notification_message';
-  $conf['i18n_variables'][] = 'uc_roles_grant_notification_subject';
-  $conf['i18n_variables'][] = 'uc_roles_reminder_message';
-  $conf['i18n_variables'][] = 'uc_roles_reminder_subject';
-  $conf['i18n_variables'][] = 'uc_roles_renewal_notification_message';
-  $conf['i18n_variables'][] = 'uc_roles_renewal_notification_subject';
-  $conf['i18n_variables'][] = 'uc_roles_revocation_notification_message';
-  $conf['i18n_variables'][] = 'uc_roles_revocation_notification_subject';
 }
 
 /**
@@ -471,14 +465,14 @@ function uc_roles_uc_store_status() {
  * Implements hook_uc_message().
  */
 function uc_roles_uc_message() {
-  $messages['uc_roles_grant_subject'] = t('[store:name]: [uc_role:name] role granted');
-  $messages['uc_roles_grant_message'] = t("[uc_order:first-name] [uc_order:last-name], \n\nThanks to your order, [uc_order:link], at [store:name] you now have a new role, [uc_role:name].\n\nThanks again, \n\n[store:name]\n[site:slogan]");
-  $messages['uc_roles_revoke_subject'] = t('[store:name]: [uc_role:name] role expired');
-  $messages['uc_roles_revoke_message'] = t("The role, [uc_role:name], you acquired by purchasing a product at our store has expired. Any special access or privileges that came with it are now gone. You can purchase it again by going to [store:link]\n\nThanks again, \n\n[store:name]\n[site:slogan]");
-  $messages['uc_roles_renew_subject'] = t('[store:name]: [uc_role:name] role renewed');
-  $messages['uc_roles_renew_message'] = t("[uc_order:first-name] [uc_order:last-name], \n\nThanks to your order, [uc_order:link], at [store:name] you have renewed the role, [uc_role:name]. It is now set to expire on [uc_role:expiration:short].\n\nThanks again, \n\n[store:name]\n[site:slogan]");
-  $messages['uc_roles_reminder_subject'] = t('[store:name]: [uc_role:name] role expiration notice');
-  $messages['uc_roles_reminder_message'] = t("This message is to remind you that the role, [uc_role:name], you acquired by making a purchase at our store will expire at [uc_role:expiration:short]. You may visit [store:link] to renew this role before it expires.\n\nThanks again, \n\n[store:name]\n[site:slogan]");
+  $messages['uc_roles_grant_subject'] = t('[store:name]: [expiration:name] role granted');
+  $messages['uc_roles_grant_message'] = t("[order:first-name] [order:last-name], \n\nThanks to your order, [order:link], at [store:name] you now have a new role, [expiration:name].\n\nThanks again, \n\n[store:name]\n[site:slogan]");
+  $messages['uc_roles_revoke_subject'] = t('[store:name]: [expiration:name] role expired');
+  $messages['uc_roles_revoke_message'] = t("The role, [expiration:name], you acquired by purchasing a product at our store has expired. Any special access or privileges that came with it are now gone. You can purchase it again by going to [store:link]\n\nThanks again, \n\n[store:name]\n[site:slogan]");
+  $messages['uc_roles_renew_subject'] = t('[store:name]: [expiration:name] role renewed');
+  $messages['uc_roles_renew_message'] = t("[order:first-name] [order:last-name], \n\nThanks to your order, [order:link], at [store:name] you have renewed the role, [expiration:name]. It is now set to expire on [expiration:expiration:short].\n\nThanks again, \n\n[store:name]\n[site:slogan]");
+  $messages['uc_roles_reminder_subject'] = t('[store:name]: [expiration:name] role expiration notice');
+  $messages['uc_roles_reminder_message'] = t("This message is to remind you that the role, [expiration:name], you acquired by making a purchase at our store will expire at [expiration:expiration:short]. You may visit [store:link] to renew this role before it expires.\n\nThanks again, \n\n[store:name]\n[site:slogan]");
   $messages['uc_roles_user_expiration_header'] = t("Expiring roles");
   $messages['uc_roles_user_expiration_title'] = t("!role_name");
   $messages['uc_roles_user_expiration_message'] = t("This role will expire on !date");

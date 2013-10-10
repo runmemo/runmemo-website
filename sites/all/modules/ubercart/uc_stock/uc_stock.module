@@ -109,15 +109,6 @@ function uc_stock_theme() {
 }
 
 /**
- * Implements hook_init().
- */
-function uc_stock_init() {
-  global $conf;
-  $conf['i18n_variables'][] = 'uc_stock_threshold_notification_message';
-  $conf['i18n_variables'][] = 'uc_stock_threshold_notification_subject';
-}
-
-/**
  * Implements hook_mail().
  */
 function uc_stock_mail($key, &$message, $params) {
@@ -134,17 +125,8 @@ function uc_stock_mail($key, &$message, $params) {
  */
 function uc_stock_uc_message() {
   $messages['uc_stock_threshold_notification_subject'] = t('[store:name]: Stock threshold limit reached');
-  $messages['uc_stock_threshold_notification_message'] = t("This message has been sent to let you know that the stock level for the model [uc_stock:model] has reached [uc_stock:level]. There may not be enough units in stock to fulfill order #[uc_order:link].");
+  $messages['uc_stock_threshold_notification_message'] = t('This message has been sent to let you know that the stock level for "[node:title]" with SKU [uc_stock:model] has reached [uc_stock:level]. There may not be enough units in stock to fulfill order #[uc_order:link].');
   return $messages;
-}
-
-/**
- * Implements hook_uc_order_product_delete().
- */
-function uc_stock_uc_order_product_delete($order_product_id) {
-  // Put back the stock.
-  $product = db_query("SELECT model, qty FROM {uc_order_products} WHERE order_product_id = :id", array(':id' => $order_product_id))->fetchObject();
-  uc_stock_adjust($product->model, $product->qty);
 }
 
 /**
@@ -194,7 +176,7 @@ function uc_stock_set($sku, $qty) {
  *
  * @param $sku
  *   The Ubercart product SKU of the stock level to return.
-
+ *
  * @return
  *   The SKU's stock level, or FALSE if not active.
  */
@@ -226,17 +208,17 @@ function uc_stock_is_active($sku) {
  *
  * @param $order
  *   The order object that tripped the threshold limit.
- * @param $product
- *   The product object that is associated with the SKU.
+ * @param $node
+ *   The node object that is associated with the SKU/model.
  * @param $stock
  *   The stock level object that contains the stock level and SKU.
  *
  * @return
  *   The result of drupal_mail().
  */
-function _uc_stock_send_mail($order, $stock) {
+function _uc_stock_send_mail($order, $node, $stock) {
   $account = user_load($order->uid);
-  $token_filters = array('uc_order' => $order, 'user' => $account, 'uc_stock' => $stock);
+  $token_filters = array('uc_order' => $order, 'user' => $account, 'uc_stock' => $stock, 'node' => $node);
 
   $to = variable_get('uc_stock_threshold_notification_recipients', uc_store_email());
   $to = explode(',', $to);
@@ -298,7 +280,8 @@ function uc_stock_adjust_product_stock($product, $key, $order) {
 
   // Should we notify?
   if (variable_get('uc_stock_threshold_notification', FALSE) && $stock->stock <= $stock->threshold) {
-    _uc_stock_send_mail($order, $stock);
+    $node = node_load($product->nid);
+    _uc_stock_send_mail($order, $node, $stock);
   }
 
   // Save a comment about the stock level.

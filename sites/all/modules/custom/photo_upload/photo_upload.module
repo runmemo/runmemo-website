@@ -169,6 +169,7 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
   //file_uri_to_object();
   foreach ($form_state['values']['file'] as $uploaded_file) {
     if ($uploaded_file['status'] == 'done') {
+      watchdog('photo_uload', 'File uploaded : %file', array('%file'=> serialize($uploaded_file)));
       /*
       $source = $uploaded_file['tmppath'];
       dvm($source);
@@ -204,6 +205,8 @@ function photographer_drag_and_drop_form_submit($form, &$form_state) {
  * @param unknown_type $fileinfo
  */
 function photo_upload_file_uploaded($fileinfo) {
+  
+  // watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($fileinfo)));
   
   $source =  $fileinfo['tmppath']; 
   $scheme = 'public://';
@@ -316,7 +319,7 @@ function create_photo_node($file, $event_nid, $price = 0) {
   // Determine currency code for product from country code in event's address
   $country = field_get_value($event, 'field_address', 'GB', 'country');
   $currency = uc_currency_country_currency($country);
-  
+   
   $defaults = default_currency_prices($currency);
   
   if ($price == 0) {

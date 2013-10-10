@@ -9,12 +9,6 @@
  * Pulls the get_quote_from_* triggers and assembles their returned data.
  */
 function uc_quote_assemble_quotes($order) {
-  global $user;
-
-  if (!$order->uid || !($account = user_load($order->uid))) {
-    $account = $user;
-  }
-
   $products = $order->products;
   foreach ($products as $id => $product) {
     $node = (array) node_load($product->nid);
@@ -47,7 +41,7 @@ function uc_quote_assemble_quotes($order) {
   }
   $methods = uc_quote_methods();
   foreach ($methods as $id => $method) {
-    if ($method['quote']['type'] != 'order' && $method['quote']['type'] != $shipping_type) {
+    if (!isset($method['quote']) || ($method['quote']['type'] != 'order' && $method['quote']['type'] != $shipping_type)) {
       unset($methods[$id]);
     }
   }

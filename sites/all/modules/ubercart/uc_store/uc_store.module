@@ -556,6 +556,7 @@ function uc_store_permission() {
   return array(
     'administer store' => array(
       'title' => t('Administer store'),
+      'restrict access' => TRUE,
     ),
     'view reports' => array(
       'title' => t('View reports'),
@@ -771,7 +772,7 @@ function uc_address_property_info() {
 }
 
 /**
- * Returns the IMG tag for a store icon.
+ * Returns an IMG tag for a store icon. Deprecated; use theme('image') instead.
  *
  * @param $path
  *   The Drupal path of the menu item. Atlernately may specify a filename by
@@ -860,12 +861,6 @@ function uc_currency_format($value, $sign = NULL, $thou = NULL, $dec = NULL) {
 
   $sign_after = variable_get('uc_sign_after_amount', FALSE);
   $prec = variable_get('uc_currency_prec', 2);
-  
-  if(module_exists('uc_currency') && is_null($sign)) {
-    $code = uc_currency_get_code();
-    $sign = currency_api_get_symbol($code);
-  }
-  
   if (is_null($sign)) {
     $sign = variable_get('uc_currency_sign', '$');
   }
@@ -1286,7 +1281,7 @@ function uc_zone_select($title = '', $default = NULL, $country_id = NULL, $optio
  * Helper function to return zone options, grouped by country.
  */
 function uc_zone_option_list() {
-  $result = db_query("SELECT z.*, c.country_name FROM {uc_zones} AS z LEFT JOIN {uc_countries} AS c ON z.zone_country_id = c.country_id ORDER BY c.country_name, z.zone_name");
+  $result = db_query("SELECT z.*, c.country_name FROM {uc_zones} z LEFT JOIN {uc_countries} c ON z.zone_country_id = c.country_id ORDER BY c.country_name, z.zone_name");
 
   foreach ($result as $zone) {
     $options[t($zone->country_name)][$zone->zone_id] = $zone->zone_name;
@@ -1389,7 +1384,7 @@ function uc_select_year($title = NULL, $default = NULL, $min = NULL, $max = NULL
  * @param $type
  *   Choose either 'shipping' or 'billing'.
  */
-function uc_select_address($uid, $type = 'billing', $onchange = '', $title = NULL, $icon_suffix = FALSE) {
+function uc_select_address($uid, $type = 'billing', $onchange = '', $title = NULL) {
   $addresses = uc_get_addresses($uid, $type);
 
   if (!is_array($addresses) || count($addresses) == 0) {
@@ -1413,7 +1408,6 @@ function uc_select_address($uid, $type = 'billing', $onchange = '', $title = NUL
     '#title' => is_null($title) ? t('Address book') : $title,
     '#options' => $options,
     '#attributes' => array('onchange' => $onchange),
-    '#suffix' => $icon_suffix ? uc_store_get_icon('file:address_book', FALSE, 'address-book-icon') : NULL,
   );
 
   return $select;
