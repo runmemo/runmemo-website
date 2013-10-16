@@ -28,27 +28,21 @@ tests you're interested in:
       nope : ['polyfill.js', 'wrapper.js']
     });
 
-The 3.x branch of the Drupal module aims to integrate Modernizr.load()
-so it is available to themes/modules that support HTML5/CSS3 features.
+The 3.x branch of the Drupal module integrates Modernizr.load()
+so it can be used by themes/modules that support HTML5/CSS3.
 
-For more information, visit: http://www.modernizr.com/docs/
+Documentation
+=============
 
+Read about Modernizr: http://www.modernizr.com/docs/
+Module documentation: http://drupal.org/node/1913744
 
-Usage
-=====
+Installation & Usage
+====================
 
-Find admin settings at /admin/config/development/modernizr
-
-
-Drupal components
-=================
-
-The code incudes an optional submodule (modernizr_forceredirect) that
-was for the 1.x version of modernizr.js and is no longer needed for v2.
-We strongly recommend using the latest version of Modernizr, and can
-only support the latest version of the JS library. The _forceredirect
-module will likely be removed for 3.x release.
-
+1. Install module
+2. Build Modernizr at /admin/config/development/modernizr
+3. Place your custom build inside sites/all/libraries/modernizr
 
 Credits
 =======
@@ -57,7 +51,7 @@ Project page: http://drupal.org/project/modernizr
 Library page: http://modernizr.com
 
 Module originally written by:
-Tam‡s Demeter-Haludka - http://drupal.org/user/372872
+Tamás Demeter-Haludka - http://drupal.org/user/372872
 
 Maintainers:
 Chris Ruppel - http://drupal.org/user/411999

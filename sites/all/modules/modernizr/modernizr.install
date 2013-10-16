@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ *   Install file for Modernizr module.
+ */
+
+/**
  * Implements hook_requirements.
  *
  * Changes its status based on ability to locate JS library.
@@ -48,7 +53,7 @@ function modernizr_requirements($phase) {
             // !path has a hardcoded default because the libraries_get_path() function might not return
             // the correct path when conditions lead to this block of code being executed
             '!path' => (libraries_get_path('modernizr')) ? libraries_get_path('modernizr') : 'sites/all/libraries/modernizr',
-            '!path-module' => drupal_get_path('module','modernizr') .'/js',
+            '!path-module' => drupal_get_path('module', 'modernizr') . '/js',
           )
         );
         $severity = REQUIREMENT_WARNING;
@@ -57,7 +62,7 @@ function modernizr_requirements($phase) {
       elseif ($path && !$using_libraries) {
         $description = t('Modernizr JS library is installed using the module directory. Have you considered using !libraries-api?',
           array(
-            '!libraries-api' => l('Libraries API','http://drupal.org/project/libraries'),
+            '!libraries-api' => l('Libraries API', 'http://drupal.org/project/libraries'),
           )
         );
         $severity = REQUIREMENT_WARNING;
@@ -81,7 +86,7 @@ function modernizr_requirements($phase) {
         $description = t('Modernizr JS library cannot be found. Download it from !modernizr-site, copy it to !path and rename it to modernizr.min.js.',
           array(
             '!modernizr-site' => l(t('modernizr.com'), 'http://modernizr.com/download/'),
-            '!path' => drupal_get_path('module','modernizr') .'/js',
+            '!path' => drupal_get_path('module', 'modernizr') . '/js',
           )
         );
         $severity = REQUIREMENT_ERROR;
