@@ -1348,15 +1348,13 @@ a#guide:hover {
 	width: 100%;
 	margin-top: 20px;
 	clear: both;
-	width: 100%;
+	float:left;
 }
 .front .region-footer {
-  margin-top: 0;
+  margin-top: 30px;
 }
 /* ****************** For Recent event home page ******************* */
 .recent-event {
-	border: 1px solid #dedede;
-	background: url('../images/cont-inner-bg.png') repeat;
 	margin-top: 10px;
 }
 
@@ -1390,21 +1388,22 @@ a#guide:hover {
 }
 
 #block-views-recent-events-block h2.title {
-	background: url('../images/cont-header-bg.png') repeat-x;
 	width: 100%;
-	height: 46px;
+	line-height: 46px;
 	padding-top: 10px;
-	text-indent: 20px;
+	text-indent: 10px;
+  border-top: 1px solid rgb(51, 51, 51);
+  color: grey;
+  font-weight: bolder;
 }
 
-.recent-events  .event-title {
+.recent-events .event-title {
 	color: #444;
 	font-family: Arial, Helvetica, sans-serif;
-	text-align: center;
   font-weight: bold;
-	padding-top: 10px;
-	padding-bottom: 10px;
-	border-bottom: 1px solid #dedede;
+  padding-left:10px;
+	border-top: 1px solid #dedede;
+  line-height: 40px;
 }
 
 .recent-events  .event-title a {
@@ -1415,7 +1414,6 @@ a#guide:hover {
 }
 
 .recent-events img {
-	margin-top: 10px;
 	margin-bottom: 5px;
 	margin-left: 10px;
 	border: 1px solid #585858;
