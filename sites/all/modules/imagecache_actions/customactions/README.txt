@@ -14,8 +14,8 @@ Soft dependencies/recommended modules:
 - PHP filter (Drupal core).
 
 
-Toolkit
--------
+Which toolkit?
+--------------
 Personally, I prefer the imagemagick toolkit:
 - It is better in anti-aliasing, try to rotate an image using both toolkits and
   you will see what I mean.
@@ -62,7 +62,7 @@ To ease your task, this effect makes some information regarding the image being
 processed available in 2 variables: $image and $image_context. These variables
 are readily available in your snippet.
 
-$image is an associative array containing:
+$image is an object containing the following properties:
 - source: string, the source of the image, e.g. public://photo.jpg
 - info: array, example data:
    - width (int) 180
@@ -71,6 +71,8 @@ $image is an associative array containing:
    - mime_type (string) image/png
    - file_size (int) 4417
 - toolkit: string, imagemagick or GD
+- resource: resource. The GD image resource.
+- ops: array. An array of strings with the ImageMagick commands.
 
 $image_context is an associative array containing:
 - effect_data: array, the data of this image effect, example data for the custom
