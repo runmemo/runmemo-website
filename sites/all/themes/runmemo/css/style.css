@@ -1415,7 +1415,7 @@ a#guide:hover {
 
 .recent-events img {
 	margin-bottom: 5px;
-	margin-left: 10px;
+	margin-right: 14px;
 	border: 1px solid #585858;
 }
 
@@ -1453,13 +1453,13 @@ a#guide:hover {
 	padding-left: 7px;
 	padding-top: 2px;
 	padding-bottom: 2px;
-  margin-left: 6px;
+  margin-left: 2px;
 	margin-right: 10px;
 	float: left;
 }
 
 .event-thumbnails {
-  margin-left:11px;
+  padding-left:10px;
 }
 
 .recent-events .form-submit {
