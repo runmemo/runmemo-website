@@ -37,7 +37,7 @@ class XMLSitemapWriter extends XMLWriter {
   }
 
   public function openUri($uri) {
-    $return = parent::openUri(drupal_realpath($uri));
+    $return = parent::openUri($uri);
     if (!$return) {
       throw new XMLSitemapGenerationException(t('Could not open file @file for writing.', array('@file' => $uri)));
     }
