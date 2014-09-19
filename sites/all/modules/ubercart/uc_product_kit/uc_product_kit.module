@@ -13,17 +13,6 @@ define('UC_PRODUCT_KIT_MUTABLE', 1);
 
 
 /**
- * Implements hook_permission().
- */
-function uc_product_kit_permission() {
-  return array(
-    'administer product kits' => array(
-      'title' => t('Administer product kits'),
-    ),
-  );
-}
-
-/**
  * Implements hook_form_FORM_ID_alter() for uc_product_settings_form().
  */
 function uc_product_kit_form_uc_product_settings_form_alter(&$form, &$form_state) {
@@ -175,7 +164,6 @@ function uc_product_kit_insert(&$node) {
   }
 
   $obj->model = rtrim($obj->model, ' / ');
-  $obj->unique_hash = md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . $obj->shippable . REQUEST_TIME);
 
   drupal_write_record('uc_products', $obj);
 }
@@ -321,7 +309,6 @@ function uc_product_kit_update(&$node) {
   }
 
   if (!empty($node->revision)) {
-    $obj->unique_hash = md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . REQUEST_TIME);
     drupal_write_record('uc_products', $obj);
   }
   else {
@@ -337,9 +324,6 @@ function uc_product_kit_update(&$node) {
         'default_qty' => $obj->default_qty,
         'ordering' => $obj->ordering,
         'shippable' => $obj->shippable ? 1 : 0,
-      ))
-      ->insertFields(array(
-        'unique_hash' => md5($obj->vid . $obj->nid . $obj->model . $obj->list_price . $obj->cost . $obj->sell_price . $obj->weight . $obj->weight_units . $obj->default_qty . $obj->ordering . $obj->shippable . REQUEST_TIME),
       ))
       ->execute();
   }
@@ -717,7 +701,7 @@ function uc_product_kit_view($node, $view_mode) {
         'cost',
       ),
     ),
-    '#access' => user_access('administer product kits'),
+    '#access' => user_access('administer products'),
   );
   $node->content['sell_price'] = array(
     '#theme' => 'uc_product_price',

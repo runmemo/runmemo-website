@@ -15,7 +15,12 @@ require_once dirname(__FILE__) . '/uc_cart_checkout_pane.inc';
 /**
  * Time in seconds after which a cart order is deemed abandoned.
  */
-define('UC_CART_ORDER_TIMEOUT', 600);
+define('UC_CART_ORDER_TIMEOUT', 86400); // 24 hours
+
+/**
+ * Time in seconds after which the checkout page is deemed abandoned.
+ */
+define('UC_CART_CHECKOUT_TIMEOUT', 1800); // 30 minutes
 
 
 /**
@@ -208,8 +213,6 @@ function uc_cart_theme() {
 function uc_cart_init() {
   global $conf;
   $conf['i18n_variables'][] = 'uc_cart_breadcrumb_text';
-  $conf['i18n_variables'][] = 'uc_cart_help_text';
-  $conf['i18n_variables'][] = 'uc_continue_shopping_text';
 }
 
 /**
@@ -318,6 +321,7 @@ function uc_cart_block_view($delta = '') {
       // First build the help text.
       $help_text = FALSE;
 
+      // uc_cart_help_text variable is only here for backward compatibility.
       if (variable_get('uc_cart_show_help_text', FALSE) && ($text = variable_get('uc_cart_help_text', t('Click title to display cart contents.')))) {
         $help_text = check_plain($text);
       }
@@ -414,13 +418,6 @@ function uc_cart_block_configure($delta = '') {
       '#title' => t('Display small help text in the shopping cart block.'),
       '#default_value' => variable_get('uc_cart_show_help_text', FALSE),
     );
-    $form['uc_cart_help_text'] = array(
-      '#type' => 'textfield',
-      '#title' => t('Cart help text'),
-      '#description' => t('Displayed if the above box is checked.'),
-      '#default_value' => variable_get('uc_cart_help_text', t('Click title to display cart contents.')),
-      '#size' => 32,
-    );
 
     return $form;
   }
@@ -438,7 +435,6 @@ function uc_cart_block_save($delta = '', $edit = array()) {
     variable_set('uc_cart_block_collapsible', $edit['uc_cart_block_collapsible']);
     variable_set('uc_cart_block_collapsed', $edit['uc_cart_block_collapsed']);
     variable_set('uc_cart_show_help_text', $edit['uc_cart_show_help_text']);
-    variable_set('uc_cart_help_text', $edit['uc_cart_help_text']);
   }
 }
 
@@ -494,8 +490,8 @@ function uc_cart_uc_message() {
   $messages['review_instructions'] = '<p>' . t("Your order is almost complete. Please review the details below and click 'Submit order' if all the information is correct.  You may use the 'Back' button to make changes to your order if necessary.") . '</p>';
   $messages['completion_message'] = '<p>' . t('Your order is complete! Your order number is [uc_order:order-number].') . '</p>';
   $messages['completion_logged_in'] = '<p>' . t('Thank you for shopping at [store:name]. While logged in, you may continue shopping or <a href="[uc_order:url]">view your current order status</a> and order history.') . '</p>';
-  $messages['completion_existing_user'] = '<p>' . t("Thank you for shopping at [store:name]. Your current order has been attached to the account we found matching your e-mail address.\n<br /><br />\n<a href=\"!user_url\">Login</a> to view your current order status and order history. Remember to login when you make your next purchase for a faster checkout experience!", array('!user_url' => url('user'))) . '</p>';
-  $messages['completion_new_user'] = '<p>' . t("Thank you for shopping at [store:name]. A new account has been created for you here that you may use to view your current order status.\n<br /><br />\n<a href=\"!user_url\">Login</a> to your new account using the following information:\n<br /><br />\n<strong>Username:</strong> !new_username<br />\n<strong>Password:</strong> !new_password", array('!user_url' => url('user'))) . '</p>';
+  $messages['completion_existing_user'] = '<p>' . t("Thank you for shopping at [store:name]. Your current order has been attached to the account we found matching your e-mail address.\n<br /><br />\n<a href=\"!user_url\">Login</a> to view your current order status and order history. Remember to login when you make your next purchase for a faster checkout experience!", array('!user_url' => '[site:login-url]')) . '</p>';
+  $messages['completion_new_user'] = '<p>' . t("Thank you for shopping at [store:name]. A new account has been created for you here that you may use to view your current order status.\n<br /><br />\n<a href=\"!user_url\">Login</a> to your new account using the following information:\n<br /><br />\n<strong>Username:</strong> !new_username<br />\n<strong>Password:</strong> !new_password", array('!user_url' => '[site:login-url]')) . '</p>';
   $messages['completion_new_user_logged_in'] = '<p>' . t("Thank you for shopping at [store:name]. A new account has been created for you here that you may use to view your current order status.\n<br /><br />\nYour password and further instructions have been sent to your e-mail address.\n<br /><br />\nFor your convenience, you are already logged in with your newly created account.") . '</p>';
   $messages['continue_shopping'] = '<p>' . t('<a href="[site:url]">Return to the front page.</a>') . '</p>';
 
@@ -658,19 +654,16 @@ function uc_cart_view_form($form, &$form_state, $items = NULL) {
 
   // If the continue shopping element is enabled...
   if (($cs_type = variable_get('uc_continue_shopping_type', 'link')) !== 'none') {
-    // Setup the text used for the element.
-    $cs_text = variable_get('uc_continue_shopping_text', '') ? variable_get('uc_continue_shopping_text', '') : t('Continue shopping');
-
     // Add the element to the form based on the element type.
     if (variable_get('uc_continue_shopping_type', 'link') == 'link') {
       $form['actions']['continue_shopping'] = array(
-        '#markup' => l($cs_text, uc_cart_continue_shopping_url()),
+        '#markup' => l(t('Continue shopping'), uc_cart_continue_shopping_url()),
       );
     }
     elseif (variable_get('uc_continue_shopping_type', 'link') == 'button') {
       $form['actions']['continue_shopping'] = array(
         '#type' => 'submit',
-        '#value' => $cs_text,
+        '#value' => t('Continue shopping'),
         '#submit' => array('uc_cart_view_form_submit', 'uc_cart_view_form_continue_shopping'),
       );
     }
@@ -898,6 +891,8 @@ function uc_cart_complete_sale($order, $login = FALSE) {
   if ($type == 'new_user' && $login && !$user->uid) {
     $type = 'new_user_logged_in';
     $user = user_load($order->uid);
+    $edit = array();
+    user_login_finalize($edit);
   }
 
   $variables['!new_username'] = isset($order->data['new_user']['name']) ? $order->data['new_user']['name'] : '';

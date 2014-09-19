@@ -11,9 +11,9 @@ files[] = includes/views/handlers/currency_handler_field_currency.inc
 files[] = includes/views/handlers/currency_handler_argument_currency.inc
 files[] = includes/views/handlers/currency_handler_filter_currency.inc
 
-; Information added by drupal.org packaging script on 2011-03-12
-version = "7.x-1.0"
+; Information added by drupal.org packaging script on 2013-03-24
+version = "7.x-1.2"
 core = "7.x"
 project = "currency"
-datestamp = "1299941167"
+datestamp = "1364129411"
 

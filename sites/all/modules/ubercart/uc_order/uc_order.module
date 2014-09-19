@@ -477,6 +477,36 @@ function uc_order_can_view_order($account, $order, $view_invoice = FALSE) {
 }
 
 /**
+ * Implements hook_query_TAG_alter().
+ */
+function uc_order_query_uc_order_access_alter(QueryAlterableInterface $query) {
+  global $user;
+
+  // Read metadata from query, if provided.
+  if (!$account = $query->getMetaData('account')) {
+    $account = $user;
+  }
+
+  // If account can view all orders, we don't need to alter the query.
+  if (user_access('view all orders', $account)) {
+    return;
+  }
+
+  if (user_access('view own orders', $account)) {
+    // Only allow the user to see their own orders.
+    foreach ($query->getTables() as $table) {
+      if ($table['table'] === 'uc_orders') {
+        $query->condition($table['alias'] . '.uid', $user->uid);
+      }
+    }
+  }
+  else {
+    // Deny access to everything.
+    $query->where('1 = 0');
+  }
+}
+
+/**
  * Implements hook_entity_info().
  */
 function uc_order_entity_info() {
@@ -595,7 +625,7 @@ function uc_order_user_view($account, $view_mode) {
 function uc_order_mail($key, &$message, $params) {
   $langcode = isset($message['language']) ? $message['language']->language : NULL;
 
-  // Build the appropriate message paramaters based on the e-mail key.
+  // Build the appropriate message parameters based on the e-mail key.
   switch ($key) {
     // Setup an e-mailed invoice.
     case 'invoice':
@@ -876,7 +906,7 @@ function uc_order_order_entity_access($op, $order = NULL, $account = NULL) {
   }
 
   if ($op == 'view') {
-    if (user_access('view all_orders', $account)) {
+    if (user_access('view all orders', $account)) {
       return TRUE;
     }
 
@@ -895,9 +925,12 @@ function uc_order_order_entity_access($op, $order = NULL, $account = NULL) {
 function uc_order_new($uid = 0, $state = 'in_checkout') {
   $order = new UcOrder($uid, $state);
 
+  module_invoke_all('entity_presave', $order, 'uc_order');
+
   drupal_write_record('uc_orders', $order);
 
   uc_order_module_invoke('new', $order, NULL);
+  module_invoke_all('entity_insert', $order, 'uc_order');
 
   return $order;
 }
@@ -914,9 +947,12 @@ function uc_order_create($values, $entity_type) {
     $order->$key = $value;
   }
 
+  module_invoke_all('entity_presave', $order, 'uc_order');
+
   drupal_write_record('uc_orders', $order);
 
   uc_order_module_invoke('new', $order, NULL);
+  module_invoke_all('entity_insert', $order, 'uc_order');
 
   return $order;
 }
@@ -948,6 +984,7 @@ function uc_order_save($order) {
     $order->modified = REQUEST_TIME;
 
     uc_order_module_invoke('presave', $order, NULL);
+    module_invoke_all('entity_presave', $order, 'uc_order');
 
     drupal_write_record('uc_orders', $order, 'order_id');
 
@@ -961,6 +998,7 @@ function uc_order_save($order) {
     field_attach_update('uc_order', $order);
 
     uc_order_module_invoke('save', $order, NULL);
+    module_invoke_all('entity_update', $order, 'uc_order');
     $order->order_total = uc_order_get_total($order);
   }
   catch (Exception $e) {
@@ -987,6 +1025,7 @@ function uc_order_delete($order_id) {
   if ($order !== FALSE) {
     rules_invoke_event('uc_order_delete', $order);
     uc_order_module_invoke('delete', $order, NULL);
+    module_invoke_all('entity_delete', $order, 'uc_order');
 
     // Delete data from the appropriate Ubercart order tables.
     db_delete('uc_orders')
@@ -1129,7 +1168,7 @@ function uc_order_product_load_multiple($opids = array(), $reset = FALSE) {
  *   content language of the current request.
  * @param $page
  *   (optional) If set will control if the entity is rendered: if TRUE
- *   the entity will be rendered without its title, so that it can be embeded
+ *   the entity will be rendered without its title, so that it can be embedded
  *   in another context. If FALSE the entity will be displayed with its title
  *   in a mode suitable for lists.
  *   If unset, the page mode will be enabled if the current path is the URI
@@ -1795,6 +1834,14 @@ function template_preprocess_uc_order_invoice_page(&$variables) {
       $head_title['slogan'] = variable_get('site_slogan', '');
     }
   }
+
+  // Add favicon.
+  if (theme_get_setting('toggle_favicon')) {
+    $favicon = theme_get_setting('favicon');
+    $type = theme_get_setting('favicon_mimetype');
+    drupal_add_html_head_link(array('rel' => 'shortcut icon', 'href' => drupal_strip_dangerous_protocols($favicon), 'type' => $type));
+  }
+  $variables['head'] = drupal_get_html_head();
 
   // Set the default language if necessary.
   $language = isset($GLOBALS['language']) ? $GLOBALS['language'] : language_default();

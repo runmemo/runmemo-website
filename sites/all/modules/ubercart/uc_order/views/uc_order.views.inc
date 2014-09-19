@@ -15,6 +15,7 @@ function uc_order_views_data() {
     'field' => 'order_id',
     'title' => t('Orders'),
     'help' => t('Orders placed in your Ubercart store.'),
+    'access query tag' => 'uc_order_access',
   );
 
   // Pull in user fields directly.
@@ -377,6 +378,19 @@ function uc_order_views_data() {
     );
   }
 
+  $data['uc_orders']['total_weight'] = array(
+    'title' => t('Total weight'),
+    'help' => t('The physical weight of all the products (weight * quantity) in the order.'),
+    'real field' => 'weight',
+    'field' => array(
+      'handler' => 'uc_order_handler_field_order_weight_total',
+      'additional fields' => array(
+        'order_id' => 'order_id',
+      ),
+      'float' => TRUE,
+    ),
+  );
+
   // Ordered products.
   // Get the standard EntityAPI Views data table.
   $data['uc_order_products'] =  entity_views_table_definition('uc_order_product');
@@ -663,13 +677,16 @@ function uc_order_views_data() {
     $data['uc_order_line_items_' . $line_item_id]['table']['join']['uc_order_products'] = $data['uc_order_line_items_' . $line_item_id]['table']['join']['uc_orders'];
     $data['uc_order_line_items_' . $line_item_id]['table']['join']['uc_order_products']['left_table'] = 'uc_orders';
 
-    $data['uc_order_line_items_' . $line_item_id]['table']['group'] = t('Ubercart order line item');
+    $data['uc_order_line_items_' . $line_item_id]['table']['group'] = t('Order: Line item');
     $data['uc_order_line_items_' . $line_item_id]['title'] = array(
       'title' => t('!line_item_desc title', array('!line_item_desc' => $line_item_desc)),
       'help' => t('!line_item_desc order line item', array('!line_item_desc' => $line_item_desc)),
       'field' => array(
         'handler' => 'views_handler_field',
         'click sortable' => TRUE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_filter_string',
       ),
     );
 
@@ -680,6 +697,9 @@ function uc_order_views_data() {
         'handler' => 'uc_order_handler_field_money_amount',
         'click sortable' => TRUE,
         'float' => TRUE,
+      ),
+      'filter' => array(
+        'handler' => 'views_handler_filter_numeric',
       ),
     );
   }
@@ -692,6 +712,17 @@ function uc_order_views_data() {
  */
 function uc_order_views_plugins() {
   return array(
+    'row' => array(
+      'uc_order_invoice' => array(
+        'title' => t('Invoice'),
+        'help' => t('Display the order with standard invoice view.'),
+        'handler' => 'uc_order_plugin_row_invoice',
+        'theme' => 'uc_order_view_row_invoice',
+        'theme path' => drupal_get_path('module', 'uc_order') . '/views',
+        'base' => array('uc_orders'), // only works with 'uc_orders' as base.
+        'type' => 'normal',
+      ),
+    ),
     'argument validator' => array(
       'user_or_permission' => array(
         'title' => t('Current user or user has permission'),
@@ -699,4 +730,30 @@ function uc_order_views_plugins() {
       ),
     ),
   );
+}
+
+/**
+ * Preprocesses a views row invoice plugin.
+ *
+ * @see uc_order-view-row-invoice.tpl.php
+ */
+function template_preprocess_uc_order_view_row_invoice(&$vars) {
+  $order_id = $vars['row']->{$vars['field_alias']};
+
+  if (module_exists('uc_credit')) {
+    // Clear credit cache, otherwise the load function below will return
+    // the same cached credit information for all the subsequent orders
+    // invoices
+    uc_credit_cache('clear');
+  }
+  $order = uc_order_load($order_id);
+
+  $build = array(
+    '#theme' => 'uc_order',
+    '#order' => $order,
+    '#op' => 'view',
+    '#template' => variable_get('uc_cust_order_invoice_template', 'customer'),
+  );
+
+  $vars['invoice'] = theme('uc_order_invoice_page', array('content' => drupal_render($build)));
 }

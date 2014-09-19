@@ -205,7 +205,7 @@ function theme_uc_order_state_table($variables) {
 }
 
 /**
- * Themes the order state table in the order workflow settings.
+ * Themes the order status table in the order workflow settings.
  *
  * @see uc_order_workflow_form()
  * @ingroup themeable
@@ -963,7 +963,7 @@ function uc_order_edit_form($form, &$form_state, $order) {
   $form['order_id'] = array('#type' => 'hidden', '#value' => $order->order_id);
   $form['order_uid'] = array('#type' => 'hidden', '#value' => $order->uid);
 
-  $modified = isset($form_state['values']['order_modified']) ? $form_state['values']['order_modified'] : REQUEST_TIME;
+  $modified = isset($form_state['values']['order_modified']) ? $form_state['values']['order_modified'] : $order->modified;
   $form['order_modified'] = array('#type' => 'hidden', '#value' => $modified);
 
   $panes = _uc_order_pane_list('edit');
@@ -1008,7 +1008,7 @@ function uc_order_edit_form($form, &$form_state, $order) {
  */
 function uc_order_edit_form_validate($form, &$form_state) {
   $order = uc_order_load($form_state['values']['order_id']);
-  if ($form_state['values']['order_modified'] < $order->modified) {
+  if ($form_state['values']['order_modified'] != $order->modified) {
     form_set_error('order_modified', t('This order has been modified by another user, changes cannot be saved.'));
   }
 
@@ -1188,7 +1188,7 @@ function uc_order_add_line_item_form($form, &$form_state, $order, $line_item_id)
 function uc_order_add_line_item_form_validate($form, &$form_state) {
   $func = _uc_line_item_data($form_state['values']['line_item_id'], 'callback');
   if (function_exists($func) && ($form = $func('form', $form_state['values']['order_id'])) != NULL) {
-    $func('validate', $form_state['values']['order_id']);
+    $func('validate', $form, $form_state);
   }
 }
 
@@ -1200,7 +1200,7 @@ function uc_order_add_line_item_form_validate($form, &$form_state) {
 function uc_order_add_line_item_form_submit($form, &$form_state) {
   $func = _uc_line_item_data($form_state['values']['line_item_id'], 'callback');
   if (function_exists($func) && ($form = $func('form', $form_state['values']['order_id'])) != NULL) {
-    $func('submit', $form_state['values']['order_id']);
+    $func('submit', $form, $form_state);
   }
   else {
     uc_order_line_item_add($form_state['values']['order_id'], $form_state['values']['line_item_id'], $form_state['values']['title'], $form_state['values']['amount']);
@@ -1255,12 +1255,6 @@ function uc_order_mail_invoice_form_validate($form, &$form_state) {
  */
 function uc_order_mail_invoice_form_submit($form, &$form_state) {
   $order = uc_order_load($form_state['values']['order_id']);
-
-  if ($order === FALSE) {
-    drupal_set_message(t('Order @order_id does not exist.', array('@order_id' => $order_id)));
-    drupal_goto('admin/store/orders');
-  }
-
   $recipient = check_plain($form_state['values']['email']);
 
   $params = array('order' => $order);

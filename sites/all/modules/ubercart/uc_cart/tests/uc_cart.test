@@ -349,20 +349,20 @@ class UbercartCartCheckoutTestCase extends UbercartTestHelper {
 
   function testCheckoutLogin() {
     // Log in after checkout.
-    $settings = array(
-      'uc_new_customer_login' => TRUE,
-    );
-    $this->drupalLogin($this->adminUser);
-    $this->drupalPost('admin/store/settings/checkout', $settings, t('Save configuration'));
-    $this->drupalLogout();
+    variable_set('uc_new_customer_login', TRUE);
 
     // Test checkout.
-    $this->drupalPost('node/' . $this->product->nid, array(), t('Add to cart'));
+    $this->drupalGet('node/' . $this->product->nid);
+    $this->drupalPost(NULL, array(), t('Add to cart'));
+    $this->assertNotNull($this->session_id, 'Session ID is set.');
+    $session_id = $this->session_id;
     $this->checkout();
     $this->assertRaw('Your order is complete!');
     $this->assertRaw('you are already logged in');
 
     // Confirm login.
+    $this->assertNotNull($this->session_id, 'Session ID is set.');
+    $this->assertNotIdentical($this->session_id, $session_id, 'Session ID has changed.');
     $this->drupalGet('<front>');
     $this->assertText('My account', 'User is logged in.');
 
@@ -721,17 +721,12 @@ class UbercartCartSettingsTestCase extends UbercartTestHelper {
       'uc_continue_shopping_url',
       t('Default continue shopping link URL field exists')
     );
-    $this->assertField(
-      'uc_continue_shopping_text',
-      t('Custom continue shopping link text field exists')
-    );
 
     // Test continue shopping button that sends users to a fixed URL.
     $settings = array(
       'uc_continue_shopping_type' => 'button',
       'uc_continue_shopping_use_last_url' => FALSE,
       'uc_continue_shopping_url' => $this->randomName(8),
-      'uc_continue_shopping_text' => $this->randomName(16),
     );
     $this->drupalPost(
       NULL,
@@ -742,13 +737,13 @@ class UbercartCartSettingsTestCase extends UbercartTestHelper {
     $this->drupalPost(
       'cart',
       array(),
-      $settings['uc_continue_shopping_text']
+      t('Continue shopping')
     );
     $url_pass = ($this->getUrl() == url($settings['uc_continue_shopping_url'],
       array('absolute' => TRUE)));
     $this->assertTrue(
       $url_pass,
-      t('Continue shopping button is properly labelled, and takes the user to the correct URL.')
+      t('Continue shopping button takes the user to the correct URL.')
     );
   }
 
