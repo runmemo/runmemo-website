@@ -428,6 +428,10 @@ function plupload_handle_uploads() {
 
         fclose($out);
         drupal_unlink($_FILES['file']['tmp_name']);
+        
+        // How many chunks?
+        $total_chunks = isset($_REQUEST["chunks"]) ? $_REQUEST["chunks"] : -1;    
+         //$chunk is 0 based count
         if ($chunk == $total_chunks-1 || ($total_chunks == -1 && isset($_REQUEST["name"]))) {
           $file = array();
           // dvm($_REQUEST["name"]);
@@ -435,6 +439,8 @@ function plupload_handle_uploads() {
           //original name
           $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
           $file['tmppath'] = $temp_directory . $file_name;
+          watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($file  )));
+
           module_invoke_all('file_uploaded', $file); 
         } else {}
       }
