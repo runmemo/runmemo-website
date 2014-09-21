@@ -428,6 +428,14 @@ function plupload_handle_uploads() {
 
         fclose($out);
         drupal_unlink($_FILES['file']['tmp_name']);
+        
+        $file = array();
+        // dvm($_REQUEST["name"]);
+        // dvm($_FILES['file']);
+        //original name
+        $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+        $file['tmppath'] = $temp_directory . $file_name;
+        module_invoke_all('file_uploaded', $file); 
       }
       else {
         die('{"jsonrpc" : "2.0", "error" : {"code": 102, "message": "Failed to open output stream."}, "id" : "id"}');
