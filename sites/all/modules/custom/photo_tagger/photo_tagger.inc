@@ -13,7 +13,7 @@ function photo_tagger_get_photos($nid, $uid, $limit) {
           and n.nid > :nid
           and n.uid = :uid
           and n.status = 1
-        order by n.nid';
+        order by n.title';
   $result = db_query_range($sql, 0, $limit, array(':uid'=>$uid, 'nid'=> $nid));
   
   $pool = array();

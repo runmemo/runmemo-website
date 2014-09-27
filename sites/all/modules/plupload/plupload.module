@@ -437,10 +437,10 @@ function plupload_handle_uploads() {
           // dvm($_REQUEST["name"]);
           // dvm($_FILES['file']);
           //original name
-          $file['name'] = isset($_REQUEST["name"]) ? $_REQUEST["name"] : '';
+          $file['name'] = isset($_FILES['file']['name']) ? $_FILES['file']['name'] : '';
           $file['tmppath'] = $temp_directory . $file_name;
-          watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($file  )));
-
+          // watchdog('photo_uload', 'File uploaded : %path', array('%path'=> serialize($file  )));
+          
           module_invoke_all('file_uploaded', $file); 
         } else {}
       }
