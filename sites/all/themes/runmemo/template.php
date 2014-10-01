@@ -352,10 +352,10 @@ function runmemo_preprocess_uc_cart_complete_sale(&$variables) {
   $output .= '<div class="order-sale-description">' . t('Click on the preview to open original size image in the new window') . '</div>'; 
   $output .= '<table><tr>';
   $j = 0;
-  for($i=0;$i<$no_of_image;$i++) {
+  for($i=0; $i < $no_of_image; $i++) {
     
     $resource = $img_name[$i];
-    if(module_exists('s3_store') && function_exists('get_s3_signed_url')){
+    if(module_exists('s3_store') && function_exists('get_s3_signed_url')) {
       $original_img_url = get_s3_signed_url($resource);
     }
     
