@@ -50,8 +50,7 @@ function _send_file_to_s3($file, $dummy = FALSE) {
   // Send original file to S3
  
   $path_prefix = 'public://';
-  $acl = 'public-read'; //S3::ACL_PUBLIC_READ;
-
+ 
   $s3_mover = new s3_mover($path_prefix, $bucket);
 
   // Send cache images to S3
@@ -67,7 +66,7 @@ function _send_file_to_s3($file, $dummy = FALSE) {
 
   };
   // move original file
-  $s3_mover->move_file($file, $acl);
+  $s3_mover->move_file($file, S3::ACL_AUTHENTICATED_READ);
 }
 
 /**
