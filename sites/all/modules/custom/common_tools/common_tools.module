@@ -155,11 +155,19 @@ function get_photo_url($nid) {
   }
   $product = node_load($nid);
   $image_field = field_get_items('node', $product, 'uc_product_image');
-  $img_uri = $image_field[0]['uri'];
-  if (!isset($img_uri)) {
+ 
+  if (!$image_field) {
     return FALSE;
-  }     
-  $img_url = file_create_url($img_uri);
+  } 
+  $uri = $image_field[0]['uri'];
+  if (module_exists('s3_store') && function_exists('get_s3_signed_url')) {
+    $filename = $image_field[0]['filename'];
+    if (file_uri_scheme($uri) == 's3') {
+      return get_s3_signed_url($filename);
+    }
+  }
+
+  $img_url = file_create_url($uri);
   return $img_url;
   
 }
