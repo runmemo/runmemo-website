@@ -1,8 +1,11 @@
 <?php
 
 function photo_tagger_get_photos($nid, $uid, $limit) {
-  
+  $title = '';
   $node = node_load($nid);
+  if ($node) {
+    $title = $node->title;
+  }
   $sql='select n.nid, upi.uc_product_image_fid fid 
         from {node} n 
         inner join {field_data_uc_product_image} upi
@@ -14,7 +17,7 @@ function photo_tagger_get_photos($nid, $uid, $limit) {
           and n.uid = :uid
           and n.status = 1
         order by n.title';
-  $result = db_query_range($sql, 0, $limit, array(':uid'=>$uid, ':title'=> $node->title));
+  $result = db_query_range($sql, 0, $limit, array(':uid'=>$uid, ':title'=> $title));
   
   $pool = array();
   $i = 0;
