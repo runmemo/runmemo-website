@@ -2935,6 +2935,7 @@ label.option {
 
 .view-event-gallery table {
         margin-bottom: 0;
+        float: left;
 }
 
 .view-myphotos .pager {
