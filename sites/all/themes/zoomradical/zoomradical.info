@@ -2,3 +2,13 @@ name = Zoomradical
 description = This is a sub-theme of Runmemo for Zoomradical website.
 core = 7.x
 base theme = runmemo
+
+regions[menu] = Main menu
+regions[header] = Bar above content
+regions[sidebar_first] = Left sidebar
+regions[content] = Content
+regions[sidebar_second] = Right sidebar
+regions[footer] = Footer
+regions[highlighted] = Highlighted
+
+regions[shopping_cart] = Shopping cart
