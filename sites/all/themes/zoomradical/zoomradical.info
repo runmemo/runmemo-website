@@ -1,4 +1,4 @@
-name = Runmemo
+name = Zoomradical
 description = This is a sub-theme of Runmemo for Zoomradical website.
 core = 7.x
 base theme = runmemo
