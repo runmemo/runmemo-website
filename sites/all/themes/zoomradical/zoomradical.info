@@ -12,3 +12,5 @@ regions[footer] = Footer
 regions[highlighted] = Highlighted
 
 regions[shopping_cart] = Shopping cart
+
+stylesheets[zoomradical][] = zoomradical.css
