@@ -321,6 +321,7 @@ function uc_currency_country_currency($country) {
     'DE' => 'EUR',
     'FR' => 'EUR',
     'US' => 'USD',
+    'CO' => 'COP',
   );
   return isset($codes[$country]) ? $codes[$country] : default_currency_code(); 
 }
