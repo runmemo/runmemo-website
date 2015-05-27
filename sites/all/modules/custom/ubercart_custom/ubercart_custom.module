@@ -134,6 +134,10 @@ function get_cart_total_with_discount($total, $nid = NULL) {
       $event_nids = field_get_items('node', $product, 'field_event_reference');
       if ($event_nids) {
         $event = node_load($event_nids[0]['nid']);
+        $item_discount_on =  field_get_items('node', $event, 'field_item_discount_on');
+        if ($item_discount_on && $item_discount_on[0]['value'] == 1) {
+          return get_cart_total_with_item_discount ($total, $event);
+        }
         $package_prices = field_get_items('node', $event, 'field_package_price');
         if ($package_prices) {
           $max_order_value = $package_prices[0]['value'];
@@ -154,6 +158,36 @@ function get_cart_total_with_discount($total, $nid = NULL) {
   else {
     return number_format($total, 2);   
   }
+}
+
+function get_cart_total_with_item_discount($total, $event) {
+  $package_prices = field_get_items('node', $event, 'field_package_price');
+  if ($package_prices) {
+    $max_order_value = $package_prices[0]['value'];
+    
+    if ($total < $package_prices[0]['value']) {
+      return $total;
+    }
+    
+    if ($total < $package_prices[1]['value']) {
+      return $total * 2 / 3.0; // ~ 33% discount
+    }
+    
+    return $total * 5 / 12.0; // ~ 60% discount 
+    
+  }
+  
+  if ($total < 48000) {
+    return $total ;
+  }
+  
+  if ($total <= 96000) {
+    return $total * 2 / 3;
+  }
+  
+  return $total * 5 / 12.0;
+  
+  
 }
 
 /**
