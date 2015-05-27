@@ -136,7 +136,8 @@ function get_cart_total_with_discount($total, $nid = NULL) {
         $event = node_load($event_nids[0]['nid']);
         $item_discount_on =  field_get_items('node', $event, 'field_item_discount_on');
         if ($item_discount_on && $item_discount_on[0]['value'] == 1) {
-          return get_cart_total_with_item_discount ($total, $event);
+          $total = get_cart_total_with_item_discount ($total, $event);
+          return number_format($total,0); 
         }
         $package_prices = field_get_items('node', $event, 'field_package_price');
         if ($package_prices) {
