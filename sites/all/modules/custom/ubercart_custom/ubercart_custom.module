@@ -165,11 +165,11 @@ function get_cart_total_with_item_discount($total, $event) {
   if ($package_prices) {
     $max_order_value = $package_prices[0]['value'];
     
-    if ($total < $package_prices[0]['value']) {
+    if ($total <= $package_prices[0]['value']) {
       return $total;
     }
     
-    if ($total < $package_prices[1]['value']) {
+    if ($total <= $package_prices[1]['value']) {
       return $total * 2 / 3.0; // ~ 33% discount
     }
     
@@ -177,7 +177,7 @@ function get_cart_total_with_item_discount($total, $event) {
     
   }
   
-  if ($total < 48000) {
+  if ($total <= 48000) {
     return $total ;
   }
   
