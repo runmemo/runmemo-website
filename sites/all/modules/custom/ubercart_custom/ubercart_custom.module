@@ -1,50 +1,6 @@
 <?php
 
 /**
- * product Node view function
- */
-/*function ubercart_custom_node_view($node, $view_mode, $langcode) {
- global $user;
- $uid = $user->uid;
- $node_type = $node->type;
- if (($uid != 1) && (arg(0) == 'node') && ($node_type == 'product')) {
- drupal_goto();
- }
- if ($node->type == 'product' && $view_mode == 'full') {
-
- $xyobject = new ubercart_custom_model();
- $xyvalues = $xyobject->getxyvalues($node->nid);
-
- $header = array(
- array('data' => t('Sl.no')), array('data' => t('Runner Number')), array('data' => t('X-Value')), array('data' => t('Y-Value')),array('data' => t('Probability'))
- );
- $rows = array();
- $xycount = 0;
- foreach($xyvalues as $xyvalue){
-
- $xycount++;
- $rows[] = array(
- array('data' => $xycount),
- array('data' => $xyvalue->number),
- array('data' => $xyvalue->position_left),
- array('data' => $xyvalue->position_top),
- array('data' => $xyvalue->probability)
- );
-
- }
-
-
- if($xycount>0){
- $node->content['body'][0]['#markup'] =  theme('table', array('header' => $header, 'rows'=> $rows));
- }
-
-
-
- }
- }
- */
-
-/**
  * Implements hook_views_api().
  */
 function ubercart_custom_views_api() {
@@ -69,20 +25,10 @@ function ubercart_custom_init() {
 
   drupal_add_css( 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/start/jquery-ui.css', 'external');
   drupal_add_js('https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js', 'external');
- 
-  // drupal_add_js(drupal_get_path('module', 'jquery_update') .  '/replace/ui/ui/minified/jquery-ui.min.js');
-  
+   
   drupal_add_css(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.css');
   drupal_add_js(drupal_get_path('module', 'ubercart_custom') . '/ubercart_custom.js');
 
-//  $messages = drupal_get_messages();
-//  print_nice($messages);
-//  foreach($messages as $message) {
-//    print_nice($message);
-//    //print_nice($_SESSION['messages']);
-//    
-//  }
-//    
   //for redirect the cart page
   //when no products in the shopping cart
   if (arg(0) == 'cart' && arg(1) == '') {
@@ -163,31 +109,26 @@ function get_cart_total_with_discount($total, $nid = NULL) {
 
 function get_cart_total_with_item_discount($total, $event) {
   $package_prices = field_get_items('node', $event, 'field_package_price');
+  $item_discounts‎ = field_get_items('node', $event, 'field_item_discounts‎');
+      
   if ($package_prices) {
-    $max_order_value = $package_prices[0]['value'];
     
     if ($total <= $package_prices[0]['value']) {
       return $total;
     }
     
     if ($total <= $package_prices[1]['value']) {
-      return $total * 2 / 3.0; // ~ 33% discount
+      return $total * (1 -$item_discounts‎[0]['value']);
     }
     
-    return $total * 5 / 12.0; // ~ 60% discount 
+    return $total * (1 - $item_discounts‎[1]['value']);
     
   }
-  
-  if ($total <= 48000) {
-    return $total ;
+  else {
+    watchdog('ubercart_custom', 'Package prices or discounts are not set for revent ' . $event->title);
   }
   
-  if ($total <= 96000) {
-    return $total * 2 / 3;
-  }
-  
-  return $total * 5 / 12.0;
-  
+  return $total;
   
 }
 
