@@ -108,20 +108,21 @@ function get_cart_total_with_discount($total, $nid = NULL) {
 }
 
 function get_cart_total_with_item_discount($total, $event) {
-  $package_prices = field_get_items('node', $event, 'field_package_price');
-  $item_discounts‎ = field_get_items('node', $event, 'field_item_discounts‎');
+  $event_wrapper = entity_metadata_wrapper('node', $event);
+  $package_prices = $event_wrapper->field_package_price->value();
+  $item_discounts‎ = $event_wrapper->field_item_discounts->value();
       
   if ($package_prices) {
     
-    if ($total <= $package_prices[0]['value']) {
+    if ($total <= $package_prices[0]) {
       return $total;
     }
     
-    if ($total <= $package_prices[1]['value']) {
-      return $total * (1 -$item_discounts‎[0]['value']);
+    if ($total <= $package_prices[1]) {
+      return $total * (1 - $item_discounts‎[0]);
     }
     
-    return $total * (1 - $item_discounts‎[1]['value']);
+    return $total * (1 - $item_discounts‎[1]);
     
   }
   else {
