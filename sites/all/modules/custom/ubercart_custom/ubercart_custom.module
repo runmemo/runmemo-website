@@ -259,10 +259,7 @@ function ubercart_custom_uc_order($op, &$order, $arg2) {
       foreach ($order->products as $product)
       {
         $product_nid = $product->nid;
-        $product_node = node_load($product_nid);
-        $product = entity_metadata_wrapper('node', $product_node);
-        $event_nid = $product->field_event_reference->nid->value();
-        $max_order_value = get_cart_total_with_discount($subtotal, $event_nid);
+        $max_order_value = get_cart_total_with_discount($subtotal, $product_nid);
         break;
       }
       
