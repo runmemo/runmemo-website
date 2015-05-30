@@ -83,7 +83,7 @@ function get_cart_total_with_discount($total, $nid = NULL) {
         $item_discount_on =  field_get_items('node', $event, 'field_item_discount_on');
         if ($item_discount_on && $item_discount_on[0]['value'] == 1) {
           $total = get_cart_total_with_item_discount ($total, $event);
-          return number_format($total,0); 
+          return $total; 
         }
         $package_prices = field_get_items('node', $event, 'field_package_price');
         if ($package_prices) {
@@ -255,14 +255,15 @@ function ubercart_custom_uc_order($op, &$order, $arg2) {
 
       // Now we can get the total value of the order
       $subtotal = order_line_amount($order, 'subtotal');
-      
+      print_r($subtotal);
+      print_r('/');
       foreach ($order->products as $product)
       {
         $product_nid = $product->nid;
         $max_order_value = get_cart_total_with_discount($subtotal, $product_nid);
         break;
       }
-      
+      print_r($max_order_value);
       $discount = 0;
       if ($subtotal > $max_order_value) {
         $discount = $subtotal - $max_order_value;
